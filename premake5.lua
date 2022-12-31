@@ -1,0 +1,133 @@
+workspace "Client"
+	architecture "x64"
+
+	configurations
+	{
+		"Debug",
+		"Release"
+	}
+
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+project "core"
+	location "core"
+	kind "SharedLib"
+	language "C++"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	pchheader "_Core.h"
+	pchsource "core/src/core/_Core.cpp"
+
+	files
+	{
+		"%{prj.name}/lib/**.h",
+		"%{prj.name}/lib/**.gch",
+		"%{prj.name}/lib/**.hpp",
+		"%{prj.name}/lib/**.cpp",
+		"%{prj.name}/lib/**.c",
+		"%{prj.name}/lib/**.lib",
+		"%{prj.name}/lib/**.dll",
+		"%{prj.name}/lib/**.a",
+
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"lib",
+		"%{prj.name}/lib",
+		"%{prj.name}/src",
+		"%{prj.name}/src/core"
+	}
+
+	disablewarnings 
+	{
+		"4005",
+		"4244",
+		"4312",
+		"4267"
+
+	}
+	
+	filter "system:windows"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines
+		{
+			"CORE_PLATFORM_WINDOWS",
+			"CORE_BUILD_DLL"
+		}
+
+		postbuildcommands 
+		{
+			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/conqueror/")
+		}
+
+	filter "configurations:Debug"
+		defines "CORE_DEBUG"
+		symbols "On"
+
+	filter "configurations:Release"
+		defines "CORE_RELEASE"
+		optimize "On"
+
+
+project "conqueror"
+	location "conqueror"
+	kind "ConsoleApp"
+	language "C++"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/lib/**.h",
+		"%{prj.name}/lib/**.gch",
+		"%{prj.name}/lib/**.hpp",
+		"%{prj.name}/lib/**.cpp",
+		"%{prj.name}/lib/**.c",
+		"%{prj.name}/lib/**.lib",
+		"%{prj.name}/lib/**.dll",
+		"%{prj.name}/lib/**.a",
+
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"lib",
+		"%{prj.name}/lib",
+		"%{prj.name}/src",
+		"%{prj.name}/src/core",
+		"core/src"
+	}
+
+	links
+	{
+		"core"
+	}
+	
+	filter "system:windows"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines
+		{
+			"CORE_PLATFORM_WINDOWS",
+		}
+
+	filter "configurations:Debug"
+		defines "CORE_DEBUG"
+		symbols "On"
+
+	filter "configurations:Release"
+		defines "CORE_RELEASE"
+		optimize "On"

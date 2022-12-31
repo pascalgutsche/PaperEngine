@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Core/Application.h"
-
+#include "core/generic/Application.h"
 
 
 //EntryPoint
-#include "Core/EntryPoint.h"
+#include "core/EntryPoint.h"
