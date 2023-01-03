@@ -1,4 +1,5 @@
 #include "_Core.h"
+#include <GLFW/glfw3.h>
 
 #include "listener/MouseListener.h"
 #include "generic/Window.h"

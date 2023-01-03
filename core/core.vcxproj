@@ -61,7 +61,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4005;4244;4312;4267;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>CORE_PLATFORM_WINDOWS;CORE_BUILD_DLL;CORE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\lib;lib;src;src\core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib;lib;src;src\core;lib\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -71,6 +71,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\bin\Debug-windows-x86_64\core\core.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -84,7 +85,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4005;4244;4312;4267;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>CORE_PLATFORM_WINDOWS;CORE_BUILD_DLL;CORE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\lib;lib;src;src\core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib;lib;src;src\core;lib\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -98,6 +99,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\bin\Release-windows-x86_64\core\core.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -107,8 +109,8 @@
   <ItemGroup>
     <ClInclude Include="lib\GLAD\include\KHR\khrplatform.h" />
     <ClInclude Include="lib\GLAD\include\glad\glad.h" />
-    <ClInclude Include="lib\GLFW\include\glfw3.h" />
-    <ClInclude Include="lib\GLFW\include\glfw3native.h" />
+    <ClInclude Include="lib\GLFW_OLD\include\glfw3.h" />
+    <ClInclude Include="lib\GLFW_OLD\include\glfw3native.h" />
     <ClInclude Include="lib\GLM\common.hpp" />
     <ClInclude Include="lib\GLM\detail\_features.hpp" />
     <ClInclude Include="lib\GLM\detail\_fixes.hpp" />
@@ -400,6 +402,7 @@
     <ClInclude Include="lib\IMGUI\imstb_rectpack.h" />
     <ClInclude Include="lib\IMGUI\imstb_textedit.h" />
     <ClInclude Include="lib\IMGUI\imstb_truetype.h" />
+    <ClInclude Include="lib\STB_IMAGE\stb_image.h" />
     <ClInclude Include="lib\freetype\dlg\dlg.h" />
     <ClInclude Include="lib\freetype\dlg\output.h" />
     <ClInclude Include="lib\freetype\freetype\config\ftconfig.h" />
@@ -526,7 +529,7 @@
     <ClInclude Include="src\core\renderer\RenderBatch.h" />
     <ClInclude Include="src\core\renderer\Renderer.h" />
     <ClInclude Include="src\core\renderer\Texture.h" />
-    <ClInclude Include="lib\STB_IMAGE\stb_image.h" />
+    <ClInclude Include="src\utility.h" />
     <ClInclude Include="src\core\utils\DataPool.h" />
     <ClInclude Include="src\core\utils\Logger.h" />
     <ClInclude Include="src\core\utils\Utils.h" />
@@ -556,7 +559,9 @@
     <ClCompile Include="src\core\generic\Shader.cpp" />
     <ClCompile Include="src\core\generic\Sound.cpp" />
     <ClCompile Include="src\core\generic\Transform.cpp" />
-    <ClCompile Include="src\core\generic\Window.cpp" />
+    <ClCompile Include="src\core\generic\Window.cpp">
+      <ObjectFileName>$(IntDir)\Window2.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="src\core\listener\KeyListener.cpp" />
     <ClCompile Include="src\core\listener\MouseListener.cpp" />
     <ClCompile Include="src\core\main.cpp" />
@@ -571,11 +576,16 @@
     <ClCompile Include="src\core\utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\GLFW\lib\glfw3.dll" />
-    <None Include="lib\GLFW\lib\libglfw3.a" />
-    <None Include="lib\GLFW\lib\libglfw3dll.a" />
+    <None Include="lib\GLFW_OLD\lib\glfw3.dll" />
+    <None Include="lib\GLFW_OLD\lib\libglfw3.a" />
+    <None Include="lib\GLFW_OLD\lib\libglfw3dll.a" />
     <None Include="lib\freetype\lib\freetype.dll" />
     <None Include="lib\freetype\lib\freetype.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="lib\GLFW\GLFW.vcxproj">
+      <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

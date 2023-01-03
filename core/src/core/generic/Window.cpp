@@ -1,4 +1,5 @@
 #include "_Core.h"
+#include <GLFW/glfw3.h>
 
 #include "generic/Window.h"
 #include "generic/Scene.h"
@@ -80,6 +81,7 @@ int Window::init() {
     glfwSetFramebufferSizeCallback(glfwWindow, Window::resizeCallback);
     //OpenGl context current
     glfwMakeContextCurrent(glfwWindow);
+    
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         Logger::Log("Failed to load glad", Logger::Error);
         return -1;

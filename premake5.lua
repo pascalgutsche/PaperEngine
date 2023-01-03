@@ -9,6 +9,12 @@ workspace "Client"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+--GLFW
+IncludeDir = {}
+IncludeDir["GLFW"] = "core/lib/GLFW/include"
+
+include "core/lib/GLFW"
+
 project "core"
 	location "core"
 	kind "SharedLib"
@@ -40,7 +46,14 @@ project "core"
 		"lib",
 		"%{prj.name}/lib",
 		"%{prj.name}/src",
-		"%{prj.name}/src/core"
+		"%{prj.name}/src/core",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links 
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	disablewarnings 
@@ -106,7 +119,8 @@ project "conqueror"
 		"%{prj.name}/lib",
 		"%{prj.name}/src",
 		"%{prj.name}/src/core",
-		"core/src"
+		"core/src",
+		"core/lib"
 	}
 
 	links

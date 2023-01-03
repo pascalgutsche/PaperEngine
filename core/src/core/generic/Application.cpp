@@ -14,7 +14,7 @@ namespace core {
 	}
 
 	void Application::run() {
-		while (true);
+		Window::run();
 	}
 
 }
