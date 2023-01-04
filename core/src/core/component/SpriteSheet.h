@@ -3,6 +3,10 @@
 
 #include "generic/GameObject_Component.h"
 
-class SpriteSheet : public Component {
+namespace core {
 
-};
+	class SpriteSheet : public Component {
+
+	};
+
+}

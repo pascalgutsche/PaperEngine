@@ -1,5 +1,9 @@
 #pragma once
 
-class Font {
+namespace core {
 
-};
+	class Font {
+
+	};
+
+}

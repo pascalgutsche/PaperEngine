@@ -26,12 +26,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+
 //GL
 #include <GLAD/include/glad/glad.h>
 
 //GLFW
-//#define GLFW_DLL
-//#include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
+
 
 //GLM
 //glm itself

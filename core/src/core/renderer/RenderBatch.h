@@ -6,58 +6,62 @@
 #include "component/SpriteRenderer.h"
 #include "generic/GameObject_Component.h"
 
-class RenderBatch {
-private:
-    const int POS_SIZE = 2;
-    const int COLOR_SIZE = 4;
-    const int TEX_COORDS_SIZE = 2;
-    const int TEX_ID_SIZE = 1;
+namespace core {
 
-    const int POS_OFFSET = 0;
-    const int COLOR_OFFSET = sizeof(float) * (POS_SIZE);
-    const int TEX_COORDS_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE);
-    const int TEX_ID_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE);
+    class RenderBatch {
+    private:
+        const int POS_SIZE = 2;
+        const int COLOR_SIZE = 4;
+        const int TEX_COORDS_SIZE = 2;
+        const int TEX_ID_SIZE = 1;
 
-    const int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
-    const int VERTEX_SIZE_BYTES = sizeof(float) * VERTEX_SIZE;
+        const int POS_OFFSET = 0;
+        const int COLOR_OFFSET = sizeof(float) * (POS_SIZE);
+        const int TEX_COORDS_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE);
+        const int TEX_ID_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE);
 
-    bool hasRoom_bool = false;
+        const int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
+        const int VERTEX_SIZE_BYTES = sizeof(float) * VERTEX_SIZE;
+
+        bool hasRoom_bool = false;
 
 
-    //std::vector<float> vertices;
-    std::vector<int> texSlots = {0, 1, 2, 3 , 4, 5, 6, 7};
-    std::vector<Texture*> textures;
-    std::vector<SpriteRenderer*> sprites;
+        //std::vector<float> vertices;
+        std::vector<int> texSlots = { 0, 1, 2, 3 , 4, 5, 6, 7 };
+        std::vector<Texture*> textures;
+        std::vector<SpriteRenderer*> sprites;
 
-    unsigned int vaoID;
-    unsigned int vboID;
-    unsigned int eboID;
+        unsigned int vaoID;
+        unsigned int vboID;
+        unsigned int eboID;
 
-    int numSprites;
-    int maxBatchSize;
-    int zIndex;
+        int numSprites;
+        int maxBatchSize;
+        int zIndex;
 
-    std::shared_ptr<Shader> shader;
-    float *vertices;
+        std::shared_ptr<Shader> shader;
+        float* vertices;
 
-    void updateTextures();
-    void loadVertexProperties(int index);
-    void generateIndices(std::vector<int> element);
-    void loadElementIndices(std::vector<int> arrayElements, int index);
+        void updateTextures();
+        void loadVertexProperties(int index);
+        void generateIndices(std::vector<int> element);
+        void loadElementIndices(std::vector<int> arrayElements, int index);
 
-public:
+    public:
 
-    RenderBatch(int maxBatchSize, int zIndex, DataPool::DISPLAYMODE displaymode);
-    ~RenderBatch();
-    void start();
-    void addSprite(SpriteRenderer* spriteRenderer);
-    void render();
+        RenderBatch(int maxBatchSize, int zIndex, DataPool::DISPLAYMODE displaymode);
+        ~RenderBatch();
+        void start();
+        void addSprite(SpriteRenderer* spriteRenderer);
+        void render();
 
-    bool hasRoom();
-    bool hasTextureRoom();
-    bool hasTexture(Texture* texture);
+        bool hasRoom();
+        bool hasTextureRoom();
+        bool hasTexture(Texture* texture);
 
-    int getZIndex();
+        int getZIndex();
 
-    DataPool::DISPLAYMODE displayMode;
-};
+        DataPool::DISPLAYMODE displayMode;
+    };
+
+}

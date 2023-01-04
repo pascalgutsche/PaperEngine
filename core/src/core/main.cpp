@@ -41,7 +41,7 @@ public:
 
 void lookForExit() {
     std::cin.get();
-    Window::quit();
+    core::Window::quit();
 }
 
 int main(int argc, char* argv[])
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 
     std::thread cliExit(lookForExit);
 
-    int var = Window::run();
+    int var = core::Window::run();
 
     cliExit.detach();
 

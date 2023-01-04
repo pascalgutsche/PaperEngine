@@ -2,46 +2,50 @@
 
 #include "generic/Transform.h"
 
-// transform is basically adjusting the size and position variables of the given transform object
-Transform::Transform()
-{
-    // default transform constructor sets empty values
-    init(glm::vec2(), glm::vec2());
-}
+namespace core {
 
-Transform::~Transform()
-{
-    
-}
+    // transform is basically adjusting the size and position variables of the given transform object
+    Transform::Transform()
+    {
+        // default transform constructor sets empty values
+        init(glm::vec2(), glm::vec2());
+    }
 
-Transform* Transform::copy()
-{
-    return new Transform(glm::vec2(this->position), glm::vec2(this->scale));
-}
+    Transform::~Transform()
+    {
 
-void Transform::copy(Transform &transform)
-{
-    transform.position = this->position;
-    transform.scale = this->scale;
-}
+    }
 
-Transform::Transform(glm::vec2 position)
-{
-    init(position, glm::vec2());
-}
+    Transform* Transform::copy()
+    {
+        return new Transform(glm::vec2(this->position), glm::vec2(this->scale));
+    }
 
-Transform::Transform(glm::vec2 position, glm::vec2 scale)
-{
-    init(position, scale);
-}
+    void Transform::copy(Transform& transform)
+    {
+        transform.position = this->position;
+        transform.scale = this->scale;
+    }
 
-void Transform::init(glm::vec2 position, glm::vec2 scale)
-{
-    Transform::position = position;
-    Transform::scale = scale;
-}
+    Transform::Transform(glm::vec2 position)
+    {
+        init(position, glm::vec2());
+    }
 
-bool Transform::equals(Transform &transform) {
-    return this->position.x == transform.position.x && this->position.y == transform.position.y
+    Transform::Transform(glm::vec2 position, glm::vec2 scale)
+    {
+        init(position, scale);
+    }
+
+    void Transform::init(glm::vec2 position, glm::vec2 scale)
+    {
+        Transform::position = position;
+        Transform::scale = scale;
+    }
+
+    bool Transform::equals(Transform& transform) {
+        return this->position.x == transform.position.x && this->position.y == transform.position.y
             && this->scale.x == transform.scale.x && this->scale.y == transform.scale.y;
+    }
+
 }

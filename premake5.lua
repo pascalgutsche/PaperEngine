@@ -12,8 +12,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 --GLFW
 IncludeDir = {}
 IncludeDir["GLFW"] = "core/lib/GLFW/include"
+IncludeDir["GLAD"] = "core/lib/GLAD/include"
+
 
 include "core/lib/GLFW"
+include "core/lib/GLAD"
+
 
 project "core"
 	location "core"
@@ -47,12 +51,15 @@ project "core"
 		"%{prj.name}/lib",
 		"%{prj.name}/src",
 		"%{prj.name}/src/core",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}"
+
 	}
 
 	links 
 	{
 		"GLFW",
+		"GLAD",
 		"opengl32.lib"
 	}
 
@@ -73,7 +80,8 @@ project "core"
 		defines
 		{
 			"CORE_PLATFORM_WINDOWS",
-			"CORE_BUILD_DLL"
+			"CORE_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands 

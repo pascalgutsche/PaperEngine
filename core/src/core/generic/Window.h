@@ -4,40 +4,43 @@
 #include "generic/Scene.h"
 #include "renderer/ImGuiLayer.h"
 
-class Window {
-private:
-    static std::string title;
-    static GLFWwindow* glfwWindow;
-    static Scene* currentScene;
-    static Scene* tempScene;
+namespace core {
 
-    static ImGuiLayer* imGuiLayer;
+    class Window {
+    private:
+        static std::string title;
+        static GLFWwindow* glfwWindow;
+        static Scene* currentScene;
+        static Scene* tempScene;
 
-    // initializations and native loop
-    static int init();
-    static int loop();
+        static ImGuiLayer* imGuiLayer;
 
-    // resize window callback
-    static void resizeCallback(GLFWwindow *window, int width, int height);
+        // initializations and native loop
+        static int init();
+        static int loop();
 
-public:
-    static int width, height;
-    static float r;
-    static float g;
-    static float b;
-    static float a;
-    
-    static int run();
-    static void quit(std::string message = "");
-    static void changeScene(Scene* newScene);
+        // resize window callback
+        static void resizeCallback(GLFWwindow* window, int width, int height);
 
-    static float getDeltaTime();
-    static Scene* getScene();
-    static GLFWwindow* getGLFWwindow();
-    static std::string getTitle();
-    static ImGuiLayer* getImGuiLayer();
+    public:
+        static int width, height;
+        static float r;
+        static float g;
+        static float b;
+        static float a;
 
-    static void setTitle(std::string title);
+        static int run();
+        static void quit(std::string message = "");
+        static void changeScene(Scene* newScene);
 
-    friend int main(int argc, char* argv[]);
-};
+        static float getDeltaTime();
+        static Scene* getScene();
+        static GLFWwindow* getGLFWwindow();
+        static std::string getTitle();
+        static ImGuiLayer* getImGuiLayer();
+
+        static void setTitle(std::string title);
+
+        friend int main(int argc, char* argv[]);
+    };
+}

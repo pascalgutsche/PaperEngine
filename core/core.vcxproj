@@ -60,8 +60,8 @@
       <PrecompiledHeaderFile>_Core.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4005;4244;4312;4267;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>CORE_PLATFORM_WINDOWS;CORE_BUILD_DLL;CORE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\lib;lib;src;src\core;lib\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CORE_PLATFORM_WINDOWS;CORE_BUILD_DLL;GLFW_INCLUDE_NONE;CORE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib;lib;src;src\core;lib\GLFW\include;lib\GLAD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -84,8 +84,8 @@
       <PrecompiledHeaderFile>_Core.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4005;4244;4312;4267;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>CORE_PLATFORM_WINDOWS;CORE_BUILD_DLL;CORE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\lib;lib;src;src\core;lib\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CORE_PLATFORM_WINDOWS;CORE_BUILD_DLL;GLFW_INCLUDE_NONE;CORE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib;lib;src;src\core;lib\GLFW\include;lib\GLAD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -107,10 +107,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="lib\GLAD\include\KHR\khrplatform.h" />
-    <ClInclude Include="lib\GLAD\include\glad\glad.h" />
-    <ClInclude Include="lib\GLFW_OLD\include\glfw3.h" />
-    <ClInclude Include="lib\GLFW_OLD\include\glfw3native.h" />
     <ClInclude Include="lib\GLM\common.hpp" />
     <ClInclude Include="lib\GLM\detail\_features.hpp" />
     <ClInclude Include="lib\GLM\detail\_fixes.hpp" />
@@ -529,13 +525,12 @@
     <ClInclude Include="src\core\renderer\RenderBatch.h" />
     <ClInclude Include="src\core\renderer\Renderer.h" />
     <ClInclude Include="src\core\renderer\Texture.h" />
-    <ClInclude Include="src\utility.h" />
     <ClInclude Include="src\core\utils\DataPool.h" />
     <ClInclude Include="src\core\utils\Logger.h" />
     <ClInclude Include="src\core\utils\Utils.h" />
+    <ClInclude Include="src\utility.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lib\GLAD\src\glad.cpp" />
     <ClCompile Include="lib\GLM\detail\glm.cpp" />
     <ClCompile Include="lib\IMGUI\imgui.cpp" />
     <ClCompile Include="lib\IMGUI\imgui_demo.cpp" />
@@ -576,15 +571,15 @@
     <ClCompile Include="src\core\utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\GLFW_OLD\lib\glfw3.dll" />
-    <None Include="lib\GLFW_OLD\lib\libglfw3.a" />
-    <None Include="lib\GLFW_OLD\lib\libglfw3dll.a" />
     <None Include="lib\freetype\lib\freetype.dll" />
     <None Include="lib\freetype\lib\freetype.lib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="lib\GLFW\GLFW.vcxproj">
       <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\GLAD\GLAD.vcxproj">
+      <Project>{5D4A857C-4981-860D-F26D-6C10DE83020F}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

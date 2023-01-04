@@ -3,6 +3,7 @@
 #include "utils/Utils.h"
 #include "utils/Logger.h"
 
+
 // declare map in order to use it as a static map
 std::unordered_map<Logger::Level, int> Logger::callCount;
 Logger::Level Logger::logLevel;
@@ -22,9 +23,9 @@ void Logger::ChangeLevel(Level newLevel) {
 
 void Logger::Log(std::string message, Level level) {
     // call print function that sets the color and needed prefixes and suffixes
-    if(logLevel <= level)
+    if (logLevel <= level)
     {
-        print("[" + Utils::getSystemTimeInString() + "] [" +  getLogLevelInString(level) + "] " + message, getLogLevelColor(level));
+        print("[" + core::Utils::getSystemTimeInString() + "] [" + getLogLevelInString(level) + "] " + message, getLogLevelColor(level));
     }
     callCount[level]++;
 }
@@ -36,15 +37,15 @@ void Logger::Log(std::string message) {
 
 std::string Logger::getLogLevelInString(Level levelToString) {
     // declare enums to string meanings
-    switch(levelToString) {
-        case Error:
-            return "Error";
-        case Warn:
-            return "Warn";
-        case Trace:
-            return "Trace";
-        case Debug:
-            return "Debug";
+    switch (levelToString) {
+    case Error:
+        return "Error";
+    case Warn:
+        return "Warn";
+    case Trace:
+        return "Trace";
+    case Debug:
+        return "Debug";
     }
     return "";
 }
@@ -58,22 +59,22 @@ int Logger::getLogLevelColor(Level levelToString) {
     // 34 = green
     // 37 = white
     // for more information see ascii color table
-    switch(levelToString) {
-        case Error:
-            return 31;
-        case Warn:
-            return 33;
-        case Trace:
-            return 32;
-        case Debug:
-            return 34;
+    switch (levelToString) {
+    case Error:
+        return 31;
+    case Warn:
+        return 33;
+    case Trace:
+        return 32;
+    case Debug:
+        return 34;
     }
     return 37;
 }
 
 void Logger::PrintStats() {
     // print statistics at the end of the program, nobody cares anyways
-    print("[" + Utils::getSystemTimeInString() + "] Logging results:", 37);
+    print("[" + core::Utils::getSystemTimeInString() + "] Logging results:", 37);
 
     // std::to_string is mandatory because an instant conversion is needed
     print("\tError: " + std::to_string(callCount[Error]), getLogLevelColor(Error));

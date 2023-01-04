@@ -3,18 +3,20 @@
 
 #include <STB_IMAGE/stb_image.h>
 
-class Texture {
-private:
-    std::string filePath;
+namespace core {
 
-    unsigned int texID;
-    unsigned char* localBuffer;
+    class Texture {
+    private:
+        std::string filePath;
 
-    int width;
-    int height;
-    int channels;
+        unsigned int texID;
+        unsigned char* localBuffer;
 
-public:
+        int width;
+        int height;
+        int channels;
+
+    public:
         // load texture with desired filePath
         Texture(std::string filePath, bool flip = 1);
         ~Texture();
@@ -27,4 +29,6 @@ public:
         int getWidth();
         int getHeight();
         std::string getFilePath();
-};
+    };
+
+}

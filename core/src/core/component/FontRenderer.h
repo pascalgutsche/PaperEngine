@@ -3,12 +3,16 @@
 
 #include "generic/GameObject_Component.h"
 
-class FontRenderer : public Component{
-private:
+namespace core {
 
-public:
-    FontRenderer();
-    ~FontRenderer();
-    void start() override;
-    void update(float deltaTime) override;
-};
+    class FontRenderer : public Component {
+    private:
+
+    public:
+        FontRenderer();
+        ~FontRenderer();
+        void start() override;
+        void update(float deltaTime) override;
+    };
+
+}
