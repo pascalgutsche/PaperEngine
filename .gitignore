@@ -2,6 +2,6 @@
 bin/**
 bin-int/**
 Client.sln
-*.vcxpjoj
+*.vcxproj
 *.filters
 *.user
