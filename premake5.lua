@@ -1,3 +1,9 @@
+function createDir(path) 
+	if os.isdir(path) then
+		os.mkdir(path)
+	end
+end
+
 workspace "Client"
 	architecture "x64"
 	startproject "conqueror"
@@ -12,12 +18,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --GLFW
 IncludeDir = {}
-IncludeDir["GLFW"] = "core/lib/GLFW/include"
-IncludeDir["GLAD"] = "core/lib/GLAD/include"
+IncludeDir["GLFW"] = "lib/GLFW/include"
+IncludeDir["GLAD"] = "lib/GLAD/include"
 
 
-include "core/lib/GLFW"
-include "core/lib/GLAD"
+include "lib/GLFW"
+include "lib/GLAD"
 
 
 project "core"
