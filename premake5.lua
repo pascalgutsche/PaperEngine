@@ -4,6 +4,8 @@ function createDir(path)
 	end
 end
 
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
 workspace "Client"
 	architecture "x64"
 	startproject "conqueror"
@@ -14,7 +16,7 @@ workspace "Client"
 		"Release"
 	}
 
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+	
 
 --GLFW
 IncludeDir = {}
@@ -97,7 +99,11 @@ project "core"
 		}
 
 	filter "configurations:Debug"
-		defines "CORE_DEBUG"
+		defines 
+		{
+			"CORE_DEBUG",
+			"DEBUG_CHANGE_PATH"
+		}
 		symbols "On"
 
 	filter "configurations:Release"
@@ -142,6 +148,13 @@ project "conqueror"
 	{
 		"core"
 	}
+
+	
+	--prebuildcommands
+	--{
+	--	("{COPY} ../assets/ ../bin/" .. outputdir .. "/conqueror/assets/")
+	--}
+	
 	
 	filter "system:windows"
 		cppdialect "C++17"

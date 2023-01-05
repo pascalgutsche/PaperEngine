@@ -1,4 +1,5 @@
 #include "_Core.h"
+#include "utility.h"
 
 #include "renderer/ImGuiLayer.h"
 #include "generic/Window.h"
@@ -12,7 +13,7 @@ namespace core {
         // enable dark mode
         ImGui::StyleColorsDark();
         //ImGui Config
-        ImGuiIO io = ImGui::GetIO();
+        ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = "config/imgui/imgui.ini";
         io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard;
         io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
@@ -21,7 +22,7 @@ namespace core {
 
         //fonts
         ImFontAtlas* fontAtlas = io.Fonts;
-        ImFontConfig fontConfig = ImFontConfig();
+        ImFontConfig& fontConfig = ImFontConfig();
 
         //set default range (uft-8)
         fontConfig.GlyphRanges = fontAtlas->GetGlyphRangesDefault();

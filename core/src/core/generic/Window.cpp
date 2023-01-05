@@ -94,8 +94,8 @@ namespace core {
         //Window visible
         glfwShowWindow(glfwWindow);
         //enable blending with glad because imgui overrides the standard glEnabe
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         return 0;
     }
