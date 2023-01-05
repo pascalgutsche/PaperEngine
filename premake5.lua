@@ -1,5 +1,6 @@
 workspace "Client"
 	architecture "x64"
+	startproject "conqueror"
 
 	configurations
 	{
