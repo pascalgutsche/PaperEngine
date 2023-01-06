@@ -1,9 +1,11 @@
 #pragma once
 #include "_Core.h"
 
+#include "utility.h"
+
 namespace core {
 
-    class Transform {
+    class CORE_API Transform {
     public:
         glm::vec2 position;
         glm::vec2 scale;

@@ -1,5 +1,5 @@
 #type vertex
-#version 330 core
+#version 410 core
 
 layout (location = 0) in vec2 aPos; // the position variable has attribute position 0
 layout (location = 1) in vec4 aColor; //the color of the vector
@@ -24,7 +24,7 @@ void main()
 }
 
 #type fragment
-#version 330 core
+#version 410 core
 
 in vec4 fColor; // get color from vertex
 in vec2 fTexCoord; // get texCoord from vertex

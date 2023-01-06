@@ -36,8 +36,6 @@ namespace core {
 
         LOG_CORE_TRACE("Initialized and created window!");
 
-        
-
         imGuiLayer = new ImGuiLayer();
         imGuiLayer->init();
         LOG_CORE_TRACE("Initialized ImGui!");

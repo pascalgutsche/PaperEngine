@@ -1,9 +1,11 @@
 #pragma once
 #include "_Core.h"
 
+#include "utility.h"
+
 namespace core {
 
-    class Utils {
+    class CORE_API Utils {
     public:
         static std::string getSystemDateInString();
         static std::string getSystemTimeInString();

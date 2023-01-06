@@ -15,7 +15,7 @@ namespace core {
         // set local and current values
         this->zIndex = zIndex;
         this->maxBatchSize = maxBatchSize;
-        this->vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
+        this->vertices.resize(maxBatchSize * 4 * VERTEX_SIZE);
         this->displayMode = displaymode;
         numSprites = 0;
 
@@ -49,12 +49,13 @@ namespace core {
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
         // put everything from the vector into the array, so that we can access it from within gl functions || using vectors makes it easier for dynamic allocations
         // create task for gpu and save data
-        glBufferData(GL_ARRAY_BUFFER, (maxBatchSize * 4 * VERTEX_SIZE) * 4, vertices, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (maxBatchSize * 4 * VERTEX_SIZE) * 4, static_cast<void*>(vertices.data()), GL_DYNAMIC_DRAW);
         //element buffer object (useful for creating squares)
 
         glGenBuffers(1, &eboID);
         // create array
         std::vector<int> element;
+        element.resize(maxBatchSize * 6);
         // initialize array values
         generateIndices(element);
         // use the array
@@ -131,7 +132,7 @@ namespace core {
         if (reloadVertexArray) {
             // updates the vertex array in order to see the changes within rendering
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, (maxBatchSize * 4 * VERTEX_SIZE) * 4, vertices);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, (maxBatchSize * 4 * VERTEX_SIZE) * 4, static_cast<void*>(vertices.data()));
         }
 
         // use the shader and upload the shader variables
@@ -255,11 +256,11 @@ namespace core {
 
         /*
         static float vertexArray[] = {
-            //position                //color                   //texture coords    //texture ID
-              -0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f, 0.5f,     0.0f, 0.0f,       0.0f,        //Bottom Left (0)
-               0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 0.0f, 0.8f,     1.0f, 0.0f,       0.0f,        //Bottom Right (1)
-               0.5f,  0.5f, 0.0f,     1.0f, 0.0f, 1.0f, 0.2f,     1.0f, 1.0f,       0.0f,        //Top Right (2)
-              -0.5f,  0.5f, 0.0f,     1.0f, 0.0f, 1.0f, 0.4f,     0.0f, 1.0f,       0.0f         //Top left (3)
+            //position          //color                     //texture coords  //texture ID
+              -0.5f, -0.5f,     1.0f, 0.0f, 0.0f, 0.5f,     0.0f, 0.0f,       0.0f,        //Bottom Left (0)
+               0.5f, -0.5f,     1.0f, 1.0f, 0.0f, 0.8f,     1.0f, 0.0f,       0.0f,        //Bottom Right (1)
+               0.5f,  0.5f,     1.0f, 0.0f, 1.0f, 0.2f,     1.0f, 1.0f,       0.0f,        //Top Right (2)
+              -0.5f,  0.5f,     1.0f, 0.0f, 1.0f, 0.4f,     0.0f, 1.0f,       0.0f         //Top left (3)
         };
         // square geometry / order
         unsigned int indices[] = {
@@ -268,23 +269,23 @@ namespace core {
         };
         */
 
-        float xAdd = -0.5f;
-        float yAdd = -0.5f;
+        float xAdd = 0.0f;
+        float yAdd = 0.0f;
 
         for (int i = 0; i < 4; i++)
         {
             switch (i)
             {
             case 1:
-                xAdd = 0.5f;
+                xAdd = 1.0f;
                 break;
 
             case 2:
-                yAdd = 0.5f;
+                yAdd = 1.0f;
                 break;
 
             case 3:
-                xAdd = -0.5f;
+                xAdd = 0.0f;
                 break;
 
             default:
@@ -331,7 +332,7 @@ namespace core {
         */
     }
 
-    void RenderBatch::generateIndices(std::vector<int> element) {
+    void RenderBatch::generateIndices(std::vector<int>& element) {
         // 2 triangles to display one square
         for (int i = 0; i < maxBatchSize; i++)
         {
@@ -339,7 +340,7 @@ namespace core {
         }
     }
 
-    void RenderBatch::loadElementIndices(std::vector<int> arrayElements, int index) {
+    void RenderBatch::loadElementIndices(std::vector<int>& arrayElements, int index) {
         int offsetArrayIndex = 6 * index;
         int offset = 4 * index;
         // first triangle

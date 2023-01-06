@@ -1,11 +1,3 @@
-function createDir(path)
-	if os.isdir(path) then
-		os.mkdir(path)
-	end
-end
-
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-
 workspace "Client"
 	architecture "x64"
 	startproject "conqueror"
@@ -16,12 +8,14 @@ workspace "Client"
 		"Release"
 	}
 
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "lib/core/GLFW/include"
 IncludeDir["GLAD"] = "lib/core/GLAD/include"
 IncludeDir["IMGUI"] = "lib/core/IMGUI"
 IncludeDir["SPDLOG"] = "lib/SPDLOG/include"
+IncludeDir["MINIAUDIO"] = "lib/MINIAUDIO"
 
 
 include "lib/core/GLFW"
@@ -31,7 +25,7 @@ include "lib/core/IMGUI"
 
 project "core"
 	location "core"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -64,8 +58,8 @@ project "core"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
-		"%{IncludeDir.SPDLOG}"
-
+		"%{IncludeDir.SPDLOG}",
+		"%{IncludeDir.MINIAUDIO}"
 	}
 
 	links 
@@ -143,7 +137,8 @@ project "conqueror"
 		"core/src",
 		"core/src/core",
 		"core/lib",
-		"%{IncludeDir.SPDLOG}"
+		"%{IncludeDir.SPDLOG}",
+		"%{IncludeDir.MINIAUDIO}"
 	}
 
 	links

@@ -1,5 +1,6 @@
 #pragma once
 #include "_Core.h"
+#include "utility.h"
 
 #include "generic/Component.h"
 #include "generic/Transform.h"
@@ -7,7 +8,7 @@
 
 namespace core {
 
-    class SpriteRenderer : public Component {
+    class CORE_API SpriteRenderer : public Component {
     private:
         glm::vec4 color;
         Sprite* sprite;

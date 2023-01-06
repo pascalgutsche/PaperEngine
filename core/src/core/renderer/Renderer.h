@@ -6,8 +6,8 @@
 #include "component/SpriteRenderer.h"
 
 namespace core {
-
-    class Renderer {
+    
+    class CORE_API Renderer {
     private:
         const int MAX_BATCH_SIZE = 1000;
         std::vector<RenderBatch*> batches;

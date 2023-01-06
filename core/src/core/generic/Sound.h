@@ -1,8 +1,8 @@
 #pragma once
 #include "_Core.h"
-#define MINIAUDIO_IMPLEMENTATION
-#include <miniaudio/miniaudio.h>
- 
+
+#include <MINIAUDIO/miniaudio.h>
+
 namespace core {
 
     class Sound

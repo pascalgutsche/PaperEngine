@@ -8,7 +8,7 @@ namespace core {
     Transform::Transform()
     {
         // default transform constructor sets empty values
-        init(glm::vec2(), glm::vec2());
+        init(glm::vec2(), glm::vec2(1.0f, 1.0f));
     }
 
     Transform::~Transform()
@@ -29,7 +29,7 @@ namespace core {
 
     Transform::Transform(glm::vec2 position)
     {
-        init(position, glm::vec2());
+        init(position, glm::vec2(1.0f, 1.0f));
     }
 
     Transform::Transform(glm::vec2 position, glm::vec2 scale)

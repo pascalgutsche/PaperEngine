@@ -40,12 +40,12 @@ namespace core {
         int zIndex;
 
         std::shared_ptr<Shader> shader;
-        float* vertices;
+        std::vector<float> vertices;
 
         void updateTextures();
         void loadVertexProperties(int index);
-        void generateIndices(std::vector<int> element);
-        void loadElementIndices(std::vector<int> arrayElements, int index);
+        void generateIndices(std::vector<int>& element);
+        void loadElementIndices(std::vector<int>& arrayElements, int index);
 
     public:
 

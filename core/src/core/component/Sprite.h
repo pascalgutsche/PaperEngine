@@ -1,12 +1,13 @@
 #pragma once
 #include "_Core.h"
+#include "utility.h"
 
 #include "generic/Component.h"
 #include "renderer/Texture.h"
 
 namespace core {
 
-    class Sprite : public Component {
+    class CORE_API Sprite : public Component {
     private:
         Texture* texture;
         float texCoords[8];
