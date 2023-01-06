@@ -1,4 +1,4 @@
-root = "../../"
+root = "../../../"
 
 project "GLAD"
 	kind "StaticLib"

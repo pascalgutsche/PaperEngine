@@ -28,14 +28,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
-//GL
-
-
-//GLFW
-
-
-
 //GLM
 //glm itself
 #define GLM_ENABLE_EXPERIMENTAL
@@ -57,19 +49,6 @@
 #include <GLM/mat4x2.hpp>
 #include <GLM/mat4x3.hpp>
 #include <GLM/mat4x4.hpp>
-
-//ImGUI
-//#define _CRT_SECURE_NO_WARNINGS
-//#include <IMGUI/imgui.h>
-//#include <IMGUI/imgui_impl_glfw.h>
-//#include <IMGUI/imgui_impl_opengl3.h>
-//#include <IMGUI/imgui_impl_opengl3_loader.h>
-
-//miniaudio
-
-
-
-//Textures
 
 
 //Core

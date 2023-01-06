@@ -1,4 +1,4 @@
-root = "../../"
+root = "../../../"
 
 project "GLFW"
 	kind "StaticLib"

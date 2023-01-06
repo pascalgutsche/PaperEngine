@@ -1,9 +1,13 @@
 #pragma once
 #include "_Core.h"
+#include "utility.h"
+
+
 
 namespace core {
+    
 
-    class MouseListener {
+    class CORE_API MouseListener {
     private:
         static void manageValues(double array[], int val);
 

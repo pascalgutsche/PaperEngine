@@ -1,6 +1,7 @@
 #include "_Core.h"
 
 #include "component/SpriteRenderer.h"
+#include "generic/GameObject.h"
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "utils/Utils.h"
@@ -8,6 +9,7 @@
 #include "OpenGL/ImGui_OpenGL3.h"
 
 namespace core {
+
 
     //SPRITERENDERER
     SpriteRenderer::SpriteRenderer(glm::vec4 color) {
@@ -40,16 +42,16 @@ namespace core {
     void SpriteRenderer::start() {
         // change values from the previous frame in order to check if the gameObject changed values
         // the local lastTransform variable always holds the old values, in order to be compared to the 'new' value
-        lastTransform = gameObject->transform.copy();
+        lastTransform = core::GameObject::CGMap[this]->transform.copy();
     }
 
     void SpriteRenderer::update(float deltaTime) {
         // check if there have been made changes to the sprite (transform of the gameObject)
-        if (!(this->gameObject->transform.equals(*lastTransform)))
+        if (!(core::GameObject::CGMap[this]->transform.equals(*lastTransform)))
         {
             // if it is not equal, save it to the local transform and
             // set the dirty bit (variable that is being checked in order to display changes)
-            this->gameObject->transform.copy(*this->lastTransform);
+            core::GameObject::CGMap[this]->transform.copy(*this->lastTransform);
             isDirty = true;
         }
     }

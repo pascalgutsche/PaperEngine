@@ -3,7 +3,6 @@
 #include "generic/Scene.h"
 #include "generic/Camera.h"
 #include "renderer/Renderer.h"
-#include "generic/GameObject_Component.h"
 
 #include "OpenGL/ImGui_OpenGL3.h"
 
@@ -13,10 +12,14 @@ namespace core {
 
     }
 
-    Scene::~Scene() { }
+    Scene::~Scene() {
+
+    }
 
     void Scene::initGeneral() {
         camera = new Camera();
+        renderer = new Renderer();
+
         loadResources();
         init();
         start();
@@ -39,6 +42,7 @@ namespace core {
     void Scene::addGameObjectToScene(GameObject* gameObject) {
         // add desired gameObject to the scene in order to make the current scene render it
         // save the newest gameObject to an used vector place at the end of the used places
+
         if (isRunning) {
             gameObjects.push_back(gameObject);
             gameObject->start();

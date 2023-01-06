@@ -2,7 +2,6 @@
 
 #include "renderer/Renderer.h"
 #include "component/SpriteRenderer.h"
-#include "generic/GameObject_Component.h"
 #include "generic/Window.h"
 
 namespace core {
@@ -36,7 +35,7 @@ namespace core {
         // do this for every other spriterenderer
         bool added = false;
         for (int i = 0; i < batches.size(); i++) {
-            if (batches[i]->hasRoom() && spriteRenderer->gameObject->getZIndex() == batches[i]->getZIndex())
+            if (batches[i]->hasRoom() && core::GameObject::CGMap[spriteRenderer]->getZIndex() == batches[i]->getZIndex())
             {
                 Texture* texture = spriteRenderer->getTexture();
                 if (texture == nullptr || (batches[i]->hasTexture(texture) || batches[i]->hasTextureRoom()))
@@ -49,7 +48,7 @@ namespace core {
         }
         if (!added) {
             // if there is no place for the spriterenderer, create a new renderbatch with the needed setup (functions)
-            RenderBatch* newBatch = new RenderBatch(MAX_BATCH_SIZE, spriteRenderer->gameObject->getZIndex(), spriteRenderer->gameObject->displayMode);
+            RenderBatch* newBatch = new RenderBatch(MAX_BATCH_SIZE, core::GameObject::CGMap[spriteRenderer]->getZIndex(), core::GameObject::CGMap[spriteRenderer]->displayMode);
             newBatch->start();
             batches.push_back(newBatch);
             newBatch->addSprite(spriteRenderer);

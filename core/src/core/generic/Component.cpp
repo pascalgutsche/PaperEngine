@@ -1,10 +1,9 @@
 #include "_Core.h"
 
-#include "generic/GameObject_Component.h"
+#include "generic/Component.h"
 
 namespace core {
 
-    //COMPONENT
     Component::Component() {
         typeID = std::string("unknown");
     }

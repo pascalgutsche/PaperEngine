@@ -1,7 +1,8 @@
 #pragma once
+#include "utility.h"
 
 #include "renderer/RenderBatch.h"
-#include "generic/GameObject_Component.h"
+#include "generic/GameObject.h"
 #include "component/SpriteRenderer.h"
 
 namespace core {

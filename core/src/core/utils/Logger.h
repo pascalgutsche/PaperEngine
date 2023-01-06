@@ -1,7 +1,9 @@
 #pragma once
 #include "_Core.h"
 
-class Logger {
+#include "utility.h"
+
+class CORE_API Logger {
 public:
     enum Level {
          Debug, Trace, Warn, Error

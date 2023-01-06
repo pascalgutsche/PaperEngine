@@ -7,8 +7,6 @@ namespace core {
 
     class ImGuiLayer {
     private:
-        bool* p_open;
-        void configureDocking();
     public:
         void init();
         void destroy();

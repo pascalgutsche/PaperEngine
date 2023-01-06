@@ -6,16 +6,27 @@
 
 namespace core {
 
-	Application::Application() {
+	Application* Application::instance;
 
+	Application::Application() {
+		instance = this;
 	}
 
-	Application::~Application() {
+	Application::~Application() { }
 
+	void Application::init() { }
+
+	void Application::changeScene(Scene* newScene)
+	{
+		Window::changeScene(newScene);
 	}
 
 	void Application::run() {
 		Window::run();
+	}
+
+	Application* Application::get() {
+		return instance;
 	}
 
 }

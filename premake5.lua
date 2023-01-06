@@ -18,14 +18,14 @@ workspace "Client"
 
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "lib/GLFW/include"
-IncludeDir["GLAD"] = "lib/GLAD/include"
-IncludeDir["IMGUI"] = "lib/IMGUI"
+IncludeDir["GLFW"] = "lib/core/GLFW/include"
+IncludeDir["GLAD"] = "lib/core/GLAD/include"
+IncludeDir["IMGUI"] = "lib/core/IMGUI"
 
 
-include "lib/GLFW"
-include "lib/GLAD"
-include "lib/IMGUI"
+include "lib/core/GLFW"
+include "lib/core/GLAD"
+include "lib/core/IMGUI"
 
 
 project "core"
@@ -79,7 +79,8 @@ project "core"
 		"4005",
 		"4244",
 		"4312",
-		"4267"
+		"4267",
+		"4251"
 
 	}
 	
@@ -152,12 +153,10 @@ project "conqueror"
 		"core"
 	}
 
-	
-	--prebuildcommands
-	--{
-	--	("{COPY} ../assets/ ../bin/" .. outputdir .. "/conqueror/assets/")
-	--}
-	
+	disablewarnings
+	{
+		"4251"
+	}
 	
 	filter "system:windows"
 		cppdialect "C++17"

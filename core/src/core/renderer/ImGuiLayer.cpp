@@ -4,7 +4,7 @@
 #include "renderer/ImGuiLayer.h"
 #include "generic/Window.h"
 
-#include <IMGUI/imgui.h>
+#include <imgui.h>
 #include "OpenGL/ImGui_OpenGL3.h"
 
 namespace core {
@@ -42,23 +42,23 @@ namespace core {
         io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
         io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 
-        io.IniFilename = "config/imgui/imgui.ini";
-        io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard;
-        //io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
-        //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-        io.BackendPlatformName = "imgui_impl_glfw";
-
-        //fonts
-        ImFontAtlas* fontAtlas = io.Fonts;
-        ImFontConfig& fontConfig = ImFontConfig();
-
-        //set default range (uft-8)
-        fontConfig.GlyphRanges = fontAtlas->GetGlyphRangesDefault();
-
-        fontAtlas->AddFontFromFileTTF("assets/fonts/mononoki.ttf", 24, &fontConfig);
-
-        //any new fonts were added to the font pool
-        fontConfig.MergeMode = true;
+        //io.IniFilename = "config/imgui/imgui.ini";
+        //io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard;
+        ////io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
+        ////io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+        //io.BackendPlatformName = "imgui_impl_glfw";
+        //
+        ////fonts
+        //ImFontAtlas* fontAtlas = io.Fonts;
+        //ImFontConfig& fontConfig = ImFontConfig();
+        //
+        ////set default range (uft-8)
+        //fontConfig.GlyphRanges = fontAtlas->GetGlyphRangesDefault();
+        //
+        //fontAtlas->AddFontFromFileTTF("assets/fonts/mononoki.ttf", 24, &fontConfig);
+        //
+        ////any new fonts were added to the font pool
+        //fontConfig.MergeMode = true;
 
         //init backend
         ImGui_ImplOpenGL3_Init("#version 410");
@@ -78,7 +78,7 @@ namespace core {
         glfwGetFramebufferSize(Window::getGLFWwindow(), &fbWidth, &fbHeight);
         glfwGetCursorPos(Window::getGLFWwindow(), &mousePosX, &mousePosY);
 
-        ImGuiIO io = ImGui::GetIO();
+        ImGuiIO& io = ImGui::GetIO();
         io.DisplaySize = ImVec2(Window::width, Window::height);
         io.MousePos = ImVec2((float)mousePosX, (float)mousePosY);
         io.DeltaTime = deltaTime;
@@ -87,13 +87,12 @@ namespace core {
 
     }
 
-
+    
     void ImGuiLayer::update(float deltaTime, Scene* currentScene) {
         startFrame(deltaTime);
 
-        currentScene->sceneImgui(deltaTime);
-        ImGui::ShowDemoWindow();
-
+        //currentScene->sceneImgui(deltaTime);
+        //ImGui::ShowDemoWindow();
         endFrame();
     }
 

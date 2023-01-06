@@ -4,20 +4,19 @@
 namespace core { class Scene; }
 #include "generic/Camera.h"
 #include "renderer/Renderer.h"
-#include "generic/GameObject_Component.h"
+#include "generic/GameObject.h"
 
 namespace core {
 
     class CORE_API Scene {
     private:
         bool isRunning = false;
-        glm::vec4 backcolor;
     protected:
-        Camera* camera;
-        Renderer* renderer = new Renderer();
+        Camera* camera = nullptr;
+        Renderer* renderer = nullptr;
         GameObject* activeGameObject = nullptr;
+        glm::vec4 backcolor;
     public:
-        static std::unordered_map<std::string, Scene*> sceneMap;
         std::vector<GameObject*> gameObjects;
     public:
         Scene();

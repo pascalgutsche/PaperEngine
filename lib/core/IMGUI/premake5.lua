@@ -1,4 +1,4 @@
-root = "../../"
+root = "../../../"
 
 project "IMGUI"
     kind "StaticLib"

@@ -4,6 +4,7 @@
 #include "utils/DataPool.h"
 #include "generic/Window.h"
 #include "component/SpriteRenderer.h"
+#include "generic/GameObject.h"
 
 #include <GLAD/glad.h>
 
@@ -292,8 +293,9 @@ namespace core {
 
             // this is the recursive vertices creation
             // set the first values to the according positions
-            vertices[offset] = sprite->gameObject->transform.position.x + (xAdd * sprite->gameObject->transform.scale.x);
-            vertices[offset + 1] = sprite->gameObject->transform.position.y + (yAdd * sprite->gameObject->transform.scale.y);
+            
+            vertices[offset] = core::GameObject::CGMap[sprite]->transform.position.x + (xAdd * core::GameObject::CGMap[sprite]->transform.scale.x);
+            vertices[offset + 1] = core::GameObject::CGMap[sprite]->transform.position.y + (yAdd * core::GameObject::CGMap[sprite]->transform.scale.y);
 
             // set colors
             vertices[offset + 2] = color.x;

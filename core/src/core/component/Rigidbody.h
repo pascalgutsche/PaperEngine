@@ -1,7 +1,7 @@
 #pragma once
 #include "_Core.h"
 
-#include "generic/GameObject_Component.h"
+#include "generic/Component.h"
 
 namespace core {
 

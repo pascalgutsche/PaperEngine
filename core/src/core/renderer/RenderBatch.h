@@ -4,7 +4,7 @@
 #include "generic/Shader.h"
 #include "renderer/Texture.h"
 #include "component/SpriteRenderer.h"
-#include "generic/GameObject_Component.h"
+#include "utils/DataPool.h"
 
 namespace core {
 

@@ -1,9 +1,9 @@
 #pragma once
 #include "_Core.h"
 
-#include "generic/GameObject_Component.h"
+#include "generic/Component.h"
 #include "generic/Transform.h"
-#include "Sprite.h"
+#include "component/Sprite.h"
 
 namespace core {
 

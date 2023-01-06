@@ -4,6 +4,7 @@
 #include "generic/Scene.h"
 #include "listener/KeyListener.h"
 #include "listener/MouseListener.h"
+#include "generic/Application.h"
 
 #include <GLAD/glad.h>
 
@@ -13,7 +14,6 @@ namespace core {
     Scene* Window::tempScene;
     GLFWwindow* Window::glfwWindow;
     std::string Window::title;
-    std::unordered_map<std::string, Scene*> Scene::sceneMap;
     float Window::r;
     float Window::g;
     float Window::b;
@@ -30,17 +30,20 @@ namespace core {
         g = 1.0f;
         b = 1.0f;
         a = 1.0f;
+
         // functions that are mandatory to be called
-        if (init() == -1) {
-            return -1;
-        }
+        if (init() == -1) return -1;
+
         Logger::Log("Initialized and created window!", Logger::Trace);
+
+        
 
         imGuiLayer = new ImGuiLayer();
         imGuiLayer->init();
         Logger::Log("Initialized ImGui!", Logger::Trace);
 
         loop();
+
 
         imGuiLayer->destroy();
         delete imGuiLayer;
@@ -99,6 +102,16 @@ namespace core {
         //glEnable(GL_BLEND);
         //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
+        //APP SCENE LOGIC
+
+        Application::get()->init();
+
+        if (tempScene) {
+            currentScene = tempScene;
+            currentScene->initGeneral();
+            tempScene = nullptr;
+        }
+
         return 0;
     }
 
@@ -138,18 +151,16 @@ namespace core {
                         tempScene = nullptr;
                     }
                     currentScene->update(deltaTime);
+
+                    if (Logger::logLevel == Logger::Debug) {
+                        Window::getImGuiLayer()->update(deltaTime, currentScene);
+                    }
                 }
 
-                if (Logger::logLevel == Logger::Debug) {
-                    Window::getImGuiLayer()->update(deltaTime, currentScene);
-                }
-            }
-            else if (Scene::sceneMap.find("initScene") != Scene::sceneMap.end()) {
-                currentScene = Scene::sceneMap.at("initScene");
-                currentScene->initGeneral();
+
             }
             else if (warn) {
-                Logger::Log("Couldn't find any initScene inside the SceneMap", Logger::Level::Error);
+                Logger::Log("No Scene exists. Make sure to call Application::changeScene() in the 'init' function of your Application class", Logger::Level::Error);
                 warn = false;
             }
 

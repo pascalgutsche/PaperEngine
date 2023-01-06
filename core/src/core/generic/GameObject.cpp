@@ -1,14 +1,17 @@
 #include "_Core.h"
 
-#include "generic/GameObject_Component.h"
+#include "generic/GameObject.h"
+#include "generic/Component.h"
 #include "generic/Transform.h"
-#include "utils/Utils.h"
-#include "utils/Logger.h"
 #include "utils/DataPool.h"
 
 #include "OpenGL/ImGui_OpenGL3.h"
 
+
+
 namespace core {
+
+    std::unordered_map<core::Component*, core::GameObject*> core::GameObject::CGMap;
 
     GameObject::GameObject(std::string name) {
         // create gameObject with name and create a standard transform object
@@ -74,7 +77,7 @@ namespace core {
         }
         if (!exists) {
             components.push_back(component);
-            component->gameObject = this;
+            CGMap[component] = this;
             return true;
         }
         return false;

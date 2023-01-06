@@ -1,8 +1,6 @@
 #include "_Core.h"
 
 #include "renderer/Mesh.h"
-#include "generic/GameObject_Component.h"
-#include "generic/Transform.h"
 
 namespace core {
 

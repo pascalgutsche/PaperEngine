@@ -1,5 +1,6 @@
 #pragma once
 #include "_Core.h"
+#include "utility.h"
 
 #include "generic/Scene.h"
 #include "renderer/ImGuiLayer.h"

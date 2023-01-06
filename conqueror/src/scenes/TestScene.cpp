@@ -1,5 +1,9 @@
 #include "TestScene.h"
 
+using namespace core;
+
+bool con = true;
+
 TestScene::TestScene() {
 
 }
@@ -17,8 +21,16 @@ void TestScene::init() {
 }
 
 void TestScene::update(float deltaTime) {
+	//this->renderer->render();
+	if (con) {
+		Application::get()->changeScene(new TestScene());
+		con = false;
+	}
 
-	this->renderer->render();
+	if (KeyListener::isKeyPressed(KEY_SPACE)) {
+		
+	}
+	std::cout << "bunker" << std::endl;
 }
 
 void TestScene::imgui(float deltaTime) {
