@@ -5,6 +5,8 @@
 #include "renderer/Renderer.h"
 #include "generic/GameObject_Component.h"
 
+#include "OpenGL/ImGui_OpenGL3.h"
+
 namespace core {
 
     Scene::Scene() {

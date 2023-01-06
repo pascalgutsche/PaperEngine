@@ -2,6 +2,8 @@
 
 #include "generic/Shader.h"
 
+#include <GLAD/glad.h>
+
 namespace core {
 
     Shader::Shader(std::string filePath) {

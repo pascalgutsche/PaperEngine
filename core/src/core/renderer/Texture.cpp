@@ -3,6 +3,8 @@
 #include "renderer/Texture.h"
 #include "generic/Window.h"
 
+#include <GLAD/glad.h>
+
 namespace core {
 
     Texture::Texture(std::string filePath, bool flipped)

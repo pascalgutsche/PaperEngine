@@ -1,5 +1,7 @@
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS
+#define GLFW_INCLUDE_NONE
 
 //C++ Libraries
 #include <iostream>
@@ -28,10 +30,10 @@
 
 
 //GL
-#include <GLAD/include/glad/glad.h>
+
 
 //GLFW
-#include <GLFW/glfw3.h>
+
 
 
 //GLM
@@ -57,11 +59,11 @@
 #include <GLM/mat4x4.hpp>
 
 //ImGUI
-#define _CRT_SECURE_NO_WARNINGS
-#include <IMGUI/imgui.h>
-#include <IMGUI/imgui_impl_glfw.h>
-#include <IMGUI/imgui_impl_opengl3.h>
-#include <IMGUI/imgui_impl_opengl3_loader.h>
+//#define _CRT_SECURE_NO_WARNINGS
+//#include <IMGUI/imgui.h>
+//#include <IMGUI/imgui_impl_glfw.h>
+//#include <IMGUI/imgui_impl_opengl3.h>
+//#include <IMGUI/imgui_impl_opengl3_loader.h>
 
 //miniaudio
 

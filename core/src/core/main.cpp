@@ -44,7 +44,7 @@ void lookForExit() {
     core::Window::quit();
 }
 
-int main(int argc, char* argv[])
+int msdain(int argc, char* argv[])
 {
     // useless magic, will be removed later on
     std::unique_ptr<Runtime> runtime = std::make_unique<Runtime>(argv[1]);

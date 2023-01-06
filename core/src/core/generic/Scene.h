@@ -1,32 +1,29 @@
 #pragma once
-#include "_Core.h"
+#include "utility.h"
 
 namespace core { class Scene; }
 #include "generic/Camera.h"
 #include "renderer/Renderer.h"
 #include "generic/GameObject_Component.h"
-#include "renderer/ImGuiLayer.h"
 
 namespace core {
 
-    class Scene {
+    class CORE_API Scene {
     private:
         bool isRunning = false;
+        glm::vec4 backcolor;
     protected:
         Camera* camera;
         Renderer* renderer = new Renderer();
         GameObject* activeGameObject = nullptr;
-        ImGuiLayer* imGuiLayer;
-        glm::vec4 backcolor;
     public:
         static std::unordered_map<std::string, Scene*> sceneMap;
         std::vector<GameObject*> gameObjects;
     public:
         Scene();
-        ~Scene();
+        virtual ~Scene();
 
         Camera* getCamera();
-        ImGuiLayer* getImGuiLayer();
         glm::vec4 getBackcolor();
         std::vector<GameObject*> getGameObjects();
 

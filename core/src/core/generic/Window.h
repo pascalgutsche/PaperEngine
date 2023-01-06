@@ -4,6 +4,9 @@
 #include "generic/Scene.h"
 #include "renderer/ImGuiLayer.h"
 
+
+#include <GLFW/glfw3.h>
+
 namespace core {
 
     class Window {

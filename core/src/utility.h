@@ -11,8 +11,8 @@
 #endif
 
 
-#ifdef DEBUG_CHANGE_PATH
-	#define DEBUG_PATH(x) std::string("../../../" + std::string(x)).c_str()
+#ifdef CORE_DEBUG
+	#define CORE_ASSERT(x, y) std::string("../../../" + std::string(x)).c_str()
 #else
 	#define DEBUG_PATH(x) x
 #endif

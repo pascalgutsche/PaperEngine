@@ -4,6 +4,9 @@
 #include "renderer/ImGuiLayer.h"
 #include "generic/Window.h"
 
+#include <IMGUI/imgui.h>
+#include "OpenGL/ImGui_OpenGL3.h"
+
 namespace core {
 
     void ImGuiLayer::init() {
@@ -14,10 +17,35 @@ namespace core {
         ImGui::StyleColorsDark();
         //ImGui Config
         ImGuiIO& io = ImGui::GetIO();
+        io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+        io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+
+        io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
+        io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
+        io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
+        io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
+        io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
+        io.KeyMap[ImGuiKey_PageUp] = GLFW_KEY_PAGE_UP;
+        io.KeyMap[ImGuiKey_PageDown] = GLFW_KEY_PAGE_DOWN;
+        io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
+        io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
+        io.KeyMap[ImGuiKey_Insert] = GLFW_KEY_INSERT;
+        io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
+        io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
+        io.KeyMap[ImGuiKey_Space] = GLFW_KEY_SPACE;
+        io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
+        io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
+        io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
+        io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
+        io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
+        io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
+        io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
+        io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
+
         io.IniFilename = "config/imgui/imgui.ini";
         io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard;
-        io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
-        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+        //io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
+        //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
         io.BackendPlatformName = "imgui_impl_glfw";
 
         //fonts
@@ -33,13 +61,11 @@ namespace core {
         fontConfig.MergeMode = true;
 
         //init backend
-        ImGui_ImplGlfw_InitForOpenGL(Window::getGLFWwindow(), true);
-        ImGui_ImplOpenGL3_Init("#version 330");
+        ImGui_ImplOpenGL3_Init("#version 410");
     }
 
     void ImGuiLayer::destroy() {
-        ImGui::DestroyContext();
-        delete this->p_open;
+        
     }
 
     void ImGuiLayer::startFrame(float deltaTime) {
@@ -57,45 +83,22 @@ namespace core {
         io.MousePos = ImVec2((float)mousePosX, (float)mousePosY);
         io.DeltaTime = deltaTime;
         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
     }
 
-    void ImGuiLayer::endFrame() {
-        ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(Window::getGLFWwindow(), &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    }
 
     void ImGuiLayer::update(float deltaTime, Scene* currentScene) {
         startFrame(deltaTime);
 
-        //configureDocking();
         currentScene->sceneImgui(deltaTime);
-        //ImGui::End();
+        ImGui::ShowDemoWindow();
 
         endFrame();
     }
 
-    void ImGuiLayer::configureDocking() {
-        //Dock space
-        int imguiFlags = ImGuiWindowFlags_MenuBar;// | ImGuiWindowFlags_NoDocking;
-
-        ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(Window::width, Window::height));
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        imguiFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-        this->p_open = new bool(true);
-        ImGui::Begin("Docking", p_open, imguiFlags);
-        ImGui::PopStyleVar(2);
-
-        ImGui::DockSpace(ImGui::GetID("Dockspace"));
+    void ImGuiLayer::endFrame() {
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
-
 }

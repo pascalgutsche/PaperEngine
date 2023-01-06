@@ -1,3 +1,4 @@
+#define INCLUDE_MAIN
 #include "Engine.h"
 
 class Conqueror : public core::Application {

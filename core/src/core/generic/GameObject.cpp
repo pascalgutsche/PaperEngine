@@ -6,6 +6,8 @@
 #include "utils/Logger.h"
 #include "utils/DataPool.h"
 
+#include "OpenGL/ImGui_OpenGL3.h"
+
 namespace core {
 
     GameObject::GameObject(std::string name) {

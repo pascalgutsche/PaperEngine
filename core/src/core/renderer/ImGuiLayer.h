@@ -1,9 +1,6 @@
 #pragma once
 #include "_Core.h"
 
-
-
-namespace core { class ImGuiLayer; }
 #include "generic/Scene.h"
 
 namespace core {

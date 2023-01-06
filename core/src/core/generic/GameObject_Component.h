@@ -8,7 +8,6 @@ namespace core {
 
     // this is required in order for the compiler to find the class later on
     class GameObject;
-    class Component;
 
     class Component {
     public:

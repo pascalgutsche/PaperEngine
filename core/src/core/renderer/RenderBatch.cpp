@@ -5,6 +5,8 @@
 #include "generic/Window.h"
 #include "component/SpriteRenderer.h"
 
+#include <GLAD/glad.h>
+
 namespace core {
 
     RenderBatch::RenderBatch(int maxBatchSize, int zIndex, DataPool::DISPLAYMODE displaymode)

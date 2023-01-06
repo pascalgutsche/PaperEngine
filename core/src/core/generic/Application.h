@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "utility.h"
 
 namespace core {

@@ -1,4 +1,4 @@
-function createDir(path) 
+function createDir(path)
 	if os.isdir(path) then
 		os.mkdir(path)
 	end
@@ -16,16 +16,16 @@ workspace "Client"
 		"Release"
 	}
 
-	
 
---GLFW
 IncludeDir = {}
 IncludeDir["GLFW"] = "lib/GLFW/include"
 IncludeDir["GLAD"] = "lib/GLAD/include"
+IncludeDir["IMGUI"] = "lib/IMGUI"
 
 
 include "lib/GLFW"
 include "lib/GLAD"
+include "lib/IMGUI"
 
 
 project "core"
@@ -61,7 +61,8 @@ project "core"
 		"%{prj.name}/src",
 		"%{prj.name}/src/core",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}"
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.IMGUI}"
 
 	}
 
@@ -69,6 +70,7 @@ project "core"
 	{
 		"GLFW",
 		"GLAD",
+		"IMGUI",
 		"opengl32.lib"
 	}
 
@@ -141,6 +143,7 @@ project "conqueror"
 		"%{prj.name}/src",
 		"%{prj.name}/src/core",
 		"core/src",
+		"core/src/core",
 		"core/lib"
 	}
 

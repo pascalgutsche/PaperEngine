@@ -5,6 +5,8 @@
 #include "listener/KeyListener.h"
 #include "listener/MouseListener.h"
 
+#include <GLAD/glad.h>
+
 namespace core {
 
     Scene* Window::currentScene;
