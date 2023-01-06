@@ -28,9 +28,8 @@ void TestScene::update(float deltaTime) {
 	}
 
 	if (KeyListener::isKeyPressed(KEY_SPACE)) {
-		
+		LOG_DEBUG("bunker");
 	}
-	std::cout << "bunker" << std::endl;
 }
 
 void TestScene::imgui(float deltaTime) {

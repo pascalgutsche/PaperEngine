@@ -52,7 +52,7 @@
 
 
 //Core
-#include "utils/Logger.h"
+#include "utils/Log.h"
 
 
 #ifdef CORE_PLATFORM_WINDOWS

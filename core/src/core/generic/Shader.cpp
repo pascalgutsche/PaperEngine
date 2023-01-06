@@ -10,7 +10,7 @@ namespace core {
         this->filePath = filePath;
         std::ifstream ifs(filePath);
         if (!ifs) {
-            Logger::Log("Could not load shader: '" + std::string(filePath) + "'", Logger::Error);
+            LOG_CORE_ERROR("Could not load shader: '" + std::string(filePath) + "'");
             return;
         }
 
@@ -28,7 +28,7 @@ namespace core {
         for (int i = fragmentPos + 15; i < (int)content.size(); i++) {
             fragmentSources += content[i];
         }
-        Logger::Log("Loaded shader: '" + filePath + "'", Logger::Trace);
+        LOG_CORE_TRACE("Loaded shader: '" + filePath + "'");
     }
     Shader::~Shader() { }
 
@@ -54,7 +54,7 @@ namespace core {
             char vertexError[1000];
             glGetShaderInfoLog(vertexID, len, NULL, &vertexError[0]);
 
-            Logger::Log("'" + filePath + "'\n\tVertex shader compilation failed.\n" + &vertexError[0], Logger::Error);
+            LOG_CORE_ERROR("'" + filePath + "'\n\tVertex shader compilation failed.\n" + &vertexError[0]);
         }
 
         //fragment shader
@@ -73,7 +73,7 @@ namespace core {
             char fragmentError[1000];
             glGetShaderInfoLog(fragmentID, len, NULL, &fragmentError[0]);
 
-            Logger::Log("'" + filePath + "'\n\tFragment shader compilation failed.\n" + &fragmentError[0], Logger::Error);
+            LOG_CORE_ERROR("'" + filePath + "'\n\tFragment shader compilation failed.\n" + &fragmentError[0]);
         }
 
         //linking
@@ -90,10 +90,10 @@ namespace core {
             char linkingError[1000];
             glGetShaderInfoLog(shaderProgrammID, len, NULL, &linkingError[0]);
 
-            Logger::Log("'" + filePath + "'\n\tLinking of shaders failed!\n" + &linkingError[0], Logger::Error);
+            LOG_CORE_ERROR("'" + filePath + "'\n\tLinking of shaders failed!\n" + &linkingError[0]);
         }
 
-        Logger::Log("Compiled shader '" + filePath + "' ", Logger::Trace);
+        LOG_CORE_TRACE("Compiled shader '" + filePath + "' ");
     }
 
     void Shader::use() {

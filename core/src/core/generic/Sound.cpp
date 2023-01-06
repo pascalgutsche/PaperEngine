@@ -21,7 +21,7 @@ namespace core {
         ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
         if (pDecoder == NULL)
         {
-            Logger::Log("Failed to initialize the sound decoder", Logger::Level::Error);
+            LOG_CORE_ERROR("Failed to initialize the sound decoder");
             return;
         }
         ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
@@ -39,13 +39,13 @@ namespace core {
         // initialize the engine without specific configuration
         if (ma_engine_init(NULL, &engine) != MA_SUCCESS)
         {
-            Logger::Log("Failed to initialize the engine", Logger::Level::Error);
+            LOG_CORE_ERROR("Failed to initialize the engine");
             return false;
         }
 
         if (ma_sound_init_from_file(&engine, soundFile.c_str(), 0, NULL, NULL, &currentSound) != MA_SUCCESS)
         {
-            Logger::Log("Failed to load sound '" + std::string(soundFile) + "'", Logger::Level::Error);
+            LOG_CORE_ERROR("Failed to load sound '" + std::string(soundFile) + "'");
             return false;
         }
         return true;
@@ -58,7 +58,7 @@ namespace core {
 
         if (ma_sound_start(&currentSound) != MA_SUCCESS)
         {
-            Logger::Log("Could not play sound '" + std::string(soundFile) + "'", Logger::Level::Error);
+            LOG_CORE_ERROR("Could not play sound '" + std::string(soundFile) + "'");
             return false;
         }
 
@@ -69,7 +69,7 @@ namespace core {
     {
         if (ma_sound_stop(&currentSound) != MA_SUCCESS)
         {
-            Logger::Log("Could not stop sound '" + std::string(soundFile) + "'", Logger::Level::Error);
+            LOG_CORE_ERROR("Could not stop sound '" + std::string(soundFile) + "'");
             return false;
         }
         return true;

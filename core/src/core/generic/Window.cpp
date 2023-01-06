@@ -34,20 +34,20 @@ namespace core {
         // functions that are mandatory to be called
         if (init() == -1) return -1;
 
-        Logger::Log("Initialized and created window!", Logger::Trace);
+        LOG_CORE_TRACE("Initialized and created window!");
 
         
 
         imGuiLayer = new ImGuiLayer();
         imGuiLayer->init();
-        Logger::Log("Initialized ImGui!", Logger::Trace);
+        LOG_CORE_TRACE("Initialized ImGui!");
 
         loop();
 
 
         imGuiLayer->destroy();
         delete imGuiLayer;
-        Logger::Log("Destroyed ImGui and exited!", Logger::Trace);
+        LOG_CORE_TRACE("Destroyed ImGui and exited!");
 
         glfwTerminate();
 
@@ -57,7 +57,7 @@ namespace core {
     int Window::init() {
         // init library
         if (!glfwInit()) {
-            Logger::Log("Could not initialize glfw library", Logger::Error);
+            LOG_CORE_ERROR("Could not initialize glfw library");
             return -1;
         }
 
@@ -71,7 +71,7 @@ namespace core {
 
         //self-explanatory
         if (!Window::glfwWindow) {
-            Logger::Log("Could not init Window.", Logger::Error);
+            LOG_CORE_ERROR("Could not init Window.");
             return -1;
         }
         // set listeners with callback functions (they run in separate threads)
@@ -89,7 +89,7 @@ namespace core {
         glfwMakeContextCurrent(glfwWindow);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            Logger::Log("Failed to load glad", Logger::Error);
+            LOG_CORE_ERROR("Failed to load glad");
             return -1;
         }
 
@@ -99,8 +99,8 @@ namespace core {
         //Window visible
         glfwShowWindow(glfwWindow);
         //enable blending with glad because imgui overrides the standard glEnabe
-        //glEnable(GL_BLEND);
-        //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         //APP SCENE LOGIC
 
@@ -152,15 +152,11 @@ namespace core {
                     }
                     currentScene->update(deltaTime);
 
-                    if (Logger::logLevel == Logger::Debug) {
-                        Window::getImGuiLayer()->update(deltaTime, currentScene);
-                    }
+                    Window::getImGuiLayer()->update(deltaTime, currentScene);
                 }
-
-
             }
             else if (warn) {
-                Logger::Log("No Scene exists. Make sure to call Application::changeScene() in the 'init' function of your Application class", Logger::Level::Error);
+                LOG_CORE_ERROR("No Scene exists. Make sure to call Application::changeScene() in the 'init' function of your Application class");
                 warn = false;
             }
 
@@ -189,9 +185,9 @@ namespace core {
     }
 
     void Window::quit(std::string message) {
-        Logger::Log("Quitting", Logger::Level::Warn);
+        LOG_CORE_WARN("Quitting");
         if (message != "") {
-            Logger::Log(message, Logger::Error);
+            LOG_CORE_ERROR(message);
         }
         //close glfwWindow
         glfwSetWindowShouldClose(Window::getGLFWwindow(), 88);

@@ -118,7 +118,6 @@ namespace core {
                     coord.map[x][y]->transform.scale = this->transform.scale;
                 }
             }
-            Logger::Log("bunker 1");
         }
     }
 

@@ -21,6 +21,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "lib/core/GLFW/include"
 IncludeDir["GLAD"] = "lib/core/GLAD/include"
 IncludeDir["IMGUI"] = "lib/core/IMGUI"
+IncludeDir["SPDLOG"] = "lib/SPDLOG/include"
 
 
 include "lib/core/GLFW"
@@ -62,7 +63,8 @@ project "core"
 		"%{prj.name}/src/core",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.IMGUI}"
+		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.SPDLOG}"
 
 	}
 
@@ -81,7 +83,6 @@ project "core"
 		"4312",
 		"4267",
 		"4251"
-
 	}
 	
 	filter "system:windows"
@@ -102,15 +103,11 @@ project "core"
 		}
 
 	filter "configurations:Debug"
-		defines 
-		{
-			"CORE_DEBUG",
-			"DEBUG_CHANGE_PATH"
-		}
+		defines "BUILD_DEBUG"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines "CORE_RELEASE"
+		defines "BUILD_RELEASE"
 		optimize "On"
 
 
@@ -145,7 +142,8 @@ project "conqueror"
 		"%{prj.name}/src/core",
 		"core/src",
 		"core/src/core",
-		"core/lib"
+		"core/lib",
+		"%{IncludeDir.SPDLOG}"
 	}
 
 	links
@@ -169,9 +167,9 @@ project "conqueror"
 		}
 
 	filter "configurations:Debug"
-		defines "CORE_DEBUG"
+		defines "BUILD_DEBUG"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines "CORE_RELEASE"
+		defines "BUILD_RELEASE"
 		optimize "On"

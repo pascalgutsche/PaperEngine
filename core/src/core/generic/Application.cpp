@@ -22,6 +22,7 @@ namespace core {
 	}
 
 	void Application::run() {
+		Log::init();
 		Window::run();
 	}
 

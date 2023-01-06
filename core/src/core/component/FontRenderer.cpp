@@ -9,7 +9,7 @@ namespace core {
         // set renderer to FONTRENDERER
         this->typeID = std::string("font_renderer");
         // pascal you are funny
-        Logger::Log("FOUND FONT RENDERER", Logger::Error);
+        LOG_CORE_DEBUG("FOUND FONT RENDERER");
     }
 
     FontRenderer::~FontRenderer() {

@@ -12,7 +12,7 @@ struct GLFWwindow;
 
 #include "core/renderer/Texture.h"
 
-#include "core/utils/Logger.h"
+#include "core/utils/Log.h"
 
 //EntryPoint
 #include "core/EntryPoint.h"

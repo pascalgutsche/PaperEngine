@@ -39,12 +39,12 @@ namespace core {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
             }
             else {
-                Logger::Log("Unknown number of channel '" + std::to_string(channels) + "' by texture '" + this->filePath + "'", Logger::Error);
+                LOG_CORE_ERROR("Unknown number of channel '" + std::to_string(channels) + "' by texture '" + this->filePath + "'");
             }
             glBindTexture(GL_TEXTURE_2D, 0);
         }
         else {
-            Logger::Log("Could not load image '" + this->filePath + "'", Logger::Error);
+            LOG_CORE_ERROR("Could not load image '" + this->filePath + "'");
         }
 
         stbi_image_free(localBuffer);
