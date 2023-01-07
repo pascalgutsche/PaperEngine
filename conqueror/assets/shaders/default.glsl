@@ -1,5 +1,5 @@
 #type vertex
-#version 410 core
+#version 330 core
 
 layout (location = 0) in vec2 aPos; // the position variable has attribute position 0
 layout (location = 1) in vec4 aColor; //the color of the vector
@@ -24,20 +24,21 @@ void main()
 }
 
 #type fragment
-#version 410 core
+#version 330 core
 
 in vec4 fColor; // get color from vertex
 in vec2 fTexCoord; // get texCoord from vertex
 in float fTexID; // get texID from vertex
 
-uniform sampler2D uTexture0;
-uniform sampler2D uTexture1;
-uniform sampler2D uTexture2;
-uniform sampler2D uTexture3;
-uniform sampler2D uTexture4;
-uniform sampler2D uTexture5;
-uniform sampler2D uTexture6;
-uniform sampler2D uTexture7;
+//uniform sampler2D uTexture0;
+//uniform sampler2D uTexture1;
+//uniform sampler2D uTexture2;
+//uniform sampler2D uTexture3;
+//uniform sampler2D uTexture4;
+//uniform sampler2D uTexture5;
+//uniform sampler2D uTexture6;
+//uniform sampler2D uTexture7;
+uniform sampler2D uTexture[8];
 
 
 out vec4 display;
@@ -47,39 +48,41 @@ out vec4 display;
 void main()
 {
     // if there is a desired texture, load it
-    if (fTexID >= 0) {
-        switch(int(fTexID)) {
-            case 0:
-                display = texture(uTexture0, fTexCoord);
-                break;
-            case 1:
-                display = texture(uTexture1, fTexCoord);
-                break;
-            case 2:
-                display = texture(uTexture2, fTexCoord);
-                break;
-            case 3:
-                display = texture(uTexture3, fTexCoord);
-                break;
-            case 4:
-                display = texture(uTexture4, fTexCoord);
-                break;
-            case 5:
-                display = texture(uTexture5, fTexCoord);
-                break;
-            case 6:
-                display = texture(uTexture6, fTexCoord);
-                break;
-            case 7:
-                display = texture(uTexture7, fTexCoord);
-                break;
-            default:
-            break;
-        }
+    if (fTexID >= 0 && false) {
+    int id = new int(fTexID);
+    display = texture(uTexture[id], fTexCoord);
+        //switch(int(fTexID)) {
+        //    case 0:
+        //        display = texture(uTexture0, fTexCoord);
+        //        break;
+        //    case 1:
+        //        display = texture(uTexture1, fTexCoord);
+        //        break;
+        //    case 2:
+        //        display = texture(uTexture2, fTexCoord);
+        //        break;
+        //    case 3:
+        //        display = texture(uTexture3, fTexCoord);
+        //        break;
+        //    case 4:
+        //        display = texture(uTexture4, fTexCoord);
+        //        break;
+        //    case 5:
+        //        display = texture(uTexture5, fTexCoord);
+        //        break;
+        //    case 6:
+        //        display = texture(uTexture6, fTexCoord);
+        //        break;
+        //    case 7:
+        //        display = texture(uTexture7, fTexCoord);
+        //        break;
+        //    default:
+        //    break;
+        //}
 
     }
     else {
         // if there is no texture, display the colors
-        display = fColor;
+        display = vec4(0.0f, 0.0f, 1.0f, 1.0f);
     }
 }

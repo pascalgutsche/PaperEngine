@@ -15,7 +15,8 @@ namespace core {
         // set local and current values
         this->zIndex = zIndex;
         this->maxBatchSize = maxBatchSize;
-        this->vertices.resize(maxBatchSize * 4 * VERTEX_SIZE);
+        this->vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
+        this->elements = new int[maxBatchSize * 6];
         this->displayMode = displaymode;
         numSprites = 0;
 
@@ -37,7 +38,10 @@ namespace core {
         //loadVertexProperties(0);
     }
 
-    RenderBatch::~RenderBatch() {};
+    RenderBatch::~RenderBatch() {
+        delete vertices;
+        delete elements;
+    };
 
     void RenderBatch::start() {
         // generate vertex buffer
@@ -49,19 +53,18 @@ namespace core {
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
         // put everything from the vector into the array, so that we can access it from within gl functions || using vectors makes it easier for dynamic allocations
         // create task for gpu and save data
-        glBufferData(GL_ARRAY_BUFFER, (maxBatchSize * 4 * VERTEX_SIZE) * 4, static_cast<void*>(vertices.data()), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (maxBatchSize * 4 * VERTEX_SIZE) * 4, vertices, GL_DYNAMIC_DRAW);
         //element buffer object (useful for creating squares)
 
         glGenBuffers(1, &eboID);
         // create array
-        std::vector<int> element;
-        element.resize(maxBatchSize * 6);
+        
         // initialize array values
-        generateIndices(element);
+        generateIndices(elements);
         // use the array
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
 
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(element), static_cast<void*>(element.data()), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_DYNAMIC_DRAW);
 
         // saving / uploading points (x,y) to vertex slot 0
         //declaration of vertex basically (start at byte offset x, array index y,...)
@@ -132,7 +135,7 @@ namespace core {
         if (reloadVertexArray) {
             // updates the vertex array in order to see the changes within rendering
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, (maxBatchSize * 4 * VERTEX_SIZE) * 4, static_cast<void*>(vertices.data()));
+            glBufferSubData(GL_ARRAY_BUFFER, 0, (maxBatchSize * 4 * VERTEX_SIZE) * 4, vertices);
         }
 
         // use the shader and upload the shader variables
@@ -159,37 +162,40 @@ namespace core {
         }
         // upload the texture array into the shader
         // convert vector to array in order to pass the parameters through
-        for (int i = 0; i < texSlots.size(); i++) {
-            switch (i) {
-            case 0:
-                shader->uploadInt("uTexture0", texSlots[0]);
-                break;
-            case 1:
-                shader->uploadInt("uTexture1", texSlots[1]);
-                break;
-            case 2:
-                shader->uploadInt("uTexture2", texSlots[2]);
-                break;
-            case 3:
-                shader->uploadInt("uTexture3", texSlots[3]);
-                break;
-            case 4:
-                shader->uploadInt("uTexture4", texSlots[4]);
-                break;
-            case 5:
-                shader->uploadInt("uTexture5", texSlots[5]);
-                break;
-            case 6:
-                shader->uploadInt("uTexture6", texSlots[6]);
-                break;
-            case 7:
-                shader->uploadInt("uTexture7", texSlots[7]);
-                break;
-            default:
-                break;
-            }
-
-        }
+        int* texArray = new int[texSlots.size()];
+        std::copy(texSlots.begin(), texSlots.end(), texArray);
+        shader->uploadIntArray("uTexture", texSlots.size(), texArray);
+        //for (int i = 0; i < texSlots.size(); i++) {
+        //    switch (i) {
+        //    case 0:
+        //        shader->uploadInt("uTexture0", texSlots[0]);
+        //        break;
+        //    case 1:
+        //        shader->uploadInt("uTexture1", texSlots[1]);
+        //        break;
+        //    case 2:
+        //        shader->uploadInt("uTexture2", texSlots[2]);
+        //        break;
+        //    case 3:
+        //        shader->uploadInt("uTexture3", texSlots[3]);
+        //        break;
+        //    case 4:
+        //        shader->uploadInt("uTexture4", texSlots[4]);
+        //        break;
+        //    case 5:
+        //        shader->uploadInt("uTexture5", texSlots[5]);
+        //        break;
+        //    case 6:
+        //        shader->uploadInt("uTexture6", texSlots[6]);
+        //        break;
+        //    case 7:
+        //        shader->uploadInt("uTexture7", texSlots[7]);
+        //        break;
+        //    default:
+        //        break;
+        //    }
+        //
+        //}
         glBindVertexArray(vaoID);
         // draw both (with coords and color)
         glEnableVertexAttribArray(0);
@@ -332,7 +338,7 @@ namespace core {
         */
     }
 
-    void RenderBatch::generateIndices(std::vector<int>& element) {
+    void RenderBatch::generateIndices(int* element) {
         // 2 triangles to display one square
         for (int i = 0; i < maxBatchSize; i++)
         {
@@ -340,7 +346,7 @@ namespace core {
         }
     }
 
-    void RenderBatch::loadElementIndices(std::vector<int>& arrayElements, int index) {
+    void RenderBatch::loadElementIndices(int* arrayElements, int index) {
         int offsetArrayIndex = 6 * index;
         int offset = 4 * index;
         // first triangle
