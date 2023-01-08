@@ -1,24 +1,27 @@
 #pragma once
-
+#include "_Core.h"
 #include "utility.h"
 
+#include "generic/Window.h"
 #include "generic/Scene.h"
+#include "event/Event.h"
 
 namespace core {
 
-	class CORE_API Application
+	class Application
 	{
 	private:
 		static Application* instance;
+		Window* window = nullptr;
 	public:
-		Application();
-		virtual ~Application();
-
 		virtual void init();
 
-		void changeScene(Scene* newScene);
 		void run();
 
+		void onEvent(Event& event);
+		void changeScene(Scene* new_scene);
+
+		void exit();
 
 		static Application* get();
 	};

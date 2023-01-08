@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "listener/KeyListener.h"
+#include "event/KeyListener.h"
 
 namespace core {
 

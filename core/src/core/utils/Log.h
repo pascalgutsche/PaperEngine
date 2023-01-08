@@ -3,7 +3,7 @@
 #include "utility.h"
 
 #include <spdlog/spdlog.h>
-
+#include <spdlog/fmt/ostr.h>
 namespace core {
 	class CORE_API Log
 	{

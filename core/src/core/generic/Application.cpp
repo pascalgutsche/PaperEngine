@@ -3,6 +3,7 @@
 #include "generic/Application.h"
 
 #include "generic/Window.h"
+#include "event/ApplicationEvent.h"
 
 namespace core {
 
@@ -10,11 +11,17 @@ namespace core {
 
 	Application::Application() {
 		instance = this;
+		Window::setEventCallback(BIND_EVENT_FN(Application::onEvent));
 	}
 
 	Application::~Application() { }
 
 	void Application::init() { }
+
+	void Application::onEvent(Event& event)
+	{
+		LOG_CORE_TRACE("{0}", event);
+	}
 
 	void Application::changeScene(Scene* newScene)
 	{
@@ -23,6 +30,7 @@ namespace core {
 
 	void Application::run() {
 		Log::init();
+
 		Window::run();
 	}
 

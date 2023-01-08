@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "listener/MouseListener.h"
+#include "event/MouseListener.h"
 #include "generic/Window.h"
 
 namespace core {

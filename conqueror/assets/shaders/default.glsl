@@ -48,7 +48,7 @@ out vec4 display;
 void main()
 {
     // if there is a desired texture, load it
-    if (fTexID >= 0 && false) {
+    if (fTexID >= 0) {
     int id = new int(fTexID);
     display = texture(uTexture[id], fTexCoord);
         //switch(int(fTexID)) {

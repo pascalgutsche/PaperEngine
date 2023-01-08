@@ -92,7 +92,7 @@ namespace core {
         startFrame(deltaTime);
 
         //currentScene->sceneImgui(deltaTime);
-        //ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
         endFrame();
     }
 

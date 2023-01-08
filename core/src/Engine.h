@@ -12,10 +12,10 @@
 #include "core/generic/Sound.h"
 
 struct GLFWwindow;
-#include "core/listener/KeyListener.h"
-#include "core/listener/KeyCodes.h"
-#include "core/listener/MouseListener.h"
-#include "core/listener/MouseCodes.h"
+#include "core/event/KeyListener.h"
+#include "core/event/KeyCodes.h"
+#include "core/event/MouseListener.h"
+#include "core/event/MouseCodes.h"
 
 #include "core/renderer/Texture.h"
 

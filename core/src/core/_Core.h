@@ -19,6 +19,7 @@
 #include <cmath>
 #include <thread>
 #include <algorithm>
+#include <functional>
 
 //C Libraries
 #include <stdio.h>

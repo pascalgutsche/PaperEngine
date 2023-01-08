@@ -88,7 +88,8 @@ project "core"
 		{
 			"CORE_PLATFORM_WINDOWS",
 			"CORE_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"CORE_ENABLE_ASSERTS"
 		}
 
 		postbuildcommands 
@@ -159,6 +160,7 @@ project "conqueror"
 		defines
 		{
 			"CORE_PLATFORM_WINDOWS",
+			"CORE_ENABLE_ASSERTS"
 		}
 
 	filter "configurations:Debug"

@@ -4,47 +4,59 @@
 
 #include "generic/Scene.h"
 #include "renderer/ImGuiLayer.h"
+#include "event/Event.h"
 
 
 #include <GLFW/glfw3.h>
 
 namespace core {
 
+    struct WindowProps
+    {
+        std::string title;
+        unsigned int width, height;
+
+        WindowProps(std::string title = "Conqueror", unsigned int width = 1280, unsigned int height = 720)
+	        : title(title), width(width), height(height) { }
+    };
+
     class Window {
+        using EventCallbackFunction = std::function<void(Event&)>;
     private:
-        static std::string title;
         static GLFWwindow* glfwWindow;
+        static bool initialized;
         static Scene* currentScene;
         static Scene* tempScene;
 
         static ImGuiLayer* imGuiLayer;
 
-        // initializations and native loop
-        static int init();
-        static int loop();
+        struct WindowData
+        {
+            std::string title;
+            unsigned int width, height;
+            bool vsync;
+            EventCallbackFunction callback;
+        };
 
-        // resize window callback
-        static void resizeCallback(GLFWwindow* window, int width, int height);
+        WindowData window_data;
+
+        Window(const WindowProps& window_props);
+        ~Window();
+
+        void init(const WindowProps& window_props);
+        void quit();
 
     public:
-        static int width, height;
-        static float r;
-        static float g;
-        static float b;
-        static float a;
+    	static Window* createWindow(const WindowProps& window_props = WindowProps());
 
-        static int run();
-        static void quit(std::string message = "");
-        static void changeScene(Scene* newScene);
+        void update(float dt);
 
-        static float getDeltaTime();
-        static Scene* getScene();
-        static GLFWwindow* getGLFWwindow();
-        static std::string getTitle();
-        static ImGuiLayer* getImGuiLayer();
+        unsigned int getWidth() const { return window_data.width; }
+        unsigned int getHeight() const { return window_data.height; }
 
-        static void setTitle(std::string title);
+    	void setEventCallback(const EventCallbackFunction& callback_function) { WindowData::callback = callback_function; }
+        void setVSync(bool enabled);
+        bool isVSync() const { return window_data.vsync; }
 
-        friend int main(int argc, char* argv[]);
     };
 }
