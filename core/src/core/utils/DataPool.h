@@ -1,5 +1,6 @@
 #pragma once
 #include "_Core.h"
+#include "utility.h"
 
 #include "generic/Shader.h"
 #include "renderer/Texture.h"
@@ -14,7 +15,7 @@ namespace core {
         unsigned int advance; // width offset
     };*/
 
-    class DataPool {
+    class CORE_API DataPool {
     private:
         // map in order to save all of the shaders somewhere for organization
         static std::unordered_map<std::string, std::shared_ptr<Shader>> shaderPool;

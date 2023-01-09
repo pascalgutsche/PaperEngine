@@ -3,6 +3,12 @@
 #include "core/component/Sprite.h"
 #include "core/component/SpriteRenderer.h"
 
+struct GLFWwindow;
+#include "core/event/KeyListener.h"
+#include "core/event/KeyCodes.h"
+#include "core/event/MouseListener.h"
+#include "core/event/MouseCodes.h"
+
 #include "core/generic/Application.h"
 #include "core/generic/Scene.h"
 #include "core/generic/Camera.h"
@@ -11,11 +17,9 @@
 #include "core/generic/Component.h"
 #include "core/generic/Sound.h"
 
-struct GLFWwindow;
-#include "core/event/KeyListener.h"
-#include "core/event/KeyCodes.h"
-#include "core/event/MouseListener.h"
-#include "core/event/MouseCodes.h"
+#include "layer/Layer.h"
+#include "layer/LayerStack.h"
+#include "layer/ImGuiLayer.h"
 
 #include "core/renderer/Texture.h"
 

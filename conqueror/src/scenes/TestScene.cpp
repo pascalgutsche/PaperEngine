@@ -123,7 +123,7 @@ void TestScene::update(float deltaTime) {
     }
 
 
-    this->renderer->render();
+    this->renderer->render(deltaTime);
 }
 
 void TestScene::imgui(float deltaTime) {

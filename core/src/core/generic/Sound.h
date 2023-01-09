@@ -1,11 +1,12 @@
 #pragma once
 #include "_Core.h"
+#include "utility.h"
 
 #include <MINIAUDIO/miniaudio.h>
 
 namespace core {
 
-    class Sound
+    class CORE_API Sound
     {
     private:
         std::string soundFile;

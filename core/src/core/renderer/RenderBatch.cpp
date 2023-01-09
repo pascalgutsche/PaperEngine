@@ -5,6 +5,7 @@
 #include "generic/Window.h"
 #include "component/SpriteRenderer.h"
 #include "generic/GameObject.h"
+#include "generic/Application.h"
 
 #include <GLAD/glad.h>
 
@@ -142,18 +143,18 @@ namespace core {
         shader->use();
         if (displayMode == DataPool::DISPLAYMODE::ORTHOGRAPHIC)
         {
-            shader->uploadMat4f("uProjection", Window::getScene()->getCamera()->getOrthographicMatrix());
+            shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getOrthographicMatrix());
         }
         else if (displayMode == DataPool::DISPLAYMODE::PERSPECTIVE)
         {
-            shader->uploadMat4f("uProjection", Window::getScene()->getCamera()->getProjectionMatrix());
+            shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getProjectionMatrix());
         }
         else if (displayMode == DataPool::DISPLAYMODE::NONE)
         {
             shader->uploadVec2f("uProjection", glm::vec2(vertices[POS_OFFSET], vertices[POS_OFFSET + 1]));
         }
         // fov
-        shader->uploadMat4f("uView", Window::getScene()->getCamera()->getViewMatrix());
+        shader->uploadMat4f("uView", Application::getCurrentScene()->getCamera()->getViewMatrix());
 
         for (int i = 0; i < textures.size(); i++)
         {

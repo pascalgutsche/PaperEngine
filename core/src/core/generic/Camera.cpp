@@ -1,12 +1,9 @@
 #include "_Core.h"
 
 #include "generic/Camera.h"
-#include "generic/Window.h"
+#include "generic/Application.h"
 
 namespace core {
-
-    int Window::width;
-    int Window::height;
 
     Camera::Camera() {
         // standard position of the camera
@@ -24,7 +21,7 @@ namespace core {
         this->target = glm::vec3(this->position.x, this->position.y, 0.0f);
 
         // move every gameObject that is orthographic before the camera moves
-        for (auto& go : Window::getScene()->getGameObjects()) {
+        for (auto& go : Application::getCurrentScene()->getGameObjects()) {
             if (go->displayMode == DataPool::DISPLAYMODE::ORTHOGRAPHIC) {
                 go->transform.position.x = target.x + 1;
                 go->transform.position.y = target.y + 1;
@@ -54,7 +51,7 @@ namespace core {
 
     glm::mat4 Camera::getProjectionMatrix() {
         // get aspect ratio because we need it in order to project the camera correctly
-        float aspect = (float)Window::width / (float)Window::height;
+        float aspect = (float)Application::getWindow()->getWidth() / (float)Application::getWindow()->getHeight();
         return glm::perspective(fov, aspect, 0.1f, 1000.0f);
     }
 

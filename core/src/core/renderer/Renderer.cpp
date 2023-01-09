@@ -2,8 +2,7 @@
 
 #include "renderer/Renderer.h"
 #include "component/SpriteRenderer.h"
-#include "generic/Window.h"
-
+#include "generic/Application.h"
 namespace core {
 
     struct less_than_key
@@ -56,12 +55,12 @@ namespace core {
         }
     }
 
-    void Renderer::render() {
+    void Renderer::render(const float dt) {
         //calculating camera vectors
-        Window::getScene()->getCamera()->calcCameraVectors();
+        Application::getCurrentScene()->getCamera()->calcCameraVectors();
 
         //update GameObjects
-        updateGameObjects(Window::getDeltaTime(), Window::getScene()->gameObjects);
+        updateGameObjects(dt, Application::getCurrentScene()->gameObjects);
 
         // render all batches
         for (int i = 0; i < batches.size(); i++) {

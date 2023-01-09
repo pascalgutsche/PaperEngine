@@ -25,7 +25,7 @@ include "lib/core/IMGUI"
 
 project "core"
 	location "core"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C++"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -99,10 +99,12 @@ project "core"
 
 	filter "configurations:Debug"
 		defines "BUILD_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 
@@ -139,7 +141,8 @@ project "conqueror"
 		"core/src/core",
 		"core/lib",
 		"%{IncludeDir.SPDLOG}",
-		"%{IncludeDir.MINIAUDIO}"
+		"%{IncludeDir.MINIAUDIO}",
+		"%{IncludeDir.GLFW}"
 	}
 
 	links
@@ -165,8 +168,10 @@ project "conqueror"
 
 	filter "configurations:Debug"
 		defines "BUILD_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
+		buildoptions "/MD"
 		optimize "On"

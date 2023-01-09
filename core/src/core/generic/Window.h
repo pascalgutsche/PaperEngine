@@ -2,8 +2,6 @@
 #include "_Core.h"
 #include "utility.h"
 
-#include "generic/Scene.h"
-#include "renderer/ImGuiLayer.h"
 #include "event/Event.h"
 
 
@@ -23,12 +21,8 @@ namespace core {
     class Window {
         using EventCallbackFunction = std::function<void(Event&)>;
     private:
-        static GLFWwindow* glfwWindow;
-        static bool initialized;
-        static Scene* currentScene;
-        static Scene* tempScene;
-
-        static ImGuiLayer* imGuiLayer;
+        GLFWwindow* glfw_window;
+        bool initialized = false;
 
         struct WindowData
         {
@@ -41,22 +35,23 @@ namespace core {
         WindowData window_data;
 
         Window(const WindowProps& window_props);
-        ~Window();
 
         void init(const WindowProps& window_props);
-        void quit();
+        void quit() const;
 
     public:
-    	static Window* createWindow(const WindowProps& window_props = WindowProps());
 
-        void update(float dt);
+        ~Window();
+
+    	static Window* createWindow(const WindowProps& window_props = WindowProps());
 
         unsigned int getWidth() const { return window_data.width; }
         unsigned int getHeight() const { return window_data.height; }
 
-    	void setEventCallback(const EventCallbackFunction& callback_function) { WindowData::callback = callback_function; }
+    	void setEventCallback(const EventCallbackFunction& callback_function) { window_data.callback = callback_function; }
         void setVSync(bool enabled);
         bool isVSync() const { return window_data.vsync; }
 
+        GLFWwindow* getNativeWindow() const { return glfw_window; }
     };
 }

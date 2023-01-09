@@ -59,12 +59,13 @@ namespace core {
     void Texture::bind(unsigned int slot)
     {
         // slot is usually set to 0
-        if (slot > 8)
+        if (slot < 8)
         {
-            Window::quit("You should not go over 8 slots, as the OpenGL specification does not allow more");
+	        glActiveTexture(GL_TEXTURE0 + slot);
+	        glBindTexture(GL_TEXTURE_2D, texID);
+            return;
         }
-        glActiveTexture(GL_TEXTURE0 + slot);
-        glBindTexture(GL_TEXTURE_2D, texID);
+    	LOG_CORE_WARN("You should not go over 8 texture slots, as the OpenGL specification does not allow more");
     }
 
     void Texture::unbind()

@@ -1,11 +1,12 @@
 #pragma once
 #include "_Core.h"
+#include "utility.h"
 
 #include <STB_IMAGE/stb_image.h>
 
 namespace core {
 
-    class Texture {
+    class CORE_API Texture {
     private:
         std::string filePath;
 

@@ -17,7 +17,7 @@ namespace core {
         void add(GameObject* gameObject);
         void add(SpriteRenderer* spriteRenderer);
         // this function has to be called on every frame (update)
-        void render();
+        void render(float dt);
         void updateGameObjects(float deltaTime, std::vector<GameObject*>& gameObjects);
     };
 
