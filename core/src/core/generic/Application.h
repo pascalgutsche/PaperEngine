@@ -4,9 +4,12 @@
 
 #include "generic/Window.h"
 #include "generic/Scene.h"
-#include "event/Event.h"
+#include "layer/Layer.h"
+#include "layer/LayerStack.h"
 
-#include "layer/ImGuiLayer.h"
+#include "event/ApplicationEvent.h"
+
+#include "ImGui/ImGuiLayer.h"
 
 namespace core {
 
@@ -18,9 +21,14 @@ namespace core {
 		ImGuiLayer* imguilayer = nullptr;
 		Scene* current_scene = nullptr;
 		Scene* queued_scene = nullptr;
-
 		float dt;
 		bool game_running = true;
+
+		bool onWindowClose(WindowCloseEvent& e);
+		bool onWindowResize(WindowResizeEvent& e);
+
+		LayerStack layer_stack;
+
 	public:
 		Application();
 		virtual ~Application();
@@ -30,8 +38,9 @@ namespace core {
 		void run();
 
 		void onEvent(Event& event);
-		bool onWindowClose(WindowCloseEvent& e);
-		bool onWindowResize(WindowResizeEvent& e);
+
+		void addLayer(Layer* layer);
+		void addOverLay(Layer* layer);
 
 		void changeScene(Scene* new_scene);
 

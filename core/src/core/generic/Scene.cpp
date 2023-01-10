@@ -4,7 +4,7 @@
 #include "generic/Camera.h"
 #include "renderer/Renderer.h"
 
-#include "OpenGL/ImGui_OpenGL3.h"
+#include "imgui/ImGuiLayer.h"
 
 namespace core {
 

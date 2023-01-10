@@ -42,7 +42,6 @@ namespace core {
 			return getCategoryFlags() & category;
 		}
 
-	protected:
 		bool handled = false;
 	};
 

@@ -17,9 +17,10 @@ struct GLFWwindow;
 #include "core/generic/Component.h"
 #include "core/generic/Sound.h"
 
+#include "imgui/ImGuiLayer.h"
+
 #include "layer/Layer.h"
 #include "layer/LayerStack.h"
-#include "layer/ImGuiLayer.h"
 
 #include "core/renderer/Texture.h"
 

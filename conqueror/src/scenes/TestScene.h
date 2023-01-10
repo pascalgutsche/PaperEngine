@@ -1,8 +1,12 @@
 #pragma once
 #include "Engine.h"
+#include "layers/ExampleLayer.h"
 
 class TestScene : public core::Scene
 {
+private:
+	ExampleLayer* example_layer;
+
 public:
 	TestScene();
 	~TestScene() override;

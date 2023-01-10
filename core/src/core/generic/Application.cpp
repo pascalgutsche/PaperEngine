@@ -2,9 +2,6 @@
 
 #include "generic/Application.h"
 
-#include "generic/Window.h"
-#include "layer/ImGuiLayer.h"
-
 #include "glad/glad.h"
 
 namespace core {
@@ -19,7 +16,6 @@ namespace core {
 		window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
 		imguilayer = new ImGuiLayer();
-
 	}
 
 	Application::~Application()
@@ -35,7 +31,12 @@ namespace core {
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
 
-		imguilayer->event(event);
+		for (auto it = layer_stack.end(); it != layer_stack.begin(); )
+		{
+			(*--it)->event(event);
+			if (event.handled)
+				break;
+		}
 	}
 
 	bool Application::onWindowClose(WindowCloseEvent& e)
@@ -55,10 +56,25 @@ namespace core {
 		queued_scene = new_scene;
 	}
 
+	void Application::addLayer(Layer* layer)
+	{
+		layer_stack.addLayer(layer);
+		layer->attach();
+	}
+
+	void Application::addOverLay(Layer* layer)
+	{
+		layer_stack.addOverlay(layer);
+		layer->attach();
+	}
+
+
 	void Application::run() 
 	{
 
 		init();
+
+		addLayer(imguilayer);
 
 		//set start scene
 		if (queued_scene) {
@@ -98,8 +114,16 @@ namespace core {
 						// don't forget to reset the tempscene, because we want to override it
 						queued_scene = nullptr;
 					}
+
+					for (Layer* layer : layer_stack)
+						layer->update(dt);
+
+					imguilayer->begin(dt);
+					for (Layer* layer : layer_stack)
+						layer->imgui(dt);
+					imguilayer->end();
+
 					current_scene->update(dt);
-					imguilayer->update(dt);
 				}
 			}
 			else if (warn) {
@@ -115,7 +139,6 @@ namespace core {
 
 		LOG_CORE_WARN("Reached end of game function. Shutting down.");
 		delete window;
-		delete imguilayer;
 	}
 
 	void Application::exit()

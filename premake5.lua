@@ -1,6 +1,7 @@
 workspace "Client"
 	architecture "x64"
 	startproject "conqueror"
+	staticruntime "off"
 
 	configurations
 	{
@@ -13,19 +14,19 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "lib/core/GLFW/include"
 IncludeDir["GLAD"] = "lib/core/GLAD/include"
-IncludeDir["IMGUI"] = "lib/core/IMGUI"
+IncludeDir["IMGUI"] = "lib/core/IMGUI_DOCKING"
 IncludeDir["SPDLOG"] = "lib/SPDLOG/include"
 IncludeDir["MINIAUDIO"] = "lib/MINIAUDIO"
 
 
 include "lib/core/GLFW"
 include "lib/core/GLAD"
-include "lib/core/IMGUI"
+include "lib/core/IMGUI_DOCKING"
 
 
 project "core"
 	location "core"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -81,7 +82,6 @@ project "core"
 	
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines
@@ -99,12 +99,12 @@ project "core"
 
 	filter "configurations:Debug"
 		defines "BUILD_DEBUG"
-		buildoptions "/MDd"
+		--runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
-		buildoptions "/MD"
+		--runtime "Release"
 		optimize "On"
 
 
@@ -112,6 +112,7 @@ project "conqueror"
 	location "conqueror"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -142,7 +143,8 @@ project "conqueror"
 		"core/lib",
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.MINIAUDIO}",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.IMGUI}"
 	}
 
 	links
@@ -157,7 +159,6 @@ project "conqueror"
 	
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines
@@ -168,10 +169,10 @@ project "conqueror"
 
 	filter "configurations:Debug"
 		defines "BUILD_DEBUG"
-		buildoptions "/MDd"
+		--runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
-		buildoptions "/MD"
+		--runtime "Release"
 		optimize "On"

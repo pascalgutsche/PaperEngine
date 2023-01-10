@@ -3,7 +3,7 @@ root = "../../../"
 project "GLFW"
 	kind "StaticLib"
 	language "C"
-	staticruntime "On"
+	staticruntime "off"
 
 	targetdir (root .. "bin/" .. outputdir .. "/%{prj.name}")
 	objdir (root .. "bin-int/" .. outputdir .. "/%{prj.name}")
@@ -57,9 +57,9 @@ project "GLFW"
 		}
 
 	filter "configurations:Debug"
-		runtime "Debug"
+		--runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		runtime "Release"
+		--runtime "Release"
 		optimize "on"

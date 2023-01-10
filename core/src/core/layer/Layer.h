@@ -20,6 +20,7 @@ namespace core
 		virtual void attach() = 0;
 		virtual void detach() = 0;
 		virtual void update(const float dt) = 0;
+		virtual void imgui(const float dt) = 0;
 		virtual void event(Event& event) = 0;
 
 		void setOverlayStatus(bool overlay) { this->overlay = overlay; }

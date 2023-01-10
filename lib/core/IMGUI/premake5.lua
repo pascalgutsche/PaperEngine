@@ -3,6 +3,7 @@ root = "../../../"
 project "IMGUI"
     kind "StaticLib"
     language "C++"
+    staticruntime "off"
     
 	targetdir (root .. "bin/" .. outputdir .. "/%{prj.name}")
     objdir (root .. "bin-int/" .. outputdir .. "/%{prj.name}")
@@ -24,7 +25,5 @@ project "IMGUI"
 	filter "system:windows"
         systemversion "latest"
         cppdialect "C++17"
-        staticruntime "On"
         
     filter { "system:windows", "configurations:Release" }
-        buildoptions "/MT"

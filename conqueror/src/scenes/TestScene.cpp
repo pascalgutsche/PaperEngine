@@ -16,6 +16,7 @@ TestScene::~TestScene() {
 
 void TestScene::loadResources() {
     backcolor = glm::vec4(0.8f, 0.2f, 0.3f, 1.0f);
+    example_layer = new ExampleLayer();
 }
 
 void TestScene::init() {
@@ -37,6 +38,7 @@ void TestScene::init() {
     this->addGameObjectToScene(gameObject3);
     this->addGameObjectToScene(gameObject4);
 
+    Application::get()->addLayer(example_layer);
 
     //gameObject5->setZIndex(100);
 
