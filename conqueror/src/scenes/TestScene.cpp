@@ -38,7 +38,7 @@ void TestScene::init() {
     this->addGameObjectToScene(gameObject3);
     this->addGameObjectToScene(gameObject4);
 
-    Application::get()->addLayer(example_layer);
+    Application::get()->addOverLay(example_layer);
 
     //gameObject5->setZIndex(100);
 
