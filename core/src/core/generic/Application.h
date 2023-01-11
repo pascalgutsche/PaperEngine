@@ -8,6 +8,7 @@
 #include "layer/LayerStack.h"
 
 #include "event/ApplicationEvent.h"
+#include "event/KeyEvent.h"
 
 #include "ImGui/ImGuiLayer.h"
 
@@ -23,9 +24,11 @@ namespace core {
 		Scene* queued_scene = nullptr;
 		float dt;
 		bool game_running = true;
+		bool imgui_enabled = false;
 
 		bool onWindowClose(WindowCloseEvent& e);
 		bool onWindowResize(WindowResizeEvent& e);
+		bool onKeyPressed(KeyPressedEvent& e);
 
 		LayerStack layer_stack;
 

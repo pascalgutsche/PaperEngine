@@ -1,6 +1,7 @@
 #include "_Core.h"
 
 #include "generic/Application.h"
+#include "event/KeyCodes.h"
 
 #include "glad/glad.h"
 
@@ -30,6 +31,8 @@ namespace core {
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::onKeyPressed));
+
 
 		for (auto it = layer_stack.end(); it != layer_stack.begin(); )
 		{
@@ -50,6 +53,15 @@ namespace core {
 		return false;
 	}
 
+	bool Application::onKeyPressed(KeyPressedEvent& e)
+	{
+		if (!e.getRepeated() && e.getKeyCode() == KEY_P)
+		{
+			imgui_enabled = !imgui_enabled;
+			return true;
+		}
+		return false;
+	}
 
 	void Application::changeScene(Scene* new_scene)
 	{
@@ -115,13 +127,15 @@ namespace core {
 						queued_scene = nullptr;
 					}
 
-					for (Layer* layer : layer_stack)
-						layer->update(dt);
+					if (imgui_enabled) {
+						for (Layer* layer : layer_stack)
+							layer->update(dt);
 
-					imguilayer->begin(dt);
-					for (Layer* layer : layer_stack)
-						layer->imgui(dt);
-					imguilayer->end();
+						imguilayer->begin(dt);
+						for (Layer* layer : layer_stack)
+							layer->imgui(dt);
+						imguilayer->end();
+					}
 
 					current_scene->update(dt);
 				}
