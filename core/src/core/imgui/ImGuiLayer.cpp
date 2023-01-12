@@ -122,7 +122,6 @@ namespace core {
         ImGuiIO& io = ImGui::GetIO();
         io.DisplaySize = ImVec2(Application::getWindow()->getWidth(), Application::getWindow()->getHeight());
 
-        ImGui::EndFrame();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -138,7 +137,8 @@ namespace core {
     static bool p_open = true;
     void ImGuiLayer::imgui(const float dt)
     {
-        ImGuiDockNodeFlags dockflags = ImGuiDockNodeFlags_PassthruDockspace;
+        
+        ImGuiDockNodeFlags dockflags = ImGuiDockNodeFlags_None;// ImGuiDockNodeFlags_PassthruCentralNode;
 
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
         window_flags |= ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_MenuBar;
@@ -155,21 +155,115 @@ namespace core {
         ImGui::Begin("docking", &p_open, window_flags);
         ImGui::PopStyleVar(3);
 
-        dockspace_id = ImGui::GetID("dockspace");
+    	dockspace_id = ImGui::GetID("dockspace");
+
+        static bool initialized = false;
+        if (!initialized)
+        {
+            initialized = true;
+            ImGui::DockBuilderRemoveNode(dockspace_id);
+            ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
+            ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::getWindow()->getWidth(), Application::getWindow()->getHeight()));
+
+            dock_id_main = dockspace_id;
+            dock_id_top = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Up, 0.2f, nullptr, &dock_id_main);
+            dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Down, 0.25f, nullptr, &dock_id_main);
+            dock_id_left = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Left, 0.2f, nullptr, &dock_id_main);
+            dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Right, 0.15f, nullptr, &dock_id_main);
+            dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
+
+
+            ImGui::DockBuilderDockWindow("Application: ", dock_id_right);
+            ImGui::DockBuilderFinish(dockspace_id);
+        }
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
-
         ImGui::End();
+        
 
-        if (!dock_id_top) dock_id_top = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, 0.2f, nullptr, &dockspace_id);
-        if (!dock_id_down) dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.25f, nullptr, &dockspace_id);
-        if (!dock_id_left) dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.2f, nullptr, &dockspace_id);
-        if (!dock_id_right) dock_id_right = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Right, 0.15f, nullptr, &dockspace_id);
-        if (!dock_id_right2) dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
 
-        //APPLICATION-ImGui
+        ImGui::SetNextWindowSizeConstraints(ImVec2(100.0f, Application::getWindow()->getHeight()), ImVec2(200.0f, Application::getWindow()->getHeight()));
+    	//APPLICATION-ImGui
         const char* name = "Application: ";
         ImGui::Begin(name);
-        ImGui::DockBuilderDockWindow(name, Application::)
+        ImGui::End();
+        
+        ImGui::Begin("name");
+        ImGui::End();
+        /*
+        static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+        dockspace_flags |= ImGuiDockNodeFlags_PassthruCentralNode;
+        // dockspace_flags |= ImGuiDockNodeFlags_AutoHideTabBar;
+
+        // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
+        // because it would be confusing to have two docking targets within each others.
+
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+        window_flags |= ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_MenuBar;
+        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+        
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        
+        
+
+        // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
+        // and handle the pass-thru hole, so we ask Begin() to not render a background.
+        if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+            window_flags |= ImGuiWindowFlags_NoBackground;
+
+        // Important: note that we proceed even if Begin() returns false (aka window is collapsed).
+        // This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
+        // all active windows docked into it will lose their parent and become undocked.
+        // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
+        // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("DockSpace", &p_open, window_flags);
+
+        ImGui::PopStyleVar();
+
+        ImGui::PopStyleVar(2);
+
+        // DockSpace
+        ImGuiIO& io = ImGui::GetIO();
+
+        dockspace_id = ImGui::GetID("MyDockSpace");
+
+        ImGuiContext* ctx = ImGui::GetCurrentContext();
+        ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
+        ImGui::DockBuilderAddNode(dockspace_id);    // Add empty node
+        
+        ImGuiID dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking anything into it.
+        //ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.20f, NULL, &dock_main_id);
+        //ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
+        /*if (!dock_id_top)   dock_id_top = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Up, 0.2f, nullptr, &dock_main_id);
+        /*if (!dock_id_down)  dock_id_down = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.25f, nullptr, &dock_main_id);
+        /*if (!dock_id_left) dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.2f, nullptr, &dock_main_id);
+        /*if (!dock_id_right)  dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.15f, nullptr, &dock_main_id);
+        /*if (!dock_id_right2) // dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
+        
+        ImGui::DockBuilderDockWindow("Center", dock_id_main);
+        ImGui::DockBuilderDockWindow("Left", dock_id_left);
+        ImGui::DockBuilderDockWindow("Bottom", dock_id_down);
+        ImGui::DockBuilderFinish(dockspace_id);
+
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
+        ImGui::End();
+
+        ImGui::Begin("Center");
+        ImGui::End();
+
+        ImGui::Begin("Left");
+        ImGui::End();
+
+        ImGui::Begin("Bottom");
+        ImGui::End();
+        */
+        
     }
 
 }

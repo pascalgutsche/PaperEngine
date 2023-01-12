@@ -24,7 +24,7 @@ namespace core {
 		Scene* queued_scene = nullptr;
 		float dt;
 		bool game_running = true;
-		bool imgui_enabled = false;
+		bool imgui_enabled = true;
 
 		bool onWindowClose(WindowCloseEvent& e);
 		bool onWindowResize(WindowResizeEvent& e);
@@ -52,6 +52,7 @@ namespace core {
 		static Application* get();
 		static Window* getWindow() { return get()->window; }
 		static Scene* getCurrentScene() { return get()->current_scene; }
+		static ImGuiLayer& getImGuiLayer() { return *get()->imguilayer; }
 	};
 	
 	//defined by client
