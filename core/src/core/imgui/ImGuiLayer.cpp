@@ -155,10 +155,21 @@ namespace core {
         ImGui::Begin("docking", &p_open, window_flags);
         ImGui::PopStyleVar(3);
 
-        ImGuiID dockspace_id = ImGui::GetID("dockspace");
+        dockspace_id = ImGui::GetID("dockspace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
 
         ImGui::End();
+
+        if (!dock_id_top) dock_id_top = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, 0.2f, nullptr, &dockspace_id);
+        if (!dock_id_down) dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.25f, nullptr, &dockspace_id);
+        if (!dock_id_left) dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.2f, nullptr, &dockspace_id);
+        if (!dock_id_right) dock_id_right = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Right, 0.15f, nullptr, &dockspace_id);
+        if (!dock_id_right2) dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
+
+        //APPLICATION-ImGui
+        const char* name = "Application: ";
+        ImGui::Begin(name);
+        ImGui::DockBuilderDockWindow(name, Application::)
     }
 
 }
