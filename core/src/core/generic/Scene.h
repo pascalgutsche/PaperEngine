@@ -32,6 +32,8 @@ namespace core {
         void sceneImgui(float deltaTime);
         void initGeneral();
 
+        Renderer& GetRenderer() const { return *renderer; }
+
         virtual void imgui(float deltaTime);
         virtual void init();
         virtual void loadResources();

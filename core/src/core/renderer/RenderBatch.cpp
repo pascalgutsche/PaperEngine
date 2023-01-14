@@ -65,7 +65,7 @@ namespace core {
         // use the array
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
 
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * maxBatchSize, elements, GL_DYNAMIC_DRAW);
 
         // saving / uploading points (x,y) to vertex slot 0
         //declaration of vertex basically (start at byte offset x, array index y,...)

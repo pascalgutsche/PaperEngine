@@ -4,19 +4,30 @@
 
 namespace core {
 
+
+	struct FrameBufferProperties
+	{
+		uint32_t width, height;
+		uint32_t samples = 1;
+	};
+
 	
 	class FrameBuffer
 	{
 	private:
-		unsigned int fboID;
-
+		FrameBufferProperties frame_buffer_properties;
+		unsigned int fboID = 0;
+		uint32_t color;
+		uint32_t depth;
 	public:
-		FrameBuffer();
+		FrameBuffer(const FrameBufferProperties& properties);
 		~FrameBuffer();
 
-		void invalidate();
-		void bind();
-		void unbind();
+		uint32_t GetColorID() const { return color; }
+
+		void Invalidate();
+		void Bind();
+		void Unbind();
 	};
 }
 

@@ -15,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "lib/core/GLFW/include"
 IncludeDir["GLAD"] = "lib/core/GLAD/include"
 IncludeDir["IMGUI"] = "lib/core/IMGUI_DOCKING"
+IncludeDir["IMPLOT"] = "lib/core/IMPLOT"
 IncludeDir["SPDLOG"] = "lib/SPDLOG/include"
 IncludeDir["MINIAUDIO"] = "lib/MINIAUDIO"
 
@@ -22,6 +23,7 @@ IncludeDir["MINIAUDIO"] = "lib/MINIAUDIO"
 include "lib/core/GLFW"
 include "lib/core/GLAD"
 include "lib/core/IMGUI_DOCKING"
+include "lib/core/IMPLOT"
 
 
 project "core"
@@ -59,6 +61,7 @@ project "core"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.IMPLOT}",
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.MINIAUDIO}"
 	}
@@ -68,6 +71,7 @@ project "core"
 		"GLFW",
 		"GLAD",
 		"IMGUI",
+		"IMPLOT",
 		"opengl32.lib"
 	}
 
@@ -144,7 +148,8 @@ project "conqueror"
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.MINIAUDIO}",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.IMGUI}"
+		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.IMPLOT}"
 	}
 
 	links

@@ -14,6 +14,7 @@ namespace core {
 		Log::init();
 
 		window = Window::createWindow();
+		window->setVSync(false);
 		window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
 		imguilayer = new ImGuiLayer();
@@ -57,29 +58,25 @@ namespace core {
 	{
 		if (!e.getRepeated() && e.getKeyCode() == KEY_P)
 		{
-			imgui_enabled = !imgui_enabled;
+			if (imgui_enabled_queue == 0 && imgui_enabled) imgui_enabled_queue = 1;
+			else imgui_enabled_queue = 2;
 			return true;
+		}
+		if (!e.getRepeated() && e.getKeyCode() == KEY_L)
+		{
+			this->IMGUI().DockPanel("Application: ", IMGUI().getDockspaceRIGHT());
 		}
 		return false;
 	}
 
-	void Application::changeScene(Scene* new_scene)
+	void Application::ProcessQueues()
 	{
-		queued_scene = new_scene;
+		if (imgui_enabled_queue > 0)
+		{
+			imgui_enabled = imgui_enabled_queue - 1;
+			imgui_enabled_queue = 0;
+		}
 	}
-
-	void Application::addLayer(Layer* layer)
-	{
-		layer_stack.addLayer(layer);
-		layer->attach();
-	}
-
-	void Application::addOverLay(Layer* layer)
-	{
-		layer_stack.addOverlay(layer);
-		layer->attach();
-	}
-
 
 	void Application::run() 
 	{
@@ -105,6 +102,8 @@ namespace core {
 		{
 			glfwPollEvents();
 
+			ProcessQueues();
+
 			//MouseListener::resetValues();
 			if (current_scene != nullptr) {
 				const glm::vec4 scene_backcolor = current_scene->getBackcolor();
@@ -127,6 +126,8 @@ namespace core {
 						queued_scene = nullptr;
 					}
 
+					current_scene->update(dt);
+
 					if (imgui_enabled) {
 						for (Layer* layer : layer_stack)
 							layer->update(dt);
@@ -137,7 +138,7 @@ namespace core {
 						imguilayer->end();
 					}
 
-					current_scene->update(dt);
+					frames_rendered++;
 				}
 			}
 			else if (warn) {
@@ -153,6 +154,23 @@ namespace core {
 
 		LOG_CORE_WARN("Reached end of game function. Shutting down.");
 		delete window;
+	}
+
+	void Application::changeScene(Scene* new_scene)
+	{
+		queued_scene = new_scene;
+	}
+
+	void Application::addLayer(Layer* layer)
+	{
+		layer_stack.addLayer(layer);
+		layer->attach();
+	}
+
+	void Application::addOverLay(Layer* layer)
+	{
+		layer_stack.addOverlay(layer);
+		layer->attach();
 	}
 
 	void Application::exit()

@@ -2,6 +2,7 @@
 #include "utility.h"
 
 #include "renderer/RenderBatch.h"
+#include "renderer/FrameBuffer.h"
 #include "generic/GameObject.h"
 #include "component/SpriteRenderer.h"
 
@@ -11,6 +12,9 @@ namespace core {
     private:
         const int MAX_BATCH_SIZE = 1000;
         std::vector<RenderBatch*> batches;
+
+        FrameBufferProperties properties;
+        FrameBuffer* frame_buffer = nullptr;
     public:
         Renderer();
         ~Renderer();
@@ -19,6 +23,8 @@ namespace core {
         // this function has to be called on every frame (update)
         void render(float dt);
         void updateGameObjects(float deltaTime, std::vector<GameObject*>& gameObjects);
+
+        FrameBuffer& GetFrameBuffer() const { return *frame_buffer; }
     };
 
 }

@@ -3,6 +3,8 @@
 #include "renderer/Renderer.h"
 #include "component/SpriteRenderer.h"
 #include "generic/Application.h"
+
+#include "glad/glad.h"
 namespace core {
 
     struct less_than_key
@@ -14,7 +16,9 @@ namespace core {
     };
 
     Renderer::Renderer() {
-
+        properties.width = 1080;
+        properties.height = 720;
+        frame_buffer = new FrameBuffer(properties);
     }
 
     Renderer::~Renderer() {
@@ -56,6 +60,12 @@ namespace core {
     }
 
     void Renderer::render(const float dt) {
+        glViewport(0, 0, Application::getWindow()->getWidth(), Application::getWindow()->getHeight());
+        if (Application::GetImGuiEnabled())
+        {
+            frame_buffer->Bind();
+        }
+
         //calculating camera vectors
         Application::getCurrentScene()->getCamera()->calcCameraVectors();
 
@@ -66,6 +76,8 @@ namespace core {
         for (int i = 0; i < batches.size(); i++) {
             batches[i]->render();
         }
+
+        frame_buffer->Unbind();
     }
 
     void Renderer::updateGameObjects(float deltaTime, std::vector<GameObject*>& gameObjects)

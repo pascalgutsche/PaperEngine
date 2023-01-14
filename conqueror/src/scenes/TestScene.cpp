@@ -20,10 +20,10 @@ void TestScene::loadResources() {
 }
 
 void TestScene::init() {
-    GameObject* gameObject1 = new GameObject("Test", Transform(glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
-    GameObject* gameObject2 = new GameObject("Test", Transform(glm::vec2(1.0f, 2.0f), glm::vec2(1.0f, 1.0f)));
-    GameObject* gameObject3 = new GameObject("Test", Transform(glm::vec2(0.0f, 4.0f), glm::vec2(1.0f, 1.0f)));
-    GameObject* gameObject4 = new GameObject("Test", Transform(glm::vec2(0.0f, 6.0f), glm::vec2(1.0f, 1.0f)));
+    GameObject* gameObject1 = new GameObject("Test", Transform(glm::vec2(-1.0f, 0.0f), glm::vec2(1.0f, 1.0f)));
+    GameObject* gameObject2 = new GameObject("Test", Transform(glm::vec2(-1.0f, 2.0f), glm::vec2(1.0f, 1.0f)));
+    GameObject* gameObject3 = new GameObject("Test", Transform(glm::vec2(-1.0f, 4.0f), glm::vec2(1.0f, 1.0f)));
+    GameObject* gameObject4 = new GameObject("Test", Transform(glm::vec2(-1.0f, 6.0f), glm::vec2(1.0f, 1.0f)));
 
     gameObject1->addComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("server-icon.png"))));
     gameObject2->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)));
