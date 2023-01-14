@@ -17,6 +17,7 @@ namespace core {
 	private:
 		FrameBufferProperties frame_buffer_properties;
 		unsigned int fboID = 0;
+		unsigned int rbo = 0;
 		uint32_t color;
 		uint32_t depth;
 	public:
@@ -26,8 +27,12 @@ namespace core {
 		uint32_t GetColorID() const { return color; }
 
 		void Invalidate();
+		void Resize(unsigned int width, unsigned int height);
+
 		void Bind();
 		void Unbind();
+
+		FrameBufferProperties& GetProperties() { return frame_buffer_properties; }
 	};
 }
 

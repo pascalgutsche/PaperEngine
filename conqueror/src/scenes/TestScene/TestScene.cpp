@@ -38,7 +38,7 @@ void TestScene::init() {
     this->addGameObjectToScene(gameObject3);
     this->addGameObjectToScene(gameObject4);
 
-    Application::get()->addOverLay(example_layer);
+    Application::Get()->addOverLay(example_layer);
 
     //gameObject5->setZIndex(100);
 
@@ -50,78 +50,67 @@ int selectedItem = 0;
 float volume = 1.0f;
 
 void TestScene::update(float deltaTime) {
-    if (MouseListener::getScrollY() > 0) {
-        camera->position.z += 10.0f * deltaTime;
-    }
-    else if (MouseListener::getScrollY() < 0) {
-        camera->position.z -= 10.0f * deltaTime;
-    }
-    else if (MouseListener::getScrollX() > 0) {
-        //camera.fov += 10.0f * deltaTime;
-    }
-    else if (MouseListener::getScrollX() < 0) {
-        //camera.fov -= 10.0f * deltaTime;
-    }
+    
 
-    if (KeyListener::isKeyPressed(KEY_G))
+    if (Input::IsKeyPressed(KEY_G))
     {
         soundSel.playSound();
         volume = soundSel.getVolume();
     }
 
-    if (KeyListener::isKeyPressed(KEY_Q))
+    if (Input::IsKeyPressed(KEY_Q))
     {
         soundTroll.playSound();
     }
 
-    if (KeyListener::isKeyPressed(KEY_H))
+    if (Input::IsKeyPressed(KEY_H))
     {
         soundSel.stopSound();
     }
 
-    if (KeyListener::isKeyPressed(KEY_J))
+    if (Input::IsKeyPressed(KEY_J))
     {
         volume += 0.1f;
         soundSel.setVolume(volume);
     }
 
-    if (KeyListener::isKeyPressed(KEY_K))
+    if (Input::IsKeyPressed(KEY_K))
     {
         volume -= 0.1f;
         soundSel.setVolume(volume);
     }
 
-    if (KeyListener::isKeyPressed(KEY_S)) {
+    if (Input::IsKeyPressed(KEY_S)) {
         camera->position.y -= 2.0f * deltaTime;
     }
 
-    if (KeyListener::isKeyPressed(KEY_W)) {
+    if (Input::IsKeyPressed(KEY_W)) {
         camera->position.y += 2.0f * deltaTime;
     }
 
-    if (KeyListener::isKeyPressed(KEY_D)) {
+    if (Input::IsKeyPressed(KEY_D)) {
         camera->position.x += 2.0f * deltaTime;
     }
 
-    if (KeyListener::isKeyPressed(KEY_A)) {
+    if (Input::IsKeyPressed(KEY_A)) {
         camera->position.x -= 2.0f * deltaTime;
     }
 
-    if (KeyListener::isKeyPressed(KEY_LEFT)) {
+    if (Input::IsKeyPressed(KEY_LEFT)) {
         activeGameObject->transform.scale.x += 2.0f * deltaTime;
     }
-    if (KeyListener::isKeyPressed(KEY_RIGHT)) {
+    if (Input::IsKeyPressed(KEY_RIGHT)) {
         activeGameObject->transform.scale.x -= 2.0f * deltaTime;
     }
-    if (KeyListener::isKeyPressed(KEY_UP)) {
+    if (Input::IsKeyPressed(KEY_UP)) {
         activeGameObject->transform.scale.y += 2.0f * deltaTime;
     }
-    if (KeyListener::isKeyPressed(KEY_DOWN)) {
+    if (Input::IsKeyPressed(KEY_DOWN)) {
         activeGameObject->transform.scale.y -= 2.0f * deltaTime;
     }
 
-    if (KeyListener::isKeyPressed(KEY_P)) {
-        Application::get()->changeScene(new TestScene());
+    if (Input::IsKeyPressed(KEY_P)) {
+        Application::Get()->changeScene(new TestScene());
     }
 
 

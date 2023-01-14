@@ -17,7 +17,7 @@ uniform mat4 uView;
 
 void main()
 {
-    gl_Position = uProjection * uView * vec4(aPos, 0.0f, 1.0f); // adjust the gl_Position with the help of 'u' Factors
+    gl_Position = uProjection * uView * vec4(aPos.x, aPos.y, 0.0f, 1.0f); // adjust the gl_Position with the help of 'u' Factors
     fColor = aColor; // set the output variable to a dark-red color
     fTexCoord = aTexCoord; // set texCoord from the array within the code
     fTexID = aTexID; // pipe texID to fragment

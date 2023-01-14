@@ -3,10 +3,11 @@
 #include "core/component/Sprite.h"
 #include "core/component/SpriteRenderer.h"
 
-struct GLFWwindow;
-#include "core/event/KeyListener.h"
+#include "core/event/KeyEvent.h"
+#include "core/event/MouseEvent.h"
+#include "core/event/ApplicationEvent.h"
+#include "core/event/Input.h"
 #include "core/event/KeyCodes.h"
-#include "core/event/MouseListener.h"
 #include "core/event/MouseCodes.h"
 
 #include "core/generic/Application.h"

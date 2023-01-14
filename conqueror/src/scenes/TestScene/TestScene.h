@@ -9,7 +9,7 @@ private:
 
 public:
 	TestScene();
-	~TestScene() override;
+	virtual ~TestScene() override;
 
 	void loadResources() override;
 	void init() override;

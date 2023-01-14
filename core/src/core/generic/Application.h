@@ -36,6 +36,7 @@ namespace core {
 		LayerStack layer_stack;
 
 	public:
+
 		Application();
 		virtual ~Application();
 
@@ -50,15 +51,18 @@ namespace core {
 
 		void changeScene(Scene* new_scene);
 
-		void exit();
+		void exit() { game_running = false; }
 
-		static long int GetFramesRendered() { return get()->frames_rendered; }
-		static bool GetImGuiEnabled() { return get()->imgui_enabled; }
+		static Application* Get() { return instance; }
 
-		static Application* get();
-		static Window* getWindow() { return get()->window; }
-		static Scene* getCurrentScene() { return get()->current_scene; }
-		static ImGuiLayer& IMGUI() { return *get()->imguilayer; }
+		static long int GetFramesRendered() { return Get()->frames_rendered; }
+		static bool GetImGuiEnabled() { return Get()->imgui_enabled; }
+		static float GetDT() { return Get()->dt; }
+		static void setEventCallback(const EventCallbackFunction& callback_function) { Get()->window->setEventCallback(callback_function); }
+
+		static Window* getWindow() { return Get()->window; }
+		static Scene* getCurrentScene() { return Get()->current_scene; }
+		static ImGuiLayer& IMGUI() { return *Get()->imguilayer; }
 	};
 	
 	//defined by client

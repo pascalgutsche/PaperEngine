@@ -24,6 +24,13 @@ namespace core {
 
         std::unordered_map<std::string, ImGuiID> dock_panel_queue;
 
+        void ApplicationPanel(const float dt);
+        void ScenePanel(const float dt);
+        void LayerPanel(const float dt);
+        void ViewPortPanel(const float dt);
+
+        glm::vec2 viewport_size;
+
     public:
         ImGuiLayer();
         ~ImGuiLayer();
@@ -32,7 +39,6 @@ namespace core {
         void detach() override;
         void update(const float dt) override { }
         void imgui(const float dt) override;
-        void event(Event& event) override { }
 
         void begin(const float dt);
         void end();

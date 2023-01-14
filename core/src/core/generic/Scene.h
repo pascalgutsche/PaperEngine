@@ -1,7 +1,6 @@
 #pragma once
 #include "utility.h"
 
-namespace core { class Scene; }
 #include "generic/Camera.h"
 #include "renderer/Renderer.h"
 #include "generic/GameObject.h"
@@ -34,10 +33,14 @@ namespace core {
 
         Renderer& GetRenderer() const { return *renderer; }
 
+        virtual void update(float deltaTime);
+
+    private:
         virtual void imgui(float deltaTime);
         virtual void init();
         virtual void loadResources();
-        virtual void update(float deltaTime);
     };
+
+    Scene& SCENE();
 
 }

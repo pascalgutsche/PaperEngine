@@ -4,10 +4,13 @@
 class ExampleLayer : public core::Layer
 {
 public:
+	virtual ~ExampleLayer() = default;
+
 	void attach() override;
 	void detach() override;
 	void update(const float dt) override;
 	void imgui(const float dt) override;
-	void event(core::Event& event) override;
+
+	bool OnMouseScrolled(core::MouseScrolledEvent& e) override;
 };
 

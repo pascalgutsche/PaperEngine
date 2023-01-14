@@ -7,11 +7,6 @@
 
 
 namespace core {
-	static void ApplicationPanel(const float dt);
-    static void ScenePanel(const float dt);
-    static void LayerPanel(const float dt);
-    static void ViewPortPanel(const float dt);
-
 
     static void darkmode(ImGuiIO& io, ImGuiStyle& style)
     {
@@ -206,7 +201,7 @@ namespace core {
 
     }
 
-    static void ApplicationPanel(const float dt)
+	void ImGuiLayer::ApplicationPanel(const float dt)
     {
         const char* name = "Application: ";
         std::stringstream stream;
@@ -262,7 +257,7 @@ namespace core {
         ImGui::End();
     }
 
-    static void ScenePanel(const float dt)
+    void ImGuiLayer::ScenePanel(const float dt)
     {
         const char* name = "Scenes: ";
         std::stringstream stream;
@@ -272,7 +267,7 @@ namespace core {
         ImGui::End();
     }
 
-    static void LayerPanel(const float dt)
+    void ImGuiLayer::LayerPanel(const float dt)
     {
         const char* name = "Layers: ";
         std::stringstream stream;
@@ -282,19 +277,27 @@ namespace core {
         ImGui::End();
     }
 
-    static void ViewPortPanel(const float dt)
+    void ImGuiLayer::ViewPortPanel(const float dt)
     {
         const char* name = "ViewPort: ";
         std::stringstream stream;
         Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceMAIN());
 
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin(name);
 
+        ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
+        if (viewport_size != *(glm::vec2*)&viewport_panel_size)
+        {
+            viewport_size = { viewport_panel_size.x, viewport_panel_size.y };
+            Application::getCurrentScene()->GetRenderer().GetFrameBuffer().Resize(viewport_size.x, viewport_size.y);
+        }
         uint32_t textureID = Application::getCurrentScene()->GetRenderer().GetFrameBuffer().GetColorID();
 
-        ImGui::Image((void*)textureID, ImVec2(1280.0f, 720));
+        ImGui::Image((void*)textureID, ImVec2(viewport_size.x, viewport_size.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
         ImGui::End();
+        ImGui::PopStyleVar();
     }
 
 }

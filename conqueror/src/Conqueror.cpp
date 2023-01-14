@@ -1,7 +1,7 @@
 #define INCLUDE_MAIN
 #include "Engine.h"
 
-#include "scenes/TestScene.h"
+#include "scenes/TestScene/TestScene.h"
 
 class Conqueror : public core::Application {
 public:

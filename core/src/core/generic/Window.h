@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 namespace core {
+	using EventCallbackFunction = std::function<void(Event&)>;
 
     struct WindowProps
     {
@@ -19,7 +20,6 @@ namespace core {
     };
 
     class Window {
-        using EventCallbackFunction = std::function<void(Event&)>;
     private:
         GLFWwindow* glfw_window;
         bool initialized = false;

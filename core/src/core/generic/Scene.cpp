@@ -1,10 +1,11 @@
 #include "_Core.h"
 
+#include "imgui/ImGuiLayer.h"
+#include "generic/Application.h"
 #include "generic/Scene.h"
 #include "generic/Camera.h"
 #include "renderer/Renderer.h"
 
-#include "imgui/ImGuiLayer.h"
 
 namespace core {
 
@@ -59,11 +60,6 @@ namespace core {
         delete renderer;
     }
 
-    void Scene::update(float deltaTime) {
-        // fps are also useful
-        std::cout << "[Scene] FPS: " << 1 / deltaTime << std::endl;
-    }
-
     Camera* Scene::getCamera() {
         // return the current scene camera, useful for scene testing
         return this->camera;
@@ -78,10 +74,6 @@ namespace core {
         imgui(deltaTime);
     }
 
-    void Scene::imgui(float deltaTime) {
-
-    }
-
     glm::vec4 Scene::getBackcolor() {
         return this->backcolor;
     }
@@ -90,8 +82,15 @@ namespace core {
         return this->gameObjects;
     }
 
-    void Scene::loadResources() {
+    void Scene::update(float deltaTime) { }
 
+	void Scene::imgui(float deltaTime) { }
+
+    void Scene::loadResources() { }
+
+    Scene& SCENE()
+    {
+        return *Application::getCurrentScene();
     }
 
 }

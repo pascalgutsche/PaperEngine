@@ -60,11 +60,17 @@ namespace core {
     }
 
     void Renderer::render(const float dt) {
-        glViewport(0, 0, Application::getWindow()->getWidth(), Application::getWindow()->getHeight());
         if (Application::GetImGuiEnabled())
         {
             frame_buffer->Bind();
+            glViewport(0, 0, frame_buffer->GetProperties().width, frame_buffer->GetProperties().height);
         }
+        else
+        {
+            glViewport(0, 0, Application::getWindow()->getWidth(), Application::getWindow()->getHeight());
+        }
+        //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT); // we're not using the stencil buffer now
 
         //calculating camera vectors
         Application::getCurrentScene()->getCamera()->calcCameraVectors();

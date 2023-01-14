@@ -2,6 +2,7 @@
 
 #include "generic/Application.h"
 #include "event/KeyCodes.h"
+#include "event/Input.h"
 
 #include "glad/glad.h"
 
@@ -15,7 +16,7 @@ namespace core {
 
 		window = Window::createWindow();
 		window->setVSync(false);
-		window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
+		setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
 		imguilayer = new ImGuiLayer();
 	}
@@ -128,16 +129,16 @@ namespace core {
 
 					current_scene->update(dt);
 
+					for (Layer* layer : layer_stack)
+						layer->update(dt);
+
 					if (imgui_enabled) {
-						for (Layer* layer : layer_stack)
-							layer->update(dt);
 
 						imguilayer->begin(dt);
 						for (Layer* layer : layer_stack)
 							layer->imgui(dt);
 						imguilayer->end();
 					}
-
 					frames_rendered++;
 				}
 			}
@@ -171,16 +172,6 @@ namespace core {
 	{
 		layer_stack.addOverlay(layer);
 		layer->attach();
-	}
-
-	void Application::exit()
-	{
-		game_running = false;
-	}
-
-
-	Application* Application::get() {
-		return instance;
 	}
 
 }
