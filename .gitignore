@@ -1,7 +1,7 @@
 .vs/**
 bin/**
 bin-int/**
-Client.sln
+Conqueror.sln
 *.vcxproj
 *.filters
 *.user

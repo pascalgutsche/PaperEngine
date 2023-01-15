@@ -1,4 +1,4 @@
-workspace "Client"
+workspace "Conqueror"
 	architecture "x64"
 	startproject "conqueror"
 	staticruntime "off"
@@ -28,7 +28,7 @@ include "lib/core/IMPLOT"
 
 project "core"
 	location "core"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -96,20 +96,12 @@ project "core"
 			"CORE_ENABLE_ASSERTS"
 		}
 
-		
-		postbuildcommands 
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/conqueror/")
-		}
-
 	filter "configurations:Debug"
 		defines "BUILD_DEBUG"
-		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
-		runtime "Release"
 		optimize "On"
 
 
@@ -175,10 +167,8 @@ project "conqueror"
 
 	filter "configurations:Debug"
 		defines "BUILD_DEBUG"
-		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
-		runtime "Release"
 		optimize "On"

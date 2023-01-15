@@ -27,9 +27,7 @@ project "IMPLOT"
 		cppdialect "C++17"
 
 	filter "configurations:Debug"
-		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		runtime "Release"
 		optimize "on"
