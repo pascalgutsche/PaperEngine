@@ -19,7 +19,6 @@ namespace core {
         this->transform = Transform();
         this->zIndex = 0;
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
-        this->components = new std::vector<Component*>();
 
     }
 
@@ -30,7 +29,6 @@ namespace core {
         this->transform = transform;
         this->zIndex = 0;
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
-        this->components = new std::vector<Component*>();
 
     }
 
@@ -40,20 +38,18 @@ namespace core {
         this->transform = transform;
         this->zIndex = 0;
         this->displayMode = displaymode;
-        this->components = new std::vector<Component*>();
 
     }
 
     GameObject::~GameObject()
     {
         deleteComponents();
-        delete components;
     }
 
 
     Component* GameObject::getComponent(std::string componentTypeID) {
         // iterate through components vector and return the component if it fits to the desired component type (renderer type)
-        for (auto& component : *components)
+        for (auto component : components)
         {
             if (componentTypeID == component->getTypeID())
             {
@@ -66,9 +62,10 @@ namespace core {
 
     bool GameObject::removeComponent(Component* delComponent) {
         // iterate through components array and delete the component regarding this sprite that equals to the desired component type
-        for (int i = 0; i < components->size(); i++) {
-            if (components->at(i) == delComponent) {
-                components->at(i) = nullptr;
+        for (int i = 0; i < components.size(); i++) {
+            if (components[i] == delComponent) {
+                delete components[i];
+                components[i] = nullptr;
                 return true;
             }
         }
@@ -82,13 +79,13 @@ namespace core {
 
         // if it does not exist, create it at the next place that has not been used in the vector
         bool exists = false;
-        for (auto& i : *components) {
+        for (auto i : components) {
             if (i == component) {
                 exists = true;
             }
         }
         if (!exists) {
-            components->push_back(component);
+            components.push_back(component);
             CGMap[component] = this;
             return true;
         }
@@ -97,24 +94,24 @@ namespace core {
 
     void GameObject::update(float dt) {
         // update gameObject, in order to display moving changes
-        for (auto& component : *components) {
+        for (auto component : components) {
             component->update(dt);
         }
     }
 
     void GameObject::start() {
         // start all components
-        for (auto& component : *components) {
+        for (auto component : components) {
             component->start();
         }
     }
 
     void GameObject::deleteComponents() {
         // delete all components
-        for (auto& i : *components) {
+        for (auto i : components) {
             delete i;
         }
-        components->clear();
+        components.clear();
     }
 
     std::string GameObject::getName() {
@@ -139,7 +136,7 @@ namespace core {
         ImGui::SliderFloat(std::string("Width:").c_str(), &this->transform.scale.x, 0.0f, 10.0f, 0);
         ImGui::SliderFloat(std::string("Height:").c_str(), &this->transform.scale.y, 0.0f, 10.0f, 0);
 
-        for (auto& component : *components) {
+        for (auto component : components) {
             component->imgui(dt);
         }
     }

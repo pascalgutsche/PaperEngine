@@ -7,10 +7,10 @@
 #include "utils/DataPool.h"
 
 namespace core {
-    class CORE_API GameObject {
+    class  GameObject {
     private:
         std::string name;
-        std::vector<Component*>* components;
+        std::vector<Component*> components;
         int zIndex;
 
     public:
