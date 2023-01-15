@@ -14,10 +14,10 @@ namespace core {
         std::string typeID;
     public:
         Component();
-        ~Component();
+        virtual ~Component();
         virtual void start();
-        virtual void update(float deltaTime);
-        virtual void imgui(float deltaTime);
+        virtual void update(float dt);
+        virtual void imgui(float dt);
     };
 
 }

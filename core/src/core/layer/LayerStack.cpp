@@ -51,8 +51,11 @@ namespace core
 		}
 	}
 
-
-
-
-
+	int LayerStack::GetPlace(Layer* layer) const
+	{
+		stack::const_iterator it = std::find(layers.begin(), layers.end(), layer);
+		if (it == layers.end())
+			return -1;
+		return it - layers.begin();
+	}
 }

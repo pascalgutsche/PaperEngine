@@ -96,19 +96,12 @@ project "core"
 			"CORE_ENABLE_ASSERTS"
 		}
 
-		postbuildcommands 
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/conqueror/")
-		}
-
 	filter "configurations:Debug"
 		defines "BUILD_DEBUG"
-		--runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
-		--runtime "Release"
 		optimize "On"
 
 
@@ -174,10 +167,8 @@ project "conqueror"
 
 	filter "configurations:Debug"
 		defines "BUILD_DEBUG"
-		--runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
-		--runtime "Release"
 		optimize "On"

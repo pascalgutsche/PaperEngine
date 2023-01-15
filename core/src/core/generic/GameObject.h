@@ -10,7 +10,7 @@ namespace core {
     class CORE_API GameObject {
     private:
         std::string name;
-        std::vector<Component*> components;
+        std::vector<Component*>* components;
         int zIndex;
 
     public:
@@ -18,14 +18,15 @@ namespace core {
         GameObject(std::string name);
         GameObject(std::string name, Transform transform);
         GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode);
+        ~GameObject();
 
         Component* getComponent(std::string componentTypeID);
         bool removeComponent(Component* component);
         bool addComponent(Component* component);
 
-        void update(float deltaTime);
+        void update(float dt);
         void start();
-        void imgui(float deltaTime);
+        void imgui(float dt);
 
         void deleteComponents();
         std::string getName();

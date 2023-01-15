@@ -37,7 +37,7 @@ namespace core {
         Transform transform;
 
         void addGameObject(GameObject* gameObject, int x, int y);
-        void update(float deltaTime);
+        void update(float dt);
 
     };
 

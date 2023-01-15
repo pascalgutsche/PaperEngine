@@ -89,11 +89,11 @@ namespace core {
         glEnableVertexAttribArray(3);
     }
 
-    void RenderBatch::addSprite(SpriteRenderer* spriteRenderer) {
+    void RenderBatch::addSprite(SpriteRenderer* sprite_renderer) {
         // add sprite to renderbatch
         // add it to the last row and increase the amount of sprites we have in the variable
         int index = this->numSprites;
-        sprites.insert(sprites.end(), spriteRenderer);
+        sprites.insert(sprites.end(), sprite_renderer);
         numSprites++;
 
         // if the sprite render has a texture, give it to the renderbatch, so that he can use (render) it
@@ -107,6 +107,12 @@ namespace core {
             this->hasRoom_bool = false;
         }
     }
+
+    bool RenderBatch::hasSprite(SpriteRenderer* sprite_renderer)
+    {
+        return std::find(sprites.begin(), sprites.end(), sprite_renderer) != sprites.end();
+    }
+
 
     void RenderBatch::updateTextures() {
         textures.erase(textures.begin(), textures.end());
@@ -166,6 +172,7 @@ namespace core {
         int* texArray = new int[texSlots.size()];
         std::copy(texSlots.begin(), texSlots.end(), texArray);
         shader->uploadIntArray("uTexture", texSlots.size(), texArray);
+        delete texArray;
         //for (int i = 0; i < texSlots.size(); i++) {
         //    switch (i) {
         //    case 0:
@@ -366,7 +373,7 @@ namespace core {
     }
 
     bool RenderBatch::hasTextureRoom() {
-        return textures.size() < 1;
+        return textures.size() < 8;
     }
 
     bool RenderBatch::hasTexture(Texture* tex) {

@@ -34,8 +34,8 @@ namespace core {
         // iterate through gameObjects and start all gameObjects in the current scene
         // also add all gameObjects to the current scene renderer
         for (int i = 0; i < gameObjects.size(); i++) {
-            gameObjects[i]->start();
-            renderer->add(gameObjects[i]);
+            //gameObjects[i]->start();
+            //renderer->add(gameObjects[i]);
         }
         isRunning = true;
     }
@@ -45,13 +45,13 @@ namespace core {
         // save the newest gameObject to an used vector place at the end of the used places
 
         if (isRunning) {
-            gameObjects.push_back(gameObject);
-            gameObject->start();
-
-            renderer->add(gameObject);
+            //gameObjects.push_back(gameObject);
+            //gameObject->start();
+            //
+            //renderer->add(gameObject);
         }
         else {
-            gameObjects.push_back(gameObject);
+            //gameObjects.push_back(gameObject);
         }
     }
 
@@ -65,13 +65,13 @@ namespace core {
         return this->camera;
     }
 
-    void Scene::sceneImgui(float deltaTime) {
+    void Scene::sceneImgui(float dt) {
         if (activeGameObject != nullptr) {
             ImGui::Begin(std::string("Inspector - " + activeGameObject->getName()).c_str());
-            activeGameObject->imgui(deltaTime);
+            activeGameObject->imgui(dt);
             ImGui::End();
         }
-        imgui(deltaTime);
+        imgui(dt);
     }
 
     glm::vec4 Scene::getBackcolor() {
@@ -81,16 +81,4 @@ namespace core {
     std::vector<GameObject*> Scene::getGameObjects() {
         return this->gameObjects;
     }
-
-    void Scene::update(float deltaTime) { }
-
-	void Scene::imgui(float deltaTime) { }
-
-    void Scene::loadResources() { }
-
-    Scene& SCENE()
-    {
-        return *Application::getCurrentScene();
-    }
-
 }

@@ -20,7 +20,7 @@ namespace core {
 
     }
 
-    void FontRenderer::update(float deltaTime) {
+    void FontRenderer::update(float dt) {
 
     }
 

@@ -45,7 +45,7 @@ namespace core {
         lastTransform = core::GameObject::CGMap[this]->transform.copy();
     }
 
-    void SpriteRenderer::update(float deltaTime) {
+    void SpriteRenderer::update(float dt) {
         // check if there have been made changes to the sprite (transform of the gameObject)
         if (!(core::GameObject::CGMap[this]->transform.equals(*lastTransform)))
         {
@@ -59,7 +59,7 @@ namespace core {
     static float timeUntilRefresh = 0.0f;
     static std::vector<std::string> texturePaths;
 
-    void SpriteRenderer::imgui(float deltaTime) {
+    void SpriteRenderer::imgui(float dt) {
         ImGui::Text("Component - SpriteRenderer:");
         if (this->getTexture() == nullptr) {
             float colorArray[4]{
@@ -75,7 +75,7 @@ namespace core {
             }
         }
         else {
-            timeUntilRefresh -= deltaTime;
+            timeUntilRefresh -= dt;
             if (timeUntilRefresh <= 0.0f) {
                 texturePaths.erase(texturePaths.begin(), texturePaths.end());
                 DIR* dir = opendir("assets/textures");

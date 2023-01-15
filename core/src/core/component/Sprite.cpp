@@ -48,6 +48,10 @@ namespace core {
         }
     }
 
+    Sprite::~Sprite()
+    {
+    }
+
     void Sprite::setTexture(Texture* texture) {
         this->texture = texture;
     }

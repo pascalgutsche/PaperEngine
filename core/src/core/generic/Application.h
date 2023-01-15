@@ -25,7 +25,7 @@ namespace core {
 		float dt;
 		long int frames_rendered = 0;
 		bool game_running = true;
-		bool imgui_enabled = true; int imgui_enabled_queue = 0;
+		bool imgui_enabled = false; int imgui_enabled_queue = 0;
 
 		bool onWindowClose(WindowCloseEvent& e);
 		bool onWindowResize(WindowResizeEvent& e);
@@ -46,8 +46,10 @@ namespace core {
 
 		void onEvent(Event& event);
 
-		void addLayer(Layer* layer);
-		void addOverLay(Layer* layer);
+		static void AddLayer(Layer* layer, bool add_to_renderer = true);
+		static void AddOverLay(Layer* layer, bool add_to_renderer = true);
+		static void RemoveLayer(Layer* layer);
+		static void RemoveOverLay(Layer* layer);
 
 		void changeScene(Scene* new_scene);
 
@@ -63,6 +65,8 @@ namespace core {
 		static Window* getWindow() { return Get()->window; }
 		static Scene* getCurrentScene() { return Get()->current_scene; }
 		static ImGuiLayer& IMGUI() { return *Get()->imguilayer; }
+		static LayerStack& GetLayerStack() { return Get()->layer_stack; }
+
 	};
 	
 	//defined by client

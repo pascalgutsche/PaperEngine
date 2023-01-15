@@ -30,3 +30,5 @@
 
 //EntryPoint
 #include "core/EntryPoint.h"
+
+using namespace core;

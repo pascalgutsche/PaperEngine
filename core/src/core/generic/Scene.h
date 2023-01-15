@@ -14,9 +14,10 @@ namespace core {
         Camera* camera = nullptr;
         Renderer* renderer = nullptr;
         GameObject* activeGameObject = nullptr;
-        glm::vec4 backcolor;
+        glm::vec4 backcolor = glm::vec4();
     public:
         std::vector<GameObject*> gameObjects;
+
     public:
         Scene();
         virtual ~Scene();
@@ -28,19 +29,18 @@ namespace core {
         void addGameObjectToScene(GameObject* gameObject);
         void start();
         void disable();
-        void sceneImgui(float deltaTime);
+        void sceneImgui(float dt);
         void initGeneral();
 
         Renderer& GetRenderer() const { return *renderer; }
 
-        virtual void update(float deltaTime);
+        virtual void update(float dt) = 0;
+        virtual void OnEvent(Event& e) = 0;
 
     private:
-        virtual void imgui(float deltaTime);
-        virtual void init();
-        virtual void loadResources();
+        virtual void imgui(float dt) = 0;
+        virtual void init() = 0;
+        virtual void loadResources() = 0;
     };
-
-    Scene& SCENE();
 
 }

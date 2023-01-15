@@ -53,7 +53,8 @@ namespace core {
         RenderBatch(int maxBatchSize, int zIndex, DataPool::DISPLAYMODE displaymode);
         ~RenderBatch();
         void start();
-        void addSprite(SpriteRenderer* spriteRenderer);
+        void addSprite(SpriteRenderer* sprite_renderer);
+        bool hasSprite(SpriteRenderer* sprite_renderer);
         void render();
 
         bool hasRoom();

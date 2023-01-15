@@ -10,9 +10,9 @@ namespace core {
 
     public:
         FontRenderer();
-        ~FontRenderer();
+        virtual ~FontRenderer();
         void start() override;
-        void update(float deltaTime) override;
+        void update(float dt) override;
     };
 
 }

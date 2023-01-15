@@ -32,13 +32,15 @@ namespace core {
         glm::vec2 viewport_size;
 
     public:
-        ImGuiLayer();
+        ImGuiLayer()
+	        : Layer("ImGuiLayer") { }
         ~ImGuiLayer();
 
-        void attach() override;
-        void detach() override;
+        void OnAttach() override;
+        void OnDetach() override;
         void update(const float dt) override { }
         void imgui(const float dt) override;
+        void OnEvent(Event& e) override { }
 
         void begin(const float dt);
         void end();
@@ -63,7 +65,12 @@ struct ScrollingBuffer {
     ScrollingBuffer(int max_size = 2000) {
         MaxSize = max_size;
         Offset = 0;
-        Data.reserve(MaxSize);
+        Data.resize(max_size);
+        for (int i = 0; i < max_size; i++)
+        {
+            Data[i].x = -i * 0.016f;
+            Data[i].y = 10000;
+        }
     }
     void AddPoint(float x, float y) {
         if (Data.size() < MaxSize)

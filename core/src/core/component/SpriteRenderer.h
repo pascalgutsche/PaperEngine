@@ -19,14 +19,14 @@ namespace core {
         SpriteRenderer(glm::vec4 color);
         SpriteRenderer(Sprite* sprite);
 
-        ~SpriteRenderer();
+        virtual ~SpriteRenderer();
 
         /* troll */
         // setup function
         void start() override;
         // update function call on every update (frame)
-        void update(float deltaTime) override;
-        void imgui(float deltaTime) override;
+        void update(float dt) override;
+        void imgui(float dt) override;
         glm::vec4 getColor();
         Texture* getTexture();
         float* getTexCoords();

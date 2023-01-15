@@ -106,7 +106,7 @@ namespace core {
         */
     }
 
-    void Mesh::update(float deltaTime) {
+    void Mesh::update(float dt) {
         if (!(this->transform.equals(*lastTransform)))
         {
             // if it is not equal, save it to the local transform and

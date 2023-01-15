@@ -56,6 +56,13 @@ project "GLFW"
 			"Dwmapi.lib"
 		}
 
+		disablewarnings 
+		{
+		"4047",
+		"4024",
+		"4013"
+		}
+
 	filter "configurations:Debug"
 		--runtime "Debug"
 		symbols "on"

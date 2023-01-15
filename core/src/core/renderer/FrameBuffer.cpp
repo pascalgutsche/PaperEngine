@@ -60,6 +60,8 @@ namespace core {
 
 	void FrameBuffer::Bind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, fboID);
+		glViewport(0, 0, frame_buffer_properties.width, frame_buffer_properties.height);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void FrameBuffer::Unbind() {

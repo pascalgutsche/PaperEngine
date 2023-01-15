@@ -25,20 +25,28 @@ namespace core {
 
     }
 
-    void Renderer::add(GameObject* gameObject) {
-        // create spriterenderer with the coponent spriterneder if a spriterenderer exists
-        SpriteRenderer* spriteRenderer = (SpriteRenderer*)gameObject->getComponent(std::string("sprite_renderer"));
-        if (spriteRenderer != nullptr) {
-            add(spriteRenderer);
+    void Renderer::add(Layer* layer, int index) {
+        for (GameObject* game_object : layer->GetGameObjects()) {
+            // create spriterenderer with the coponent spriterneder if a spriterenderer exists
+            SpriteRenderer* spriteRenderer = (SpriteRenderer*)game_object->getComponent(std::string("sprite_renderer"));
+            if (spriteRenderer != nullptr) {
+                add(spriteRenderer, index);
+            }
         }
     }
 
-    void Renderer::add(SpriteRenderer* spriteRenderer) {
+    void Renderer::add(SpriteRenderer* spriteRenderer, int index) {
         // add sprite to current batch if the batch has room for it and the ZIndex fits accordingly (if it is equal to both of the Zindex's (just for security))
         // do this for every other spriterenderer
         bool added = false;
-        for (int i = 0; i < batches.size(); i++) {
-            if (batches[i]->hasRoom() && core::GameObject::CGMap[spriteRenderer]->getZIndex() == batches[i]->getZIndex())
+        bool found = false;
+        for (RenderBatch* batch : batches)
+        {
+            found = batch->hasSprite(spriteRenderer);
+        }
+        for (int i = 0; !found && i < batches.size(); i++) {
+            
+            if (batches[i]->hasRoom() && index == batches[i]->getZIndex())
             {
                 Texture* texture = spriteRenderer->getTexture();
                 if (texture == nullptr || (batches[i]->hasTexture(texture) || batches[i]->hasTextureRoom()))
@@ -49,9 +57,9 @@ namespace core {
                 }
             }
         }
-        if (!added) {
+        if (!added && !found) {
             // if there is no place for the spriterenderer, create a new renderbatch with the needed setup (functions)
-            RenderBatch* newBatch = new RenderBatch(MAX_BATCH_SIZE, core::GameObject::CGMap[spriteRenderer]->getZIndex(), core::GameObject::CGMap[spriteRenderer]->displayMode);
+            RenderBatch* newBatch = new RenderBatch(MAX_BATCH_SIZE, index, core::GameObject::CGMap[spriteRenderer]->displayMode);
             newBatch->start();
             batches.push_back(newBatch);
             newBatch->addSprite(spriteRenderer);
@@ -59,18 +67,11 @@ namespace core {
         }
     }
 
-    void Renderer::render(const float dt) {
+    void Renderer::render(LayerStack& layer_stack, const float dt) {
         if (Application::GetImGuiEnabled())
-        {
-            frame_buffer->Bind();
-            glViewport(0, 0, frame_buffer->GetProperties().width, frame_buffer->GetProperties().height);
-        }
+			frame_buffer->Bind();
         else
-        {
             glViewport(0, 0, Application::getWindow()->getWidth(), Application::getWindow()->getHeight());
-        }
-        //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT); // we're not using the stencil buffer now
 
         //calculating camera vectors
         Application::getCurrentScene()->getCamera()->calcCameraVectors();
@@ -86,13 +87,16 @@ namespace core {
         frame_buffer->Unbind();
     }
 
-    void Renderer::updateGameObjects(float deltaTime, std::vector<GameObject*>& gameObjects)
+    void Renderer::updateGameObjects(float dt, std::vector<GameObject*>& gameObjects)
     {
         // update the gameObjects so it displays the changes
 
-        for (auto& gameObject : gameObjects)
+        for (Layer* layer : Application::GetLayerStack())
         {
-            gameObject->update(deltaTime);
+            for (GameObject* game_object : layer->GetGameObjects())
+            {
+                game_object->update(dt);
+            }
         }
     }
 

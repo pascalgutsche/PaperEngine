@@ -83,6 +83,6 @@ void main()
     }
     else {
         // if there is no texture, display the colors
-        display = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+        display = fColor;
     }
 }

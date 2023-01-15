@@ -38,9 +38,13 @@ namespace core {
 
 		for (auto it = layer_stack.end(); it != layer_stack.begin(); )
 		{
-			(*--it)->event(event);
 			if (event.handled)
 				break;
+			(*--it)->OnEvent(event);
+		}
+		if (!event.handled)
+		{
+			current_scene->OnEvent(event);
 		}
 	}
 
@@ -63,10 +67,6 @@ namespace core {
 			else imgui_enabled_queue = 2;
 			return true;
 		}
-		if (!e.getRepeated() && e.getKeyCode() == KEY_L)
-		{
-			this->IMGUI().DockPanel("Application: ", IMGUI().getDockspaceRIGHT());
-		}
 		return false;
 	}
 
@@ -84,7 +84,7 @@ namespace core {
 
 		init();
 
-		addLayer(imguilayer);
+		AddOverLay(imguilayer, false);
 
 		//set start scene
 		if (queued_scene) {
@@ -127,16 +127,20 @@ namespace core {
 						queued_scene = nullptr;
 					}
 
-					current_scene->update(dt);
 
 					for (Layer* layer : layer_stack)
 						layer->update(dt);
 
+
+					current_scene->update(dt);
+
 					if (imgui_enabled) {
 
 						imguilayer->begin(dt);
-						for (Layer* layer : layer_stack)
+						for (Layer* layer : layer_stack) {
 							layer->imgui(dt);
+						}
+							
 						imguilayer->end();
 					}
 					frames_rendered++;
@@ -162,16 +166,28 @@ namespace core {
 		queued_scene = new_scene;
 	}
 
-	void Application::addLayer(Layer* layer)
+	void Application::AddLayer(Layer* layer, bool add_to_renderer)
 	{
-		layer_stack.addLayer(layer);
-		layer->attach();
+		Get()->layer_stack.addLayer(layer);
+		layer->attach(add_to_renderer);
 	}
 
-	void Application::addOverLay(Layer* layer)
+	void Application::AddOverLay(Layer* layer, bool add_to_renderer)
 	{
-		layer_stack.addOverlay(layer);
-		layer->attach();
+		Get()->layer_stack.addOverlay(layer);
+		layer->attach(add_to_renderer);
+	}
+
+	void Application::RemoveLayer(Layer* layer)
+	{
+		layer->detach();
+		Get()->layer_stack.removeLayer(layer);
+	}
+
+	void Application::RemoveOverLay(Layer* layer)
+	{
+		layer->detach();
+		Get()->layer_stack.removeOverlay(layer);
 	}
 
 }

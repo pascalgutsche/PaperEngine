@@ -16,11 +16,11 @@ namespace core {
 
     }
 
-    void Component::update(float deltaTime) {
+    void Component::update(float dt) {
 
     }
 
-    void Component::imgui(float deltaTime) {
+    void Component::imgui(float dt) {
 
     }
 

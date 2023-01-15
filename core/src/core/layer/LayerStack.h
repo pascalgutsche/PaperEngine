@@ -31,6 +31,13 @@ namespace core
 		stack::const_iterator end()			   const { return layers.end();	   }
 		stack::const_reverse_iterator rbegin() const { return layers.rbegin(); }
 		stack::const_reverse_iterator rend()   const { return layers.rend();   }
+
+		int GetPlace(Layer* layer) const;
+		uint64_t GetSize() const { return layers.size(); }
+		Layer* operator[](int index)
+		{
+			return layers[index];
+		}
 	};
 	
 }

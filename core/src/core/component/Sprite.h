@@ -16,6 +16,7 @@ namespace core {
         Sprite(Texture* texture);
         // set sprite texture with specific textureCoordinates
         Sprite(Texture* texture, float* texCoords);
+        virtual ~Sprite();
         void setTexture(Texture* texture);
         Texture* getTexture();
 
