@@ -15,7 +15,6 @@ namespace core {
 		Log::init();
 
 		window = Window::createWindow();
-		window->setVSync(false);
 		setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
 		imguilayer = new ImGuiLayer();

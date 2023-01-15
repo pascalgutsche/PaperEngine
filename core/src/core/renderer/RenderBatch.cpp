@@ -373,7 +373,7 @@ namespace core {
     }
 
     bool RenderBatch::hasTextureRoom() {
-        return textures.size() < 8;
+        return textures.size() < 1;
     }
 
     bool RenderBatch::hasTexture(Texture* tex) {

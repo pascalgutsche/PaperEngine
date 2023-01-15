@@ -5,7 +5,7 @@
 
 namespace core {
 
-    class Component {
+    class CORE_API Component {
     public:
         std::string getTypeID();
     protected:

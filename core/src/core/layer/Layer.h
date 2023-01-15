@@ -8,7 +8,7 @@
 namespace core
 {
 
-	class Layer
+	class CORE_API Layer
 	{
 	protected:
 		std::string name;
