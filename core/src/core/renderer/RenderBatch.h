@@ -41,12 +41,12 @@ namespace core {
 
         std::shared_ptr<Shader> shader;
         float* vertices;
-        int* elements;
+        unsigned int* elements;
 
         void updateTextures();
         void loadVertexProperties(int index);
-        void generateIndices(int* element);
-        void loadElementIndices(int* arrayElements, int index);
+        void generateIndices(unsigned int* element);
+        void loadElementIndices(unsigned int* arrayElements, int index);
 
     public:
 

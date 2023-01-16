@@ -17,7 +17,7 @@ namespace core {
         this->zIndex = zIndex;
         this->maxBatchSize = maxBatchSize;
         this->vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
-        this->elements = new int[maxBatchSize * 6];
+        this->elements = new unsigned int[maxBatchSize * 6];
         this->displayMode = displaymode;
         numSprites = 0;
 
@@ -65,7 +65,7 @@ namespace core {
         // use the array
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
 
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * maxBatchSize, elements, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * maxBatchSize, elements, GL_DYNAMIC_DRAW);
 
         // saving / uploading points (x,y) to vertex slot 0
         //declaration of vertex basically (start at byte offset x, array index y,...)
@@ -85,8 +85,10 @@ namespace core {
         glEnableVertexAttribArray(2);
 
         //TEXTURE_ID
-        glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)TEX_ID_OFFSET);
+        glVertexAttribPointer(3, TEX_ID_SIZE, GL_INT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)TEX_ID_OFFSET);
         glEnableVertexAttribArray(3);
+
+        glBindVertexArray(0);
     }
 
     void RenderBatch::addSprite(SpriteRenderer* sprite_renderer) {
@@ -173,37 +175,7 @@ namespace core {
         std::copy(texSlots.begin(), texSlots.end(), texArray);
         shader->uploadIntArray("uTexture", texSlots.size(), texArray);
         delete texArray;
-        //for (int i = 0; i < texSlots.size(); i++) {
-        //    switch (i) {
-        //    case 0:
-        //        shader->uploadInt("uTexture0", texSlots[0]);
-        //        break;
-        //    case 1:
-        //        shader->uploadInt("uTexture1", texSlots[1]);
-        //        break;
-        //    case 2:
-        //        shader->uploadInt("uTexture2", texSlots[2]);
-        //        break;
-        //    case 3:
-        //        shader->uploadInt("uTexture3", texSlots[3]);
-        //        break;
-        //    case 4:
-        //        shader->uploadInt("uTexture4", texSlots[4]);
-        //        break;
-        //    case 5:
-        //        shader->uploadInt("uTexture5", texSlots[5]);
-        //        break;
-        //    case 6:
-        //        shader->uploadInt("uTexture6", texSlots[6]);
-        //        break;
-        //    case 7:
-        //        shader->uploadInt("uTexture7", texSlots[7]);
-        //        break;
-        //    default:
-        //        break;
-        //    }
-        //
-        //}
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glBindVertexArray(vaoID);
         // draw both (with coords and color)
         glEnableVertexAttribArray(0);
@@ -329,24 +301,9 @@ namespace core {
             // set offset to the next line for a next triangle in order to make use of batch rendering
             offset += VERTEX_SIZE;
         }
-
-        /*
-        Logger::Log("-----------------------------------------------------------------------------------------------------------------");
-        Logger::Log("-----------------------------------------------------------------------------------------------------------------");
-        for (int i = 1; i < maxBatchSize; i++) {
-            std::cout << vertices[i - 1] << " | ";
-            if (i % 9 == 0) {
-                std::cout << std::endl;
-            }
-
-        }
-        std::cout << std::endl;
-        Logger::Log("-----------------------------------------------------------------------------------------------------------------");
-        Logger::Log("-----------------------------------------------------------------------------------------------------------------");
-        */
     }
 
-    void RenderBatch::generateIndices(int* element) {
+    void RenderBatch::generateIndices(unsigned int* element) {
         // 2 triangles to display one square
         for (int i = 0; i < maxBatchSize; i++)
         {
@@ -354,16 +311,17 @@ namespace core {
         }
     }
 
-    void RenderBatch::loadElementIndices(int* arrayElements, int index) {
+    void RenderBatch::loadElementIndices(unsigned int* arrayElements, int index) {
         int offsetArrayIndex = 6 * index;
         int offset = 4 * index;
+
         // first triangle
-        arrayElements[offsetArrayIndex] = offset + 3;
+        arrayElements[offsetArrayIndex + 0] = offset + 3;
         arrayElements[offsetArrayIndex + 1] = offset + 2;
-        arrayElements[offsetArrayIndex + 2] = offset;
+        arrayElements[offsetArrayIndex + 2] = offset + 0;
 
         // second triangle
-        arrayElements[offsetArrayIndex + 3] = offset;
+        arrayElements[offsetArrayIndex + 3] = offset + 0;
         arrayElements[offsetArrayIndex + 4] = offset + 2;
         arrayElements[offsetArrayIndex + 5] = offset + 1;
     }
