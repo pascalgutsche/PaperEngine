@@ -28,8 +28,6 @@ namespace core {
         // search for a texture with the specific string (name)
         static Texture* getTexture(std::string textureName, bool flipped = true);
 
-        //static std::map<char, CharacterTemplateS> CharacterPool;
-
         //static void prepareCharacters();
         enum DISPLAYMODE { NONE, PERSPECTIVE, ORTHOGRAPHIC };
     };

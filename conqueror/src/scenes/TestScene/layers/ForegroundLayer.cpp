@@ -18,10 +18,10 @@ void ForegroundLayer::OnAttach()
 
 void ForegroundLayer::OnDetach()
 {
-	game_objects.clear();
 	delete character1;
 	delete character2;
 	delete object1;
+	game_objects.clear();
 }
 
 void ForegroundLayer::update(const float dt)

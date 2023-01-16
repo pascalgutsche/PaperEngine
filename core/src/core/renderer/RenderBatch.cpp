@@ -16,7 +16,7 @@ namespace core {
         // set local and current values
         this->zIndex = zIndex;
         this->maxBatchSize = maxBatchSize;
-        this->vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
+        this->vertices.resize(0);
         this->elements = new unsigned int[maxBatchSize * 6];
         this->displayMode = displaymode;
         numSprites = 0;
@@ -40,7 +40,6 @@ namespace core {
     }
 
     RenderBatch::~RenderBatch() {
-        delete vertices;
         delete elements;
     };
 
@@ -54,7 +53,7 @@ namespace core {
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
         // put everything from the vector into the array, so that we can access it from within gl functions || using vectors makes it easier for dynamic allocations
         // create task for gpu and save data
-        glBufferData(GL_ARRAY_BUFFER, (maxBatchSize * 4 * VERTEX_SIZE) * 4, vertices, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, maxBatchSize * VERTEX_SIZE_BYTES * 4, vertices.data(), GL_DYNAMIC_DRAW);
         //element buffer object (useful for creating squares)
 
         glGenBuffers(1, &eboID);
@@ -104,7 +103,7 @@ namespace core {
         // just some checking, if the maxBatchSize is being overridden don't load any more textures (hasRoom_bool)
         // load vertex properties at current index of the spriterenderer (this is why we do not need to do it manually anymore)
         loadVertexProperties(index);
-
+        LOG_CORE_DEBUG(index);
         if (numSprites >= maxBatchSize) {
             this->hasRoom_bool = false;
         }
@@ -136,6 +135,7 @@ namespace core {
             if (spriteRenderer->getIsDirty()) {
                 updateTextures();
                 loadVertexProperties(i);
+                LOG_CORE_ERROR(i);
                 spriteRenderer->setClean();
                 reloadVertexArray = true;
             }
@@ -144,7 +144,7 @@ namespace core {
         if (reloadVertexArray) {
             // updates the vertex array in order to see the changes within rendering
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, (maxBatchSize * 4 * VERTEX_SIZE) * 4, vertices);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, maxBatchSize * VERTEX_SIZE_BYTES * 4, vertices.data());
         }
 
         // use the shader and upload the shader variables
@@ -175,7 +175,11 @@ namespace core {
         std::copy(texSlots.begin(), texSlots.end(), texArray);
         shader->uploadIntArray("uTexture", texSlots.size(), texArray);
         delete texArray;
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+#ifdef BUILD_DEBUG
+		glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+#endif
+
         glBindVertexArray(vaoID);
         // draw both (with coords and color)
         glEnableVertexAttribArray(0);
@@ -183,6 +187,7 @@ namespace core {
 
         // 6 = 6 points for 2 triangles
         glDrawElements(GL_TRIANGLES, this->numSprites * 6, GL_UNSIGNED_INT, nullptr);
+        draw_calls++;
 
         // stop drawing and disable array (finish it off)
         glDisableVertexAttribArray(0);
@@ -200,7 +205,7 @@ namespace core {
 
     void RenderBatch::loadVertexProperties(int index) {
         SpriteRenderer* sprite = sprites[index];
-
+        
         // find offset in vertex array
         int offset = index * 4 * VERTEX_SIZE;
 
@@ -257,7 +262,6 @@ namespace core {
 
         float xAdd = 0.0f;
         float yAdd = 0.0f;
-
         for (int i = 0; i < 4; i++)
         {
             switch (i)
@@ -265,38 +269,33 @@ namespace core {
             case 1:
                 xAdd = 1.0f;
                 break;
-
             case 2:
                 yAdd = 1.0f;
                 break;
-
             case 3:
                 xAdd = 0.0f;
                 break;
-
             default:
                 break;
             }
-
             // this is the recursive vertices creation
             // set the first values to the according positions
             
-            vertices[offset] = core::GameObject::CGMap[sprite]->transform.position.x + (xAdd * core::GameObject::CGMap[sprite]->transform.scale.x);
-            vertices[offset + 1] = core::GameObject::CGMap[sprite]->transform.position.y + (yAdd * core::GameObject::CGMap[sprite]->transform.scale.y);
+            vertices.emplace(vertices.begin() + offset + 0, GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
+            vertices.emplace(vertices.begin() + offset + 1, GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
 
             // set colors
-            vertices[offset + 2] = color.x;
-            vertices[offset + 3] = color.y;
-            vertices[offset + 4] = color.z;
-            vertices[offset + 5] = color.w;
+            vertices.emplace(vertices.begin() + offset + 2, color.x);
+            vertices.emplace(vertices.begin() + offset + 3, color.y);
+            vertices.emplace(vertices.begin() + offset + 4, color.z);
+            vertices.emplace(vertices.begin() + offset + 5, color.w);
 
             // set texture coordinates
-            vertices[offset + 6] = texCoord[i].x;
-            vertices[offset + 7] = texCoord[i].y;
+            vertices.emplace(vertices.begin() + offset + 6, texCoord[i].x);
+            vertices.emplace(vertices.begin() + offset + 7, texCoord[i].y);
 
             // set texture id
-            vertices[offset + 8] = texID;
-            //if (con) Logger::Log(std::to_string(offset + 8));
+            vertices.emplace(vertices.begin() + offset + 8, texID);
 
             // set offset to the next line for a next triangle in order to make use of batch rendering
             offset += VERTEX_SIZE;
@@ -349,4 +348,13 @@ namespace core {
         return this->zIndex;
     }
 
+    int RenderBatch::GetSpritesCount() const
+    {
+        return numSprites;
+    }
+
+    int RenderBatch::GetVertexCount() const
+    {
+        return vertices.size() / VERTEX_SIZE;
+    }
 }

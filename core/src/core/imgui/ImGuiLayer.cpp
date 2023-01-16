@@ -3,6 +3,8 @@
 
 #include "imgui/ImGuiLayer.h"
 #include "generic/Application.h"
+#include "renderer/Renderer.h"
+#include "renderer/RenderBatch.h"
 
 
 
@@ -138,6 +140,19 @@ namespace core {
         }
     }
 
+    static void HelpMarker(const char* desc)
+    {
+        ImGui::TextDisabled("(?)");
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+            ImGui::TextUnformatted(desc);
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
+    }
+
     static bool p_open = true;
     void ImGuiLayer::imgui(const float dt)
     {
@@ -216,44 +231,84 @@ namespace core {
         }
         timehelper += dt;
         time += dt;
-        ImGui::SliderFloat("Time", &history, 1, 50, "%.1f");
 
-        stream << "ms per frame: " << 1000 * dt;
-        ImGui::Text(stream.str().c_str()); stream.str("");
-        if (ImPlot::BeginPlot("##ms_per_frame", ImVec2(-1, 100))) {
-            ImPlot::SetupAxes(NULL, NULL, flags, flags);
-            ImPlot::SetupAxisLimits(ImAxis_X1, time - history, time, ImGuiCond_Always);
-            ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 20);
-            ImPlot::SetNextFillStyle(ImVec4(0.0f, 0.0f, 1.0f, -1.0f), 0.5f);
-            ImPlot::PlotLine("##ms", &sbuff_dt.Data[0].x, &sbuff_dt.Data[0].y, sbuff_dt.Data.size(), 0, sbuff_dt.Offset, 2 * sizeof(float));
-            ImPlot::EndPlot();
+        if (ImGui::TreeNode("Time"))
+        {
+		    ImGui::SliderFloat("Time", &history, 1, 50, "%.1f");
+
+		    stream << "ms per frame: " << 1000 * dt;
+		    ImGui::Text(stream.str().c_str()); stream.str("");
+		    if (ImPlot::BeginPlot("##ms_per_frame", ImVec2(-1, 100))) {
+		        ImPlot::SetupAxes(NULL, NULL, flags, flags);
+		        ImPlot::SetupAxisLimits(ImAxis_X1, time - history, time, ImGuiCond_Always);
+		        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 20);
+		        ImPlot::SetNextFillStyle(ImVec4(0.0f, 0.0f, 1.0f, -1.0f), 0.5f);
+		        ImPlot::PlotLine("##ms", &sbuff_dt.Data[0].x, &sbuff_dt.Data[0].y, sbuff_dt.Data.size(), 0, sbuff_dt.Offset, 2 * sizeof(float));
+		        ImPlot::EndPlot();
+		    }
+
+		    stream << "frames per sec: " << 1 / dt;
+		    ImGui::Text(stream.str().c_str()); stream.str("");
+		    if (ImPlot::BeginPlot("##frames_per_second", ImVec2(-1, 100))) {
+		        ImPlot::SetupAxes(NULL, NULL, flags, flags);
+		        ImPlot::SetupAxisLimits(ImAxis_X1, time - history, time, ImGuiCond_Always);
+		        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1000);
+		        ImPlot::SetNextFillStyle(ImVec4(1.0f, 0.0f, 0.0f, -1.0f), 0.5f);
+		        ImPlot::PlotLine("##frames", &sbuff_fps.Data[0].x, &sbuff_fps.Data[0].y, sbuff_fps.Data.size(), 0, sbuff_fps.Offset, 2 * sizeof(float));
+		        ImPlot::EndPlot();
+		    }
+		    
+		    stream << "Frames rendered: " << Application::GetFramesRendered();
+		    ImGui::BulletText(stream.str().c_str()); stream.str("");
+
+		    static bool vsync = true;
+		    ImGui::Checkbox("V-Sync", &vsync);
+		    Application::getWindow()->setVSync(vsync);
+
+		    
+
+			ImGui::Text("");
+            ImGui::TreePop();
         }
 
-        stream << "frames per sec: " << 1 / dt;
-        ImGui::Text(stream.str().c_str()); stream.str("");
-        if (ImPlot::BeginPlot("##frames_per_second", ImVec2(-1, 100))) {
-            ImPlot::SetupAxes(NULL, NULL, flags, flags);
-            ImPlot::SetupAxisLimits(ImAxis_X1, time - history, time, ImGuiCond_Always);
-            ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1000);
-            ImPlot::SetNextFillStyle(ImVec4(1.0f, 0.0f, 0.0f, -1.0f), 0.5f);
-            ImPlot::PlotLine("##frames", &sbuff_fps.Data[0].x, &sbuff_fps.Data[0].y, sbuff_fps.Data.size(), 0, sbuff_fps.Offset, 2 * sizeof(float));
-            ImPlot::EndPlot();
+
+        if (ImGui::TreeNode("Renderer"))
+        {
+            stream << "Draw calls: " << RenderBatch::GetDrawCalls();
+            ImGui::BulletText(stream.str().c_str()); stream.str("");
+
+        	stream << "Batch count: " << Renderer::GetBatchCount();
+            ImGui::BulletText(stream.str().c_str()); stream.str("");
+
+            stream << "Vertex count: " << Renderer::GetVerticesCount();
+            ImGui::BulletText(stream.str().c_str()); stream.str("");
+            ImGui::SameLine();
+            HelpMarker("for some reson this value is not right (maybe doubled?) --> FIX IT");
+
+            stream << "Sprite count: " << Renderer::GetSpriteCount();
+            ImGui::BulletText(stream.str().c_str()); stream.str("");
+
+            ImGui::Text("");
+
+            stream << "Polygon Model: ";
+            ImGui::Text(stream.str().c_str()); stream.str("");
+
+            static int selected = 0;
+            if (ImGui::Selectable("OFF", selected == 6914))
+                selected = 6914;
+            if (ImGui::Selectable("POINT", selected == 6912))
+                selected = 6912;
+            if (ImGui::Selectable("LINE", selected == 6913))
+                selected = 6913;
+            RenderBatch::setPolygonMode(selected);
+
+
+            ImGui::TreePop();
         }
-        
-        stream << "Frames rendered: " << Application::GetFramesRendered();
-        ImGui::BulletText(stream.str().c_str()); stream.str("");
-
-        ImGui::Text("Render Stats:");
-        ImGui::BulletText("draw calls: N/A");
-        ImGui::BulletText("vertices: N/A");
-        ImGui::BulletText("draw calls: N/A");
-        ImGui::BulletText("draw calls: N/A");
-
-        static bool vsync = true;
-        ImGui::Checkbox("V-Sync", &vsync);
-        Application::getWindow()->setVSync(vsync);
 
         ImGui::End();
+
+        ImGui::ShowDemoWindow();
     }
 
     void ImGuiLayer::ScenePanel(const float dt)

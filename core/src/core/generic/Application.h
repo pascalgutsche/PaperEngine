@@ -25,7 +25,7 @@ namespace core {
 		float dt;
 		long int frames_rendered = 0;
 		bool game_running = true;
-		bool imgui_enabled = false; int imgui_enabled_queue = 0;
+		bool imgui_enabled = true; int imgui_enabled_queue = 0;
 
 		bool onWindowClose(WindowCloseEvent& e);
 		bool onWindowResize(WindowResizeEvent& e);

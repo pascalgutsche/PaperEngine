@@ -33,15 +33,15 @@ void BackgroundLayer::OnAttach()
 
 void BackgroundLayer::OnDetach()
 {
+    delete game_objects[0];
+    delete game_objects[1];
+    delete game_objects[2];
+    delete game_objects[3];
+    delete game_objects[4];
+    delete game_objects[5];
+    delete game_objects[6];
+    delete game_objects[7];
     game_objects.clear();
-    delete background1;
-    delete background2;
-    delete background3;
-    delete background4;
-    delete background5;
-    delete background6;
-    delete background7;
-    delete background8;
 }
 
 void BackgroundLayer::update(const float dt)
