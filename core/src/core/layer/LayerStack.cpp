@@ -35,7 +35,6 @@ namespace core
 		auto it = std::find(layers.begin(), layers.begin() + insertLayerIndex, layer);
 		if (it != layers.begin() + insertLayerIndex)
 		{
-			layer->detach();
 			layers.erase(it);
 			insertLayerIndex--;
 		}
@@ -46,7 +45,6 @@ namespace core
 		auto it = std::find(layers.begin() + insertLayerIndex, layers.end(), layer);
 		if (it != layers.end()) 
 		{
-			layer->detach();
 			layers.erase(it);
 		}
 	}
