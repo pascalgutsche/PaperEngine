@@ -44,6 +44,10 @@ namespace core {
     GameObject::~GameObject()
     {
         deleteComponents();
+
+        static int carles = 0;
+        carles++;
+        std::cout << "cctv: " << carles << std::endl;
     }
 
 
@@ -108,8 +112,10 @@ namespace core {
 
     void GameObject::deleteComponents() {
         // delete all components
-        for (auto i : components) {
-            delete i;
+        for (auto comp : components)
+        {
+            delete comp;
+            comp = nullptr;
         }
         components.clear();
     }
