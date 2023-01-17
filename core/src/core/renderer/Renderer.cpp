@@ -51,7 +51,7 @@ namespace core {
             
             if (batches[i]->hasRoom() && index == batches[i]->getZIndex())
             {
-                Texture* texture = spriteRenderer->getTexture();
+                std::shared_ptr<Texture> texture = spriteRenderer->getTexture();
                 if (texture == nullptr || (batches[i]->hasTexture(texture) || batches[i]->hasTextureRoom()))
                 {
                     batches[i]->addSprite(spriteRenderer);

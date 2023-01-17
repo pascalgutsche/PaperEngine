@@ -190,6 +190,7 @@ namespace core {
             dock_id_top = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Up, 0.2f, nullptr, &dock_id_main);
             dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Down, 0.25f, nullptr, &dock_id_main);
             dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
+            dock_id_left_bottom = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.2f, nullptr, &dock_id_left);
 
 
             ImGui::DockBuilderFinish(dockspace_id);
@@ -203,18 +204,19 @@ namespace core {
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
         ImGui::End();
 
-        ApplicationPanel(dt);
-        ScenePanel(dt);
-        LayerPanel(dt);
-        ViewPortPanel(dt);
+        ApplicationPanel(dt, initialized);
+        ScenePanel(dt, initialized);
+        LayerPanel(dt, initialized);
+        ViewPortPanel(dt, initialized);
 
     }
 
-	void ImGuiLayer::ApplicationPanel(const float dt)
+	void ImGuiLayer::ApplicationPanel(const float dt, bool first)
     {
         const char* name = "Application: ";
         std::stringstream stream;
-        Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceRIGHT());
+        if (first) 
+            Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceRIGHT());
 
         ImGui::Begin(name);
 
@@ -311,21 +313,25 @@ namespace core {
         ImGui::ShowDemoWindow();
     }
 
-    void ImGuiLayer::ScenePanel(const float dt)
+    void ImGuiLayer::ScenePanel(const float dt, bool first)
     {
         const char* name = "Scenes: ";
         std::stringstream stream;
-        Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceBOTTOM());
+
+        if (first)
+			Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceBOTTOM());
 
         ImGui::Begin(name);
         ImGui::End();
     }
 
-    void ImGuiLayer::LayerPanel(const float dt)
+    void ImGuiLayer::LayerPanel(const float dt, bool first)
     {
         const char* name = "Layers: ";
         std::stringstream stream;
-        Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceLEFT());
+
+        if (first)
+			Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceLEFT());
 
         ImGui::Begin(name);
 
@@ -339,7 +345,7 @@ namespace core {
                     for (int i = 0; i < gameobjects.size(); i++)
                     {
                         if (ImGui::Selectable(gameobjects[i]->getName().c_str(), gameobjects[i] == selected_gameobject))
-                            selected_gameobject == gameobjects[i];
+                            selected_gameobject = gameobjects[i];
                     }
                     ImGui::TreePop();
                 }
@@ -352,11 +358,13 @@ namespace core {
         ImGui::End();
     }
 
-    void ImGuiLayer::ViewPortPanel(const float dt)
+    void ImGuiLayer::ViewPortPanel(const float dt, bool first)
     {
         const char* name = "ViewPort: ";
         std::stringstream stream;
-        Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceMAIN());
+
+        if (first)
+			Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceMAIN());
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin(name);

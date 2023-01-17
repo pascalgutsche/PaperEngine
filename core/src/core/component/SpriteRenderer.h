@@ -28,7 +28,7 @@ namespace core {
         void update(float dt) override;
         void imgui(float dt) override;
         glm::vec4 getColor();
-        Texture* getTexture();
+        std::shared_ptr<Texture> getTexture();
         float* getTexCoords();
 
         void setSprite(Sprite* sprite);

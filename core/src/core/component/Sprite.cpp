@@ -7,7 +7,7 @@ namespace core {
 
     // SPRITE
 
-    Sprite::Sprite(Texture* texture) {
+    Sprite::Sprite(std::shared_ptr<Texture> texture) {
         this->typeID = std::string("sprite");
         Sprite::texture = texture;
         // standard texture coordinates (mostly used)
@@ -37,7 +37,7 @@ namespace core {
     }
 
 
-    Sprite::Sprite(Texture* texture, float texCoords[])
+    Sprite::Sprite(std::shared_ptr<Texture> texture, float texCoords[])
     {
         this->typeID = std::string("sprite");
         // set current texture to desired texture
@@ -52,11 +52,11 @@ namespace core {
     {
     }
 
-    void Sprite::setTexture(Texture* texture) {
+    void Sprite::setTexture(std::shared_ptr<Texture> texture) {
         this->texture = texture;
     }
 
-    Texture* Sprite::getTexture()
+    std::shared_ptr<Texture> Sprite::getTexture()
     {
         // get current texture
         return this->texture;

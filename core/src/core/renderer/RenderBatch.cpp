@@ -333,7 +333,7 @@ namespace core {
         return textures.size() < 1;
     }
 
-    bool RenderBatch::hasTexture(Texture* tex) {
+    bool RenderBatch::hasTexture(std::shared_ptr<Texture> tex) {
         // check if the desired texture is being used in the current renderbatch
         for (auto& texture : textures) {
             if (tex == texture) {

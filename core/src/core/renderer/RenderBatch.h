@@ -28,7 +28,7 @@ namespace core {
 
         //std::vector<float> vertices;
         std::vector<int> texSlots = { 0, 1, 2, 3 , 4, 5, 6, 7 };
-        std::vector<Texture*> textures;
+        std::vector<std::shared_ptr<Texture>> textures;
         std::vector<SpriteRenderer*> sprites;
 
         unsigned int vaoID;
@@ -63,7 +63,7 @@ namespace core {
 
         bool hasRoom();
         bool hasTextureRoom();
-        bool hasTexture(Texture* texture);
+        bool hasTexture(std::shared_ptr<Texture> texture);
 
         int getZIndex();
 

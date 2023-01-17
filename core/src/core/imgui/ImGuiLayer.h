@@ -21,13 +21,13 @@ namespace core {
         ImGuiID dock_id_left = 0;
         ImGuiID dock_id_right = 0;
         ImGuiID dock_id_right2 = 0;
-
+        ImGuiID dock_id_left_bottom = 0;
         std::unordered_map<std::string, ImGuiID> dock_panel_queue;
 
-        void ApplicationPanel(const float dt);
-        void ScenePanel(const float dt);
-        void LayerPanel(const float dt);
-        void ViewPortPanel(const float dt);
+        void ApplicationPanel(const float dt, bool first);
+        void ScenePanel(const float dt, bool first);
+        void LayerPanel(const float dt, bool first);
+        void ViewPortPanel(const float dt, bool first);
 
         glm::vec2 viewport_size;
 
@@ -55,6 +55,8 @@ namespace core {
         ImGuiID getDockspaceLEFT() const { return dock_id_left; }
         ImGuiID getDockspaceRIGHT() const { return dock_id_right; }
         ImGuiID getDockspaceRIGHT2() const { return dock_id_right2; }
+        ImGuiID getDockspaceLEFT_BOTTOM() const { return dock_id_left_bottom; }
+
 
     };
 

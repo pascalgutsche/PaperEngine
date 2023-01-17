@@ -94,7 +94,7 @@ namespace core {
             ImVec2 windowSize = ImGui::GetWindowSize();
             float windowX2 = windowPos.x + windowSize.x;
             for (int i = 0; i < texturePaths.size(); i++) {
-                Texture* texture = DataPool::getTexture(texturePaths[i]);
+                std::shared_ptr<Texture> texture = DataPool::getTexture(texturePaths[i]);
 
                 const int IMGSIZE_HEIGHT = 100;
                 Utils::XY ratio = Utils::calculateAspectRatioFit(texture->getWidth(), texture->getHeight(), texture->getWidth() + IMGSIZE_HEIGHT, IMGSIZE_HEIGHT);
@@ -122,7 +122,7 @@ namespace core {
         return this->color;
     }
 
-    Texture* SpriteRenderer::getTexture()
+    std::shared_ptr<Texture> SpriteRenderer::getTexture()
     {
         // return current texture that is being used in this sprite
         return sprite->getTexture();
