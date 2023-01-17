@@ -33,9 +33,6 @@ void TestScene::init() {
 int selectedItem = 0;
 
 void TestScene::update(float dt) {
-    
-
-    
 
     if (Input::IsKeyPressed(KEY_S)) {
         camera->position.y -= 2.0f * dt;

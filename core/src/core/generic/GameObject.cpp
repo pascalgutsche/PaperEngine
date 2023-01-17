@@ -108,8 +108,10 @@ namespace core {
 
     void GameObject::deleteComponents() {
         // delete all components
-        for (auto i : components) {
-            delete i;
+        for (auto comp : components)
+        {
+            delete comp;
+            comp = nullptr;
         }
         components.clear();
     }
