@@ -328,6 +328,27 @@ namespace core {
         Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceLEFT());
 
         ImGui::Begin(name);
+
+        for (Layer* layer : Application::GetLayerStack()) 
+        {
+            std::vector<GameObject*> gameobjects = layer->GetGameObjects();
+            if (ImGui::TreeNode(layer->GetName().c_str())) 
+            {
+                if (ImGui::TreeNode("Objects: "))
+                {
+                    for (int i = 0; i < gameobjects.size(); i++)
+                    {
+                        if (ImGui::Selectable(gameobjects[i]->getName().c_str(), gameobjects[i] == selected_gameobject))
+                            selected_gameobject == gameobjects[i];
+                    }
+                    ImGui::TreePop();
+                }
+
+                ImGui::Text("");
+                ImGui::TreePop();
+            }
+        }
+
         ImGui::End();
     }
 

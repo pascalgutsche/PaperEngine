@@ -31,6 +31,8 @@ namespace core {
 
         glm::vec2 viewport_size;
 
+        GameObject* selected_gameobject;
+
     public:
         ImGuiLayer()
 	        : Layer("ImGuiLayer") { }
