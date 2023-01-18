@@ -27,11 +27,12 @@ namespace core {
         void ApplicationPanel(const float dt, bool first);
         void ScenePanel(const float dt, bool first);
         void LayerPanel(const float dt, bool first);
+        void InspectorPanel(const float dt, bool first);
         void ViewPortPanel(const float dt, bool first);
 
         glm::vec2 viewport_size;
 
-        GameObject* selected_gameobject;
+        GameObject* selected_gameobject = nullptr;
 
     public:
         ImGuiLayer()

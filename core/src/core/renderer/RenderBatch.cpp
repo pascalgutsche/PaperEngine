@@ -16,7 +16,6 @@ namespace core {
         // set local and current values
         this->zIndex = zIndex;
         this->maxBatchSize = maxBatchSize;
-        this->vertices.resize(0);
         this->elements = new unsigned int[maxBatchSize * 6];
         this->displayMode = displaymode;
         numSprites = 0;
@@ -64,7 +63,7 @@ namespace core {
         // use the array
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
 
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * maxBatchSize, elements, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * maxBatchSize * 6, elements, GL_DYNAMIC_DRAW);
 
         // saving / uploading points (x,y) to vertex slot 0
         //declaration of vertex basically (start at byte offset x, array index y,...)
@@ -103,7 +102,7 @@ namespace core {
         // just some checking, if the maxBatchSize is being overridden don't load any more textures (hasRoom_bool)
         // load vertex properties at current index of the spriterenderer (this is why we do not need to do it manually anymore)
         loadVertexProperties(index);
-        LOG_CORE_DEBUG(index);
+
         if (numSprites >= maxBatchSize) {
             this->hasRoom_bool = false;
         }
@@ -135,7 +134,7 @@ namespace core {
             if (spriteRenderer->getIsDirty()) {
                 updateTextures();
                 loadVertexProperties(i);
-                LOG_CORE_ERROR(i);
+
                 spriteRenderer->setClean();
                 reloadVertexArray = true;
             }
@@ -149,6 +148,7 @@ namespace core {
 
         // use the shader and upload the shader variables
         shader->use();
+
         if (displayMode == DataPool::DISPLAYMODE::ORTHOGRAPHIC)
         {
             shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getOrthographicMatrix());
@@ -280,23 +280,41 @@ namespace core {
             }
             // this is the recursive vertices creation
             // set the first values to the according positions
-            
-            vertices.emplace(vertices.begin() + offset + 0, GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
-            vertices.emplace(vertices.begin() + offset + 1, GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
 
-            // set colors
-            vertices.emplace(vertices.begin() + offset + 2, color.x);
-            vertices.emplace(vertices.begin() + offset + 3, color.y);
-            vertices.emplace(vertices.begin() + offset + 4, color.z);
-            vertices.emplace(vertices.begin() + offset + 5, color.w);
+            if (vertices.size() > offset + 8) {
+                vertices[offset + 0] = GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x;
+                vertices[offset + 1] = GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y;
 
-            // set texture coordinates
-            vertices.emplace(vertices.begin() + offset + 6, texCoord[i].x);
-            vertices.emplace(vertices.begin() + offset + 7, texCoord[i].y);
+                // set colors
+                vertices[offset + 2] = color.x;
+                vertices[offset + 3] = color.y;
+                vertices[offset + 4] = color.z;
+                vertices[offset + 5] = color.w;
 
-            // set texture id
-            vertices.emplace(vertices.begin() + offset + 8, texID);
+                // set texture coordinates
+                vertices[offset + 6] = texCoord[i].x;
+                vertices[offset + 7] = texCoord[i].y;
 
+                // set texture id
+                vertices[offset + 8] = texID;
+            }
+            else {
+                vertices.emplace(vertices.begin() + offset + 0, GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
+                vertices.emplace(vertices.begin() + offset + 1, GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
+
+                // set colors
+                vertices.emplace(vertices.begin() + offset + 2, color.x);
+                vertices.emplace(vertices.begin() + offset + 3, color.y);
+                vertices.emplace(vertices.begin() + offset + 4, color.z);
+                vertices.emplace(vertices.begin() + offset + 5, color.w);
+
+                // set texture coordinates
+                vertices.emplace(vertices.begin() + offset + 6, texCoord[i].x);
+                vertices.emplace(vertices.begin() + offset + 7, texCoord[i].y);
+
+                // set texture id
+                vertices.emplace(vertices.begin() + offset + 8, texID);
+            }
             // set offset to the next line for a next triangle in order to make use of batch rendering
             offset += VERTEX_SIZE;
         }

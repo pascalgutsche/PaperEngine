@@ -185,12 +185,12 @@ namespace core {
             ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::getWindow()->getWidth() + 500, Application::getWindow()->getHeight() + 500));
 
             dock_id_main = dockspace_id;
-            dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Right, 0.15f, nullptr, &dock_id_main);
+            dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Right, 0.2f, nullptr, &dock_id_main);
             dock_id_left = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Left, 0.2f, nullptr, &dock_id_main);
             dock_id_top = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Up, 0.2f, nullptr, &dock_id_main);
             dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Down, 0.25f, nullptr, &dock_id_main);
             dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
-            dock_id_left_bottom = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.2f, nullptr, &dock_id_left);
+            dock_id_left_bottom = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
 
 
             ImGui::DockBuilderFinish(dockspace_id);
@@ -204,11 +204,13 @@ namespace core {
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
         ImGui::End();
 
-        ApplicationPanel(dt, initialized);
-        ScenePanel(dt, initialized);
-        LayerPanel(dt, initialized);
-        ViewPortPanel(dt, initialized);
-
+        static bool first = true;
+        ApplicationPanel(dt, first);
+        ScenePanel(dt, first);
+        LayerPanel(dt, first);
+        ViewPortPanel(dt, first);
+        InspectorPanel(dt, first);
+        if (first) first = false;
     }
 
 	void ImGuiLayer::ApplicationPanel(const float dt, bool first)
@@ -284,8 +286,6 @@ namespace core {
 
             stream << "Vertex count: " << Renderer::GetVerticesCount();
             ImGui::BulletText(stream.str().c_str()); stream.str("");
-            ImGui::SameLine();
-            HelpMarker("for some reson this value is not right (maybe doubled?) --> FIX IT");
 
             stream << "Sprite count: " << Renderer::GetSpriteCount();
             ImGui::BulletText(stream.str().c_str()); stream.str("");
@@ -344,8 +344,9 @@ namespace core {
                 {
                     for (int i = 0; i < gameobjects.size(); i++)
                     {
-                        if (ImGui::Selectable(gameobjects[i]->getName().c_str(), gameobjects[i] == selected_gameobject))
+                        if (ImGui::Selectable((gameobjects[i]->getName() + std::string("##" + std::to_string(i))).c_str(), gameobjects[i] == selected_gameobject)) {
                             selected_gameobject = gameobjects[i];
+                        }
                     }
                     ImGui::TreePop();
                 }
@@ -355,6 +356,20 @@ namespace core {
             }
         }
 
+        ImGui::End();
+    }
+
+    void ImGuiLayer::InspectorPanel(const float dt, bool first) {
+        const char* name = "Inspector: ";
+        std::stringstream stream;
+
+        if (first)
+            Application::IMGUI().DockPanel(name, Application::IMGUI().getDockspaceLEFT_BOTTOM());
+
+        ImGui::Begin(name);
+        if (selected_gameobject != nullptr) {
+            selected_gameobject->imgui(dt);
+        }
         ImGui::End();
     }
 
