@@ -13,7 +13,7 @@ namespace core {
         const int POS_SIZE = 2;
         const int COLOR_SIZE = 4;
         const int TEX_COORDS_SIZE = 2;
-        const int TEX_ID_SIZE = 1;
+        const int TEX_ID_SIZE = 4;
 
         const int POS_OFFSET = 0;
         const int COLOR_OFFSET = sizeof(float) * (POS_SIZE);
@@ -26,7 +26,6 @@ namespace core {
         bool hasRoom_bool = false;
 
 
-        //std::vector<float> vertices;
         std::vector<int> texSlots = { 0, 1, 2, 3 , 4, 5, 6, 7 };
         std::vector<std::shared_ptr<Texture>> textures;
         std::vector<SpriteRenderer*> sprites;
@@ -41,24 +40,22 @@ namespace core {
 
         std::shared_ptr<Shader> shader;
         std::vector<float> vertices;
-        unsigned int* elements;
+        std::vector<unsigned int> elements;
 
         void updateTextures();
-        void loadVertexProperties(int index);
-        void generateIndices(unsigned int* element);
-        void loadElementIndices(unsigned int* arrayElements, int index);
+
 
         inline static int draw_calls = 0;
         inline static bool enable_polygon = false;
         inline static int polygonMode = 6914;
+
+        DataPool::DISPLAYMODE displayMode;
 
     public:
 
         RenderBatch(int maxBatchSize, int zIndex, DataPool::DISPLAYMODE displaymode);
         ~RenderBatch();
         void start();
-        void addSprite(SpriteRenderer* sprite_renderer);
-        bool hasSprite(SpriteRenderer* sprite_renderer);
         void render();
 
         bool hasRoom();
@@ -67,7 +64,8 @@ namespace core {
 
         int getZIndex();
 
-        DataPool::DISPLAYMODE displayMode;
+        void addVertexProperties(std::vector<float> verticesData, std::vector<Texture*> textures);
+        void addElementIndices(std::vector<unsigned int> ebo);
 
         int GetSpritesCount() const;
         int GetVertexCount() const; 
@@ -75,6 +73,11 @@ namespace core {
         inline static void setPolygonMode(int mode)
         {
             polygonMode = mode;
+        }
+
+        DataPool::DISPLAYMODE getDisplayMode()
+        {
+            return this->displayMode;
         }
 
         static int GetDrawCalls() { return draw_calls; }

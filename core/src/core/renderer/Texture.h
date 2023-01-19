@@ -10,19 +10,21 @@ namespace core {
     private:
         std::string filePath;
 
-        unsigned int texID;
         unsigned char* localBuffer;
 
         int width;
         int height;
         int channels;
 
+        unsigned int texID;
     public:
         // load texture with desired filePath
         Texture(std::string filePath, bool flip = 1);
         ~Texture();
         // use texture slot
         void bind(unsigned int slot);
+        
+
 
         // stop using texture slot
         void unbind();

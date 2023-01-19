@@ -8,6 +8,8 @@
 
 #include "imgui/ImGuiLayer.h"
 
+#include "generic/Application.h"
+
 namespace core {
 
 
@@ -43,6 +45,43 @@ namespace core {
         // change values from the previous frame in order to check if the gameObject changed values
         // the local lastTransform variable always holds the old values, in order to be compared to the 'new' value
         lastTransform = core::GameObject::CGMap[this]->transform.copy();
+
+        RenderData* renderData = new RenderData();
+
+        renderData->displayMode = GameObject::CGMap[this]->displayMode;
+        renderData->zIndex = GameObject::CGMap[this]->getZIndex();
+        renderData->textures.emplace(renderData->textures.end(), sprite->getTexture());
+
+        // please have mercy with us
+
+        float xAdd = 0.0f;
+        float yAdd = 0.0f;
+        for (int i = 0; i < 4; i++)
+        {
+            switch (i)
+            {
+            case 1:
+                xAdd = 1.0f;
+                break;
+            case 2:
+                yAdd = 1.0f;
+                break;
+            case 3:
+                xAdd = 0.0f;
+                break;
+            default:
+                break;
+            }
+
+            renderData->vertices.emplace(renderData->vertices.end(), GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
+            renderData->vertices.emplace(renderData->vertices.end(), GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
+
+            renderData->vertices.emplace(renderData->vertices.end(), this->color.x);
+            renderData->vertices.emplace(renderData->vertices.end(), this->color.y);
+            renderData->vertices.emplace(renderData->vertices.end(), this->color.z);
+            renderData->vertices.emplace(renderData->vertices.end(), this->color.w);
+        }
+        Application::getCurrentScene()->GetRenderer().add(renderData);
     }
 
     void SpriteRenderer::update(float dt) {

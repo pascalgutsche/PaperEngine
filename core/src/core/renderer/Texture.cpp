@@ -47,6 +47,7 @@ namespace core {
             LOG_CORE_ERROR("Could not load image '" + this->filePath + "'");
         }
 
+        
         stbi_image_free(localBuffer);
     }
 

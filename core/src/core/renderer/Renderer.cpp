@@ -28,48 +28,31 @@ namespace core {
 
     }
 
-    void Renderer::add(Layer* layer, int index) {
-        for (GameObject* game_object : layer->GetGameObjects()) {
-            // create spriterenderer with the coponent spriterneder if a spriterenderer exists
-            SpriteRenderer* spriteRenderer = (SpriteRenderer*)game_object->getComponent(std::string("sprite_renderer"));
-            if (spriteRenderer != nullptr) {
-                add(spriteRenderer, index);
-            }
-        }
-    }
-
-    void Renderer::add(SpriteRenderer* spriteRenderer, int index) {
-        // add sprite to current batch if the batch has room for it and the ZIndex fits accordingly (if it is equal to both of the Zindex's (just for security))
-        // do this for every other spriterenderer
-        bool added = false;
+    void Renderer::add(RenderData* renderData)
+    {
+        // add vertices to renderbatch
+        // if there is no existing renderbatch, create one 
         bool found = false;
-        for (RenderBatch* batch : batches)
+        for (auto g : batches)
         {
-            found = batch->hasSprite(spriteRenderer);
-        }
-        for (int i = 0; !found && i < batches.size(); i++) {
-            
-            if (batches[i]->hasRoom() && index == batches[i]->getZIndex())
+            if (renderData->zIndex == g->getZIndex() && renderData->displayMode == g->getDisplayMode())
             {
-                std::shared_ptr<Texture> texture = spriteRenderer->getTexture();
-                if (texture == nullptr || (batches[i]->hasTexture(texture) || batches[i]->hasTextureRoom()))
-                {
-                    batches[i]->addSprite(spriteRenderer);
-                    added = true;
-                    break;
-                }
+                found = true;
+                g->addVertexProperties(renderData->vertices, renderData->textures);
+                g->addElementIndices(renderData->ebo);
             }
         }
-        if (!added && !found) {
-            // if there is no place for the spriterenderer, create a new renderbatch with the needed setup (functions)
-            RenderBatch* newBatch = new RenderBatch(MAX_BATCH_SIZE, index, core::GameObject::CGMap[spriteRenderer]->displayMode);
-            newBatch->start();
-            batches.push_back(newBatch);
-            newBatch->addSprite(spriteRenderer);
-            std::sort(batches.begin(), batches.end(), less_than_key());
+        if (!found)
+        {
+            RenderBatch* renderBatch = new RenderBatch(1000, renderData->zIndex, renderData->displayMode);
+            batches.emplace(batches.end(), renderBatch);
+
+            renderBatch->addVertexProperties(renderData->vertices, renderData->textures);
+            renderBatch->addElementIndices(renderData->ebo);
         }
     }
 
+  
     void Renderer::render(LayerStack& layer_stack, const float dt) {
         if (Application::GetImGuiEnabled())
 			frame_buffer->Bind();

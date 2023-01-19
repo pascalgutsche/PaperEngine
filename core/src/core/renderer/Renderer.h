@@ -8,6 +8,20 @@
 #include "layer/LayerStack.h"
 
 namespace core {
+
+    struct RenderData
+    {
+        std::vector<float> vertices;
+        std::vector<unsigned int> ebo;
+
+        std::vector<int> textureID;
+
+        int zIndex;
+
+        DataPool::DISPLAYMODE displayMode;
+
+        std::vector<Texture*> textures;
+    };
     
     class CORE_API Renderer {
     private:
@@ -24,8 +38,7 @@ namespace core {
     public:
         Renderer();
         ~Renderer();
-        void add(Layer* layer, int index);
-        void add(SpriteRenderer* spriteRenderer, int index);
+        void add(RenderData* renderData);
         // this function has to be called on every frame (update)
         void render(LayerStack& layer_stack, float dt);
         void updateGameObjects(float dt, std::vector<GameObject*>& gameObjects);

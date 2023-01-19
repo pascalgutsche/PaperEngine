@@ -16,7 +16,6 @@ namespace core {
         // set local and current values
         this->zIndex = zIndex;
         this->maxBatchSize = maxBatchSize;
-        this->elements = new unsigned int[maxBatchSize * 6];
         this->displayMode = displaymode;
         numSprites = 0;
 
@@ -38,8 +37,9 @@ namespace core {
         //loadVertexProperties(0);
     }
 
-    RenderBatch::~RenderBatch() {
-        delete elements;
+    RenderBatch::~RenderBatch() 
+    {
+
     };
 
     void RenderBatch::start() {
@@ -58,12 +58,10 @@ namespace core {
         glGenBuffers(1, &eboID);
         // create array
         
-        // initialize array values
-        generateIndices(elements);
         // use the array
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
 
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * maxBatchSize * 6, elements, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * maxBatchSize * 6, elements.data(), GL_DYNAMIC_DRAW);
 
         // saving / uploading points (x,y) to vertex slot 0
         //declaration of vertex basically (start at byte offset x, array index y,...)
@@ -89,31 +87,6 @@ namespace core {
         glBindVertexArray(0);
     }
 
-    void RenderBatch::addSprite(SpriteRenderer* sprite_renderer) {
-        // add sprite to renderbatch
-        // add it to the last row and increase the amount of sprites we have in the variable
-        int index = this->numSprites;
-        sprites.insert(sprites.end(), sprite_renderer);
-        numSprites++;
-
-        // if the sprite render has a texture, give it to the renderbatch, so that he can use (render) it
-        updateTextures();
-
-        // just some checking, if the maxBatchSize is being overridden don't load any more textures (hasRoom_bool)
-        // load vertex properties at current index of the spriterenderer (this is why we do not need to do it manually anymore)
-        loadVertexProperties(index);
-
-        if (numSprites >= maxBatchSize) {
-            this->hasRoom_bool = false;
-        }
-    }
-
-    bool RenderBatch::hasSprite(SpriteRenderer* sprite_renderer)
-    {
-        return std::find(sprites.begin(), sprites.end(), sprite_renderer) != sprites.end();
-    }
-
-
     void RenderBatch::updateTextures() {
         textures.erase(textures.begin(), textures.end());
         for (int i = 0; i < numSprites; i++) {
@@ -133,7 +106,6 @@ namespace core {
             SpriteRenderer* spriteRenderer = sprites[i];
             if (spriteRenderer->getIsDirty()) {
                 updateTextures();
-                loadVertexProperties(i);
 
                 spriteRenderer->setClean();
                 reloadVertexArray = true;
@@ -203,144 +175,19 @@ namespace core {
         shader->detach();
     }
 
-    void RenderBatch::loadVertexProperties(int index) {
-        SpriteRenderer* sprite = sprites[index];
-        
-        // find offset in vertex array
-        int offset = index * 4 * VERTEX_SIZE;
+    void RenderBatch::addVertexProperties(std::vector<float> verticesData, std::vector<Texture*> textures)
+    {
+        this->textures.insert(this->textures.end(), textures.begin(), textures.end());
 
-        // just set the texture variables from our texCoords definition in class Sprite
-        glm::vec4 color = sprite->getColor();
-        glm::vec2 texCoord[] = { glm::vec2(sprite->getTexCoords()[0], sprite->getTexCoords()[1]),
-                                glm::vec2(sprite->getTexCoords()[2], sprite->getTexCoords()[3]),
-                                glm::vec2(sprite->getTexCoords()[4], sprite->getTexCoords()[5]),
-                                glm::vec2(sprite->getTexCoords()[6], sprite->getTexCoords()[7])
-        };
+        verticesData.emplace()
 
-        //Logger::Log("---------------------------------");
-    //
-        //for (int i = 0; i < textures.size(); i++) {
-        //    Logger::Log(textures[i]->getFilePath());
-        //}
-
-        // set the texID appropriately in order to load it into the shader
-        // if there is a texture, set the texture ID accordingly to it's value
-        int texID = -1;
-        if (sprite->getTexture() != nullptr)
-        {
-            for (int i = 0; i < textures.size(); i++)
-            {
-                if (textures[i] == sprite->getTexture())
-                {
-                    texID = i;
-                    break;
-                }
-            }
-        }
-
-        //Logger::Log(std::to_string(texID));
-
-
-        // set vertex array functionally and recursively with the gained information from the user
-        // for more information, see the standard declaration of a vertex array with 2 triangles
-        // we are not using the third dimension in our case, on could adjust it, but no
-
-        /*
-        static float vertexArray[] = {
-            //position          //color                     //texture coords  //texture ID
-              -0.5f, -0.5f,     1.0f, 0.0f, 0.0f, 0.5f,     0.0f, 0.0f,       0.0f,        //Bottom Left (0)
-               0.5f, -0.5f,     1.0f, 1.0f, 0.0f, 0.8f,     1.0f, 0.0f,       0.0f,        //Bottom Right (1)
-               0.5f,  0.5f,     1.0f, 0.0f, 1.0f, 0.2f,     1.0f, 1.0f,       0.0f,        //Top Right (2)
-              -0.5f,  0.5f,     1.0f, 0.0f, 1.0f, 0.4f,     0.0f, 1.0f,       0.0f         //Top left (3)
-        };
-        // square geometry / order
-        unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
-        */
-
-        float xAdd = 0.0f;
-        float yAdd = 0.0f;
-        for (int i = 0; i < 4; i++)
-        {
-            switch (i)
-            {
-            case 1:
-                xAdd = 1.0f;
-                break;
-            case 2:
-                yAdd = 1.0f;
-                break;
-            case 3:
-                xAdd = 0.0f;
-                break;
-            default:
-                break;
-            }
-            // this is the recursive vertices creation
-            // set the first values to the according positions
-
-            if (vertices.size() > offset + 8) {
-                vertices[offset + 0] = GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x;
-                vertices[offset + 1] = GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y;
-
-                // set colors
-                vertices[offset + 2] = color.x;
-                vertices[offset + 3] = color.y;
-                vertices[offset + 4] = color.z;
-                vertices[offset + 5] = color.w;
-
-                // set texture coordinates
-                vertices[offset + 6] = texCoord[i].x;
-                vertices[offset + 7] = texCoord[i].y;
-
-                // set texture id
-                vertices[offset + 8] = texID;
-            }
-            else {
-                vertices.emplace(vertices.begin() + offset + 0, GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
-                vertices.emplace(vertices.begin() + offset + 1, GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
-
-                // set colors
-                vertices.emplace(vertices.begin() + offset + 2, color.x);
-                vertices.emplace(vertices.begin() + offset + 3, color.y);
-                vertices.emplace(vertices.begin() + offset + 4, color.z);
-                vertices.emplace(vertices.begin() + offset + 5, color.w);
-
-                // set texture coordinates
-                vertices.emplace(vertices.begin() + offset + 6, texCoord[i].x);
-                vertices.emplace(vertices.begin() + offset + 7, texCoord[i].y);
-
-                // set texture id
-                vertices.emplace(vertices.begin() + offset + 8, texID);
-            }
-            // set offset to the next line for a next triangle in order to make use of batch rendering
-            offset += VERTEX_SIZE;
-        }
+        vertices.insert(vertices.end(), verticesData.begin(), verticesData.end());
     }
 
-    void RenderBatch::generateIndices(unsigned int* element) {
-        // 2 triangles to display one square
-        for (int i = 0; i < maxBatchSize; i++)
-        {
-            loadElementIndices(element, i);
-        }
-    }
-
-    void RenderBatch::loadElementIndices(unsigned int* arrayElements, int index) {
-        int offsetArrayIndex = 6 * index;
-        int offset = 4 * index;
-
-        // first triangle
-        arrayElements[offsetArrayIndex + 0] = offset + 3;
-        arrayElements[offsetArrayIndex + 1] = offset + 2;
-        arrayElements[offsetArrayIndex + 2] = offset + 0;
-
-        // second triangle
-        arrayElements[offsetArrayIndex + 3] = offset + 0;
-        arrayElements[offsetArrayIndex + 4] = offset + 2;
-        arrayElements[offsetArrayIndex + 5] = offset + 1;
+    void RenderBatch::addElementIndices(std::vector<unsigned int> ebo)
+    {
+        // append vector
+        elements.insert(elements.end(), ebo.begin(), ebo.end());
     }
 
     bool RenderBatch::hasRoom() {
