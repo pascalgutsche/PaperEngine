@@ -206,7 +206,7 @@ namespace core {
 
         static bool first = true;
         ApplicationPanel(dt, first);
-        ScenePanel(dt, first);
+        CustomPanel(dt, first);
         LayerPanel(dt, first);
         ViewPortPanel(dt, first);
         InspectorPanel(dt, first);
@@ -295,7 +295,7 @@ namespace core {
             stream << "Polygon Model: ";
             ImGui::Text(stream.str().c_str()); stream.str("");
 
-            static int selected = 0;
+            static int selected = 6914;
             if (ImGui::Selectable("OFF", selected == 6914))
                 selected = 6914;
             if (ImGui::Selectable("POINT", selected == 6912))
@@ -309,13 +309,17 @@ namespace core {
         }
 
         ImGui::End();
-
-        ImGui::ShowDemoWindow();
     }
 
-    void ImGuiLayer::ScenePanel(const float dt, bool first)
+    void ImGuiLayer::AddVariable(std::string name, void* variable) {
+        if (variable_pool.find(name) == variable_pool.end()) {
+            variable_pool.emplace(name, variable);
+        }
+    }
+
+    void ImGuiLayer::CustomPanel(const float dt, bool first)
     {
-        const char* name = "Scenes: ";
+        const char* name = "Track Variables: ";
         std::stringstream stream;
 
         if (first)

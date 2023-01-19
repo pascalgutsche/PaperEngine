@@ -61,6 +61,8 @@ namespace core {
 		static bool GetImGuiEnabled() { return Get()->imgui_enabled; }
 		static float GetDT() { return Get()->dt; }
 		static void setEventCallback(const EventCallbackFunction& callback_function) { Get()->window->setEventCallback(callback_function); }
+		static void Debug_TrackVariable(std::string name, void* variable);
+
 
 		static Window* getWindow() { return Get()->window; }
 		static Scene* getCurrentScene() { return Get()->current_scene; }
