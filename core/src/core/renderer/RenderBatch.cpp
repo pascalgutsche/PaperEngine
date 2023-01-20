@@ -175,19 +175,32 @@ namespace core {
         shader->detach();
     }
 
-    void RenderBatch::addVertexProperties(std::vector<float> verticesData, std::vector<Texture*> textures)
+    void RenderBatch::addVertexProperties(std::vector<unsigned int> ebo, std::vector<float> verticesData, std::vector<Shr<Texture>> textures)
     {
-        this->textures.insert(this->textures.end(), textures.begin(), textures.end());
-
-        verticesData.emplace()
+        //VBO
+        std::vector<Shr<Texture>>::iterator iterator = this->textures.insert(this->textures.end(), textures.begin(), textures.end());
+        int index = iterator - this->textures.begin();
+        for (int i = 0; i < verticesData.size(); i++)
+        {
+	        if ((i % 12 >= 8 && i % 12 <= 11) && verticesData[i] != -1)
+	        {
+                verticesData[i] += index;
+	        }
+        }
 
         vertices.insert(vertices.end(), verticesData.begin(), verticesData.end());
-    }
 
-    void RenderBatch::addElementIndices(std::vector<unsigned int> ebo)
-    {
+        //EBO
+        const int offset = structCount * verticesData.size() / VERTEX_SIZE;
+
+        for (int i = 0; i < ebo.size(); i++)
+        {
+            ebo[i] += offset;
+        }
         // append vector
         elements.insert(elements.end(), ebo.begin(), ebo.end());
+
+        structCount++;
     }
 
     bool RenderBatch::hasRoom() {
@@ -222,4 +235,10 @@ namespace core {
     {
         return vertices.size() / VERTEX_SIZE;
     }
+
+    int RenderBatch::GetVertexSize() const
+    {
+        return VERTEX_SIZE;
+    }
+
 }

@@ -1,4 +1,5 @@
 #include "_Core.h"
+#include "utility.h"
 
 #include "component/Sprite.h"
 #include "renderer/Texture.h"
@@ -7,7 +8,7 @@ namespace core {
 
     // SPRITE
 
-    Sprite::Sprite(std::shared_ptr<Texture> texture) {
+    Sprite::Sprite(Shr<Texture> texture) {
         this->typeID = std::string("sprite");
         Sprite::texture = texture;
         // standard texture coordinates (mostly used)
@@ -56,7 +57,7 @@ namespace core {
         this->texture = texture;
     }
 
-    std::shared_ptr<Texture> Sprite::getTexture()
+    Shr<Texture> Sprite::getTexture()
     {
         // get current texture
         return this->texture;

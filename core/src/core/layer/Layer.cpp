@@ -13,8 +13,7 @@ namespace core
 			game_object->start();
 		}
 		OnAttach();
-		if (add_to_renderer)
-			Application::getCurrentScene()->GetRenderer().add(this, Application::GetLayerStack().GetPlace(this));
+		
 	}
 
 	void Layer::detach()

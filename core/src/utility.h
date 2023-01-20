@@ -22,3 +22,9 @@
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
+namespace core {
+
+	template<typename T>
+	using Shr = std::shared_ptr<T>;
+
+}

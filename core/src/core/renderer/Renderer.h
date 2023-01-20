@@ -13,14 +13,19 @@ namespace core {
     {
         std::vector<float> vertices;
         std::vector<unsigned int> ebo;
-
-        std::vector<int> textureID;
+        std::vector<Shr<Texture>> textures;
 
         int zIndex;
 
         DataPool::DISPLAYMODE displayMode;
 
-        std::vector<Texture*> textures;
+        inline RenderData()
+        {
+            vertices.resize(0);
+            ebo.resize(0);
+            textures.resize(0);
+        }
+
     };
     
     class CORE_API Renderer {

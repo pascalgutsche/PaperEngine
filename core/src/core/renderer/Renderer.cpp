@@ -38,8 +38,7 @@ namespace core {
             if (renderData->zIndex == g->getZIndex() && renderData->displayMode == g->getDisplayMode())
             {
                 found = true;
-                g->addVertexProperties(renderData->vertices, renderData->textures);
-                g->addElementIndices(renderData->ebo);
+                g->addVertexProperties(renderData->ebo, renderData->vertices, renderData->textures);
             }
         }
         if (!found)
@@ -47,8 +46,7 @@ namespace core {
             RenderBatch* renderBatch = new RenderBatch(1000, renderData->zIndex, renderData->displayMode);
             batches.emplace(batches.end(), renderBatch);
 
-            renderBatch->addVertexProperties(renderData->vertices, renderData->textures);
-            renderBatch->addElementIndices(renderData->ebo);
+            renderBatch->addVertexProperties(renderData->ebo, renderData->vertices, renderData->textures);
         }
     }
 

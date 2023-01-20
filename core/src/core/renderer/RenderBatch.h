@@ -44,6 +44,8 @@ namespace core {
 
         void updateTextures();
 
+        int structCount = 0;
+
 
         inline static int draw_calls = 0;
         inline static bool enable_polygon = false;
@@ -64,11 +66,11 @@ namespace core {
 
         int getZIndex();
 
-        void addVertexProperties(std::vector<float> verticesData, std::vector<Texture*> textures);
-        void addElementIndices(std::vector<unsigned int> ebo);
+        void addVertexProperties(std::vector<unsigned int> ebo, std::vector<float> verticesData, std::vector<Shr<Texture>> textures);
 
         int GetSpritesCount() const;
-        int GetVertexCount() const; 
+        int GetVertexCount() const;
+        int GetVertexSize() const;
 
         inline static void setPolygonMode(int mode)
         {

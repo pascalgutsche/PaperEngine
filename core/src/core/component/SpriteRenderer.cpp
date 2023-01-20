@@ -45,12 +45,16 @@ namespace core {
         // change values from the previous frame in order to check if the gameObject changed values
         // the local lastTransform variable always holds the old values, in order to be compared to the 'new' value
         lastTransform = core::GameObject::CGMap[this]->transform.copy();
-
+        
         RenderData* renderData = new RenderData();
 
         renderData->displayMode = GameObject::CGMap[this]->displayMode;
         renderData->zIndex = GameObject::CGMap[this]->getZIndex();
-        renderData->textures.emplace(renderData->textures.end(), sprite->getTexture());
+
+        int textureInsert = renderData->textures.size();
+
+        if (sprite->getTexture() != nullptr)
+			renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->getTexture());
 
         // please have mercy with us
 
@@ -73,14 +77,31 @@ namespace core {
                 break;
             }
 
-            renderData->vertices.emplace(renderData->vertices.end(), GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
-            renderData->vertices.emplace(renderData->vertices.end(), GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
+        	renderData->vertices.emplace(renderData->vertices.end(), GameObject::CGMap[this]->transform.position.x + xAdd * GameObject::CGMap[this]->transform.scale.x);
+            renderData->vertices.emplace(renderData->vertices.end(), GameObject::CGMap[this]->transform.position.y + yAdd * GameObject::CGMap[this]->transform.scale.y);
 
             renderData->vertices.emplace(renderData->vertices.end(), this->color.x);
             renderData->vertices.emplace(renderData->vertices.end(), this->color.y);
             renderData->vertices.emplace(renderData->vertices.end(), this->color.z);
             renderData->vertices.emplace(renderData->vertices.end(), this->color.w);
+
+            renderData->vertices.emplace(renderData->vertices.end(), xAdd);
+            renderData->vertices.emplace(renderData->vertices.end(), yAdd);
+
+            renderData->vertices.emplace(renderData->vertices.end(), textureInsert);
+            renderData->vertices.emplace(renderData->vertices.end(), -1);
+            renderData->vertices.emplace(renderData->vertices.end(), -1);
+            renderData->vertices.emplace(renderData->vertices.end(), -1);
         }
+
+        renderData->ebo.emplace(renderData->ebo.end(), 0);
+        renderData->ebo.emplace(renderData->ebo.end(), 1);
+        renderData->ebo.emplace(renderData->ebo.end(), 2);
+        renderData->ebo.emplace(renderData->ebo.end(), 2);
+        renderData->ebo.emplace(renderData->ebo.end(), 3);
+        renderData->ebo.emplace(renderData->ebo.end(), 0);
+
+
         Application::getCurrentScene()->GetRenderer().add(renderData);
     }
 
