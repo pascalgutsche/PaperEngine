@@ -51,11 +51,12 @@ namespace core {
         renderData->displayMode = GameObject::CGMap[this]->displayMode;
         renderData->zIndex = GameObject::CGMap[this]->getZIndex();
 
-        int textureInsert = renderData->textures.size();
+        int textureInsert = -1;
 
-        if (sprite->getTexture() != nullptr)
-			renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->getTexture());
-
+        if (sprite->getTexture() != nullptr) {
+            textureInsert = renderData->textures.size();
+            renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->getTexture());
+        }
         // please have mercy with us
 
         float xAdd = 0.0f;

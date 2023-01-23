@@ -38,7 +38,7 @@ namespace core {
         virtual void OnEvent(Event& e) = 0;
 
     private:
-        virtual void imgui(float dt) = 0;
+        virtual void imgui(float dt) {};
         virtual void init() = 0;
         virtual void loadResources() = 0;
     };

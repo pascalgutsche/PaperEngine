@@ -37,8 +37,17 @@ out vec4 display;
 
 void main()
 {
-    // if there is a desired texture, load it
-    
-    // if there is no texture, display the colors
-    display = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    //if (fTexID.x >= 0) {
+    //    display = texture(uTexture[fTexID.x], fTexCoord);
+    //}
+    //if (fTexID.y >= 0) {
+    //    display = texture(uTexture[fTexID.y], fTexCoord);
+    //}
+    //if (fTexID.z >= 0) {
+    //    display = texture(uTexture[fTexID.z], fTexCoord);
+    //}
+    //if (fTexID.w >= 0) {
+    //    display = texture(uTexture[fTexID.w], fTexCoord);
+    //}
+    display = fColor;
 }
