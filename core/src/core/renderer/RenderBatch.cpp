@@ -101,21 +101,23 @@ namespace core {
         // and if there are changes, display them to the renderer
         // after the vertex array has been updated, setClean to say that there are no more changes for now
         // this is needed in order to see the changes
-        bool reloadVertexArray = false;
-        for (int i = 0; i < numSprites; i++) {
-            SpriteRenderer* spriteRenderer = sprites[i];
-            if (spriteRenderer->getIsDirty()) {
-                updateTextures();
-
-                spriteRenderer->setClean();
-                reloadVertexArray = true;
-            }
-        }
+        bool reloadVertexArray = true;
+        //for (int i = 0; i < numSprites; i++) {
+        //    SpriteRenderer* spriteRenderer = sprites[i];
+        //    if (spriteRenderer->getIsDirty()) {
+        //        updateTextures();
+        //
+        //        spriteRenderer->setClean();
+        //        reloadVertexArray = true;
+        //    }
+        //}
         // reload the vertex array if there have been made changes
         if (reloadVertexArray) {
             // updates the vertex array in order to see the changes within rendering
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, maxBatchSize * VERTEX_SIZE_BYTES * 4, vertices.data());
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * vertices.size(), vertices.data());
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(float) * elements.size(), elements.data());
         }
 
         // use the shader and upload the shader variables
@@ -146,7 +148,7 @@ namespace core {
         int* texArray = new int[texSlots.size()];
         std::copy(texSlots.begin(), texSlots.end(), texArray);
         shader->uploadIntArray("uTexture", texSlots.size(), texArray);
-        delete texArray;
+        delete[] texArray;
 
 #ifdef BUILD_DEBUG
 		glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
@@ -156,14 +158,18 @@ namespace core {
         // draw both (with coords and color)
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
 
         // 6 = 6 points for 2 triangles
-        glDrawElements(GL_TRIANGLES, this->numSprites * 6, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, this->elements.size(), GL_UNSIGNED_INT, nullptr);
         draw_calls++;
 
         // stop drawing and disable array (finish it off)
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
 
         // unbind everything
 

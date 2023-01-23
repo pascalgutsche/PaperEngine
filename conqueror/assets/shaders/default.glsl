@@ -29,7 +29,7 @@ void main()
 
 in vec4 fColor; // get color from vertex
 in vec2 fTexCoord; // get texCoord from vertex
-in ivec4 fTexID; // get texID from vertex
+flat in ivec4 fTexID; // get texID from vertex
 
 uniform sampler2D uTexture[8];
 
@@ -38,11 +38,7 @@ out vec4 display;
 void main()
 {
     // if there is a desired texture, load it
-    if (fTexID.x >= 0 && false) {
-        display = texture(uTexture[fTexID.x], fTexCoord);
-    }
-    else {
-        // if there is no texture, display the colors
-        display = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-    }
+    
+    // if there is no texture, display the colors
+    display = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }

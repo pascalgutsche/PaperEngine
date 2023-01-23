@@ -45,6 +45,7 @@ namespace core {
         {
             RenderBatch* renderBatch = new RenderBatch(1000, renderData->zIndex, renderData->displayMode);
             batches.emplace(batches.end(), renderBatch);
+            renderBatch->start();
 
             renderBatch->addVertexProperties(renderData->ebo, renderData->vertices, renderData->textures);
         }
