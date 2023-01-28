@@ -31,15 +31,17 @@ in vec4 fColor; // get color from vertex
 in vec2 fTexCoord; // get texCoord from vertex
 flat in ivec4 fTexID; // get texID from vertex
 
-uniform sampler2D uTexture[8];
+uniform sampler2D uTexture[3];
 
 out vec4 display;
 
 void main()
 {
-    //if (fTexID.x >= 0) {
-    //    display = texture(uTexture[fTexID.x], fTexCoord);
-    //}
+    
+    if (fTexID[0] => 0) {
+        display = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+        //display = texture(uTexture[0], fTexCoord);
+    }
     //if (fTexID.y >= 0) {
     //    display = texture(uTexture[fTexID.y], fTexCoord);
     //}
@@ -49,5 +51,5 @@ void main()
     //if (fTexID.w >= 0) {
     //    display = texture(uTexture[fTexID.w], fTexCoord);
     //}
-    display = fColor;
+    //display = fColor;
 }

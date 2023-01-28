@@ -138,16 +138,16 @@ namespace core {
         // fov
         shader->uploadMat4f("uView", Application::getCurrentScene()->getCamera()->getViewMatrix());
 
+        int* texArray = new int[textures.size()];
         for (int i = 0; i < textures.size(); i++)
         {
             // activate all created textures
             textures[i]->bind(i);
+            texArray[i] = i;
         }
         // upload the texture array into the shader
         // convert vector to array in order to pass the parameters through
-        int* texArray = new int[texSlots.size()];
-        std::copy(texSlots.begin(), texSlots.end(), texArray);
-        shader->uploadIntArray("uTexture", texSlots.size(), texArray);
+        shader->uploadIntArray("uTexture", textures.size(), texArray);
         delete[] texArray;
 
 #ifdef BUILD_DEBUG
