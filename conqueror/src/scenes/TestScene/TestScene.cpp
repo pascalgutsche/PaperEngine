@@ -1,6 +1,7 @@
 #include "TestScene.h"
 #include "layers/SoundLayer.h"
 
+
 using namespace core;
 
 TestScene::TestScene() {
@@ -17,7 +18,7 @@ void TestScene::loadResources() {
     backcolor = glm::vec4(0.8f, 0.2f, 0.3f, 1.0f);
     background_layer = new BackgroundLayer();
     foreground_layer = new ForegroundLayer();
-    sound_layer = new SoundLayer;
+    sound_layer = new SoundLayer();
 }
 
 void TestScene::init() {

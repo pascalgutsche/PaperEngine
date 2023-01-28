@@ -38,7 +38,6 @@ void BackgroundLayer::OnDetach()
         delete i;
     }
     game_objects.clear();
-
 }
 
 void BackgroundLayer::update(const float dt)
