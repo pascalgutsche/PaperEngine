@@ -90,9 +90,6 @@ namespace core {
             renderData->vertices.emplace(renderData->vertices.end(), yAdd);
 
             renderData->vertices.emplace(renderData->vertices.end(), textureInsert);
-            renderData->vertices.emplace(renderData->vertices.end(), -1);
-            renderData->vertices.emplace(renderData->vertices.end(), -1);
-            renderData->vertices.emplace(renderData->vertices.end(), -1);
         }
 
         renderData->ebo.emplace(renderData->ebo.end(), 0);

@@ -1,55 +1,60 @@
 #type vertex
-#version 330 core
+#version 460 core
 layout (location = 0) in vec2 aPos; // the position variable has attribute position 0
 layout (location = 1) in vec4 aColor; //the color of the vector
 layout (location = 2) in vec2 aTexCoord; //the coords of the texture
-layout (location = 3) in ivec4 aTexID; //The slot of the texture
+layout (location = 3) in float aTexID; //The slot of the texture
 
 // declare vertex variables that are being piped to fragment
 out vec4 fColor;
 out vec2 fTexCoord;
-out ivec4 fTexID;
+out float fTexID;
 
 // camera variables
 uniform mat4 uProjection;
 uniform mat4 uView;
 
+struct VertexOutput
+{
+    vec4 Color;
+    vec2 TexCoord;
+    float TexID;
+};
+
+layout(location = 0) out VertexOutput Output;
+
 void main()
 {
+    Output.Color = aColor;
+    Output.TexCoord = aTexCoord;
+    Output.TexID = aTexID;
+
     // pipe variables from the vbo
     gl_Position = uProjection * uView * vec4(aPos, 0.0f, 1.0f); // adjust gl_Position with the help of 'u' Factors
-    fColor = aColor;
-    fTexCoord = aTexCoord;
-    fTexID = aTexID; // pipe texID to fragment
 }
 
 
 #type fragment
-#version 330 core
+#version 460 core
 
-in vec4 fColor; // get color from vertex
-in vec2 fTexCoord; // get texCoord from vertex
-flat in ivec4 fTexID; // get texID from vertex
+layout(location = 0) out vec4 display;
 
-uniform sampler2D uTexture[3];
+struct VertexOutput
+{
+    vec4 Color;
+    vec2 TexCoord;
+    float TexID;
+};
 
-out vec4 display;
+layout(location = 0) in VertexOutput Input;
+
+uniform sampler2D uTexture[32];
 
 void main()
 {
-    
-    if (fTexID[0] => 0) {
-        display = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-        //display = texture(uTexture[0], fTexCoord);
+    vec4 color = Input.Color;
+    if (int(Input.TexID) > -1) {
+        color *= texture(uTexture[int(Input.TexID)], Input.TexCoord);
     }
-    //if (fTexID.y >= 0) {
-    //    display = texture(uTexture[fTexID.y], fTexCoord);
-    //}
-    //if (fTexID.z >= 0) {
-    //    display = texture(uTexture[fTexID.z], fTexCoord);
-    //}
-    //if (fTexID.w >= 0) {
-    //    display = texture(uTexture[fTexID.w], fTexCoord);
-    //}
-    //display = fColor;
+    display = color;
 }

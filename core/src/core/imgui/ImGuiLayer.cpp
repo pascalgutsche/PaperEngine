@@ -224,21 +224,20 @@ namespace core {
 
         static float time = 0;
         static float timehelper = -1;
-        static float history = 3;
+        static float history = 5;
         static int flags = ImPlotAxisFlags_NoTickLabels;
-        static ScrollingBuffer sbuff_dt(3000), sbuff_fps(3000);
+        static ScrollingBuffer sbuff_dt(300);// , sbuff_fps(300);
 
         if (timehelper >= 0.016f || timehelper == -1) {
             timehelper = 0;
             sbuff_dt.AddPoint(time, 1000 * dt);
-            sbuff_fps.AddPoint(time, (1 / dt));
         }
         timehelper += dt;
         time += dt;
 
         if (ImGui::TreeNode("Time"))
         {
-		    ImGui::SliderFloat("Time", &history, 1, 50, "%.1f");
+		    ImGui::SliderFloat("Time", &history, 1, 5, "%.1f");
 
 		    stream << "ms per frame: " << 1000 * dt;
 		    ImGui::Text(stream.str().c_str()); stream.str("");
@@ -253,14 +252,14 @@ namespace core {
 
 		    stream << "frames per sec: " << 1 / dt;
 		    ImGui::Text(stream.str().c_str()); stream.str("");
-		    if (ImPlot::BeginPlot("##frames_per_second", ImVec2(-1, 100))) {
-		        ImPlot::SetupAxes(NULL, NULL, flags, flags);
-		        ImPlot::SetupAxisLimits(ImAxis_X1, time - history, time, ImGuiCond_Always);
-		        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1000);
-		        ImPlot::SetNextFillStyle(ImVec4(1.0f, 0.0f, 0.0f, -1.0f), 0.5f);
-		        ImPlot::PlotLine("##frames", &sbuff_fps.Data[0].x, &sbuff_fps.Data[0].y, sbuff_fps.Data.size(), 0, sbuff_fps.Offset, 2 * sizeof(float));
-		        ImPlot::EndPlot();
-		    }
+		    //if (ImPlot::BeginPlot("##frames_per_second", ImVec2(-1, 100))) {
+		    //    ImPlot::SetupAxes(NULL, NULL, flags, flags);
+		    //    ImPlot::SetupAxisLimits(ImAxis_X1, time - history, time, ImGuiCond_Always);
+		    //    ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1000);
+		    //    ImPlot::SetNextFillStyle(ImVec4(1.0f, 0.0f, 0.0f, -1.0f), 0.5f);
+		    //    ImPlot::PlotLine("##frames", &sbuff_fps.Data[0].x, &sbuff_fps.Data[0].y, sbuff_fps.Data.size(), 0, sbuff_fps.Offset, 2 * sizeof(float));
+		    //    ImPlot::EndPlot();
+		    //}
 		    
 		    stream << "Frames rendered: " << Application::GetFramesRendered();
 		    ImGui::BulletText(stream.str().c_str()); stream.str("");

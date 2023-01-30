@@ -57,7 +57,7 @@ namespace core {
 
         glGenBuffers(1, &eboID);
         // create array
-        
+
         // use the array
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
 
@@ -81,7 +81,7 @@ namespace core {
         glEnableVertexAttribArray(2);
 
         //TEXTURE_ID
-        glVertexAttribPointer(3, TEX_ID_SIZE, GL_INT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)TEX_ID_OFFSET);
+        glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)TEX_ID_OFFSET);
         glEnableVertexAttribArray(3);
 
         glBindVertexArray(0);
@@ -186,9 +186,9 @@ namespace core {
         //VBO
         std::vector<Shr<Texture>>::iterator iterator = this->textures.insert(this->textures.end(), textures.begin(), textures.end());
         int index = iterator - this->textures.begin();
-        for (int i = 0; i < verticesData.size(); i++)
+        for (int i = VERTEX_SIZE - 1; i < verticesData.size(); i += VERTEX_SIZE)
         {
-	        if ((i % 12 >= 8 && i % 12 <= 11) && verticesData[i] != -1)
+	        if (verticesData[i] != -1)
 	        {
                 verticesData[i] += index;
 	        }

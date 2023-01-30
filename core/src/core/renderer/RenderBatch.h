@@ -13,7 +13,7 @@ namespace core {
         const int POS_SIZE = 2;
         const int COLOR_SIZE = 4;
         const int TEX_COORDS_SIZE = 2;
-        const int TEX_ID_SIZE = 4;
+        const int TEX_ID_SIZE = 1;
 
         const int POS_OFFSET = 0;
         const int COLOR_OFFSET = sizeof(float) * (POS_SIZE);
