@@ -11,13 +11,11 @@
 
 namespace core {
 
-    RenderBatch::RenderBatch(int maxBatchSize, int zIndex, DataPool::DISPLAYMODE displaymode)
+    RenderBatch::RenderBatch(int zIndex, DataPool::DISPLAYMODE displaymode)
     {
         // set local and current values
         this->zIndex = zIndex;
-        this->maxBatchSize = maxBatchSize;
         this->displayMode = displaymode;
-        numSprites = 0;
 
         // menu gui mode needs a special shader because of uProjection is aPos basically
         if (displaymode == DataPool::DISPLAYMODE::NONE)
@@ -52,7 +50,7 @@ namespace core {
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
         // put everything from the vector into the array, so that we can access it from within gl functions || using vectors makes it easier for dynamic allocations
         // create task for gpu and save data
-        glBufferData(GL_ARRAY_BUFFER, maxBatchSize * VERTEX_SIZE_BYTES * 4, vertices.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_BUFFER_COUNT * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
         //element buffer object (useful for creating squares)
 
         glGenBuffers(1, &eboID);
@@ -61,7 +59,7 @@ namespace core {
         // use the array
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
 
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * maxBatchSize * 6, elements.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * MAX_VERTEX_BUFFER_COUNT, elements.data(), GL_DYNAMIC_DRAW);
 
         // saving / uploading points (x,y) to vertex slot 0
         //declaration of vertex basically (start at byte offset x, array index y,...)
@@ -96,24 +94,28 @@ namespace core {
         }
     }
 
-    void RenderBatch::render() {
+    int RenderBatch::render() {
         // set spriterenderer to sprites
         // and if there are changes, display them to the renderer
         // after the vertex array has been updated, setClean to say that there are no more changes for now
         // this is needed in order to see the changes
-        bool reloadVertexArray = true;
-        //for (RenderData* data: dataBlocks) {
-        //    if (data->dirty) {
-        //        updateTextures();
-        //        updateVertexProperties(data);
-        //        reloadVertexArray = true;
-        //    }
-        //}
+        for (RenderData* data: dataBlocks) {
+            if (data->dirty) {
+                //updateTextures();
+                updateVertexProperties(data);
+                reloadBufferArrays = true;
+                data->dirty = false;
+            }
+        }
+        if (vertices.size() == 0)
+        {
+            return 1;
+        }
         // reload the vertex array if there have been made changes
-        if (reloadVertexArray) {
+        if (reloadBufferArrays) {
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
             glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * vertices.size(), vertices.data());
+
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
             glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(float) * elements.size(), elements.data());
         }
@@ -160,7 +162,8 @@ namespace core {
         glEnableVertexAttribArray(3);
 
         // 6 = 6 points for 2 triangles
-        glDrawElements(GL_TRIANGLES, this->elements.size(), GL_UNSIGNED_INT, nullptr);
+        
+		glDrawElements(GL_TRIANGLES, this->elements.size(), GL_UNSIGNED_INT, nullptr);
         draw_calls++;
 
         // stop drawing and disable array (finish it off)
@@ -177,6 +180,8 @@ namespace core {
             textures[i]->unbind();
         }
         shader->detach();
+
+        return 0;
     }
 
     void RenderBatch::addVertexProperties(RenderData* renderData)
@@ -198,7 +203,7 @@ namespace core {
         }
 
         //VBO
-        vertices.insert(vertices.end(), renderData->vertices.begin(), renderData->vertices.end());
+        renderData->vertexSlot = vertices.insert(vertices.end(), renderData->vertices.begin(), renderData->vertices.end()) - vertices.begin();
 
         //EBO
         const int offset = dataBlocks.size() * renderData->vertices.size() / VERTEX_SIZE;
@@ -208,9 +213,12 @@ namespace core {
             renderData->ebo[i] += offset;
         }
         // append vector
-        elements.insert(elements.end(), renderData->ebo.begin(), renderData->ebo.end());
+        renderData->elementSlot = elements.insert(elements.end(), renderData->ebo.begin(), renderData->ebo.end()) - elements.begin();
 
+        renderData->oldVertexSize = renderData->vertices.size();
+        renderData->oldElementSize = renderData->ebo.size();
         dataBlocks.emplace_back(renderData);
+        reloadBufferArrays = true;
     }
 
     void RenderBatch::updateVertexProperties(RenderData* renderData)
@@ -231,20 +239,22 @@ namespace core {
             }
         }
 
-        //VBO
-        vertices.insert(vertices.end(), renderData->vertices.begin(), renderData->vertices.end());
+        if (renderData->vertices.size() == renderData->oldVertexSize)
+        {
+	        for (int i = 0; i < renderData->vertices.size(); i++)
+	        {
+                this->vertices[renderData->vertexSlot + i] = renderData->vertices.at(i);
+	        }
+        }
 
         //EBO
-        const int offset = dataBlocks.size() * renderData->vertices.size() / VERTEX_SIZE;
-
-        for (int i = 0; i < renderData->ebo.size(); i++)
-        {
-            renderData->ebo[i] += offset;
+        if (renderData->ebo.size() == renderData->oldElementSize) {
+            for (int i = 0; i < renderData->ebo.size(); i++)
+            {
+                renderData->ebo[i] += renderData->vertexSlot;
+                this->elements[renderData->elementSlot + i] = renderData->ebo.at(i);
+            }
         }
-        // append vector
-        elements.insert(elements.end(), renderData->ebo.begin(), renderData->ebo.end());
-
-        dataBlocks.emplace_back(renderData);
     }
 
 

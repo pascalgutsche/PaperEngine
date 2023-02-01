@@ -17,7 +17,6 @@ namespace core {
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture) {
         this->typeID = std::string("sprite_renderer");
         this->color = color;
-        isDirty = true;
         // set newest sprite to no texture (symoblizes that this sprite only contains colors and no texture)
         this->sprite = new Sprite(texture);
     }
@@ -31,7 +30,6 @@ namespace core {
         // set default colors
         this->color = color;
         // this signals changes, another functions look out for this, in order to update the sprite
-        isDirty = true;
     }
 
 
@@ -100,6 +98,7 @@ namespace core {
         renderData->ebo.emplace(renderData->ebo.end(), 3);
         renderData->ebo.emplace(renderData->ebo.end(), 0);
 
+        con = Utils::randRange(200, 600);
 
         Application::getCurrentScene()->GetRenderer().add(renderData);
     }
@@ -116,8 +115,8 @@ namespace core {
         }
         bunker++;
 
-        if (bunker == 400) {
-            Application::getCurrentScene()->GetRenderer().remove(renderData);
+        if (bunker == con) {
+            //Application::getCurrentScene()->GetRenderer().remove(renderData);
         }
         
     }
@@ -137,7 +136,7 @@ namespace core {
             ImGui::ColorPicker3("ColorPicker", colorArray, 0);
             if (!(color.x == colorArray[0] && color.y == colorArray[1] && color.z == colorArray[2] && color.w == colorArray[3])) {
                 color = glm::vec4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
-                //setColor(color);
+                setColor(color);
             }
         }
         else {
@@ -209,14 +208,21 @@ namespace core {
     }
 
     void SpriteRenderer::setColor(glm::vec4 localColor) {
-        
+	    const float colorBuffer[4]
+        {
+            localColor.x,
+            localColor.y,
+            localColor.z,
+            localColor.w
+        };
+
         for (int i = 2; i < renderData->vertices.size(); i+= RenderBatch::GetVertexSize()) {
-            for (int j = 0; j < 4; i++) {
-                renderData->vertices[i + j] = localColor[j];
+            for (int j = 0; j < 4; j++) {
+                renderData->vertices[i + j] = colorBuffer[j];
             }
         }
 
-        isDirty = true;
+        renderData->dirty = true;
     }
 
     void SpriteRenderer::setClean()

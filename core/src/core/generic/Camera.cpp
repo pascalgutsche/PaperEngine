@@ -7,7 +7,7 @@ namespace core {
 
     Camera::Camera() {
         // standard position of the camera
-        position = glm::vec3(0.0f, 0.0f, 5.0f);
+        position = glm::vec3(0.0f, 0.0f, 10.0f);
         // standard fov
         fov = 45.0f;
     }

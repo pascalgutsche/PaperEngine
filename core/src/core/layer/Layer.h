@@ -41,4 +41,3 @@ namespace core
 		std::string GetName() { return name; }
 	};
 }
-

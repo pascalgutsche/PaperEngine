@@ -9,6 +9,8 @@
 
 namespace core {
 
+    class RenderBatch;
+
     struct RenderData
     {
         std::vector<float> vertices;
@@ -27,7 +29,21 @@ namespace core {
             textures.resize(0);
             dirty = false;
 
+            vertexSlot = -1;
+            elementSlot = -1;
+            oldVertexSize = -1;
+            oldElementSize = -1;
         }
+
+    private:
+        int vertexSlot;
+        int elementSlot;
+
+        int oldVertexSize;
+        int oldElementSize;
+
+
+        friend class RenderBatch;
     };
 
     class RenderBatch {
@@ -46,6 +62,7 @@ namespace core {
 
         bool hasRoom_bool = false;
 
+        static constexpr int MAX_VERTEX_BUFFER_COUNT = 20000;
 
         std::vector<int> texSlots = { 0, 1, 2, 3 , 4, 5, 6, 7 };
         std::vector<std::shared_ptr<Texture>> textures;
@@ -60,6 +77,8 @@ namespace core {
         int zIndex;
         int oldVertexSize = -1;
         int oldElementSize = -1;
+
+        bool reloadBufferArrays = false;
 
         Shr<Shader> shader;
         std::vector<float> vertices;
@@ -78,10 +97,10 @@ namespace core {
 
     public:
 
-        RenderBatch(int maxBatchSize, int zIndex, DataPool::DISPLAYMODE displaymode);
+        RenderBatch(int zIndex, DataPool::DISPLAYMODE displaymode);
         ~RenderBatch();
         void start();
-        void render();
+        int render();
 
         bool hasRoom();
         bool hasTextureRoom();

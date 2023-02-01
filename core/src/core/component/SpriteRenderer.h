@@ -17,6 +17,7 @@ namespace core {
         Transform* lastTransform;
         RenderData* renderData;
         int bunker = 0;
+        int con = 0;
         bool isDirty = false;
     public:
         SpriteRenderer(glm::vec4 color, Shr<Texture> texture = nullptr);

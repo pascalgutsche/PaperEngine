@@ -43,7 +43,7 @@ namespace core {
         }
         if (!found)
         {
-            RenderBatch* renderBatch = new RenderBatch(1000, renderData->zIndex, renderData->displayMode);
+            RenderBatch* renderBatch = new RenderBatch(renderData->zIndex, renderData->displayMode);
             batches.emplace(batches.end(), renderBatch);
             renderBatch->start();
 
@@ -77,7 +77,11 @@ namespace core {
         // render all batches
         for (int i = 0; i < batches.size(); i++) {
             vertices_count_calc += batches[i]->GetVertexCount();
-            batches[i]->render();
+            if (batches[i]->render())
+            {
+                batches.erase(batches.begin() + i);
+            }
+            
         }
 
         sprites_count = sprites_count_calc;
