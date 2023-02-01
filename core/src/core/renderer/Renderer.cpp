@@ -13,7 +13,7 @@ namespace core {
     {
         inline bool operator() (RenderBatch* batch1, RenderBatch* batch2)
         {
-            return (batch1->getZIndex() < batch2->getZIndex());
+            return (batch1->GetZIndex() < batch2->GetZIndex());
         }
     };
 
@@ -35,10 +35,10 @@ namespace core {
         bool found = false;
         for (auto g : batches)
         {
-            if (renderData->zIndex == g->getZIndex() && renderData->displayMode == g->getDisplayMode())
+            if (renderData->zIndex == g->GetZIndex() && renderData->displayMode == g->GetDisplayMode())
             {
                 found = true;
-                g->addVertexProperties(renderData->ebo, renderData->vertices, renderData->textures);
+                g->addVertexProperties(renderData);
             }
         }
         if (!found)
@@ -47,7 +47,15 @@ namespace core {
             batches.emplace(batches.end(), renderBatch);
             renderBatch->start();
 
-            renderBatch->addVertexProperties(renderData->ebo, renderData->vertices, renderData->textures);
+            renderBatch->addVertexProperties(renderData);
+        }
+    }
+
+    void Renderer::remove(RenderData* renderData)
+    {
+        for (auto g : batches)
+        {
+            g->removeVertexProperties(renderData);
         }
     }
 
@@ -68,7 +76,6 @@ namespace core {
         int vertices_count_calc = 0;
         // render all batches
         for (int i = 0; i < batches.size(); i++) {
-            sprites_count_calc += batches[i]->GetSpritesCount();
             vertices_count_calc += batches[i]->GetVertexCount();
             batches[i]->render();
         }

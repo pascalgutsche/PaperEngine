@@ -301,7 +301,7 @@ namespace core {
                 selected = 6912;
             if (ImGui::Selectable("LINE", selected == 6913))
                 selected = 6913;
-            RenderBatch::setPolygonMode(selected);
+            RenderBatch::SetPolygonMode(selected);
 
 
             ImGui::TreePop();

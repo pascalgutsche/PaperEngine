@@ -17,7 +17,7 @@ void BackgroundLayer::OnAttach()
     background4->addComponent(new SpriteRenderer(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f)));
     background5->addComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
     background6->addComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f)));
-    background7->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)));
+    background7->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), DataPool::getTexture("james_webb.png")));
     background8->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)));
 
 

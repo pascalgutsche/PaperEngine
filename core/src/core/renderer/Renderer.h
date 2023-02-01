@@ -8,25 +8,6 @@
 #include "layer/LayerStack.h"
 
 namespace core {
-
-    struct RenderData
-    {
-        std::vector<float> vertices;
-        std::vector<unsigned int> ebo;
-        std::vector<Shr<Texture>> textures;
-
-        int zIndex;
-
-        DataPool::DISPLAYMODE displayMode;
-
-        inline RenderData()
-        {
-            vertices.resize(0);
-            ebo.resize(0);
-            textures.resize(0);
-        }
-
-    };
     
     class CORE_API Renderer {
     private:
@@ -44,6 +25,7 @@ namespace core {
         Renderer();
         ~Renderer();
         void add(RenderData* renderData);
+        void remove(RenderData* renderData);
         // this function has to be called on every frame (update)
         void render(LayerStack& layer_stack, float dt);
         void updateGameObjects(float dt, std::vector<GameObject*>& gameObjects);

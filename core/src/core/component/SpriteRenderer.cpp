@@ -5,6 +5,7 @@
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "utils/Utils.h"
+#include "renderer/RenderBatch.h"
 
 #include "imgui/ImGuiLayer.h"
 
@@ -12,24 +13,23 @@
 
 namespace core {
 
-
     //SPRITERENDERER
-    SpriteRenderer::SpriteRenderer(glm::vec4 color) {
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture) {
         this->typeID = std::string("sprite_renderer");
         this->color = color;
         isDirty = true;
         // set newest sprite to no texture (symoblizes that this sprite only contains colors and no texture)
-        this->sprite = new Sprite(nullptr);
+        this->sprite = new Sprite(texture);
     }
 
-    SpriteRenderer::SpriteRenderer(Sprite* sprite)
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Sprite* sprite)
     {
         // set the renderer to SPRITERENDERER
         this->typeID = std::string("sprite_renderer");
         // our sprite is the sprite from the function call
         this->sprite = sprite;
         // set default colors
-        this->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        this->color = color;
         // this signals changes, another functions look out for this, in order to update the sprite
         isDirty = true;
     }
@@ -39,6 +39,7 @@ namespace core {
         // every new keyword requires a 'delete' keyword (free manually allocated pointer)
         delete sprite;
         delete lastTransform;
+        delete renderData;
     }
 
     void SpriteRenderer::start() {
@@ -46,7 +47,7 @@ namespace core {
         // the local lastTransform variable always holds the old values, in order to be compared to the 'new' value
         lastTransform = core::GameObject::CGMap[this]->transform.copy();
         
-        RenderData* renderData = new RenderData();
+        renderData = new RenderData();
 
         renderData->displayMode = GameObject::CGMap[this]->displayMode;
         renderData->zIndex = GameObject::CGMap[this]->getZIndex();
@@ -103,6 +104,7 @@ namespace core {
         Application::getCurrentScene()->GetRenderer().add(renderData);
     }
 
+    
     void SpriteRenderer::update(float dt) {
         // check if there have been made changes to the sprite (transform of the gameObject)
         if (!(core::GameObject::CGMap[this]->transform.equals(*lastTransform)))
@@ -112,6 +114,12 @@ namespace core {
             core::GameObject::CGMap[this]->transform.copy(*this->lastTransform);
             isDirty = true;
         }
+        bunker++;
+
+        if (bunker == 400) {
+            Application::getCurrentScene()->GetRenderer().remove(renderData);
+        }
+        
     }
 
     static float timeUntilRefresh = 0.0f;
@@ -129,7 +137,7 @@ namespace core {
             ImGui::ColorPicker3("ColorPicker", colorArray, 0);
             if (!(color.x == colorArray[0] && color.y == colorArray[1] && color.z == colorArray[2] && color.w == colorArray[3])) {
                 color = glm::vec4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
-                isDirty = true;
+                //setColor(color);
             }
         }
         else {
@@ -200,12 +208,14 @@ namespace core {
         isDirty = true;
     }
 
-    void SpriteRenderer::setColor(glm::vec4 color) {
-        // set color
-        this->color = color;
-        delete this->sprite;
-        this->sprite = new Sprite(nullptr);
-        // set to true because changes have been made
+    void SpriteRenderer::setColor(glm::vec4 localColor) {
+        
+        for (int i = 2; i < renderData->vertices.size(); i+= RenderBatch::GetVertexSize()) {
+            for (int j = 0; j < 4; i++) {
+                renderData->vertices[i + j] = localColor[j];
+            }
+        }
+
         isDirty = true;
     }
 

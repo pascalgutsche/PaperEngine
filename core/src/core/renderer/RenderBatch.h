@@ -1,5 +1,6 @@
 #pragma once
 #include "_Core.h"
+#include "utility.h"
 
 #include "generic/Shader.h"
 #include "renderer/Texture.h"
@@ -8,27 +9,47 @@
 
 namespace core {
 
+    struct RenderData
+    {
+        std::vector<float> vertices;
+        std::vector<unsigned int> ebo;
+        std::vector<Shr<Texture>> textures;
+
+        int zIndex;
+        bool dirty;
+
+        DataPool::DISPLAYMODE displayMode;
+
+        RenderData()
+        {
+            vertices.resize(0);
+            ebo.resize(0);
+            textures.resize(0);
+            dirty = false;
+
+        }
+    };
+
     class RenderBatch {
     private:
-        const int POS_SIZE = 2;
-        const int COLOR_SIZE = 4;
-        const int TEX_COORDS_SIZE = 2;
-        const int TEX_ID_SIZE = 1;
+        static const int POS_SIZE = 2;
+        static const int COLOR_SIZE = 4;
+        static const int TEX_COORDS_SIZE = 2;
+        static const int TEX_ID_SIZE = 1;
 
-        const int POS_OFFSET = 0;
-        const int COLOR_OFFSET = sizeof(float) * (POS_SIZE);
-        const int TEX_COORDS_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE);
-        const int TEX_ID_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE);
-
-        const int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
-        const int VERTEX_SIZE_BYTES = sizeof(float) * VERTEX_SIZE;
+        static const int POS_OFFSET = 0;
+        static const int COLOR_OFFSET = sizeof(float) * (POS_SIZE);
+        static const int TEX_COORDS_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE);
+        static const int TEX_ID_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE);
+        static const int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
+        static const int VERTEX_SIZE_BYTES = sizeof(float) * VERTEX_SIZE;
 
         bool hasRoom_bool = false;
 
 
         std::vector<int> texSlots = { 0, 1, 2, 3 , 4, 5, 6, 7 };
         std::vector<std::shared_ptr<Texture>> textures;
-        std::vector<SpriteRenderer*> sprites;
+        std::vector<RenderData*> dataBlocks;
 
         unsigned int vaoID;
         unsigned int vboID;
@@ -37,8 +58,10 @@ namespace core {
         int numSprites;
         int maxBatchSize;
         int zIndex;
+        int oldVertexSize = -1;
+        int oldElementSize = -1;
 
-        std::shared_ptr<Shader> shader;
+        Shr<Shader> shader;
         std::vector<float> vertices;
         std::vector<unsigned int> elements;
 
@@ -62,27 +85,44 @@ namespace core {
 
         bool hasRoom();
         bool hasTextureRoom();
-        bool hasTexture(std::shared_ptr<Texture> texture);
+        bool hasTexture(Shr<Texture> texture);
 
-        int getZIndex();
+        void addVertexProperties(RenderData* renderdata);
+        void updateVertexProperties(RenderData* renderdata);
+        void removeVertexProperties(RenderData* renderdata);
 
-        void addVertexProperties(std::vector<unsigned int> ebo, std::vector<float> verticesData, std::vector<Shr<Texture>> textures);
 
-        int GetSpritesCount() const;
-        int GetVertexCount() const;
-        int GetVertexSize() const;
-
-        inline static void setPolygonMode(int mode)
+        inline static void SetPolygonMode(int mode)
         {
             polygonMode = mode;
         }
 
-        DataPool::DISPLAYMODE getDisplayMode()
+        DataPool::DISPLAYMODE const GetDisplayMode()
         {
-            return this->displayMode;
+            return displayMode;
         }
 
-        static int GetDrawCalls() { return draw_calls; }
+        inline static int GetDrawCalls() { 
+            return draw_calls; 
+        }
+
+        inline int GetZIndex() const {
+            return zIndex;
+        }
+
+        inline int GetTextureCount() const {
+            return textures.size();
+        }
+
+        inline int GetVertexCount() const
+        {
+            return vertices.size() / VERTEX_SIZE;
+        }
+
+        static inline int GetVertexSize()
+        {
+            return VERTEX_SIZE;
+        }
     };
 
 }

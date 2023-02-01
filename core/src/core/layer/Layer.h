@@ -29,7 +29,7 @@ namespace core
 		virtual void OnAttach() = 0;
 		virtual void OnDetach() = 0;
 		virtual void update(const float dt) = 0;
-		virtual void imgui(const float dt) = 0;
+		virtual void imgui(const float dt) { };
 		virtual void OnEvent(Event& event) = 0;
 
 		void AddGameObjectToLayer(GameObject* game_object);

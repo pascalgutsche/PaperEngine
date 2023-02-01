@@ -90,9 +90,9 @@ namespace core {
     void RenderBatch::updateTextures() {
         textures.erase(textures.begin(), textures.end());
         for (int i = 0; i < numSprites; i++) {
-            if (sprites[i]->getTexture() != nullptr && !hasTexture(sprites[i]->getTexture())) {
-                textures.insert(textures.end(), sprites[i]->getTexture());
-            }
+            //if (sprites[i]->getTexture() != nullptr && !hasTexture(sprites[i]->getTexture())) {
+            //    textures.insert(textures.end(), sprites[i]->getTexture());
+            //}
         }
     }
 
@@ -102,19 +102,17 @@ namespace core {
         // after the vertex array has been updated, setClean to say that there are no more changes for now
         // this is needed in order to see the changes
         bool reloadVertexArray = true;
-        //for (int i = 0; i < numSprites; i++) {
-        //    SpriteRenderer* spriteRenderer = sprites[i];
-        //    if (spriteRenderer->getIsDirty()) {
+        //for (RenderData* data: dataBlocks) {
+        //    if (data->dirty) {
         //        updateTextures();
-        //
-        //        spriteRenderer->setClean();
+        //        updateVertexProperties(data);
         //        reloadVertexArray = true;
         //    }
         //}
         // reload the vertex array if there have been made changes
         if (reloadVertexArray) {
-            // updates the vertex array in order to see the changes within rendering
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
             glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * vertices.size(), vertices.data());
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
             glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(float) * elements.size(), elements.data());
@@ -181,32 +179,88 @@ namespace core {
         shader->detach();
     }
 
-    void RenderBatch::addVertexProperties(std::vector<unsigned int> ebo, std::vector<float> verticesData, std::vector<Shr<Texture>> textures)
+    void RenderBatch::addVertexProperties(RenderData* renderData)
     {
-        //VBO
-        std::vector<Shr<Texture>>::iterator iterator = this->textures.insert(this->textures.end(), textures.begin(), textures.end());
-        int index = iterator - this->textures.begin();
-        for (int i = VERTEX_SIZE - 1; i < verticesData.size(); i += VERTEX_SIZE)
-        {
-	        if (verticesData[i] != -1)
-	        {
-                verticesData[i] += index;
-	        }
+        //TEXTURES
+        for (int i = 0; i < renderData->textures.size(); i++) {
+            std::vector<Shr<Texture>>::iterator textureIndex = std::find(this->textures.begin(), this->textures.end(), renderData->textures[i]);
+            if (textureIndex == this->textures.end()) {
+                textureIndex = this->textures.insert(this->textures.end(), renderData->textures.begin(), renderData->textures.end());
+            }
+            
+            for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
+            {
+                if (renderData->vertices[j] == i)
+                {
+                    renderData->vertices[j] += textureIndex - this->textures.begin();
+                }
+            }
         }
 
-        vertices.insert(vertices.end(), verticesData.begin(), verticesData.end());
+        //VBO
+        vertices.insert(vertices.end(), renderData->vertices.begin(), renderData->vertices.end());
 
         //EBO
-        const int offset = structCount * verticesData.size() / VERTEX_SIZE;
+        const int offset = dataBlocks.size() * renderData->vertices.size() / VERTEX_SIZE;
 
-        for (int i = 0; i < ebo.size(); i++)
+        for (int i = 0; i < renderData->ebo.size(); i++)
         {
-            ebo[i] += offset;
+            renderData->ebo[i] += offset;
         }
         // append vector
-        elements.insert(elements.end(), ebo.begin(), ebo.end());
+        elements.insert(elements.end(), renderData->ebo.begin(), renderData->ebo.end());
 
-        structCount++;
+        dataBlocks.emplace_back(renderData);
+    }
+
+    void RenderBatch::updateVertexProperties(RenderData* renderData)
+    {
+        //TEXTURES
+        for (int i = 0; i < renderData->textures.size(); i++) {
+            std::vector<Shr<Texture>>::iterator textureIndex = std::find(this->textures.begin(), this->textures.end(), renderData->textures[i]);
+            if (textureIndex == this->textures.end()) {
+                textureIndex = this->textures.insert(this->textures.end(), renderData->textures.begin(), renderData->textures.end());
+            }
+
+            for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
+            {
+                if (renderData->vertices[j] == i)
+                {
+                    renderData->vertices[j] += textureIndex - this->textures.begin();
+                }
+            }
+        }
+
+        //VBO
+        vertices.insert(vertices.end(), renderData->vertices.begin(), renderData->vertices.end());
+
+        //EBO
+        const int offset = dataBlocks.size() * renderData->vertices.size() / VERTEX_SIZE;
+
+        for (int i = 0; i < renderData->ebo.size(); i++)
+        {
+            renderData->ebo[i] += offset;
+        }
+        // append vector
+        elements.insert(elements.end(), renderData->ebo.begin(), renderData->ebo.end());
+
+        dataBlocks.emplace_back(renderData);
+    }
+
+
+
+    void RenderBatch::removeVertexProperties(RenderData* renderData) {
+        std::vector<RenderData*>::iterator renderDataSlot = std::find(dataBlocks.begin(), dataBlocks.end(), renderData);
+        int verticesSlot = 0;
+        for (int i = 0; i < dataBlocks.begin() - renderDataSlot; i++) {
+            verticesSlot += dataBlocks[i]->vertices.size();
+        }
+
+        for (int i = verticesSlot; i < renderData->vertices.size(); i++) {
+            this->vertices.erase(this->vertices.begin() + verticesSlot);
+        }
+
+        dataBlocks.erase(renderDataSlot);
     }
 
     bool RenderBatch::hasRoom() {
@@ -217,7 +271,7 @@ namespace core {
         return textures.size() < 1;
     }
 
-    bool RenderBatch::hasTexture(std::shared_ptr<Texture> tex) {
+    bool RenderBatch::hasTexture(Shr<Texture> tex) {
         // check if the desired texture is being used in the current renderbatch
         for (auto& texture : textures) {
             if (tex == texture) {
@@ -225,26 +279,6 @@ namespace core {
             }
         }
         return false;
-    }
-
-    int RenderBatch::getZIndex() {
-        // do you really need an explanation for this
-        return this->zIndex;
-    }
-
-    int RenderBatch::GetSpritesCount() const
-    {
-        return numSprites;
-    }
-
-    int RenderBatch::GetVertexCount() const
-    {
-        return vertices.size() / VERTEX_SIZE;
-    }
-
-    int RenderBatch::GetVertexSize() const
-    {
-        return VERTEX_SIZE;
     }
 
 }

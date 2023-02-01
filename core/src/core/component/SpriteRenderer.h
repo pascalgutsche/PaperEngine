@@ -8,21 +8,22 @@
 
 namespace core {
 
+    struct RenderData;
+
     class CORE_API SpriteRenderer : public Component {
     private:
         glm::vec4 color;
         Sprite* sprite;
         Transform* lastTransform;
-
+        RenderData* renderData;
+        int bunker = 0;
         bool isDirty = false;
     public:
-        SpriteRenderer(glm::vec4 color);
-        SpriteRenderer(Sprite* sprite);
+        SpriteRenderer(glm::vec4 color, Shr<Texture> texture = nullptr);
+        SpriteRenderer(glm::vec4 color, Sprite* sprite);
 
         virtual ~SpriteRenderer();
 
-        /* troll */
-        // setup function
         void start() override;
         // update function call on every update (frame)
         void update(float dt) override;

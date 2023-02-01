@@ -78,10 +78,11 @@ void TestScene::imgui(float dt) {
 
 bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
 {
-    if (this->getCamera()->position.z > 1)
+    if (this->getCamera()->position.z > 0.2 && e.getYOffset() != 0)
         this->getCamera()->position.z += 10.0f * core::Application::GetDT() * e.getYOffset();
-    else if (e.getYOffset() > 0)
-        this->getCamera()->position.z += 10.0f * core::Application::GetDT() * e.getYOffset();
-    this->getCamera()->fov += 1.0f * core::Application::GetDT() * e.getXOffset();
+    if (this->getCamera()->position.z < 0.2) {
+        this->getCamera()->position.z = 0.2;
+    }
+        
     return true;
 }
