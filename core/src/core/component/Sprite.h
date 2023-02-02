@@ -7,20 +7,39 @@
 
 namespace core {
 
-    class CORE_API Sprite : public Component {
+    class Sprite : public Component {
     private:
         std::shared_ptr<Texture> texture;
         float texCoords[8];
     public:
         // get default texture coordinates
-        Sprite(std::shared_ptr<Texture> texture);
+        Sprite(Shr<Texture> texture);
         // set sprite texture with specific textureCoordinates
-        Sprite(std::shared_ptr<Texture> texture, float* texCoords);
+        Sprite(Shr<Texture> texture, float* texCoords);
         virtual ~Sprite();
-        void setTexture(std::shared_ptr<Texture> texture);
-        std::shared_ptr<Texture> getTexture();
 
-        float* getTexCoords();
+        Shr<Texture> getTexture()
+        {
+            // get current texture
+            return this->texture;
+        }
+
+        void setTexture(Shr<Texture> texture) {
+            this->texture = texture;
+        }
+
+        float* getTexCoords()
+        {
+            // get current texture coordinates
+            return this->texCoords;
+        }
+
+        void setTexCoords(float* texCoords)
+        {
+            for (int i = 0; i < 8; i++) {
+                this->texCoords[i] = texCoords[i];
+            }
+        }
     };
 
 }

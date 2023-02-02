@@ -79,6 +79,7 @@ namespace core {
             vertices_count_calc += batches[i]->GetVertexCount();
             if (batches[i]->render())
             {
+                delete batches[i];
                 batches.erase(batches.begin() + i);
             }
             

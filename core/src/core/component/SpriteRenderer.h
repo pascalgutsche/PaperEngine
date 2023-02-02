@@ -30,7 +30,8 @@ namespace core {
         void update(float dt) override;
         void imgui(float dt) override;
 
-        void updateColor(glm::vec4 color);
+        void UpdateColor(glm::vec4 color);
+        void UpdateTexture(Shr<Texture> texture);
 
         
 

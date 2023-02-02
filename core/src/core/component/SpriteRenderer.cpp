@@ -137,7 +137,7 @@ namespace core {
             ImGui::ColorPicker3("ColorPicker", colorArray, 0);
             if (!(color.x == colorArray[0] && color.y == colorArray[1] && color.z == colorArray[2] && color.w == colorArray[3])) {
                 color = glm::vec4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
-                updateColor(color);
+                UpdateColor(color);
             }
 
             ImGui::Text("");
@@ -171,9 +171,8 @@ namespace core {
 
                 ImGui::PushID(i);
                 if (ImGui::ImageButton((void*)texture->getID(), ImVec2(ratio.width, ratio.height), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f), 2, ImColor(0, 0, 0, 1))) {
-                    delete sprite;
-                    this->sprite = new Sprite(texture);
-                    isDirty = true;
+                	if (this->sprite->getTexture() != texture)
+                		UpdateTexture(texture);
                 }
                 ImGui::PopID();
 
@@ -192,7 +191,7 @@ namespace core {
 
     
 
-    void SpriteRenderer::updateColor(glm::vec4 localColor) {
+    void SpriteRenderer::UpdateColor(glm::vec4 localColor) {
 	    const float colorBuffer[4]
         {
             localColor.x,
@@ -205,6 +204,21 @@ namespace core {
             for (int j = 0; j < 4; j++) {
                 renderData->vertices[i + j] = colorBuffer[j];
             }
+        }
+
+        renderData->dirty = true;
+    }
+
+    void SpriteRenderer::UpdateTexture(Shr<Texture> texture)
+    {
+        this->sprite->setTexture(texture);
+        renderData->textures.clear();
+
+        int textureInsert = renderData->textures.size();
+        renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->getTexture());
+
+        for (int i = 8; i < renderData->vertices.size(); i += RenderBatch::GetVertexSize()) {
+            renderData->vertices[i] = textureInsert;
         }
 
         renderData->dirty = true;

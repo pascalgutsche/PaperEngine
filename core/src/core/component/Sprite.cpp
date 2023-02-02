@@ -53,20 +53,4 @@ namespace core {
     {
     }
 
-    void Sprite::setTexture(std::shared_ptr<Texture> texture) {
-        this->texture = texture;
-    }
-
-    Shr<Texture> Sprite::getTexture()
-    {
-        // get current texture
-        return this->texture;
-    }
-
-    float* Sprite::getTexCoords()
-    {
-        // get current texture coordinates
-        return this->texCoords;
-    }
-
 }

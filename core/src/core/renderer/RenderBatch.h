@@ -45,6 +45,7 @@ namespace core {
         int oldVertexSize;
         int oldElementSize;
 
+        std::vector<Shr<Texture>> oldTextures;
 
         friend class RenderBatch;
     };
@@ -65,7 +66,8 @@ namespace core {
 
         bool hasRoom_bool = false;
 
-        static constexpr int MAX_VERTEX_BUFFER_COUNT = 20000;
+        static constexpr int MAX_VERTEX_COUNT = 3000;
+        static constexpr int MAX_ELEMENT_COUNT = 5000;
 
         std::vector<int> texSlots = { 0, 1, 2, 3 , 4, 5, 6, 7 };
         std::vector<std::shared_ptr<Texture>> textures;
