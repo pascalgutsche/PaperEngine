@@ -25,11 +25,6 @@ void TestScene::init() {
     Application::AddLayer(background_layer);
     Application::AddLayer(foreground_layer);
     Application::AddOverLay(sound_layer);
-
-    //gameObject5->setZIndex(100);
-
-    //this->activeGameObject = gameObject3;
-    
 }
 int selectedItem = 0;
 
@@ -69,7 +64,7 @@ void TestScene::update(float dt) {
     }
 
 
-    this->renderer->render(Application::GetLayerStack(), dt);
+    this->renderer->render(dt);
 }
 
 void TestScene::imgui(float dt) {

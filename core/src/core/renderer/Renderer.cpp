@@ -60,7 +60,7 @@ namespace core {
     }
 
   
-    void Renderer::render(LayerStack& layer_stack, const float dt) {
+    void Renderer::render(const float dt) {
         if (Application::GetImGuiEnabled())
 			frame_buffer->Bind();
         else

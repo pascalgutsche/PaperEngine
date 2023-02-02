@@ -101,16 +101,12 @@ namespace core {
         // this is needed in order to see the changes
         for (RenderData* data: dataBlocks) {
             if (data->dirty) {
-                //updateTextures();
                 updateVertexProperties(data);
-                reloadBufferArrays = true;
                 data->dirty = false;
             }
         }
-        if (vertices.size() == 0)
-        {
-            return 1;
-        }
+
+        if (vertices.size() == 0) { return 1; }
         // reload the vertex array if there have been made changes
         if (reloadBufferArrays) {
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
@@ -203,20 +199,46 @@ namespace core {
         }
 
         //VBO
+        int renderDataVertexCount = renderData->vertices.size() / VERTEX_SIZE;
         renderData->vertexSlot = vertices.insert(vertices.end(), renderData->vertices.begin(), renderData->vertices.end()) - vertices.begin();
 
         //EBO
-        const int offset = dataBlocks.size() * renderData->vertices.size() / VERTEX_SIZE;
+
+        //checking if vbo and ebo match
+
+        if (renderData->ebo.size() <= 0)
+        {
+            CORE_ASSERT(renderData->ebo.size() > 0, "invalid ebo buffer");
+            return;
+        } 
+        int highestElement = renderData->ebo.at(0);
+        for (int i : renderData->ebo)
+        {
+	        if (i > highestElement)
+	        {
+                highestElement = i;
+	        }
+        }
+        highestElement++; //increment because 0 in the element buffer is also a vertex
+        if (highestElement != renderDataVertexCount)
+        {
+            CORE_ASSERT(highestElement == renderDataVertexCount, "invalid ebo buffer");
+            return;
+        }
+
+        //convert RenderData ebo to RenderBatch ebo
+
+        int batchVertexCount = renderData->vertexSlot / VERTEX_SIZE;
+        renderData->elementSlot = elements.size();
 
         for (int i = 0; i < renderData->ebo.size(); i++)
         {
-            renderData->ebo[i] += offset;
+            this->elements.emplace_back(renderData->ebo.at(i) + batchVertexCount);
         }
-        // append vector
-        renderData->elementSlot = elements.insert(elements.end(), renderData->ebo.begin(), renderData->ebo.end()) - elements.begin();
 
         renderData->oldVertexSize = renderData->vertices.size();
         renderData->oldElementSize = renderData->ebo.size();
+        renderData->dataBlockSlot = dataBlocks.size();
         dataBlocks.emplace_back(renderData);
         reloadBufferArrays = true;
     }
@@ -239,6 +261,8 @@ namespace core {
             }
         }
 
+
+
         if (renderData->vertices.size() == renderData->oldVertexSize)
         {
 	        for (int i = 0; i < renderData->vertices.size(); i++)
@@ -249,12 +273,14 @@ namespace core {
 
         //EBO
         if (renderData->ebo.size() == renderData->oldElementSize) {
+            int batchVertexCount = renderData->vertexSlot / VERTEX_SIZE;
             for (int i = 0; i < renderData->ebo.size(); i++)
             {
-                renderData->ebo[i] += renderData->vertexSlot;
-                this->elements[renderData->elementSlot + i] = renderData->ebo.at(i);
+                this->elements[renderData->elementSlot + i] = renderData->ebo.at(i) + batchVertexCount;
             }
         }
+
+        reloadBufferArrays = true;
     }
 
 

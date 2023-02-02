@@ -31,6 +31,7 @@ namespace core {
 
             vertexSlot = -1;
             elementSlot = -1;
+            dataBlockSlot = -1;
             oldVertexSize = -1;
             oldElementSize = -1;
         }
@@ -38,6 +39,8 @@ namespace core {
     private:
         int vertexSlot;
         int elementSlot;
+
+        int dataBlockSlot;
 
         int oldVertexSize;
         int oldElementSize;

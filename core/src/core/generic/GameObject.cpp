@@ -11,30 +11,30 @@
 
 namespace core {
 
-    std::unordered_map<core::Component*, core::GameObject*> core::GameObject::CGMap;
+    std::unordered_map<Component*, GameObject*> GameObject::CGMap;
 
-    GameObject::GameObject(std::string name) {
-        // create gameObject with name and create a standard transform object
-        this->name = name;
+    GameObject::GameObject(std::string id) {
+        // create gameObject with id and create a standard transform object
+        this->id = id;
         this->transform = Transform();
         this->zIndex = 0;
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
 
     }
 
-    GameObject::GameObject(std::string name, Transform transform) {
-        // create gameObject with name and a specific transform object
+    GameObject::GameObject(std::string id, Transform transform) {
+        // create gameObject with id and a specific transform object
         // this is being called if you want specific coordinates (you would want this most of the time)
-        this->name = name;
+        this->id = id;
         this->transform = transform;
         this->zIndex = 0;
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
 
     }
 
-    GameObject::GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode)
+    GameObject::GameObject(std::string id, Transform transform, DataPool::DISPLAYMODE displaymode)
     {
-        this->name = name;
+        this->id = id;
         this->transform = transform;
         this->zIndex = 0;
         this->displayMode = displaymode;
@@ -116,9 +116,9 @@ namespace core {
         components.clear();
     }
 
-    std::string GameObject::getName() {
-        // return name
-        return this->name;
+    std::string GameObject::getStringID() {
+        // return id
+        return this->id;
     }
 
     int GameObject::getZIndex() {
@@ -132,7 +132,7 @@ namespace core {
     }
 
     void GameObject::imgui(float dt) {
-        ImGui::Text("Generic stuff:");
+        ImGui::Text("Transform: ");
         ImGui::SliderFloat(std::string("X:").c_str(), &this->transform.position.x, -10.0f, 10.0f, 0);
         ImGui::SliderFloat(std::string("Y:").c_str(), &this->transform.position.y, -10.0f, 10.0f, 0);
         ImGui::SliderFloat(std::string("Width:").c_str(), &this->transform.scale.x, 0.0f, 10.0f, 0);

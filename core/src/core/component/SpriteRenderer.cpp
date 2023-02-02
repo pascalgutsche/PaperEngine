@@ -126,7 +126,8 @@ namespace core {
 
     void SpriteRenderer::imgui(float dt) {
         ImGui::Text("Component - SpriteRenderer:");
-        if (this->getTexture() == nullptr) {
+        if (ImGui::TreeNode("Color:"))
+        {
             float colorArray[4]{
                     color.x,
                     color.y,
@@ -136,10 +137,14 @@ namespace core {
             ImGui::ColorPicker3("ColorPicker", colorArray, 0);
             if (!(color.x == colorArray[0] && color.y == colorArray[1] && color.z == colorArray[2] && color.w == colorArray[3])) {
                 color = glm::vec4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
-                setColor(color);
+                updateColor(color);
             }
+
+            ImGui::Text("");
+            ImGui::TreePop();
         }
-        else {
+        if (ImGui::TreeNode("Texture:"))
+        {
             timeUntilRefresh -= dt;
             if (timeUntilRefresh <= 0.0f) {
                 texturePaths.erase(texturePaths.begin(), texturePaths.end());
@@ -179,35 +184,15 @@ namespace core {
                     ImGui::SameLine();
                 }
             }
+
+            ImGui::Text("");
+            ImGui::TreePop();
         }
     }
 
-    glm::vec4 SpriteRenderer::getColor() {
-        // return current sprite color
-        return this->color;
-    }
+    
 
-    std::shared_ptr<Texture> SpriteRenderer::getTexture()
-    {
-        // return current texture that is being used in this sprite
-        return sprite->getTexture();
-    }
-
-    float* SpriteRenderer::getTexCoords()
-    {
-        // return the coordinates of the texture that is being used in this sprite
-        return this->sprite->getTexCoords();
-    }
-
-    void SpriteRenderer::setSprite(Sprite* sprite)
-    {
-        // set the sprite to the function parameter desired sprite
-        this->sprite = sprite;
-        // set to true because changes have been made
-        isDirty = true;
-    }
-
-    void SpriteRenderer::setColor(glm::vec4 localColor) {
+    void SpriteRenderer::updateColor(glm::vec4 localColor) {
 	    const float colorBuffer[4]
         {
             localColor.x,
@@ -223,18 +208,5 @@ namespace core {
         }
 
         renderData->dirty = true;
-    }
-
-    void SpriteRenderer::setClean()
-    {
-        // reset sprite changes, this function is being called after it rendered the changes
-        // reset function
-        isDirty = false;
-    }
-
-    bool SpriteRenderer::getIsDirty()
-    {
-        // get the current state of isDirty
-        return isDirty;
     }
 }

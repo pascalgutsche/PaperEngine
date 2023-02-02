@@ -9,15 +9,15 @@
 namespace core {
     class CORE_API GameObject {
     private:
-        std::string name;
+        std::string id;
         std::vector<Component*> components;
         int zIndex;
 
     public:
         Transform transform;
-        GameObject(std::string name);
-        GameObject(std::string name, Transform transform);
-        GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode);
+        GameObject(std::string id);
+        GameObject(std::string id, Transform transform);
+        GameObject(std::string id, Transform transform, DataPool::DISPLAYMODE displaymode);
         ~GameObject();
 
         Component* getComponent(std::string componentTypeID);
@@ -29,7 +29,7 @@ namespace core {
         void imgui(float dt);
 
         void deleteComponents();
-        std::string getName();
+        std::string getStringID();
         int getZIndex();
         void setZIndex(int zIndex);
 

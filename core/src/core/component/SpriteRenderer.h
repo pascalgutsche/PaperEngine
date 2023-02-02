@@ -10,7 +10,7 @@ namespace core {
 
     struct RenderData;
 
-    class CORE_API SpriteRenderer : public Component {
+    class SpriteRenderer : public Component {
     private:
         glm::vec4 color;
         Sprite* sprite;
@@ -29,15 +29,33 @@ namespace core {
         // update function call on every update (frame)
         void update(float dt) override;
         void imgui(float dt) override;
-        glm::vec4 getColor();
-        std::shared_ptr<Texture> getTexture();
-        float* getTexCoords();
 
-        void setSprite(Sprite* sprite);
-        void setColor(glm::vec4 color);
+        void updateColor(glm::vec4 color);
 
-        bool getIsDirty();
-        void setClean();
+        
+
+        glm::vec4 getColor() {
+            // return current sprite color
+            return this->color;
+        }
+
+        Shr<Texture> getTexture()
+        {
+            // return current texture that is being used in this sprite
+            return sprite->getTexture();
+        }
+
+        float* getTexCoords()
+        {
+            // return the coordinates of the texture that is being used in this sprite
+            return this->sprite->getTexCoords();
+        }
+
+        void setSprite(Sprite* sprite)
+        {
+            // set the sprite to the function parameter desired sprite
+            this->sprite = sprite;
+        }
 
     };
 

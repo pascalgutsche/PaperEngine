@@ -27,7 +27,7 @@ namespace core {
         void add(RenderData* renderData);
         void remove(RenderData* renderData);
         // this function has to be called on every frame (update)
-        void render(LayerStack& layer_stack, float dt);
+        void render(float dt);
         void updateGameObjects(float dt, std::vector<GameObject*>& gameObjects);
 
         FrameBuffer& GetFrameBuffer() const { return *frame_buffer; }
