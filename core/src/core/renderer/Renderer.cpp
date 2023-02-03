@@ -72,11 +72,13 @@ namespace core {
         //update GameObjects
         updateGameObjects(dt, Application::getCurrentScene()->gameObjects);
 
-        int sprites_count_calc = 0;
+        texturesInUse.clear();
         int vertices_count_calc = 0;
         // render all batches
         for (int i = 0; i < batches.size(); i++) {
             vertices_count_calc += batches[i]->GetVertexCount();
+            std::vector<Shr<Texture>> textures = batches[i]->GetTexturesInUse();
+            texturesInUse.insert(texturesInUse.end(), textures.begin(), textures.end());
             if (batches[i]->render())
             {
                 delete batches[i];
@@ -84,8 +86,6 @@ namespace core {
             }
             
         }
-
-        sprites_count = sprites_count_calc;
         vertex_count = vertices_count_calc;
 
         frame_buffer->Unbind();

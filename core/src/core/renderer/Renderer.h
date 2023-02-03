@@ -21,6 +21,7 @@ namespace core {
 
         inline static int sprites_count = 0;
         inline static int vertex_count = 0;
+        inline static std::vector<Shr<Texture>> texturesInUse;
     public:
         Renderer();
         ~Renderer();
@@ -34,6 +35,7 @@ namespace core {
 
         inline static int GetVerticesCount() { return vertex_count; }
         inline static int GetSpriteCount() { return sprites_count; }
+        inline static std::vector<Shr<Texture>> GetTexturesInUse() { return texturesInUse; }
         inline static int GetBatchCount() { return instance->batches.size(); }
     };
 

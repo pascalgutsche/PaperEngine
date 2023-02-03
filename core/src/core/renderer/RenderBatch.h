@@ -89,7 +89,7 @@ namespace core {
         std::vector<float> vertices;
         std::vector<unsigned int> elements;
 
-        void updateTextures();
+        void addTexture(Shr<Texture> texture);
 
         int structCount = 0;
 
@@ -141,6 +141,11 @@ namespace core {
         inline int GetVertexCount() const
         {
             return vertices.size() / VERTEX_SIZE;
+        }
+
+        inline std::vector<Shr<Texture>> GetTexturesInUse()
+        {
+            return this->textures;
         }
 
         static inline int GetVertexSize()

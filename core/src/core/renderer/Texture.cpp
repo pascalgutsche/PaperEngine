@@ -7,9 +7,10 @@
 
 namespace core {
 
-    Texture::Texture(std::string filePath, bool flipped)
+    Texture::Texture(std::string filePath, std::string name)
     {
-        Texture::filePath = filePath;
+        this->filePath = filePath;
+        this->name = name;
 
         glGenTextures(1, &texID);
         // use texture (everything that is called from now will be set to the current texture)
@@ -24,7 +25,7 @@ namespace core {
         // pixelate the texture when made smaller
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        stbi_set_flip_vertically_on_load(flipped);
+        stbi_set_flip_vertically_on_load(true);
         // load texture and save formats to the variables (4 == RGBA format)
         localBuffer = stbi_load(filePath.c_str(), &width, &height, &channels, 0);
 
@@ -60,13 +61,13 @@ namespace core {
     void Texture::bind(unsigned int slot)
     {
         // slot is usually set to 0
-        if (slot < 8)
+        if (slot < 32)
         {
 	        glActiveTexture(GL_TEXTURE0 + slot);
 	        glBindTexture(GL_TEXTURE_2D, texID);
             return;
         }
-    	LOG_CORE_WARN("You should not go over 8 texture slots, as the OpenGL specification does not allow more");
+    	LOG_CORE_WARN("You should not go over 32 texture slots, as the OpenGL specification does not allow more");
     }
 
     void Texture::unbind()
@@ -90,6 +91,11 @@ namespace core {
 
     std::string Texture::getFilePath() {
         return this->filePath;
+    }
+
+    std::string Texture::getName()
+    {
+        return this->name;
     }
 
 }

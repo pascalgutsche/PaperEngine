@@ -85,15 +85,6 @@ namespace core {
         glBindVertexArray(0);
     }
 
-    void RenderBatch::updateTextures() {
-        textures.erase(textures.begin(), textures.end());
-        for (int i = 0; i < numSprites; i++) {
-            //if (sprites[i]->getTexture() != nullptr && !hasTexture(sprites[i]->getTexture())) {
-            //    textures.insert(textures.end(), sprites[i]->getTexture());
-            //}
-        }
-    }
-
     int RenderBatch::render() {
         // set spriterenderer to sprites
         // and if there are changes, display them to the renderer
@@ -275,17 +266,17 @@ namespace core {
             }
 
             //check if removed textures are still beeing used
-            for (Shr<Texture> texture : toRemoveTextures)
+            for (int i = 0; i < toRemoveTextures.size(); i++)
             {
-                for (RenderData* rd : this->dataBlocks)
-                {
+	            for (RenderData* rd : dataBlocks)
+	            {
                     if (rd == renderData) continue;
-                    std::vector<Shr<Texture>>::iterator it = std::find(toRemoveTextures.begin(), toRemoveTextures.end(), texture);
-                    if (it != toRemoveTextures.end())
+                    if (std::find(rd->textures.begin(), rd->textures.end(), toRemoveTextures[i]) !=  rd->textures.end())
                     {
-                        toRemoveTextures.erase(it);
+                        toRemoveTextures.erase(toRemoveTextures.begin() + i);
+                        break;
                     }
-                }
+	            }
             }
 
             //check which texture is new
@@ -305,7 +296,28 @@ namespace core {
             }
             else
             {
+                std::vector<Shr<Texture>> textureCopy = this->textures;
+                for (int i = 0; i < toRemoveTextures.size(); i++)
+                {
+                    for (int j = 0; j < this->textures.size(); j++)
+                    {
+                        if (toRemoveTextures[i] == this->textures[j])
+                        {
+                            this->textures.erase(this->textures.begin() + j);
+                        }
+                    }
+                }
+
+                //add textures to renderbatch and change the structs to the right value
                 this->textures.insert(this->textures.end(), toAddTextures.begin(), toAddTextures.end());
+                for (int i = VERTEX_SIZE - 1; i < this->vertices.size(); i += VERTEX_SIZE)
+                {
+	                if (this->vertices[i] != -1)
+	                {
+                        this->vertices[i] = std::find(this->textures.begin(), this->textures.end(), textureCopy[this->vertices[i]]) - this->textures.begin();
+	                }
+                }
+
             }
 
 
@@ -320,6 +332,7 @@ namespace core {
                     }
                 }
 			}
+            renderData->oldTextures = renderData->textures;
         }
 
 

@@ -303,6 +303,19 @@ namespace core {
                 selected = 6913;
             RenderBatch::SetPolygonMode(selected);
 
+            if (ImGui::TreeNode("Textures in use"))
+            {
+	            for (Shr<Texture> texture : Renderer::GetTexturesInUse())
+	            {
+                    
+	            	ImGui::Selectable(texture->getName().c_str(), false);
+                    
+	            }
+
+	            ImGui::Text("");
+	            ImGui::TreePop();
+            }
+
 
             ImGui::TreePop();
         }

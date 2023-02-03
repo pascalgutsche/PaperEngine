@@ -9,6 +9,7 @@ namespace core {
     class CORE_API Texture {
     private:
         std::string filePath;
+        std::string name;
 
         unsigned char* localBuffer;
 
@@ -17,9 +18,11 @@ namespace core {
         int channels;
 
         unsigned int texID;
+
+        
     public:
         // load texture with desired filePath
-        Texture(std::string filePath, bool flip = 1);
+        Texture(std::string filePath, std::string name);
         ~Texture();
         // use texture slot
         void bind(unsigned int slot);
@@ -32,6 +35,7 @@ namespace core {
         int getWidth();
         int getHeight();
         std::string getFilePath();
+        std::string getName();
     };
 
 }
