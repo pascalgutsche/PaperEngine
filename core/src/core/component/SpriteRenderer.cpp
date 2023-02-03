@@ -85,7 +85,7 @@ namespace core {
             renderData->vertices.emplace(renderData->vertices.end(), this->color.z);
             renderData->vertices.emplace(renderData->vertices.end(), this->color.w);
 
-            renderData->vertices.emplace(renderData->vertices.end(), xAdd);
+            renderData->vertices.emplace(renderData->vertices.end(), xAdd); // TODO: insert texture coord from sprite here
             renderData->vertices.emplace(renderData->vertices.end(), yAdd);
 
             renderData->vertices.emplace(renderData->vertices.end(), textureInsert);
@@ -98,27 +98,42 @@ namespace core {
         renderData->ebo.emplace(renderData->ebo.end(), 3);
         renderData->ebo.emplace(renderData->ebo.end(), 0);
 
-        con = Utils::randRange(200, 600);
-
         Application::getCurrentScene()->GetRenderer().add(renderData);
     }
 
     
     void SpriteRenderer::update(float dt) {
         // check if there have been made changes to the sprite (transform of the gameObject)
-        if (!(core::GameObject::CGMap[this]->transform.equals(*lastTransform)))
+        if (!(GameObject::CGMap[this]->transform.equals(*lastTransform)))
         {
             // if it is not equal, save it to the local transform and
             // set the dirty bit (variable that is being checked in order to display changes)
-            core::GameObject::CGMap[this]->transform.copy(*this->lastTransform);
-            isDirty = true;
-        }
-        bunker++;
+            GameObject::CGMap[this]->transform.copy(*this->lastTransform);
 
-        if (bunker == con) {
-            //Application::getCurrentScene()->GetRenderer().remove(renderData);
+            //update position in struct
+            float xAdd = 0.0f;
+            float yAdd = 0.0f;
+            for (int i = 0; i < 4; i ++)
+            {
+                switch (i)
+                {
+                case 1:
+                    xAdd = 1.0f;
+                    break;
+                case 2:
+                    yAdd = 1.0f;
+                    break;
+                case 3:
+                    xAdd = 0.0f;
+                    break;
+                default:
+                    break;
+                }
+                renderData->vertices[i * RenderBatch::GetVertexSize()] = GameObject::CGMap[this]->transform.position.x + xAdd * GameObject::CGMap[this]->transform.scale.x;
+                renderData->vertices[(i * RenderBatch::GetVertexSize()) + 1] = GameObject::CGMap[this]->transform.position.y + yAdd * GameObject::CGMap[this]->transform.scale.y;
+            }
+            renderData->dirty = true;
         }
-        
     }
 
     static float timeUntilRefresh = 0.0f;
