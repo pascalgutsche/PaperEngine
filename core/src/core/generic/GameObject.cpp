@@ -64,6 +64,7 @@ namespace core {
         // iterate through components array and delete the component regarding this sprite that equals to the desired component type
         for (int i = 0; i < components.size(); i++) {
             if (components[i] == delComponent) {
+                components[i]->stop();
                 delete components[i];
                 components[i] = nullptr;
                 return true;
@@ -110,6 +111,7 @@ namespace core {
         // delete all components
         for (auto comp : components)
         {
+            comp->stop();
             delete comp;
             comp = nullptr;
         }

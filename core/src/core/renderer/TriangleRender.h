@@ -52,24 +52,22 @@ namespace core {
 
     class RenderBatch {
     private:
-        static const int POS_SIZE = 2;
-        static const int COLOR_SIZE = 4;
-        static const int TEX_COORDS_SIZE = 2;
-        static const int TEX_ID_SIZE = 1;
+        static constexpr int POS_SIZE = 2;
+        static constexpr int COLOR_SIZE = 4;
+        static constexpr int TEX_COORDS_SIZE = 2;
+        static constexpr int TEX_ID_SIZE = 1;
 
-        static const int POS_OFFSET = 0;
-        static const int COLOR_OFFSET = sizeof(float) * (POS_SIZE);
-        static const int TEX_COORDS_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE);
-        static const int TEX_ID_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE);
-        static const int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
-        static const int VERTEX_SIZE_BYTES = sizeof(float) * VERTEX_SIZE;
-
-        bool hasRoom_bool = false;
+        static constexpr int POS_OFFSET = 0;
+        static constexpr int COLOR_OFFSET = sizeof(float) * (POS_SIZE);
+        static constexpr int TEX_COORDS_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE);
+        static constexpr int TEX_ID_OFFSET = sizeof(float) * (POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE);
+        static constexpr int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
+        static constexpr int VERTEX_SIZE_BYTES = sizeof(float) * VERTEX_SIZE;
 
         static constexpr int MAX_VERTEX_COUNT = 3000;
         static constexpr int MAX_ELEMENT_COUNT = 5000;
 
-        std::vector<int> texSlots = { 0, 1, 2, 3 , 4, 5, 6, 7 };
+        std::vector<int> texSlots = { 0, 1, 2, 3, 4, 5, 6, 7 };
         std::vector<std::shared_ptr<Texture>> textures;
         std::vector<RenderData*> dataBlocks;
 
@@ -89,8 +87,6 @@ namespace core {
         std::vector<float> vertices;
         std::vector<unsigned int> elements;
 
-        void addTexture(Shr<Texture> texture);
-
         int structCount = 0;
 
 
@@ -107,7 +103,6 @@ namespace core {
         void start();
         int render();
 
-        bool hasRoom();
         bool hasTextureRoom();
         bool hasTexture(Shr<Texture> texture);
 

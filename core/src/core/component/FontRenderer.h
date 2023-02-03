@@ -13,6 +13,7 @@ namespace core {
         virtual ~FontRenderer();
         void start() override;
         void update(float dt) override;
+        void stop() override { }
     };
 
 }

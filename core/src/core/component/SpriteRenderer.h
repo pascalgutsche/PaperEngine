@@ -23,6 +23,7 @@ namespace core {
         virtual ~SpriteRenderer();
 
         void start() override;
+        void stop() override;
         // update function call on every update (frame)
         void update(float dt) override;
         void imgui(float dt) override;

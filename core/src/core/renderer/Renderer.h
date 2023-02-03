@@ -1,7 +1,7 @@
 #pragma once
 #include "utility.h"
 
-#include "renderer/RenderBatch.h"
+#include "renderer/TriangleRender.h"
 #include "renderer/FrameBuffer.h"
 #include "generic/GameObject.h"
 #include "component/SpriteRenderer.h"

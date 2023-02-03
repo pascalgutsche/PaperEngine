@@ -1,6 +1,6 @@
 #include "_Core.h"
 
-#include "renderer/RenderBatch.h"
+#include "renderer/TriangleRender.h"
 #include "utils/DataPool.h"
 #include "generic/Window.h"
 #include "component/SpriteRenderer.h"
@@ -29,10 +29,6 @@ namespace core {
         }
 
         shader->compile();
-        RenderBatch::hasRoom_bool = true;
-
-        // we do not need this because the SPRITERENDERER does it for us
-        //loadVertexProperties(0);
     }
 
     RenderBatch::~RenderBatch() 
@@ -360,6 +356,8 @@ namespace core {
 
 
     void RenderBatch::removeVertexProperties(RenderData* renderData) {
+        if (std::find(this->dataBlocks.begin(), this->dataBlocks.end(), renderData) == this->dataBlocks.end()) return; //check if struct is in this batch
+
         if (renderData->textures.size() > 0)
         {
             std::vector<Shr<Texture>> toRemoveTextures;
@@ -394,6 +392,7 @@ namespace core {
             }
 
             //remove texture
+            std::vector<Shr<Texture>> textureCopy = this->textures;
             for (Shr<Texture> textureToRemove : toRemoveTextures)
             {
                 std::vector<Shr<Texture>>::iterator it = std::find(this->textures.begin(), this->textures.end(), textureToRemove);
@@ -401,6 +400,13 @@ namespace core {
 		        {
                     this->textures.erase(it);
 		        }
+            }
+            for (int i = VERTEX_SIZE - 1; i < this->vertices.size(); i += VERTEX_SIZE)
+            {
+                if (this->vertices[i] != -1)
+                {
+                    this->vertices[i] = std::find(this->textures.begin(), this->textures.end(), textureCopy[this->vertices[i]]) - this->textures.begin();
+                }
             }
         }
 
@@ -420,10 +426,6 @@ namespace core {
 
         dataBlocks.erase(dataBlocks.begin() + renderData->dataBlockSlot);
         reloadBufferArrays = true;
-    }
-
-    bool RenderBatch::hasRoom() {
-        return hasRoom_bool;
     }
 
     bool RenderBatch::hasTextureRoom() {

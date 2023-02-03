@@ -27,6 +27,16 @@ void ForegroundLayer::OnDetach()
 
 void ForegroundLayer::update(const float dt)
 {
+	static bool con = true;
+	if (Input::IsKeyPressed(KEY_Y) && con)
+	{
+		con = false;
+		character2->getComponent("sprite_renderer")->stop();
+	}
+	if (Input::IsKeyPressed(KEY_T) && !con)
+	{
+		con = true;
+	}
 }
 
 void ForegroundLayer::imgui(const float dt)

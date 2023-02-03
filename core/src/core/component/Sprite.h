@@ -18,6 +18,10 @@ namespace core {
         Sprite(Shr<Texture> texture, float* texCoords);
         virtual ~Sprite();
 
+        void start() override { }
+        void stop() override { }
+        void update(float dt) override { }
+
         Shr<Texture> getTexture()
         {
             // get current texture

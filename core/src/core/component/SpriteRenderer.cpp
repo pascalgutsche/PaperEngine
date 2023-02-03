@@ -5,7 +5,7 @@
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "utils/Utils.h"
-#include "renderer/RenderBatch.h"
+#include "renderer/TriangleRender.h"
 
 #include "imgui/ImGuiLayer.h"
 
@@ -14,27 +14,22 @@
 namespace core {
 
     //SPRITERENDERER
-    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture) {
-        this->typeID = std::string("sprite_renderer");
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture)
+        : Component("sprite_renderer")
+	{
         this->color = color;
-        // set newest sprite to no texture (symoblizes that this sprite only contains colors and no texture)
         this->sprite = new Sprite(texture);
     }
 
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Sprite* sprite)
+	    : Component("sprite_renderer")
     {
-        // set the renderer to SPRITERENDERER
-        this->typeID = std::string("sprite_renderer");
-        // our sprite is the sprite from the function call
-        this->sprite = sprite;
-        // set default colors
         this->color = color;
-        // this signals changes, another functions look out for this, in order to update the sprite
+        this->sprite = sprite;
     }
 
 
     SpriteRenderer::~SpriteRenderer() {
-        // every new keyword requires a 'delete' keyword (free manually allocated pointer)
         delete sprite;
         delete lastTransform;
         delete renderData;
@@ -100,6 +95,12 @@ namespace core {
 
         Application::getCurrentScene()->GetRenderer().add(renderData);
     }
+
+    void SpriteRenderer::stop()
+    {
+        Application::getCurrentScene()->GetRenderer().remove(renderData);
+    }
+
 
     
     void SpriteRenderer::update(float dt) {

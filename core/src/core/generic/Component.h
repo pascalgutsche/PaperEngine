@@ -6,16 +6,22 @@
 namespace core {
 
     class CORE_API Component {
-    public:
-        std::string getTypeID();
-    protected:
+    private:
         std::string typeID;
     public:
-        Component();
-        virtual ~Component();
-        virtual void start();
-        virtual void update(float dt);
-        virtual void imgui(float dt);
+        Component(std::string typeID)
+	        :typeID(typeID) { }
+
+        virtual ~Component() = default;
+        virtual void start() = 0;
+        virtual void stop() = 0;
+        virtual void update(float dt) = 0;
+        virtual void imgui(float dt) { }
+
+        std::string getTypeID()
+        {
+            return this->typeID;
+        }
     };
 
 }
