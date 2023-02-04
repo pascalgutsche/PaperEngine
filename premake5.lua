@@ -153,7 +153,9 @@ project "conqueror"
 	disablewarnings
 	{
 		"4251",
-		"4267"
+		"4267",
+		"4305",
+		"4244"
 	}
 	
 	filter "system:windows"

@@ -70,7 +70,7 @@ namespace core {
         Application::getCurrentScene()->getCamera()->calcCameraVectors();
 
         //update GameObjects
-        updateGameObjects(dt, Application::getCurrentScene()->gameObjects);
+        updateGameObjects(dt);
 
         texturesInUse.clear();
         int vertices_count_calc = 0;
@@ -91,7 +91,7 @@ namespace core {
         frame_buffer->Unbind();
     }
 
-    void Renderer::updateGameObjects(float dt, std::vector<GameObject*>& gameObjects)
+    void Renderer::updateGameObjects(float dt)
     {
         // update the gameObjects so it displays the changes
 

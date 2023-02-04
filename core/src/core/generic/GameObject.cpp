@@ -13,26 +13,7 @@ namespace core {
 
     std::unordered_map<Component*, GameObject*> GameObject::CGMap;
 
-    GameObject::GameObject(std::string id) {
-        // create gameObject with id and create a standard transform object
-        this->id = id;
-        this->transform = Transform();
-        this->zIndex = 0;
-        this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
-
-    }
-
-    GameObject::GameObject(std::string id, Transform transform) {
-        // create gameObject with id and a specific transform object
-        // this is being called if you want specific coordinates (you would want this most of the time)
-        this->id = id;
-        this->transform = transform;
-        this->zIndex = 0;
-        this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
-
-    }
-
-    GameObject::GameObject(std::string id, Transform transform, DataPool::DISPLAYMODE displaymode)
+    GameObject::GameObject(std::string id, Transform transform, DisplayMode displaymode)
     {
         this->id = id;
         this->transform = transform;

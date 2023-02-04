@@ -20,13 +20,15 @@ namespace core {
         int zIndex;
         bool dirty;
 
-        DataPool::DISPLAYMODE displayMode;
+        DisplayMode displayMode;
 
         RenderData()
         {
             vertices.resize(0);
             ebo.resize(0);
             textures.resize(0);
+            zIndex = 0;
+            displayMode = PERSPECTIVE;
             dirty = false;
 
             vertexSlot = -1;
@@ -94,17 +96,16 @@ namespace core {
         inline static bool enable_polygon = false;
         inline static int polygonMode = 6914;
 
-        DataPool::DISPLAYMODE displayMode;
+        DisplayMode displayMode;
 
     public:
 
-        RenderBatch(int zIndex, DataPool::DISPLAYMODE displaymode);
+        RenderBatch(int zIndex, DisplayMode displaymode);
         ~RenderBatch();
         void start();
         int render();
 
-        bool hasTextureRoom();
-        bool hasTexture(Shr<Texture> texture);
+        bool HasTextureSpace(std::vector<Shr<Texture>> texs);
 
         void addVertexProperties(RenderData* renderdata);
         void updateVertexProperties(RenderData* renderdata);
@@ -116,7 +117,7 @@ namespace core {
             polygonMode = mode;
         }
 
-        DataPool::DISPLAYMODE const GetDisplayMode()
+        DisplayMode const GetDisplayMode()
         {
             return displayMode;
         }

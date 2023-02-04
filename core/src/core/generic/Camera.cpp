@@ -23,7 +23,7 @@ namespace core {
         this->target = glm::vec3(this->position.x, this->position.y, 0.0f);
         // move every gameObject that is orthographic before the camera moves
         for (auto& go : Application::getCurrentScene()->getGameObjects()) {
-            if (go->displayMode == DataPool::DISPLAYMODE::ORTHOGRAPHIC) {
+            if (go->displayMode == ORTHOGRAPHIC) {
                 go->transform.position.x = target.x + 1;
                 go->transform.position.y = target.y + 1;
             }

@@ -4,7 +4,7 @@
 #include "imgui/ImGuiLayer.h"
 #include "generic/Application.h"
 #include "renderer/Renderer.h"
-#include "renderer/TriangleRender.h"
+#include "renderer/RenderBatch.h"
 
 
 
@@ -51,6 +51,12 @@ namespace core {
         }
     }
 
+
+    ImGuiLayer::ImGuiLayer()
+		: Layer("ImGuiLayer")
+    {
+        this->viewport_size = glm::vec2();
+    }
 
     ImGuiLayer::~ImGuiLayer()
     {

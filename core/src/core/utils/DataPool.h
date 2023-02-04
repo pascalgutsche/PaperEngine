@@ -28,7 +28,8 @@ namespace core {
         
 
         //static void prepareCharacters();
-        enum DISPLAYMODE { NONE, PERSPECTIVE, ORTHOGRAPHIC };
+        
     };
 
+    enum DisplayMode { PERSPECTIVE, ORTHOGRAPHIC, SCREEN };
 }

@@ -31,19 +31,19 @@ int selectedItem = 0;
 void TestScene::update(float dt) {
 
     if (Input::IsKeyPressed(KEY_S)) {
-        camera->position.y -= 2.0f * dt;
+        camera->position.y -= 5.0f * dt;
     }
 
     if (Input::IsKeyPressed(KEY_W)) {
-        camera->position.y += 2.0f * dt;
+        camera->position.y += 5.0f * dt;
     }
 
     if (Input::IsKeyPressed(KEY_D)) {
-        camera->position.x += 2.0f * dt;
+        camera->position.x += 5.0f * dt;
     }
 
     if (Input::IsKeyPressed(KEY_A)) {
-        camera->position.x -= 2.0f * dt;
+        camera->position.x -= 5.0f * dt;
     }
 
     if (Input::IsKeyPressed(KEY_LEFT)) {
@@ -73,10 +73,10 @@ void TestScene::imgui(float dt) {
 
 bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
 {
-    if (this->getCamera()->position.z > 0.2 && e.getYOffset() != 0)
-        this->getCamera()->position.z += 10.0f * core::Application::GetDT() * e.getYOffset();
-    if (this->getCamera()->position.z < 0.2) {
-        this->getCamera()->position.z = 0.2;
+    if (this->getCamera()->position.z > 0.2f && e.getYOffset() != 0)
+        this->getCamera()->position.z += 10.0 * core::Application::GetDT() * e.getYOffset();
+    if (this->getCamera()->position.z < 0.2f) {
+        this->getCamera()->position.z = 0.2f;
     }
         
     return true;

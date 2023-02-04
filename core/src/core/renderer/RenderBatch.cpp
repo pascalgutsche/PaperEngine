@@ -1,6 +1,6 @@
 #include "_Core.h"
 
-#include "renderer/TriangleRender.h"
+#include "renderer/RenderBatch.h"
 #include "utils/DataPool.h"
 #include "generic/Window.h"
 #include "component/SpriteRenderer.h"
@@ -11,14 +11,14 @@
 
 namespace core {
 
-    RenderBatch::RenderBatch(int zIndex, DataPool::DISPLAYMODE displaymode)
+    RenderBatch::RenderBatch(int zIndex, DisplayMode displaymode)
     {
         // set local and current values
         this->zIndex = zIndex;
         this->displayMode = displaymode;
 
         // menu gui mode needs a special shader because of uProjection is aPos basically
-        if (displaymode == DataPool::DISPLAYMODE::NONE)
+        if (displaymode == SCREEN)
         {
             shader = DataPool::getShader("menu");
         }
@@ -44,7 +44,6 @@ namespace core {
         // allocate space for vertex array
         glGenBuffers(1, &vboID);
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        // put everything from the vector into the array, so that we can access it from within gl functions || using vectors makes it easier for dynamic allocations
         // create task for gpu and save data
         glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_COUNT * VERTEX_SIZE_BYTES, vertices.data(), GL_DYNAMIC_DRAW);
         //element buffer object (useful for creating squares)
@@ -82,11 +81,7 @@ namespace core {
     }
 
     int RenderBatch::render() {
-        // set spriterenderer to sprites
-        // and if there are changes, display them to the renderer
-        // after the vertex array has been updated, setClean to say that there are no more changes for now
-        // this is needed in order to see the changes
-        for (RenderData* data: dataBlocks) {
+        for (RenderData* data : dataBlocks) {
             if (data->dirty) {
                 updateVertexProperties(data);
                 data->dirty = false;
@@ -107,20 +102,21 @@ namespace core {
         // use the shader and upload the shader variables
         shader->use();
 
-        if (displayMode == DataPool::DISPLAYMODE::ORTHOGRAPHIC)
+
+        switch (displayMode)
         {
-            shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getOrthographicMatrix());
-        }
-        else if (displayMode == DataPool::DISPLAYMODE::PERSPECTIVE)
-        {
+        case PERSPECTIVE:
             shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getProjectionMatrix());
-        }
-        else if (displayMode == DataPool::DISPLAYMODE::NONE)
-        {
+            break;
+        case ORTHOGRAPHIC:
+            shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getOrthographicMatrix());
+            break;
+        case SCREEN:
             shader->uploadVec2f("uProjection", glm::vec2(vertices[POS_OFFSET], vertices[POS_OFFSET + 1]));
+            break;
         }
-        // fov
         shader->uploadMat4f("uView", Application::getCurrentScene()->getCamera()->getViewMatrix());
+
 
         int* texArray = new int[textures.size()];
         for (int i = 0; i < textures.size(); i++)
@@ -428,18 +424,17 @@ namespace core {
         reloadBufferArrays = true;
     }
 
-    bool RenderBatch::hasTextureRoom() {
-        return textures.size() < 1;
-    }
-
-    bool RenderBatch::hasTexture(Shr<Texture> tex) {
-        // check if the desired texture is being used in the current renderbatch
-        for (auto& texture : textures) {
-            if (tex == texture) {
-                return true;
+    bool RenderBatch::HasTextureSpace(std::vector<Shr<Texture>> texs) {
+        for (int i = 0; i < texs.size(); i++) {
+            for (int j = 0; j < this->textures.size(); j++)
+            {
+                if (texs[i] == this->textures[j])
+                {
+                    texs.erase(texs.begin() + i);
+                }
             }
         }
-        return false;
+        return this->textures.size() + texs.size() <= 32;
     }
 
 }

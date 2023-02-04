@@ -15,9 +15,7 @@ namespace core {
 
     public:
         Transform transform;
-        GameObject(std::string id);
-        GameObject(std::string id, Transform transform);
-        GameObject(std::string id, Transform transform, DataPool::DISPLAYMODE displaymode);
+        GameObject(std::string id, Transform transform = Transform(), DisplayMode displaymode = PERSPECTIVE);
         ~GameObject();
 
         Component* getComponent(std::string componentTypeID);
@@ -33,7 +31,7 @@ namespace core {
         int getZIndex();
         void setZIndex(int zIndex);
 
-        DataPool::DISPLAYMODE displayMode;
+        DisplayMode displayMode;
 
         static std::unordered_map<Component*, GameObject*> CGMap;
     };

@@ -1,7 +1,7 @@
 #pragma once
 #include "utility.h"
 
-#include "renderer/TriangleRender.h"
+#include "renderer/RenderBatch.h"
 #include "renderer/FrameBuffer.h"
 #include "generic/GameObject.h"
 #include "component/SpriteRenderer.h"
@@ -29,7 +29,7 @@ namespace core {
         void remove(RenderData* renderData);
         // this function has to be called on every frame (update)
         void render(float dt);
-        void updateGameObjects(float dt, std::vector<GameObject*>& gameObjects);
+        void updateGameObjects(float dt);
 
         FrameBuffer& GetFrameBuffer() const { return *frame_buffer; }
 

@@ -38,9 +38,8 @@ namespace core {
 
 
     public:
-        ImGuiLayer()
-	        : Layer("ImGuiLayer") { }
-        ~ImGuiLayer();
+        ImGuiLayer();
+    	~ImGuiLayer() override;
 
         void OnAttach() override;
         void OnDetach() override;
