@@ -103,4 +103,25 @@ namespace core {
             }
         }
     }
+
+    uint32_t Renderer::RequestID()
+    {
+        uint32_t id = leastAvailableId;
+        idInUse.emplace_back(leastAvailableId);
+        leastAvailableId = idInUse.size();
+        return id;
+    }
+
+    void Renderer::RemoveID(uint32_t id)
+    {
+        std::vector<uint32_t>::iterator it = std::find(idInUse.begin(), idInUse.end(), id);
+        if (it == idInUse.end())
+        {
+            CORE_ASSERT(false, "ID does not exist");
+            return;
+        }
+        idInUse.erase(it);
+        if (id < leastAvailableId) leastAvailableId = id;
+    }
+
 }

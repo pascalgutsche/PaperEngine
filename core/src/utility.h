@@ -26,5 +26,10 @@ namespace core {
 
 	template<typename T>
 	using Shr = std::shared_ptr<T>;
+	template<typename T, typename ... Args>
+	constexpr Shr<T> MakeShr(Args&& ... args)
+	{
+		return std::make_shared<T>(std::forward<Args>(args)...);
+	}
 
 }

@@ -4,8 +4,10 @@
 
 #include "generic/Shader.h"
 #include "renderer/Texture.h"
-#include "component/SpriteRenderer.h"
 #include "utils/DataPool.h"
+
+#include "renderer/VertexArray.h"
+#include "renderer/Buffer.h"
 
 namespace core {
 
@@ -30,22 +32,10 @@ namespace core {
             zIndex = 0;
             displayMode = PERSPECTIVE;
             dirty = false;
-
-            vertexSlot = -1;
-            elementSlot = -1;
-            dataBlockSlot = -1;
-            oldVertexSize = -1;
-            oldElementSize = -1;
         }
 
     private:
-        int vertexSlot;
-        int elementSlot;
-
-        int dataBlockSlot;
-
-        int oldVertexSize;
-        int oldElementSize;
+        int id = 0;
 
         std::vector<Shr<Texture>> oldTextures;
 
@@ -73,21 +63,14 @@ namespace core {
         std::vector<std::shared_ptr<Texture>> textures;
         std::vector<RenderData*> dataBlocks;
 
-        unsigned int vaoID;
-        unsigned int vboID;
-        unsigned int eboID;
 
-        int numSprites;
-        int maxBatchSize;
         int zIndex;
         int oldVertexSize = -1;
         int oldElementSize = -1;
 
-        bool reloadBufferArrays = false;
-
         Shr<Shader> shader;
-        std::vector<float> vertices;
-        std::vector<unsigned int> elements;
+        //std::vector<float> vertices;
+        //std::vector<unsigned int> elements;
 
         int structCount = 0;
 
@@ -97,6 +80,10 @@ namespace core {
         inline static int polygonMode = 6914;
 
         DisplayMode displayMode;
+
+        Shr<VertexArray> vertexArray;
+        Shr<VertexBuffer> vertexBuffer;
+        Shr<ElementBuffer> elementBuffer;
 
     public:
 
@@ -136,7 +123,7 @@ namespace core {
 
         inline int GetVertexCount() const
         {
-            return vertices.size() / VERTEX_SIZE;
+            return 0;
         }
 
         inline std::vector<Shr<Texture>> GetTexturesInUse()

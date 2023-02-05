@@ -28,6 +28,8 @@ namespace core {
             shader = DataPool::getShader("default");
         }
 
+        
+
         shader->compile();
     }
 
@@ -37,47 +39,19 @@ namespace core {
     };
 
     void RenderBatch::start() {
-        // generate vertex buffer
-        glGenVertexArrays(1, &vaoID);
-        glBindVertexArray(vaoID);
+        const BufferLayout layout = {
+            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT4, "aColor" },
+            { GLSLDataType::FLOAT2, "aTexCoord" },
+            { GLSLDataType::FLOAT , "aTexID" }
+        };
 
-        // allocate space for vertex array
-        glGenBuffers(1, &vboID);
-        glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        // create task for gpu and save data
-        glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_COUNT * VERTEX_SIZE_BYTES, vertices.data(), GL_DYNAMIC_DRAW);
-        //element buffer object (useful for creating squares)
+        vertexArray = VertexArray::CreateArray();
+        vertexBuffer = VertexBuffer::CreateBuffer(layout, MAX_VERTEX_COUNT * VERTEX_SIZE_BYTES);
+        elementBuffer = ElementBuffer::CreateBuffer(MAX_ELEMENT_COUNT * sizeof(unsigned int));
 
-        glGenBuffers(1, &eboID);
-        // create array
-
-        // use the array
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * MAX_ELEMENT_COUNT, elements.data(), GL_DYNAMIC_DRAW);
-
-        // saving / uploading points (x,y) to vertex slot 0
-        //declaration of vertex basically (start at byte offset x, array index y,...)
-        // POSITION
-        glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)POS_OFFSET);
-        glEnableVertexAttribArray(0);
-
-        // saving / uploading color into vertex, slot 1, 4 parameters, and start at the offset of 8 bytes (array index 2)
-        // declaration of vertex
-        // COLOR
-        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)COLOR_OFFSET);
-        glEnableVertexAttribArray(1);
-
-        // 1. slot  2. attribute number 3. type  4. normalization    5. sizeof a vertex (one line) 6. byte offset
-        // TEXTURE_COORDINATES
-        glVertexAttribPointer(2, TEX_COORDS_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)TEX_COORDS_OFFSET);
-        glEnableVertexAttribArray(2);
-
-        //TEXTURE_ID
-        glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)TEX_ID_OFFSET);
-        glEnableVertexAttribArray(3);
-
-        glBindVertexArray(0);
+        vertexArray->SetVertexBuffer(vertexBuffer);
+        vertexArray->SetElementBuffer(elementBuffer);
     }
 
     int RenderBatch::render() {
@@ -88,16 +62,12 @@ namespace core {
             }
         }
 
-        if (vertices.size() == 0) { return 1; }
-        // reload the vertex array if there have been made changes
-        if (reloadBufferArrays) {
-            glBindBuffer(GL_ARRAY_BUFFER, vboID);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * vertices.size(), vertices.data());
+        vertexArray->Bind();
+        vertexBuffer->Bind();
+        elementBuffer->Bind();
 
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(float) * elements.size(), elements.data());
-            reloadBufferArrays = false;
-        }
+        vertexBuffer->BufferSubData();
+        elementBuffer->BufferSubData();
 
         // use the shader and upload the shader variables
         shader->use();
@@ -112,17 +82,20 @@ namespace core {
             shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getOrthographicMatrix());
             break;
         case SCREEN:
-            shader->uploadVec2f("uProjection", glm::vec2(vertices[POS_OFFSET], vertices[POS_OFFSET + 1]));
+            //shader->uploadVec2f("uProjection", glm::vec2(vertices[POS_OFFSET], vertices[POS_OFFSET + 1]));
             break;
         }
         shader->uploadMat4f("uView", Application::getCurrentScene()->getCamera()->getViewMatrix());
 
 
-        int* texArray = new int[textures.size()];
+        int* texArray = new int[32];
         for (int i = 0; i < textures.size(); i++)
         {
             // activate all created textures
             textures[i]->bind(i);
+        }
+        for (int i = 0; i < 32; i++)
+        {
             texArray[i] = i;
         }
         // upload the texture array into the shader
@@ -134,27 +107,15 @@ namespace core {
 		glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 #endif
 
-        glBindVertexArray(vaoID);
-        // draw both (with coords and color)
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-        glEnableVertexAttribArray(3);
 
-        // 6 = 6 points for 2 triangles
-        
-		glDrawElements(GL_TRIANGLES, this->elements.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, elementBuffer->GetElementCount(), GL_UNSIGNED_INT, nullptr);
         draw_calls++;
-
-        // stop drawing and disable array (finish it off)
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glDisableVertexAttribArray(3);
 
         // unbind everything
 
-        glBindVertexArray(0);
+        vertexBuffer->Unbind();
+        elementBuffer->Unbind();
+        vertexArray->Unbind();
         for (int i = 0; i < textures.size(); i++)
         {
             textures[i]->unbind();
@@ -167,29 +128,36 @@ namespace core {
 
     void RenderBatch::addVertexProperties(RenderData* renderData)
     {
-        std::vector<float> RDVerticesCopy = renderData->vertices;
-        //TEXTURE
-        for (int i = 0; i < renderData->textures.size(); i++) {
-            std::vector<Shr<Texture>>::iterator textureIndex = std::find(this->textures.begin(), this->textures.end(), renderData->textures[i]);
-            if (textureIndex == this->textures.end()) {
-                textureIndex = this->textures.insert(this->textures.end(), renderData->textures.begin(), renderData->textures.end());
-            }
-            
-            for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
-            {
-                if (renderData->vertices[j] == i)
-                {
-                    RDVerticesCopy[j] += textureIndex - this->textures.begin() + 1;
-                }
-            }
-        }
-        for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
+        if (renderData->id != 0)
         {
-            if (renderData->vertices[j] == -1)
-            {
-                RDVerticesCopy[j] = 0;
-            }
+            LOG_CORE_ERROR("Adding a render struct, which already has an ID! Aborting...");
+            return;
         }
+        renderData->id = Renderer::RequestID();
+
+        //std::vector<float> RDVerticesCopy = renderData->vertices;
+        ////TEXTURE
+        //for (int i = 0; i < renderData->textures.size(); i++) {
+        //    std::vector<Shr<Texture>>::iterator textureIndex = std::find(this->textures.begin(), this->textures.end(), renderData->textures[i]);
+        //    if (textureIndex == this->textures.end()) {
+        //        textureIndex = this->textures.insert(this->textures.end(), renderData->textures.begin(), renderData->textures.end());
+        //    }
+        //    
+        //    for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
+        //    {
+        //        if (renderData->vertices[j] == i)
+        //        {
+        //            RDVerticesCopy[j] += textureIndex - this->textures.begin();
+        //        }
+        //    }
+        //}
+        //for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
+        //{
+        //    if (renderData->vertices[j] == -1)
+        //    {
+        //        RDVerticesCopy[j] = 32;
+        //    }
+        //}
 
 
 
@@ -199,239 +167,193 @@ namespace core {
             CORE_ASSERT(renderData->vertices.size() > 0, "invalid vbo buffer");
             return;
         }
-        int renderDataVertexCount = renderData->vertices.size() / VERTEX_SIZE;
-        renderData->vertexSlot = vertices.insert(vertices.end(), RDVerticesCopy.begin(), RDVerticesCopy.end()) - vertices.begin();
 
         //EBO
-        //checking if vbo and ebo match
-
         if (renderData->ebo.size() <= 0)
         {
             CORE_ASSERT(renderData->ebo.size() > 0, "invalid ebo buffer");
             return;
         } 
-        int highestElement = renderData->ebo.at(0);
-        for (int i : renderData->ebo)
-        {
-	        if (i > highestElement)
-	        {
-                highestElement = i;
-	        }
-        }
-        highestElement++; //increment because 0 in the element buffer is also a vertex
-        if (highestElement != renderDataVertexCount)
-        {
-            CORE_ASSERT(highestElement == renderDataVertexCount, "invalid ebo buffer");
-            return;
-        }
 
-        //convert RenderData ebo to RenderBatch ebo
+        uint32_t offset = vertexBuffer->Add(renderData->vertices, renderData->id);
+        elementBuffer->Add(renderData->ebo, offset, renderData->id);
 
-        int batchVertexCount = renderData->vertexSlot / VERTEX_SIZE;
-        renderData->elementSlot = elements.size();
-
-        for (int i = 0; i < renderData->ebo.size(); i++)
-        {
-            this->elements.emplace_back(renderData->ebo.at(i) + batchVertexCount);
-        }
-
-        renderData->oldVertexSize = renderData->vertices.size();
-        renderData->oldElementSize = renderData->ebo.size();
+        
         renderData->oldTextures = renderData->textures;
-        renderData->dataBlockSlot = dataBlocks.size();
         dataBlocks.emplace_back(renderData);
-        reloadBufferArrays = true;
     }
 
     void RenderBatch::updateVertexProperties(RenderData* renderData)
     {
-        std::vector<float> RDVerticesCopy = renderData->vertices;
-        //TEXTURES
-        if (renderData->textures != renderData->oldTextures)
+        if (renderData->id == 0)
         {
-            //checking which texture was removed;
-            std::vector<Shr<Texture>> toRemoveTextures;
-            for (Shr<Texture> textureOld : renderData->oldTextures)
-            {
-                bool found = false;
-	            for (Shr<Texture> textureNew : renderData->textures)
-	            {
-		            if (textureOld == textureNew)
-		            {
-                        found = true;
-		            }
-	            }
-                if (!found)
-                {
-                    toRemoveTextures.emplace_back(textureOld);
-                }
-            }
-
-            //check if removed textures are still beeing used
-            for (int i = 0; i < toRemoveTextures.size(); i++)
-            {
-	            for (RenderData* rd : dataBlocks)
-	            {
-                    if (rd == renderData) continue;
-                    if (std::find(rd->textures.begin(), rd->textures.end(), toRemoveTextures[i]) !=  rd->textures.end())
-                    {
-                        toRemoveTextures.erase(toRemoveTextures.begin() + i);
-                        break;
-                    }
-	            }
-            }
-
-            //check which texture is new
-            std::vector<Shr<Texture>> toAddTextures;
-            for (Shr<Texture> texture : renderData->textures)
-            {
-	            if (std::find(this->textures.begin(), this->textures.end(), texture) == this->textures.end())
-	            {
-                    toAddTextures.emplace_back(texture);
-	            }
-            }
-
-            if (this->textures.size() + toAddTextures.size() - toRemoveTextures.size() > 32)
-            {
-                removeVertexProperties(renderData);
-                Application::getCurrentScene()->GetRenderer().add(renderData);
-            }
-            else
-            {
-                std::vector<Shr<Texture>> textureCopy = this->textures;
-                for (int i = 0; i < toRemoveTextures.size(); i++)
-                {
-                    for (int j = 0; j < this->textures.size(); j++)
-                    {
-                        if (toRemoveTextures[i] == this->textures[j])
-                        {
-                            this->textures.erase(this->textures.begin() + j);
-                        }
-                    }
-                }
-
-                //add textures to renderbatch and change the structs to the right value
-                this->textures.insert(this->textures.end(), toAddTextures.begin(), toAddTextures.end());
-                for (int i = VERTEX_SIZE - 1; i < this->vertices.size(); i += VERTEX_SIZE)
-                {
-	                if (this->vertices[i] != 0)
-	                {
-                        this->vertices[i] = std::find(this->textures.begin(), this->textures.end(), textureCopy[this->vertices[i]]) - this->textures.begin();
-	                }
-                }
-
-            }
-
-
-	        for (int i = 0; i < renderData->textures.size(); i++) {
-                std::vector<Shr<Texture>>::iterator textureIndex = std::find(this->textures.begin(), this->textures.end(), renderData->textures[i]);
-
-                for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
-                {
-                    if (renderData->vertices[j] == i)
-                    {
-                        RDVerticesCopy[j] += textureIndex - this->textures.begin();
-                    }
-                }
-			}
-            renderData->oldTextures = renderData->textures;
+            LOG_CORE_ERROR("Updating a render struct, which has no ID! Aborting...");
+            return;
         }
 
+        //std::vector<float> RDVerticesCopy = renderData->vertices;
+        ////TEXTURES
+        //if (renderData->textures != renderData->oldTextures)
+        //{
+        //    //checking which texture was removed;
+        //    std::vector<Shr<Texture>> toRemoveTextures;
+        //    for (Shr<Texture> textureOld : renderData->oldTextures)
+        //    {
+        //        bool found = false;
+	    //        for (Shr<Texture> textureNew : renderData->textures)
+	    //        {
+		//            if (textureOld == textureNew)
+		//            {
+        //                found = true;
+		//            }
+	    //        }
+        //        if (!found)
+        //        {
+        //            toRemoveTextures.emplace_back(textureOld);
+        //        }
+        //    }
+        //
+        //    //check if removed textures are still beeing used
+        //    for (int i = 0; i < toRemoveTextures.size(); i++)
+        //    {
+	    //        for (RenderData* rd : dataBlocks)
+	    //        {
+        //            if (rd == renderData) continue;
+        //            if (std::find(rd->textures.begin(), rd->textures.end(), toRemoveTextures[i]) !=  rd->textures.end())
+        //            {
+        //                toRemoveTextures.erase(toRemoveTextures.begin() + i);
+        //                break;
+        //            }
+	    //        }
+        //    }
+        //
+        //    //check which texture is new
+        //    std::vector<Shr<Texture>> toAddTextures;
+        //    for (Shr<Texture> texture : renderData->textures)
+        //    {
+	    //        if (std::find(this->textures.begin(), this->textures.end(), texture) == this->textures.end())
+	    //        {
+        //            toAddTextures.emplace_back(texture);
+	    //        }
+        //    }
+        //
+        //    if (this->textures.size() + toAddTextures.size() - toRemoveTextures.size() > 32)
+        //    {
+        //        removeVertexProperties(renderData);
+        //        Application::getCurrentScene()->GetRenderer().add(renderData);
+        //    }
+        //    else
+        //    {
+        //        std::vector<Shr<Texture>> textureCopy = this->textures;
+        //        for (int i = 0; i < toRemoveTextures.size(); i++)
+        //        {
+        //            for (int j = 0; j < this->textures.size(); j++)
+        //            {
+        //                if (toRemoveTextures[i] == this->textures[j])
+        //                {
+        //                    this->textures.erase(this->textures.begin() + j);
+        //                }
+        //            }
+        //        }
+        //
+        //        //add textures to renderbatch and change the structs to the right value
+        //        this->textures.insert(this->textures.end(), toAddTextures.begin(), toAddTextures.end());
+        //        for (int i = VERTEX_SIZE - 1; i < this->vertices.size(); i += VERTEX_SIZE)
+        //        {
+        //            if (this->vertices[i] == -1) this->vertices[i] = 32; // convert 'no texture' value to a positive value
+	    //            if (this->vertices[i] != 32)
+	    //            {
+        //                this->vertices[i] = std::find(this->textures.begin(), this->textures.end(), textureCopy[this->vertices[i]]) - this->textures.begin();
+	    //            }
+        //        }
+        //
+        //    }
+        //
+        //
+	    //    for (int i = 0; i < renderData->textures.size(); i++) {
+        //        std::vector<Shr<Texture>>::iterator textureIndex = std::find(this->textures.begin(), this->textures.end(), renderData->textures[i]);
+        //
+        //        for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
+        //        {
+        //            if (renderData->vertices[j] == i)
+        //            {
+        //                RDVerticesCopy[j] += textureIndex - this->textures.begin();
+        //            }
+        //        }
+		//	}
+        //    renderData->oldTextures = renderData->textures;
+        //}
 
-        if (renderData->vertices.size() == renderData->oldVertexSize)
-        {
-	        for (int i = 0; i < renderData->vertices.size(); i++)
-	        {
-                this->vertices[renderData->vertexSlot + i] = RDVerticesCopy.at(i);
-	        }
-        }
-
-
-        //EBO
-        if (renderData->ebo.size() == renderData->oldElementSize) {
-            int batchVertexCount = renderData->vertexSlot / VERTEX_SIZE;
-            for (int i = 0; i < renderData->ebo.size(); i++)
-            {
-                this->elements[renderData->elementSlot + i] = renderData->ebo.at(i) + batchVertexCount;
-            }
-        }
-
-        reloadBufferArrays = true;
+		vertexBuffer->Update(renderData->vertices, renderData->id);
+        elementBuffer->Update(renderData->ebo, renderData->id);
     }
 
 
 
-    void RenderBatch::removeVertexProperties(RenderData* renderData) {
-        if (std::find(this->dataBlocks.begin(), this->dataBlocks.end(), renderData) == this->dataBlocks.end()) return; //check if struct is in this batch
-
-        if (renderData->textures.size() > 0)
+    void RenderBatch::removeVertexProperties(RenderData* renderData)
+	{
+        if (renderData->id == 0)
         {
-            std::vector<Shr<Texture>> toRemoveTextures;
-            for (Shr<Texture> textureOld : renderData->oldTextures)
-            {
-                bool found = false;
-                for (Shr<Texture> textureNew : renderData->textures)
-                {
-                    if (textureOld == textureNew)
-                    {
-                        found = true;
-                    }
-                }
-                if (!found)
-                {
-                    toRemoveTextures.emplace_back(textureOld);
-                }
-            }
-
-            //check if removed textures are still beeing used
-            for (Shr<Texture> texture : toRemoveTextures)
-            {
-                for (RenderData* rd : this->dataBlocks)
-                {
-                    if (rd == renderData) continue;
-                    std::vector<Shr<Texture>>::iterator it = std::find(toRemoveTextures.begin(), toRemoveTextures.end(), texture);
-                    if (it != toRemoveTextures.end())
-                    {
-                        toRemoveTextures.erase(it);
-                    }
-                }
-            }
-
-            //remove texture
-            std::vector<Shr<Texture>> textureCopy = this->textures;
-            for (Shr<Texture> textureToRemove : toRemoveTextures)
-            {
-                std::vector<Shr<Texture>>::iterator it = std::find(this->textures.begin(), this->textures.end(), textureToRemove);
-		        if (it != this->textures.end())
-		        {
-                    this->textures.erase(it);
-		        }
-            }
-            for (int i = VERTEX_SIZE - 1; i < this->vertices.size(); i += VERTEX_SIZE)
-            {
-                if (this->vertices[i] != 0)
-                {
-                    this->vertices[i] = std::find(this->textures.begin(), this->textures.end(), textureCopy[this->vertices[i]]) - this->textures.begin();
-                }
-            }
+            LOG_CORE_ERROR("Removing a render struct, which has no ID! Aborting...");
+            return;
         }
 
-        for (int i = 0; i < renderData->vertices.size(); i++)
-        {
-            this->vertices.erase(this->vertices.begin() + renderData->vertexSlot);
-        }
-        for (int i = 0; i < renderData->ebo.size(); i++)
-        {
-            this->elements.erase(this->elements.begin() + renderData->elementSlot);
-        }
-        for (int i = renderData->dataBlockSlot; i < this->dataBlocks.size(); i++)
-        {
-            this->dataBlocks[i]->vertexSlot -= renderData->vertices.size();
-            this->dataBlocks[i]->dataBlockSlot--;
-        }
+        //if (std::find(this->dataBlocks.begin(), this->dataBlocks.end(), renderData) == this->dataBlocks.end()) return; //check if struct is in this batch
+        //if (renderData->textures.size() > 0)
+        //{
+        //    std::vector<Shr<Texture>> toRemoveTextures;
+        //    for (Shr<Texture> textureOld : renderData->oldTextures)
+        //    {
+        //        bool found = false;
+        //        for (Shr<Texture> textureNew : renderData->textures)
+        //        {
+        //            if (textureOld == textureNew)
+        //            {
+        //                found = true;
+        //            }
+        //        }
+        //        if (!found)
+        //        {
+        //            toRemoveTextures.emplace_back(textureOld);
+        //        }
+        //    }
+        //
+        //    //check if removed textures are still beeing used
+        //    for (Shr<Texture> texture : toRemoveTextures)
+        //    {
+        //        for (RenderData* rd : this->dataBlocks)
+        //        {
+        //            if (rd == renderData) continue;
+        //            std::vector<Shr<Texture>>::iterator it = std::find(toRemoveTextures.begin(), toRemoveTextures.end(), texture);
+        //            if (it != toRemoveTextures.end())
+        //            {
+        //                toRemoveTextures.erase(it);
+        //            }
+        //        }
+        //    }
+        //
+        //    //remove texture
+        //    std::vector<Shr<Texture>> textureCopy = this->textures;
+        //    for (Shr<Texture> textureToRemove : toRemoveTextures)
+        //    {
+        //        std::vector<Shr<Texture>>::iterator it = std::find(this->textures.begin(), this->textures.end(), textureToRemove);
+		//        if (it != this->textures.end())
+		//        {
+        //            this->textures.erase(it);
+		//        }
+        //    }
+        //    for (int i = VERTEX_SIZE - 1; i < this->vertices.size(); i += VERTEX_SIZE)
+        //    {
+        //        if (this->vertices[i] == -1) this->vertices[i] = 32;
+        //        if (this->vertices[i] != 32)
+        //        {
+        //            this->vertices[i] = std::find(this->textures.begin(), this->textures.end(), textureCopy[this->vertices[i]]) - this->textures.begin();
+        //        }
+        //    }
+        //}
 
-        dataBlocks.erase(dataBlocks.begin() + renderData->dataBlockSlot);
-        reloadBufferArrays = true;
+        vertexBuffer->Remove(renderData->id);
+        elementBuffer->Remove(renderData->id);
     }
 
     bool RenderBatch::HasTextureSpace(std::vector<Shr<Texture>> texs) {

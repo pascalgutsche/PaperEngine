@@ -7,9 +7,13 @@
 #include "component/SpriteRenderer.h"
 #include "layer/LayerStack.h"
 
+
+
 namespace core {
+
     
-    class CORE_API Renderer {
+
+    class Renderer {
     private:
         static Renderer* instance;
 
@@ -22,6 +26,10 @@ namespace core {
         inline static int sprites_count = 0;
         inline static int vertex_count = 0;
         inline static std::vector<Shr<Texture>> texturesInUse;
+
+        inline static std::vector<uint32_t> idInUse;
+        inline static uint32_t leastAvailableId = 1;
+
     public:
         Renderer();
         ~Renderer();
@@ -33,7 +41,10 @@ namespace core {
 
         FrameBuffer& GetFrameBuffer() const { return *frame_buffer; }
 
-        inline static int GetVerticesCount() { return vertex_count; }
+        static uint32_t RequestID();
+        static void RemoveID(uint32_t id);
+
+    	inline static int GetVerticesCount() { return vertex_count; }
         inline static int GetSpriteCount() { return sprites_count; }
         inline static std::vector<Shr<Texture>> GetTexturesInUse() { return texturesInUse; }
         inline static int GetBatchCount() { return instance->batches.size(); }

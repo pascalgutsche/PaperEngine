@@ -9,7 +9,7 @@ void ForegroundLayer::OnAttach()
 	
 	character1->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::getTexture("james_webb.png")));
 	character2->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::getTexture("placeholder_texture_256x256.png")));
-	object1->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::getTexture("antimdarx.png")));
+	object1->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::getTexture("antimarx.png")));
 	
 	this->AddGameObjectToLayer(character1);
 	this->AddGameObjectToLayer(character2);
