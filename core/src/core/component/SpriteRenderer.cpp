@@ -159,6 +159,7 @@ namespace core {
             ImGui::Text("");
             ImGui::TreePop();
         }
+        ImGui::BeginDisabled();
         if (ImGui::TreeNode("Texture:"))
         {
             timeUntilRefresh -= dt;
@@ -203,6 +204,7 @@ namespace core {
             ImGui::Text("");
             ImGui::TreePop();
         }
+        ImGui::EndDisabled();
     }
 
     

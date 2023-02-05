@@ -128,7 +128,7 @@ namespace core {
         // upload the texture array into the shader
         // convert vector to array in order to pass the parameters through
         shader->uploadIntArray("uTexture", textures.size(), texArray);
-        delete[] texArray;
+        
 
 #ifdef BUILD_DEBUG
 		glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
@@ -161,6 +161,7 @@ namespace core {
         }
         shader->detach();
 
+        delete[] texArray;
         return 0;
     }
 
@@ -178,10 +179,19 @@ namespace core {
             {
                 if (renderData->vertices[j] == i)
                 {
-                    RDVerticesCopy[j] += textureIndex - this->textures.begin();
+                    RDVerticesCopy[j] += textureIndex - this->textures.begin() + 1;
                 }
             }
         }
+        for (int j = VERTEX_SIZE - 1; j < renderData->vertices.size(); j += VERTEX_SIZE)
+        {
+            if (renderData->vertices[j] == -1)
+            {
+                RDVerticesCopy[j] = 0;
+            }
+        }
+
+
 
         //VBO
         if (renderData->vertices.size() <= 0)
@@ -304,7 +314,7 @@ namespace core {
                 this->textures.insert(this->textures.end(), toAddTextures.begin(), toAddTextures.end());
                 for (int i = VERTEX_SIZE - 1; i < this->vertices.size(); i += VERTEX_SIZE)
                 {
-	                if (this->vertices[i] != -1)
+	                if (this->vertices[i] != 0)
 	                {
                         this->vertices[i] = std::find(this->textures.begin(), this->textures.end(), textureCopy[this->vertices[i]]) - this->textures.begin();
 	                }
@@ -399,7 +409,7 @@ namespace core {
             }
             for (int i = VERTEX_SIZE - 1; i < this->vertices.size(); i += VERTEX_SIZE)
             {
-                if (this->vertices[i] != -1)
+                if (this->vertices[i] != 0)
                 {
                     this->vertices[i] = std::find(this->textures.begin(), this->textures.end(), textureCopy[this->vertices[i]]) - this->textures.begin();
                 }

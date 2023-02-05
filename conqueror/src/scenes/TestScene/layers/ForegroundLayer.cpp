@@ -3,13 +3,13 @@
 
 void ForegroundLayer::OnAttach()
 {
-	character1 = new GameObject("character1", Transform(glm::vec2(-10.0f, 4.0f), glm::vec2(40.0f, 5.0f)));
-	character2 = new GameObject("character2");
-	object1 = new GameObject("object1", Transform(glm::vec2(-3, -10), glm::vec2(10.0f, 3.0f)));
+	character1 = new GameObject("character1", Transform(glm::vec2(3.0f, 3.0f), glm::vec2(2.0f, 2.0f)));
+	character2 = new GameObject("character2", Transform(glm::vec2(0.0f, 3.0f), glm::vec2(2.0f, 2.0f)));
+	object1 = new GameObject("object1", Transform(glm::vec2(-3, 3), glm::vec2(2.0f, 2.0f)));
 	
-	character1->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), DataPool::getTexture("IMG_0131.jpg")));
-	character2->addComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), DataPool::getTexture("antimarx.png")));
-	object1->addComponent(new SpriteRenderer(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f), DataPool::getTexture("Honecker-2113738823.jpg")));
+	character1->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::getTexture("james_webb.png")));
+	character2->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::getTexture("placeholder_texture_256x256.png")));
+	object1->addComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::getTexture("antimdarx.png")));
 	
 	this->AddGameObjectToLayer(character1);
 	this->AddGameObjectToLayer(character2);

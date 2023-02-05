@@ -19,7 +19,8 @@ namespace core {
 
         unsigned int texID;
 
-        
+        bool init(std::string path);
+
     public:
         // load texture with desired filePath
         Texture(std::string filePath, std::string name);

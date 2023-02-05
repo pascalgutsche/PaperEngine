@@ -12,6 +12,15 @@ namespace core {
         this->filePath = filePath;
         this->name = name;
 
+        if(!init(this->filePath))
+        {
+            glDeleteTextures(1, &texID);
+            init("assets/textures/error_texture_256x256.png");
+        }
+    }
+
+    bool Texture::init(std::string path)
+    {
         glGenTextures(1, &texID);
         // use texture (everything that is called from now will be set to the current texture)
         glBindTexture(GL_TEXTURE_2D, texID);
@@ -27,7 +36,7 @@ namespace core {
 
         stbi_set_flip_vertically_on_load(true);
         // load texture and save formats to the variables (4 == RGBA format)
-        localBuffer = stbi_load(filePath.c_str(), &width, &height, &channels, 0);
+        localBuffer = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
         // free memory if path is invalid
         if (localBuffer)
@@ -40,16 +49,19 @@ namespace core {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
             }
             else {
-                LOG_CORE_ERROR("Unknown number of channel '" + std::to_string(channels) + "' by texture '" + this->filePath + "'");
+                LOG_CORE_ERROR("Unknown number of channel '" + std::to_string(channels) + "' by texture '" + path + "'");
+                return false;
             }
             glBindTexture(GL_TEXTURE_2D, 0);
         }
         else {
-            LOG_CORE_ERROR("Could not load image '" + this->filePath + "'");
+            LOG_CORE_ERROR("Could not load image '" + path + "'");
+            return false;
         }
 
-        
+
         stbi_image_free(localBuffer);
+        return true;
     }
 
     Texture::~Texture()
