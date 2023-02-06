@@ -76,16 +76,16 @@ namespace core {
         switch (displayMode)
         {
         case PERSPECTIVE:
-            shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getProjectionMatrix());
+            shader->uploadMat4f("uProjection", Application::GetActiveScene()->GetCamera()->getProjectionMatrix());
             break;
         case ORTHOGRAPHIC:
-            shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getOrthographicMatrix());
+            shader->uploadMat4f("uProjection", Application::GetActiveScene()->GetCamera()->getOrthographicMatrix());
             break;
         case SCREEN:
             //shader->uploadVec2f("uProjection", glm::vec2(vertices[POS_OFFSET], vertices[POS_OFFSET + 1]));
             break;
         }
-        shader->uploadMat4f("uView", Application::getCurrentScene()->getCamera()->getViewMatrix());
+        shader->uploadMat4f("uView", Application::GetActiveScene()->GetCamera()->getViewMatrix());
 
 
         int* texArray = new int[32];
@@ -175,8 +175,8 @@ namespace core {
             return;
         } 
 
-        uint32_t offset = vertexBuffer->Add(renderData->vertices, renderData->id);
-        elementBuffer->Add(renderData->ebo, offset, renderData->id);
+    	vertexBuffer->Add(renderData->vertices, renderData->id);
+        elementBuffer->Add(renderData->ebo, renderData->id);
 
         
         renderData->oldTextures = renderData->textures;

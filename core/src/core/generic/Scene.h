@@ -22,21 +22,20 @@ namespace core {
         Scene();
         virtual ~Scene();
 
-        Camera* getCamera();
-        glm::vec4 getBackcolor();
-        std::vector<GameObject*> getGameObjects();
+        Camera* GetCamera();
+        glm::vec4 GetBackcolor();
 
-        void addGameObjectToScene(GameObject* gameObject);
-        void start();
-        void disable();
-        void sceneImgui(float dt);
-        void initGeneral();
+        void AddGameObjectToScene(GameObject* gameObject);
+        void Start();
+        void Disable();
+        void SceneImgui(float dt);
+        void InitGeneral();
+        void Render();
 
-        Renderer& GetRenderer() const { return *renderer; }
+
 
         virtual void update(float dt) = 0;
         virtual void OnEvent(Event& e) = 0;
-
     private:
         virtual void imgui(float dt) {};
         virtual void init() = 0;

@@ -15,7 +15,7 @@ TestScene::~TestScene() {
 }
 
 void TestScene::loadResources() {
-    backcolor = glm::vec4(0.8f, 0.2f, 0.3f, 1.0f);
+    backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
     background_layer = new BackgroundLayer();
     foreground_layer = new ForegroundLayer();
     sound_layer = new SoundLayer();
@@ -64,7 +64,7 @@ void TestScene::update(float dt) {
     }
 
 
-    this->renderer->render(dt);
+    Render();
 }
 
 void TestScene::imgui(float dt) {
@@ -73,10 +73,10 @@ void TestScene::imgui(float dt) {
 
 bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
 {
-    if (this->getCamera()->position.z > 0.2f && e.getYOffset() != 0)
-        this->getCamera()->position.z += 10.0 * core::Application::GetDT() * e.getYOffset();
-    if (this->getCamera()->position.z < 0.2f) {
-        this->getCamera()->position.z = 0.2f;
+    if (this->GetCamera()->position.z > 0.2f && e.getYOffset() != 0)
+        this->GetCamera()->position.z += 10.0 * core::Application::GetDT() * e.getYOffset();
+    if (this->GetCamera()->position.z < 0.2f) {
+        this->GetCamera()->position.z = 0.2f;
     }
         
     return true;

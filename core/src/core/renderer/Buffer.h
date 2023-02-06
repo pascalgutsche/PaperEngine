@@ -118,9 +118,6 @@ namespace  core
 	{
 		std::vector<float> data;
 
-		uint32_t numberOfVertices;
-		uint32_t vertexOffset;
-
 		uint32_t id;
 	};
 	
@@ -130,7 +127,7 @@ namespace  core
 		void Bind() const;
 		void Unbind() const;
 
-		uint32_t Add(std::vector<float> data, uint32_t id);
+		void Add(std::vector<float> data, uint32_t id);
 		void Update(std::vector<float> data, uint32_t id);
 		void Remove(uint32_t id);
 
@@ -155,15 +152,12 @@ namespace  core
 
 		uint32_t vboID;
 
-		uint32_t CalculateOffset(Vertex* vertex) const;
 		void ConvertVerticesToRawData();
 	};
 
 	struct Element
 	{
 		std::vector<unsigned int> data;
-
-		uint32_t vertexOffset;
 
 		uint32_t id;
 	};
@@ -174,7 +168,7 @@ namespace  core
 		void Bind() const;
 		void Unbind() const;
 
-		void Add(std::vector<unsigned int> data, uint32_t vertexOffset, uint32_t id);
+		void Add(std::vector<unsigned int> data, uint32_t id);
 		void Update(std::vector<unsigned int> data, uint32_t id);
 		void Remove(uint32_t id);
 

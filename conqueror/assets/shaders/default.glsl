@@ -20,12 +20,12 @@ layout(location = 0) out VertexOutput Output;
 
 void main()
 {
+    gl_Position = uProjection * uView * vec4(aPos, 0.0f, 1.0f); // adjust gl_Position with the help of 'u' Factors
     Output.Color = aColor;
     Output.TexCoord = aTexCoord;
     Output.TexID = aTexID;
 
     // pipe variables from the vbo
-    gl_Position = uProjection * uView * vec4(aPos, 0.0f, 1.0f); // adjust gl_Position with the help of 'u' Factors
 }
 
 
@@ -51,6 +51,7 @@ void main()
     vec2 uvDy = dFdy(Input.TexCoord);
     vec4 color = Input.Color;
     switch (int(Input.TexID)) {
+        case -1:; break;
         case 0 : color *= textureGrad(uTexture[0 ], Input.TexCoord, uvDx, uvDy); break;
         case 1 : color *= textureGrad(uTexture[1 ], Input.TexCoord, uvDx, uvDy); break;
         case 2 : color *= textureGrad(uTexture[2 ], Input.TexCoord, uvDx, uvDy); break;

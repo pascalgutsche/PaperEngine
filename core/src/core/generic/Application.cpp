@@ -4,7 +4,6 @@
 #include "event/KeyCodes.h"
 #include "event/Input.h"
 
-#include "glad/glad.h"
 
 namespace core {
 
@@ -88,7 +87,7 @@ namespace core {
 		//set start scene
 		if (queued_scene) {
 			current_scene = queued_scene;
-			current_scene->initGeneral();
+			current_scene->InitGeneral();
 			queued_scene = nullptr;
 		}
 
@@ -106,22 +105,20 @@ namespace core {
 
 			//MouseListener::resetValues();
 			if (current_scene != nullptr) {
-				const glm::vec4 scene_backcolor = current_scene->getBackcolor();
 				//clear color buffer
-				glClearColor(scene_backcolor.x, scene_backcolor.y, scene_backcolor.z, scene_backcolor.w);
-				glClear(GL_COLOR_BUFFER_BIT);
+				RenderCommand::Clear(current_scene->GetBackcolor());
 
 				if (dt >= 0) {
 					if (queued_scene != nullptr) {
 						// TODO: save scenes instead of deleting them
 						// delete the scene with it's heap components (renderer and camera)
-						current_scene->disable();
+						current_scene->Disable();
 
 						// remove the scene
 						delete current_scene;
 						// switch and initialize the scene
 						current_scene = queued_scene;
-						current_scene->initGeneral();
+						current_scene->InitGeneral();
 						// don't forget to reset the tempscene, because we want to override it
 						queued_scene = nullptr;
 					}

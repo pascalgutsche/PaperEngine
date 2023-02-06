@@ -21,13 +21,6 @@ namespace core {
 
 
         this->target = glm::vec3(this->position.x, this->position.y, 0.0f);
-        // move every gameObject that is orthographic before the camera moves
-        for (auto& go : Application::getCurrentScene()->getGameObjects()) {
-            if (go->displayMode == ORTHOGRAPHIC) {
-                go->transform.position.x = target.x + 1;
-                go->transform.position.y = target.y + 1;
-            }
-        }
 
         // this is being used for pointing upwards (y globally, e.g. in the world)
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);

@@ -410,11 +410,11 @@ namespace core {
         if (viewport_size != *(glm::vec2*)&viewport_panel_size)
         {
             viewport_size = { viewport_panel_size.x, viewport_panel_size.y };
-            Application::getCurrentScene()->GetRenderer().GetFrameBuffer().Resize(viewport_size.x, viewport_size.y);
+            //Application::getCurrentScene()->GetRenderer().GetFrameBuffer().Resize(viewport_size.x, viewport_size.y);
         }
-        uint32_t textureID = Application::getCurrentScene()->GetRenderer().GetFrameBuffer().GetColorID();
+        //uint32_t textureID = Application::getCurrentScene()->GetRenderer().GetFrameBuffer().GetColorID();
 
-        ImGui::Image((void*)textureID, ImVec2(viewport_size.x, viewport_size.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        //ImGui::Image((void*)textureID, ImVec2(viewport_size.x, viewport_size.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
         ImGui::End();
         ImGui::PopStyleVar();

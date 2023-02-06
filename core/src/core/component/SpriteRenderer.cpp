@@ -93,12 +93,12 @@ namespace core {
         renderData->ebo.emplace(renderData->ebo.end(), 3);
         renderData->ebo.emplace(renderData->ebo.end(), 0);
 
-        Application::getCurrentScene()->GetRenderer().add(renderData);
+        //Application::getCurrentScene()->GetRenderer().add(renderData);
     }
 
     void SpriteRenderer::stop()
     {
-        Application::getCurrentScene()->GetRenderer().remove(renderData);
+        //Application::getCurrentScene()->GetRenderer().remove(renderData);
     }
 
 

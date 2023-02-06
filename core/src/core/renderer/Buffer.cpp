@@ -34,16 +34,13 @@ namespace core
 
 	
 
-	uint32_t VertexBuffer::Add(std::vector<float> data, uint32_t id)
+	void VertexBuffer::Add(std::vector<float> data, uint32_t id)
 	{
 		Vertex* vertex = new Vertex;
 		vertex->data = data;
-		vertex->numberOfVertices = data.size() / layout.GetSize();
 		vertex->id = id;
-		vertex->vertexOffset = CalculateOffset(vertex);
 		this->vertices.emplace_back(vertex);
 		ConvertVerticesToRawData();
-		return vertex->vertexOffset;
 	}
 
 	void VertexBuffer::Update(std::vector<float> data, uint32_t id)
@@ -72,17 +69,6 @@ namespace core
 		vertices.erase(std::find(vertices.begin(), vertices.end(), temp));
 		delete temp;
 		ConvertVerticesToRawData();
-	}
-
-	uint32_t VertexBuffer::CalculateOffset(Vertex* vertex) const
-	{
-		int offset = 0;
-		for (Vertex* vx : vertices)
-		{
-			if (vx == vertex) break;
-			offset += vx->numberOfVertices;
-		}
-		return offset;
 	}
 
 	void VertexBuffer::ConvertVerticesToRawData()
@@ -141,11 +127,10 @@ namespace core
 		glDeleteBuffers(1, &eboID);
 	}
 
-	void ElementBuffer::Add(std::vector<unsigned int> data, uint32_t vertexOffset, uint32_t id)
+	void ElementBuffer::Add(std::vector<unsigned int> data, uint32_t id)
 	{
 		Element* element = new Element();
 		element->data = data;
-		element->vertexOffset = vertexOffset;
 		element->id = id;
 		this->elements.emplace_back(element);
 		ConvertElementsToRawData();
@@ -182,14 +167,22 @@ namespace core
 	void ElementBuffer::ConvertElementsToRawData()
 	{
 		rawElements.clear();
+		int highestElement = 0;
 		for (Element* element : elements)
 		{
+			int temp = 0;
 			Element el(*element);
 			for (int i = 0; i < el.data.size(); i++)
 			{
-				element->data[i] += el.vertexOffset;
+				if (el.data[i] > temp)
+				{
+					temp = el.data[i];
+				}
+				el.data[i] += highestElement;
 			}
 			rawElements.insert(rawElements.end(), el.data.begin(), el.data.end());
+			temp++;
+			highestElement += temp;
 		}
 		reloadData = true;
 	}

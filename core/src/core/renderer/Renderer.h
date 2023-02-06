@@ -4,9 +4,10 @@
 #include "renderer/RenderBatch.h"
 #include "renderer/FrameBuffer.h"
 #include "generic/GameObject.h"
-#include "component/SpriteRenderer.h"
-#include "layer/LayerStack.h"
 
+#include "renderer/RenderCommand.h"
+#include "generic/Camera.h"
+#include "generic/Shader.h"
 
 
 namespace core {
@@ -14,6 +15,18 @@ namespace core {
     
 
     class Renderer {
+    public:
+        static void Init();
+        static void Shutdown();
+
+        static void BeginRender(Shr<Camera>& camera);
+        static void EndRender();
+
+        static void SubmitData(Shr<VertexArray>& vertexArray);
+
+
+
+
     private:
         static Renderer* instance;
 

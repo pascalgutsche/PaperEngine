@@ -67,7 +67,7 @@ namespace core {
             glViewport(0, 0, Application::getWindow()->getWidth(), Application::getWindow()->getHeight());
 
         //calculating camera vectors
-        Application::getCurrentScene()->getCamera()->calcCameraVectors();
+        Application::GetActiveScene()->GetCamera()->calcCameraVectors();
 
         //update GameObjects
         updateGameObjects(dt);
@@ -124,4 +124,29 @@ namespace core {
         if (id < leastAvailableId) leastAvailableId = id;
     }
 
+    void Renderer::Init()
+    {
+	    
+    }
+
+    void Renderer::Shutdown()
+    {
+	    
+    }
+
+    void Renderer::BeginRender(Shr<Camera>& camera)
+    {
+	    
+    }
+
+    void Renderer::SubmitData(Shr<VertexArray>& vertexArray)
+    {
+        vertexArray->Bind();
+        RenderCommand::DrawElements(vertexArray);
+    }
+
+    void Renderer::EndRender()
+    {
+	    
+    }
 }
