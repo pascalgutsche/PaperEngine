@@ -1,3 +1,4 @@
+#include "_Game.h"
 #include "TestScene.h"
 #include "layers/SoundLayer.h"
 

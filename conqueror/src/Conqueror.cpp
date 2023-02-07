@@ -1,5 +1,7 @@
+#include "_Game.h"
+
 #define INCLUDE_MAIN
-#include "Engine.h"
+#include "EntryPoint.h"
 
 #include "scenes/TestScene/TestScene.h"
 

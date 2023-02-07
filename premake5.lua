@@ -35,7 +35,7 @@ project "core"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "_Core.h"
-	pchsource "core/src/core/_Core.cpp"
+	pchsource "core/src/_Core.cpp"
 
 	files
 	{
@@ -113,6 +113,9 @@ project "conqueror"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	pchheader "_Game.h"
+	pchsource "conqueror/src/_Game.cpp"
 
 	files
 	{

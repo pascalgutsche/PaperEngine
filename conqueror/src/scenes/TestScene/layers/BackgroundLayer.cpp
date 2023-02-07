@@ -1,3 +1,4 @@
+#include "_Game.h"
 #include "BackgroundLayer.h"
 
 void BackgroundLayer::OnAttach()
