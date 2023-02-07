@@ -69,7 +69,7 @@ void TestScene::update(float dt) {
     }
 
 
-    this->renderer->render(Application::GetLayerStack(), dt);
+    this->renderer->render(dt);
 }
 
 void TestScene::imgui(float dt) {
