@@ -16,7 +16,7 @@ namespace core {
         const int MAX_BATCH_SIZE = 1000;
         std::vector<RenderBatch*> batches;
         std::vector<GameObject*> game_objects_in_use;
-        FrameBufferProperties properties;
+        FramebufferSpecification properties;
         FrameBuffer* frame_buffer = nullptr;
 
         inline static int sprites_count = 0;

@@ -5,8 +5,8 @@
 
 namespace core {
 
-	FrameBuffer::FrameBuffer(const FrameBufferProperties& properties)
-		:frame_buffer_properties(properties)
+	FrameBuffer::FrameBuffer(const FramebufferSpecification& specification)
+		:specification(specification)
 	{
 		Invalidate();
 	}
@@ -32,7 +32,7 @@ namespace core {
 		//color
 		glCreateTextures(GL_TEXTURE_2D, 1, &color);
 		glBindTexture(GL_TEXTURE_2D, color);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, frame_buffer_properties.width, frame_buffer_properties.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, specification.width, specification.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -42,7 +42,7 @@ namespace core {
 		//depth
 		glCreateTextures(GL_TEXTURE_2D, 1, &depth);
 		glBindTexture(GL_TEXTURE_2D, depth);
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, frame_buffer_properties.width, frame_buffer_properties.height);
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, specification.width, specification.height);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depth, 0);
 
 		CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
@@ -52,15 +52,15 @@ namespace core {
 
 	void FrameBuffer::Resize(unsigned width, unsigned height)
 	{
-		frame_buffer_properties.width = width;
-		frame_buffer_properties.height = height;
+		specification.width = width;
+		specification.height = height;
 
 		Invalidate();
 	}
 
 	void FrameBuffer::Bind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, fboID);
-		glViewport(0, 0, frame_buffer_properties.width, frame_buffer_properties.height);
+		glViewport(0, 0, specification.width, specification.height);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
