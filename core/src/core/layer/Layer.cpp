@@ -14,7 +14,7 @@ namespace core
 		}
 		OnAttach();
 		if (add_to_renderer)
-			Application::getCurrentScene()->GetRenderer().add(this, Application::GetLayerStack().GetPlace(this));
+			Application::GetCurrentScene()->GetRenderer().add(this, Application::GetLayerStack().GetPlace(this));
 	}
 
 	void Layer::detach()

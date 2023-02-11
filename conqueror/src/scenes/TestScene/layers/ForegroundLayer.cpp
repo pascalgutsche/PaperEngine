@@ -3,7 +3,7 @@
 
 void ForegroundLayer::OnAttach()
 {
-	character1 = new GameObject("character1", Transform(glm::vec2(1.0f, -4.0f)));
+	character1 = new GameObject("character1", Transform(glm::vec2(0.0f, -4.0f)));
 	character2 = new GameObject("character2");
 	object1 = new GameObject("object1", Transform(glm::vec2(-3, -4), glm::vec2(1.0f, 3.0f)));
 

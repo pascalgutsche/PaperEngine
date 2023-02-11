@@ -11,6 +11,7 @@ namespace core {
 
 		//COLORS
 		RGBA8,
+		RED_INTEGER,
 
 		//DEPTH
 		DEPTH24STECIL8,
@@ -23,9 +24,9 @@ namespace core {
 	{
 		FramebufferTexSpecification() = default;
 		FramebufferTexSpecification(FramebufferTexFormat format)
-			: format(format) { };
+			: texFormat(format) { };
 
-		FramebufferTexFormat format;
+		FramebufferTexFormat texFormat = FramebufferTexFormat::None;
 	};
 
 	struct FramebufferAttachSpecification 
@@ -39,7 +40,7 @@ namespace core {
 
 	struct FramebufferSpecification 
 	{
-		FramebufferAttachSpecification attachments;
+		FramebufferAttachSpecification attachment;
 
 		uint32_t width, height;
 		uint32_t samples = 1;
@@ -51,17 +52,22 @@ namespace core {
 	private:
 		FramebufferSpecification specification;
 		unsigned int fboID = 0;
-		unsigned int rbo = 0;
-		uint32_t color;
-		uint32_t depth;
+
+		std::vector<FramebufferTexSpecification> colorAttachmentSpec; // color specifications
+		FramebufferTexSpecification depthAttachmentSpec = FramebufferTexFormat::None; //depth specification
+		
+		std::vector<uint32_t> colorAttachmentsID; // texture id's
+		uint32_t depthAttachmentID;
+
 	public:
 		FrameBuffer(const FramebufferSpecification& specification);
 		~FrameBuffer();
 
-		uint32_t GetColorID() const { return color; }
+		uint32_t GetColorID(uint32_t index = 0) const { CORE_ASSERT(index < colorAttachmentsID.size(), ""); return colorAttachmentsID[index]; }
 
 		void Invalidate();
 		void Resize(unsigned int width, unsigned int height);
+		int ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos);
 
 		void Bind();
 		void Unbind();

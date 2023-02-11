@@ -64,9 +64,9 @@ namespace core {
 		static void Debug_TrackVariable(std::string name, void* variable);
 
 
-		static Window* getWindow() { return Get()->window; }
-		static Scene* getCurrentScene() { return Get()->current_scene; }
-		static ImGuiLayer& IMGUI() { return *Get()->imguilayer; }
+		static Window* GetWindow() { return Get()->window; }
+		static Scene* GetCurrentScene() { return Get()->current_scene; }
+		static ImGuiLayer& GetImGuiLayer() { return *Get()->imguilayer; }
 		static LayerStack& GetLayerStack() { return Get()->layer_stack; }
 
 	};

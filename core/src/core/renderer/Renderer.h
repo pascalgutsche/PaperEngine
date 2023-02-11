@@ -21,6 +21,7 @@ namespace core {
 
         inline static int sprites_count = 0;
         inline static int vertex_count = 0;
+
     public:
         Renderer();
         ~Renderer();

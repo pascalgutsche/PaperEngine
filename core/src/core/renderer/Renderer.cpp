@@ -3,6 +3,7 @@
 #include "renderer/Renderer.h"
 #include "component/SpriteRenderer.h"
 #include "generic/Application.h"
+#include "event/Input.h"
 
 #include "glad/glad.h"
 namespace core {
@@ -19,6 +20,8 @@ namespace core {
 
     Renderer::Renderer() {
         instance = this;
+        FramebufferAttachSpecification attach = { FramebufferTexFormat::RGBA8, FramebufferTexFormat::RED_INTEGER, FramebufferTexFormat::DEPTH24STECIL8 };
+        properties.attachment = attach;
         properties.width = 1080;
         properties.height = 720;
         frame_buffer = new FrameBuffer(properties);
@@ -71,16 +74,28 @@ namespace core {
     }
 
     void Renderer::render(LayerStack& layer_stack, const float dt) {
-        if (Application::GetImGuiEnabled())
-			frame_buffer->Bind();
-        else
-            glViewport(0, 0, Application::getWindow()->getWidth(), Application::getWindow()->getHeight());
+        frame_buffer->Bind();
+        if (!Application::GetImGuiEnabled())
+        {
+            if (frame_buffer->GetProperties().width != Application::GetWindow()->getWidth() || frame_buffer->GetProperties().height != Application::GetWindow()->getHeight())
+            {
+                frame_buffer->Resize(Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
+            }
+            glViewport(0, 0, Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
+
+            //glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            //glBlitFramebuffer(0, 0, frame_buffer->GetProperties().width, frame_buffer->GetProperties().height, 0, 0, Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        }
 
         //calculating camera vectors
-        Application::getCurrentScene()->getCamera()->calcCameraVectors();
+        Application::GetCurrentScene()->getCamera()->calcCameraVectors();
 
         //update GameObjects
-        updateGameObjects(dt, Application::getCurrentScene()->gameObjects);
+        updateGameObjects(dt, Application::GetCurrentScene()->gameObjects);
+
+
+
 
         int sprites_count_calc = 0;
         int vertices_count_calc = 0;
@@ -93,6 +108,23 @@ namespace core {
 
         sprites_count = sprites_count_calc;
         vertex_count = vertices_count_calc;
+
+        //mouse picking;
+        glm::ivec2 pos = glm::ivec2(-1, -1);
+
+        if (!Application::GetImGuiEnabled())
+        {
+            pos = Input::GetMousPos();
+            pos.y = Application::GetWindow()->getHeight() - pos.y;
+	        
+        }
+        else if (Application::GetImGuiLayer().IsMouseInsideViewport())
+        {
+            pos = Application::GetImGuiLayer().GetMousePosViewportRelative();
+        }
+
+        if (pos.x >= 0 && pos.y >= 0)
+            LOG_CORE_ERROR(frame_buffer->ReadPixel(1, pos));
 
         frame_buffer->Unbind();
     }

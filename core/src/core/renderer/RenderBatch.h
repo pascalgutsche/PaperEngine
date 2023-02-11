@@ -48,6 +48,8 @@ namespace core {
         void generateIndices(unsigned int* element);
         void loadElementIndices(unsigned int* arrayElements, int index);
 
+
+
         inline static int draw_calls = 0;
         inline static bool enable_polygon = false;
         inline static int polygonMode = 6914;

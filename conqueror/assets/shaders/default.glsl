@@ -33,7 +33,8 @@ flat in int fTexID; // get texID from vertex
 
 uniform sampler2D uTexture[8];
 
-out vec4 display;
+layout(location = 0) out vec4 display;
+layout(location = 1) out int objectID;
 
 void main()
 {
@@ -45,4 +46,5 @@ void main()
         // if there is no texture, display the colors
         display = fColor;
     }
+    objectID = 50;
 }

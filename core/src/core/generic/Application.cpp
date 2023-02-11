@@ -127,11 +127,7 @@ namespace core {
 					}
 
 
-					for (Layer* layer : layer_stack)
-						layer->update(dt);
-
-
-					current_scene->update(dt);
+					
 
 					if (imgui_enabled) {
 
@@ -139,9 +135,16 @@ namespace core {
 						for (Layer* layer : layer_stack) {
 							layer->imgui(dt);
 						}
-							
+
 						imguilayer->end();
 					}
+
+					for (Layer* layer : layer_stack)
+						layer->update(dt);
+
+					current_scene->update(dt);
+
+					
 					frames_rendered++;
 				}
 			}

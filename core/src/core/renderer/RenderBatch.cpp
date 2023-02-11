@@ -145,24 +145,24 @@ namespace core {
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
             glBufferSubData(GL_ARRAY_BUFFER, 0, maxBatchSize * VERTEX_SIZE_BYTES * 4, vertices.data());
         }
-
+        
         // use the shader and upload the shader variables
         shader->use();
 
         if (displayMode == DataPool::DISPLAYMODE::ORTHOGRAPHIC)
         {
-            shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getOrthographicMatrix());
+            shader->uploadMat4f("uProjection", Application::GetCurrentScene()->getCamera()->getOrthographicMatrix());
         }
         else if (displayMode == DataPool::DISPLAYMODE::PERSPECTIVE)
         {
-            shader->uploadMat4f("uProjection", Application::getCurrentScene()->getCamera()->getProjectionMatrix());
+            shader->uploadMat4f("uProjection", Application::GetCurrentScene()->getCamera()->getProjectionMatrix());
         }
         else if (displayMode == DataPool::DISPLAYMODE::NONE)
         {
             shader->uploadVec2f("uProjection", glm::vec2(vertices[POS_OFFSET], vertices[POS_OFFSET + 1]));
         }
         // fov
-        shader->uploadMat4f("uView", Application::getCurrentScene()->getCamera()->getViewMatrix());
+        shader->uploadMat4f("uView", Application::GetCurrentScene()->getCamera()->getViewMatrix());
 
         for (int i = 0; i < textures.size(); i++)
         {
