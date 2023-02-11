@@ -28,6 +28,8 @@
 #include "core/utils/Log.h"
 #include "core/utils/Utils.h"
 
+#include "utility.h"
+
 //EntryPoint
 #include "core/EntryPoint.h"
 

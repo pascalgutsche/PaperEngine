@@ -7,11 +7,13 @@
 #include "utils/DataPool.h"
 
 namespace core {
-    class CORE_API GameObject {
+    class GameObject {
     private:
         std::string name;
         std::vector<Component*> components;
         int zIndex;
+
+        core_id objectID;
 
     public:
         Transform transform;
@@ -32,6 +34,7 @@ namespace core {
         std::string getName();
         int getZIndex();
         void setZIndex(int zIndex);
+        core_id GetObjectID() const { return objectID; }
 
         DataPool::DISPLAYMODE displayMode;
 

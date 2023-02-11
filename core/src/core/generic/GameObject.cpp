@@ -6,7 +6,7 @@
 #include "utils/DataPool.h"
 
 #include "imgui/ImGuiLayer.h"
-
+#include "utils/Core.h"
 
 
 namespace core {
@@ -20,6 +20,8 @@ namespace core {
         this->zIndex = 0;
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
 
+        objectID = Core::RequestID();
+
     }
 
     GameObject::GameObject(std::string name, Transform transform) {
@@ -30,6 +32,7 @@ namespace core {
         this->zIndex = 0;
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
 
+        objectID = Core::RequestID();
     }
 
     GameObject::GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode)
@@ -38,6 +41,8 @@ namespace core {
         this->transform = transform;
         this->zIndex = 0;
         this->displayMode = displaymode;
+
+        objectID = Core::RequestID();
 
     }
 

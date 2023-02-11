@@ -65,7 +65,7 @@ void TestScene::update(float dt) {
     }
 
     if (Input::IsKeyPressed(KEY_U)) {
-        Application::Get()->changeScene(new TestScene());
+        Application::ChangeScene(new TestScene());
     }
 
 

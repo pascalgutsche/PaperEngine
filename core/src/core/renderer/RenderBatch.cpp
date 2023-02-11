@@ -83,8 +83,12 @@ namespace core {
         glEnableVertexAttribArray(2);
 
         //TEXTURE_ID
-        glVertexAttribPointer(3, TEX_ID_SIZE, GL_INT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)TEX_ID_OFFSET);
+        glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)TEX_ID_OFFSET);
         glEnableVertexAttribArray(3);
+
+        //CORE_ID
+        glVertexAttribPointer(4, CORE_ID_SIZE, GL_FLOAT, GL_FALSE, VERTEX_SIZE_BYTES, (void*)CORE_ID_OFFSET);
+        glEnableVertexAttribArray(4);
 
         glBindVertexArray(0);
     }
@@ -314,6 +318,12 @@ namespace core {
 
                 // set texture id
                 vertices.emplace(vertices.begin() + offset + 8, texID);
+
+                LOG_CORE_WARN(GameObject::CGMap[sprite]->GetObjectID());
+
+                //set core id
+                vertices.emplace(vertices.begin() + offset + 9, GameObject::CGMap[sprite]->GetObjectID());
+
             }
             // set offset to the next line for a next triangle in order to make use of batch rendering
             offset += VERTEX_SIZE;

@@ -5,6 +5,7 @@
 #include "event/Input.h"
 
 #include "glad/glad.h"
+#include "utils/Core.h"
 
 namespace core {
 
@@ -15,7 +16,7 @@ namespace core {
 		Log::init();
 
 		window = Window::createWindow();
-		setEventCallback(BIND_EVENT_FN(Application::onEvent));
+		SetEventCallback(BIND_EVENT_FN(Application::onEvent));
 
 		imguilayer = new ImGuiLayer();
 	}
@@ -85,6 +86,8 @@ namespace core {
 
 		AddOverLay(imguilayer, false);
 
+		Core::Init();
+
 		//set start scene
 		if (queued_scene) {
 			current_scene = queued_scene;
@@ -95,7 +98,6 @@ namespace core {
 		// start of the calculations
 		float begin_time = static_cast<float>(glfwGetTime());
 		dt = 0.0167f;
-		Application::Debug_TrackVariable("dt", &dt);
 		bool warn = true;
 
 		while (game_running)
@@ -162,36 +164,32 @@ namespace core {
 		delete window;
 	}
 
-	void Application::changeScene(Scene* new_scene)
+	void Application::ChangeScene(Scene* new_scene)
 	{
-		queued_scene = new_scene;
+		GetInstance()->queued_scene = new_scene;
 	}
 
 	void Application::AddLayer(Layer* layer, bool add_to_renderer)
 	{
-		Get()->layer_stack.addLayer(layer);
+		GetInstance()->layer_stack.addLayer(layer);
 		layer->attach(add_to_renderer);
 	}
 
 	void Application::AddOverLay(Layer* layer, bool add_to_renderer)
 	{
-		Get()->layer_stack.addOverlay(layer);
+		GetInstance()->layer_stack.addOverlay(layer);
 		layer->attach(add_to_renderer);
 	}
 
 	void Application::RemoveLayer(Layer* layer)
 	{
 		layer->detach();
-		Get()->layer_stack.removeLayer(layer);
+		GetInstance()->layer_stack.removeLayer(layer);
 	}
 
 	void Application::RemoveOverLay(Layer* layer)
 	{
 		layer->detach();
-		Get()->layer_stack.removeOverlay(layer);
-	}
-
-	void Application::Debug_TrackVariable(std::string name, void* variable) {
-		Get()->imguilayer->AddVariable(name, variable);
+		GetInstance()->layer_stack.removeOverlay(layer);
 	}
 }

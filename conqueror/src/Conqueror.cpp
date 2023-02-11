@@ -14,7 +14,7 @@ public:
 	}
 
 	void init() override {
-		Application::changeScene(new TestScene());
+		Application::ChangeScene(new TestScene());
 	}
 
 };

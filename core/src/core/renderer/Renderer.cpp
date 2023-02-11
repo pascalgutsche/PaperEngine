@@ -153,8 +153,9 @@ namespace core {
             pos = Application::GetImGuiLayer().GetMousePosViewportRelative();
         }
 
-        if (pos.x >= 0 && pos.y >= 0)
+        if (pos.x >= 0 && pos.y >= 0) {
             LOG_CORE_ERROR(frame_buffer->ReadPixel(1, pos));
+        }
 
         frame_buffer->Unbind();
     }
