@@ -167,7 +167,6 @@ namespace core {
             mousePosViewportRelative.y = viewportSize.y - mousePosViewportRelative.y;
 
         }
-
         
     }
 

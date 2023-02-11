@@ -128,15 +128,13 @@ namespace core {
 
 
 					
+					imguilayer->begin(dt);
 
 					if (imgui_enabled) {
 
-						imguilayer->begin(dt);
 						for (Layer* layer : layer_stack) {
 							layer->imgui(dt);
 						}
-
-						imguilayer->end();
 					}
 
 					for (Layer* layer : layer_stack)
@@ -144,6 +142,7 @@ namespace core {
 
 					current_scene->update(dt);
 
+					imguilayer->end();
 					
 					frames_rendered++;
 				}

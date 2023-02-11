@@ -109,6 +109,36 @@ namespace core {
         sprites_count = sprites_count_calc;
         vertex_count = vertices_count_calc;
 
+        //IMGUI window panel for framebuffer picture
+        if (!Application::GetImGuiEnabled()) {
+            ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+            window_flags |= ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_MenuBar;
+            window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+            window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+            ImGuiViewport& viewport = *ImGui::GetMainViewport();
+            ImGui::SetNextWindowPos(viewport.Pos);
+            ImGui::SetNextWindowSize(viewport.Size);
+            ImGui::SetNextWindowViewport(viewport.ID);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+            ImGui::Begin(" ", nullptr, window_flags);
+            ImGui::PopStyleVar(3);
+
+            ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
+            if (viewportSize != *(glm::vec2*)&viewport_panel_size)
+            {
+                viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
+                Application::GetCurrentScene()->GetRenderer().GetFrameBuffer().Resize(viewportSize.x, viewportSize.y);
+            }
+            uint32_t textureID = Application::GetCurrentScene()->GetRenderer().GetFrameBuffer().GetColorID(0);
+
+            ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            ImGui::End();
+        }
+
         //mouse picking;
         glm::ivec2 pos = glm::ivec2(-1, -1);
 

@@ -22,6 +22,7 @@ namespace core {
         inline static int sprites_count = 0;
         inline static int vertex_count = 0;
 
+        glm::vec2 viewportSize;
     public:
         Renderer();
         ~Renderer();
