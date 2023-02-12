@@ -79,6 +79,17 @@ namespace core {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisample), id, 0);
 	}
 
+	static GLenum FBTexFormatToGL (FramebufferTexFormat format)
+	{
+		switch (format) {
+			case FramebufferTexFormat::RGBA8: return GL_RGBA8;
+			case FramebufferTexFormat::RED_INTEGER: return GL_RED_INTEGER;
+			default:;
+		}
+
+		CORE_ASSERT(false, "");
+		return 0;
+	}
 
 	FrameBuffer::FrameBuffer(const FramebufferSpecification& specification)
 		:specification(specification)
@@ -187,6 +198,15 @@ namespace core {
 		int pixelData;
 		glReadPixels(pos.x, pos.y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 		return pixelData;
+	}
+
+	void FrameBuffer::ClearAttachment(uint32_t attachmentIndex, int value)
+	{
+		CORE_ASSERT(attachmentIndex < colorAttachmentsID.size(), "");
+
+		auto& spec = colorAttachmentSpec[attachmentIndex];
+
+		glClearTexImage(colorAttachmentsID[attachmentIndex], 0, FBTexFormatToGL(spec.texFormat), GL_INT, &value);
 	}
 
 

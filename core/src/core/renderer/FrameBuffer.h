@@ -69,6 +69,8 @@ namespace core {
 		void Resize(unsigned int width, unsigned int height);
 		int ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos);
 
+		void ClearAttachment(uint32_t attachmentIndex, int value);
+
 		void Bind();
 		void Unbind();
 

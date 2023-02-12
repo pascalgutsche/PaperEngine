@@ -94,8 +94,8 @@ namespace core {
         //update GameObjects
         updateGameObjects(dt, Application::GetCurrentScene()->gameObjects);
 
-
-
+        //clear core id attachment to -1
+        frame_buffer->ClearAttachment(1, -1);
 
         int sprites_count_calc = 0;
         int vertices_count_calc = 0;
@@ -144,6 +144,7 @@ namespace core {
 
         if (!Application::GetImGuiEnabled())
         {
+            // TODO: fix bug to cancel input when  mouse is outside of window
             pos = Input::GetMousPos();
             pos.y = Application::GetWindow()->getHeight() - pos.y;
 	        
