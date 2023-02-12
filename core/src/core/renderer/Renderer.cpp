@@ -145,15 +145,20 @@ namespace core {
         if (!Application::GetImGuiEnabled())
         {
             // TODO: fix bug to cancel input when  mouse is outside of window
-            pos = Input::GetMousPos();
-            pos.y = Application::GetWindow()->getHeight() - pos.y;
+            glm::vec2 mousePos = Input::GetMousPos();
+            
+            mousePos.y = Application::GetWindow()->getHeight() - mousePos.y;
+            if (mousePos.x < Application::GetWindow()->getWidth() && mousePos.y < Application::GetWindow()->getHeight())
+            {
+                pos = mousePos;
+            }
 	        
         }
         else if (Application::GetImGuiLayer().IsMouseInsideViewport())
         {
             pos = Application::GetImGuiLayer().GetMousePosViewportRelative();
         }
-
+        
         if (pos.x >= 0 && pos.y >= 0) {
             LOG_CORE_ERROR(frame_buffer->ReadPixel(1, pos));
         }
