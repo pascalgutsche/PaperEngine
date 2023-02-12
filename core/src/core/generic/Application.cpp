@@ -111,7 +111,7 @@ namespace core {
 				const glm::vec4 scene_backcolor = current_scene->getBackcolor();
 				//clear color buffer
 				glClearColor(scene_backcolor.x, scene_backcolor.y, scene_backcolor.z, scene_backcolor.w);
-				glClear(GL_COLOR_BUFFER_BIT);
+				//glClear(GL_COLOR_BUFFER_BIT);
 
 				if (dt >= 0) {
 					if (queued_scene != nullptr) {

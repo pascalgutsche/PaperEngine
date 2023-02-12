@@ -186,16 +186,12 @@ namespace core {
 
         glBindVertexArray(vaoID);
         // draw both (with coords and color)
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
 
         // 6 = 6 points for 2 triangles
         glDrawElements(GL_TRIANGLES, this->numSprites * 6, GL_UNSIGNED_INT, nullptr);
         draw_calls++;
 
         // stop drawing and disable array (finish it off)
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
 
         // unbind everything
 
@@ -285,7 +281,7 @@ namespace core {
             // this is the recursive vertices creation
             // set the first values to the according positions
 
-            if (vertices.size() > offset + 8) {
+            if (vertices.size() > offset + 9) {
                 vertices[offset + 0] = GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x;
                 vertices[offset + 1] = GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y;
 
@@ -301,28 +297,29 @@ namespace core {
 
                 // set texture id
                 vertices[offset + 8] = texID;
+
+                vertices[offset + 9] = GameObject::CGMap[sprite]->GetObjectID();
             }
             else {
-                vertices.emplace(vertices.begin() + offset + 0, GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
-                vertices.emplace(vertices.begin() + offset + 1, GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
-
-                // set colors
-                vertices.emplace(vertices.begin() + offset + 2, color.x);
-                vertices.emplace(vertices.begin() + offset + 3, color.y);
-                vertices.emplace(vertices.begin() + offset + 4, color.z);
-                vertices.emplace(vertices.begin() + offset + 5, color.w);
-
+                vertices.emplace_back(GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
+                vertices.emplace_back(GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
+                                
+                // set colors   
+                vertices.emplace_back(color.x);
+                vertices.emplace_back(color.y);
+                vertices.emplace_back(color.z);
+                vertices.emplace_back(color.w);
+                                
                 // set texture coordinates
-                vertices.emplace(vertices.begin() + offset + 6, texCoord[i].x);
-                vertices.emplace(vertices.begin() + offset + 7, texCoord[i].y);
-
+                vertices.emplace_back(texCoord[i].x);
+                vertices.emplace_back(texCoord[i].y);
+                                
                 // set texture id
-                vertices.emplace(vertices.begin() + offset + 8, texID);
+                vertices.emplace_back(texID);
 
-                LOG_CORE_WARN(GameObject::CGMap[sprite]->GetObjectID());
 
                 //set core id
-                vertices.emplace(vertices.begin() + offset + 9, GameObject::CGMap[sprite]->GetObjectID());
+                vertices.emplace_back(GameObject::CGMap[sprite]->GetObjectID());
 
             }
             // set offset to the next line for a next triangle in order to make use of batch rendering
