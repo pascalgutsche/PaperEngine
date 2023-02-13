@@ -36,12 +36,9 @@ namespace core {
 
 	void Application::onEvent(Event& event)
 	{
-		LOG_CORE_ERROR(event);
-		//EventDispatcher dispatcher(event);
-		//dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
-		//dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
-		//dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::onKeyPressed));
-		////dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(Application::OnMouseButtonPressed));
+		EventDispatcher dispatcher(event);
+		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::onKeyPressed));
 
 		for (auto it = layer_stack.end(); it != layer_stack.begin(); )
 		{
@@ -61,11 +58,6 @@ namespace core {
 		return true;
 	}
 
-	bool Application::onWindowResize(WindowResizeEvent& e)
-	{
-		return false;
-	}
-
 	bool Application::onKeyPressed(KeyPressedEvent& e)
 	{
 		if (!e.getRepeated() && e.getKeyCode() == KEY_P)
@@ -73,30 +65,6 @@ namespace core {
 			if (imgui_enabled_queue == 0 && imgui_enabled) imgui_enabled_queue = 1;
 			else imgui_enabled_queue = 2;
 			return true;
-		}
-		return false;
-	}
-
-	bool Application::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
-		glm::ivec2 pos = glm::ivec2(-1, -1);
-
-		if (!Application::GetImGuiEnabled())
-		{
-			glm::vec2 mousePos = Input::GetMousPos();
-
-			mousePos.y = Application::GetWindow()->getHeight() - mousePos.y;
-			if (mousePos.x < Application::GetWindow()->getWidth() && mousePos.y < Application::GetWindow()->getHeight())
-			{
-				pos = mousePos;
-			}
-
-		}
-		else if (Application::GetImGuiLayer().IsMouseInsideViewport())
-		{
-			pos = Application::GetImGuiLayer().GetMousePosViewportRelative();
-		}
-		if (pos.x >= 0 && pos.y >= 0) {
-			LOG_CORE_ERROR(Application::GetCurrentScene()->GetRenderer().GetFrameBuffer().ReadPixel(1, pos));
 		}
 		return false;
 	}

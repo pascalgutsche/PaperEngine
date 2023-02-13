@@ -169,7 +169,6 @@ namespace core {
             if (mouseClickedID[0] != mouseClickedID[1] && mouseClickedID[0] != -1 && !pressed) 
             {
                 Application::QueueEvents(new GameObjectPressedEvent(GameObject::GetGameObject(mouseClickedID[0])));
-                //LOG_CORE_DEBUG("Pressed: {0}", mouseClickedID[0]);
             }
             pressed = true;
             mouseClickedID[1] = mouseClickedID[0];
@@ -178,7 +177,6 @@ namespace core {
             pressed = false;
             if (mouseClickedID[1] != -1) {
                 Application::QueueEvents(new GameObjectReleasedEvent(GameObject::GetGameObject(mouseClickedID[1])));
-                //LOG_CORE_DEBUG("Released: {0}", mouseClickedID[1]);
             }
 
 
@@ -187,12 +185,10 @@ namespace core {
             {
                 
                 if (mouseHoverID[1] != -1) {
-                    Application::QueueEvents(new GameObjectHoverBeginEvent(GameObject::GetGameObject(mouseHoverID[1])));
-                    //LOG_CORE_WARN("Hover End: {0}", mouseHoverID[1]);
+                    Application::QueueEvents(new GameObjectHoverEndEvent(GameObject::GetGameObject(mouseHoverID[1])));
                 }
                 if (mouseHoverID[0] != -1) {
-                    Application::QueueEvents(new GameObjectHoverEndEvent(GameObject::GetGameObject(mouseHoverID[0])));
-                    //LOG_CORE_WARN("Hover Begin: {0}", mouseHoverID[0]);
+                    Application::QueueEvents(new GameObjectHoverBeginEvent(GameObject::GetGameObject(mouseHoverID[0])));
                 }
 					
             }

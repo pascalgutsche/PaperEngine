@@ -41,8 +41,6 @@ namespace core {
 		virtual int getCategoryFlags() const = 0;
 		virtual std::string toString() const { return getName(); }
 
-		virtual Event& clone() const = 0;
-
 		inline bool isInCategory(const EventCategory category) const {
 			return getCategoryFlags() & category;
 		}

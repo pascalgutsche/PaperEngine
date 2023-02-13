@@ -17,12 +17,6 @@ namespace core
 
 		inline GameObject* GetGameObject() const { return gameObject; }
 
-		inline Event& clone() const override
-		{
-			GameObjectPressedEvent event(*this);
-			return event;
-		};
-
 		std::string toString() const override {
 			std::stringstream string;
 			string << "GameObjectPressedEvent: Name:" << gameObject->getName() << " | ID: " << gameObject->GetObjectID();
@@ -43,12 +37,6 @@ namespace core
 			: gameObject(gameObject) { }
 
 		inline GameObject* GetGameObject() const { return gameObject; }
-
-		inline Event& clone() const override
-		{
-			GameObjectReleasedEvent event(*this);
-			return event;
-		};
 
 		std::string toString() const override {
 			std::stringstream string;
@@ -71,12 +59,6 @@ namespace core
 
 		inline GameObject* GetGameObject() const { return gameObject; }
 
-		inline Event& clone() const override
-		{
-			GameObjectHoverBeginEvent event(*this);
-			return event;
-		};
-
 		std::string toString() const override {
 			std::stringstream string;
 			string << "GameObjectHoverBeginEvent: Name:" << gameObject->getName() << " | ID: " << gameObject->GetObjectID();
@@ -97,12 +79,6 @@ namespace core
 			: gameObject(gameObject) { }
 
 		inline GameObject* GetGameObject() const { return gameObject; }
-
-		inline Event& clone() const override
-		{
-			GameObjectHoverEndEvent event(*this);
-			return event;
-		};
 
 		std::string toString() const override {
 			std::stringstream string;

@@ -18,12 +18,6 @@ namespace core {
 		inline int getKeyCode() const { return key_code; }
 		inline bool getRepeated() const { return repeated; }
 
-		inline Event& clone() const override
-		{
-			KeyPressedEvent event(*this);
-			return event;
-		};
-
 		std::string toString() const override {
 			std::stringstream string;
 			string << "KeyPressedEvent: " << key_code << " | Repeated: " << repeated;
@@ -44,12 +38,6 @@ namespace core {
 			: key_code(key_code) { }
 
 		inline int getKeyCode() const { return key_code; }
-
-		inline Event& clone() const override
-		{
-			KeyReleasedEvent event(*this);
-			return event;
-		};
 
 		std::string toString() const override {
 			std::stringstream string;
@@ -72,11 +60,6 @@ namespace core {
 
 		inline int getKeyCode() const { return key_code; }
 
-		inline Event& clone() const override
-		{
-			KeyTypedEvent event(*this);
-			return event;
-		};
 
 		std::string toString() const override {
 			std::stringstream string;

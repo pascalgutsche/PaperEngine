@@ -12,12 +12,6 @@ namespace core {
 	public:
 		WindowCloseEvent() = default;
 
-		inline Event& clone() const override
-		{
-			WindowCloseEvent event(*this);
-			return event;
-		};
-
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 		EVENT_CLASS_TYPE(WindowClose)
 	};
@@ -35,12 +29,6 @@ namespace core {
 		inline unsigned int getWidth() const { return width; }
 		inline unsigned int getHeight() const { return height; }
 
-		inline Event& clone() const override
-		{
-			WindowResizeEvent event(*this);
-			return event;
-		};
-
 		std::string toString() const override
 		{
 			std::stringstream string;
@@ -57,12 +45,6 @@ namespace core {
 	public:
 		AppTickEvent() = default;
 
-		inline Event& clone() const override
-		{
-			AppTickEvent event(*this);
-			return event;
-		};
-
 		EVENT_CLASS_TYPE(AppTick)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
@@ -72,12 +54,6 @@ namespace core {
 	public:
 		AppUpdateEvent() = default;
 
-		inline Event& clone() const override
-		{
-			AppUpdateEvent event(*this);
-			return event;
-		};
-
 		EVENT_CLASS_TYPE(AppUpdate)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
@@ -86,12 +62,6 @@ namespace core {
 	{
 	public:
 		AppRenderEvent() = default;
-
-		inline Event& clone() const override
-		{
-			AppRenderEvent event(*this);
-			return event;
-		};
 
 		EVENT_CLASS_TYPE(AppRender)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
