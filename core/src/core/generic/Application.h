@@ -23,6 +23,7 @@ namespace core {
 		ImGuiLayer* imguilayer = nullptr;
 		Scene* current_scene = nullptr;
 		Scene* queued_scene = nullptr;
+		std::vector<Event*> eventQueue;
 		float dt;
 		long int frames_rendered = 0;
 		bool game_running = true;
@@ -57,6 +58,7 @@ namespace core {
 
 		void exit() { game_running = false; }
 
+		static void QueueEvents(Event* event);
 		static Application* GetInstance() { return instance; }
 
 		static long int GetFramesRendered() { return GetInstance()->frames_rendered; }

@@ -15,6 +15,7 @@ namespace core {
 
         core_id objectID;
 
+        static std::unordered_map<core_id, GameObject*> IDMap;
     public:
         Transform transform;
         GameObject(std::string name);
@@ -39,6 +40,7 @@ namespace core {
         DataPool::DISPLAYMODE displayMode;
 
         static std::unordered_map<Component*, GameObject*> CGMap;
+        static GameObject* GetGameObject(core_id id);
     };
 
     

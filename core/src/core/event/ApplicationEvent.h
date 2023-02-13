@@ -10,7 +10,13 @@ namespace core {
 	class WindowCloseEvent : public Event
 	{
 	public:
-		WindowCloseEvent() { }
+		WindowCloseEvent() = default;
+
+		inline Event& clone() const override
+		{
+			WindowCloseEvent event(*this);
+			return event;
+		};
 
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 		EVENT_CLASS_TYPE(WindowClose)
@@ -22,11 +28,18 @@ namespace core {
 		unsigned int width, height;
 
 	public:
+		WindowResizeEvent() = default;
 		WindowResizeEvent(const unsigned int width, const unsigned int height)
 			: width(width), height(height) { }
 
 		inline unsigned int getWidth() const { return width; }
 		inline unsigned int getHeight() const { return height; }
+
+		inline Event& clone() const override
+		{
+			WindowResizeEvent event(*this);
+			return event;
+		};
 
 		std::string toString() const override
 		{
@@ -42,7 +55,13 @@ namespace core {
 	class AppTickEvent : public Event
 	{
 	public:
-		AppTickEvent() {}
+		AppTickEvent() = default;
+
+		inline Event& clone() const override
+		{
+			AppTickEvent event(*this);
+			return event;
+		};
 
 		EVENT_CLASS_TYPE(AppTick)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
@@ -51,7 +70,13 @@ namespace core {
 	class AppUpdateEvent : public Event
 	{
 	public:
-		AppUpdateEvent() {}
+		AppUpdateEvent() = default;
+
+		inline Event& clone() const override
+		{
+			AppUpdateEvent event(*this);
+			return event;
+		};
 
 		EVENT_CLASS_TYPE(AppUpdate)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
@@ -60,7 +85,13 @@ namespace core {
 	class AppRenderEvent : public Event
 	{
 	public:
-		AppRenderEvent() {}
+		AppRenderEvent() = default;
+
+		inline Event& clone() const override
+		{
+			AppRenderEvent event(*this);
+			return event;
+		};
 
 		EVENT_CLASS_TYPE(AppRender)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)

@@ -12,11 +12,17 @@ namespace core {
 		int button;
 
 	public:
+		MouseButtonPressedEvent() = default;
 		MouseButtonPressedEvent(int button)
 			:button(button) { }
 
-
 		inline int getButton() const { return button; }
+
+		inline Event& clone() const override
+		{
+			MouseButtonPressedEvent event(*this);
+			return event;
+		};
 
 		std::string toString() const override {
 			std::stringstream string;
@@ -35,10 +41,17 @@ namespace core {
 		int button;
 
 	public:
+		MouseButtonReleasedEvent() = default;
 		MouseButtonReleasedEvent(int button)
 			:button(button) { }
 
 		inline int getButton() const { return button; }
+
+		inline Event& clone() const override
+		{
+			MouseButtonReleasedEvent event(*this);
+			return event;
+		};
 
 		std::string toString() const override {
 			std::stringstream string;
@@ -56,11 +69,18 @@ namespace core {
 		float mouseX, mouseY;
 
 	public:
-		MouseMovedEvent(const float x, const float y) 
+		MouseMovedEvent() = default;
+		MouseMovedEvent(const float x, const float y)
 			: mouseX(x), mouseY(y) { }
 
 		inline float getX() const { return mouseX; }
 		inline float getY() const { return mouseY; }
+
+		inline Event& clone() const override
+		{
+			MouseMovedEvent event(*this);
+			return event;
+		};
 
 		std::string toString() const override {
 			std::stringstream string;
@@ -80,11 +100,18 @@ namespace core {
 		float yOff;
 
 	public:
+		MouseScrolledEvent() = default;
 		MouseScrolledEvent(float xOff, float yOff)
 			: xOff(xOff), yOff(yOff) { }
 
 		inline float getXOffset() const { return xOff; }
 		inline float getYOffset() const { return yOff; }
+
+		inline Event& clone() const override
+		{
+			MouseScrolledEvent event(*this);
+			return event;
+		};
 
 		std::string toString() const override {
 			std::stringstream string;

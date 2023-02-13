@@ -5,6 +5,7 @@
 #include "generic/Application.h"
 #include "event/Input.h"
 #include "event/MouseCodes.h"
+#include "event/GameEvent.h"
 
 #include "glad/glad.h"
 namespace core {
@@ -160,18 +161,45 @@ namespace core {
         }
 
         if (pos.x >= 0 && pos.y >= 0) {
-            mouseHoverID = frame_buffer->ReadPixel(1, pos);
+            mouseHoverID[0] = frame_buffer->ReadPixel(1, pos);
         }
 
         if (Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            mouseClickedID[0] = mouseHoverID;
-            if (mouseClickedID[0] != mouseClickedID[1] && mouseClickedID[0] != -1) {
-                LOG_CORE_DEBUG(mouseClickedID[0]);
+            mouseClickedID[0] = mouseHoverID[0];
+            if (mouseClickedID[0] != mouseClickedID[1] && mouseClickedID[0] != -1 && !pressed) 
+            {
+                Application::QueueEvents(new GameObjectPressedEvent(GameObject::GetGameObject(mouseClickedID[0])));
+                //LOG_CORE_DEBUG("Pressed: {0}", mouseClickedID[0]);
             }
+            pressed = true;
             mouseClickedID[1] = mouseClickedID[0];
         }
         else {
+            pressed = false;
+            if (mouseClickedID[1] != -1) {
+                Application::QueueEvents(new GameObjectReleasedEvent(GameObject::GetGameObject(mouseClickedID[1])));
+                //LOG_CORE_DEBUG("Released: {0}", mouseClickedID[1]);
+            }
+
+
             mouseClickedID[1] = -1;
+            if (mouseHoverID[0] != mouseHoverID[1])
+            {
+                
+                if (mouseHoverID[1] != -1) {
+                    Application::QueueEvents(new GameObjectHoverBeginEvent(GameObject::GetGameObject(mouseHoverID[1])));
+                    //LOG_CORE_WARN("Hover End: {0}", mouseHoverID[1]);
+                }
+                if (mouseHoverID[0] != -1) {
+                    Application::QueueEvents(new GameObjectHoverEndEvent(GameObject::GetGameObject(mouseHoverID[0])));
+                    //LOG_CORE_WARN("Hover Begin: {0}", mouseHoverID[0]);
+                }
+					
+            }
+            else if (mouseHoverID[0] != mouseHoverID[1] && mouseHoverID[0] == -1)
+            {
+            }
+            mouseHoverID[1] = mouseHoverID[0];
         }
 
 

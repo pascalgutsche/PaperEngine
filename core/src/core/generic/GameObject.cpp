@@ -12,6 +12,7 @@
 namespace core {
 
     std::unordered_map<core::Component*, core::GameObject*> core::GameObject::CGMap;
+	std::unordered_map<core_id, GameObject*> GameObject::IDMap;
 
     GameObject::GameObject(std::string name) {
         // create gameObject with name and create a standard transform object
@@ -21,7 +22,7 @@ namespace core {
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
 
         objectID = Core::RequestID();
-
+        IDMap.emplace(objectID, this);
     }
 
     GameObject::GameObject(std::string name, Transform transform) {
@@ -33,6 +34,8 @@ namespace core {
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
 
         objectID = Core::RequestID();
+        IDMap.emplace(objectID, this);
+
     }
 
     GameObject::GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode)
@@ -43,6 +46,7 @@ namespace core {
         this->displayMode = displaymode;
 
         objectID = Core::RequestID();
+        IDMap.emplace(objectID, this);
 
     }
 
@@ -136,6 +140,8 @@ namespace core {
         this->zIndex = zIndex;
     }
 
+    
+
     void GameObject::imgui(float dt) {
         ImGui::Text("Generic stuff:");
         ImGui::SliderFloat(std::string("X:").c_str(), &this->transform.position.x, -10.0f, 10.0f, 0);
@@ -146,6 +152,15 @@ namespace core {
         for (auto component : components) {
             component->imgui(dt);
         }
+    }
+
+    GameObject* GameObject::GetGameObject(core_id id)
+    {
+        CORE_ASSERT(id > 0, "invalid ID");
+        if (IDMap.find(id) != IDMap.end()) {
+            return IDMap.at(id);
+        }
+        return nullptr;
     }
 
 }

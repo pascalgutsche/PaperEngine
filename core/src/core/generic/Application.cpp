@@ -28,13 +28,20 @@ namespace core {
 
 	void Application::init() { }
 
+	void Application::QueueEvents(Event* event)
+	{
+		GetInstance()->eventQueue.emplace(GetInstance()->eventQueue.begin(), event);
+	}
+
+
 	void Application::onEvent(Event& event)
 	{
-		EventDispatcher dispatcher(event);
-		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
-		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
-		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::onKeyPressed));
-		//dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(Application::OnMouseButtonPressed));
+		LOG_CORE_ERROR(event);
+		//EventDispatcher dispatcher(event);
+		//dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
+		//dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
+		//dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::onKeyPressed));
+		////dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(Application::OnMouseButtonPressed));
 
 		for (auto it = layer_stack.end(); it != layer_stack.begin(); )
 		{
@@ -101,6 +108,13 @@ namespace core {
 			imgui_enabled = imgui_enabled_queue - 1;
 			imgui_enabled_queue = 0;
 		}
+
+		for (Event* event : eventQueue)
+		{
+			onEvent(*event);
+			delete event;
+		}
+		eventQueue.clear();
 	}
 
 	void Application::run() 
