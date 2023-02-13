@@ -23,9 +23,20 @@ public:
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(TestScene::OnMouseScroll));
+		dispatcher.dispatch<GameObjectPressedEvent>(BIND_EVENT_FN(TestScene::OnGameObjectPressed));
+		dispatcher.dispatch<GameObjectReleasedEvent>(BIND_EVENT_FN(TestScene::OnGameObjectReleased));
+		dispatcher.dispatch<GameObjectHoverBeginEvent>(BIND_EVENT_FN(TestScene::OnGameObjectHoverBegin));
+		dispatcher.dispatch<GameObjectHoverEndEvent>(BIND_EVENT_FN(TestScene::OnGameObjectHoverEnd));
+
+
 	};
 
 	bool OnMouseScroll(MouseScrolledEvent& e);
+
+	bool OnGameObjectPressed(GameObjectPressedEvent& e);
+	bool OnGameObjectReleased(GameObjectReleasedEvent& e);
+	bool OnGameObjectHoverBegin(GameObjectHoverBeginEvent& e);
+	bool OnGameObjectHoverEnd(GameObjectHoverEndEvent& e);
 
 };
 

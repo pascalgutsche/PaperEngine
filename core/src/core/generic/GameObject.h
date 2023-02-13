@@ -18,6 +18,9 @@ namespace core {
 
         bool running = false;
 
+        core_id objectID;
+
+        static std::unordered_map<core_id, GameObject*> IDMap;
     public:
         Transform transform;
         GameObject(std::string name);
@@ -40,9 +43,13 @@ namespace core {
         std::string getName();
         int getZIndex();
         void setZIndex(int zIndex);
+        core_id GetObjectID() const { return objectID; }
         bool IsRunning() const { return running; }
 
         DataPool::DISPLAYMODE displayMode;
+
+        static std::unordered_map<Component*, GameObject*> CGMap;
+        static GameObject* GetGameObject(core_id id);
     };
 
     

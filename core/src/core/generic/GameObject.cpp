@@ -6,10 +6,13 @@
 #include "utils/DataPool.h"
 
 #include "imgui/ImGuiLayer.h"
-#include "event/Event.h"
+#include "utils/Core.h"
 
 
 namespace core {
+
+    std::unordered_map<core::Component*, core::GameObject*> core::GameObject::CGMap;
+	std::unordered_map<core_id, GameObject*> GameObject::IDMap;
 
     GameObject::GameObject(std::string name) {
         // create gameObject with name and create a standard transform object
@@ -18,6 +21,8 @@ namespace core {
         this->zIndex = 0;
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
 
+        objectID = Core::RequestID();
+        IDMap.emplace(objectID, this);
     }
 
     GameObject::GameObject(std::string name, Transform transform) {
@@ -28,6 +33,9 @@ namespace core {
         this->zIndex = 0;
         this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
 
+        objectID = Core::RequestID();
+        IDMap.emplace(objectID, this);
+
     }
 
     GameObject::GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode)
@@ -36,6 +44,9 @@ namespace core {
         this->transform = transform;
         this->zIndex = 0;
         this->displayMode = displaymode;
+
+        objectID = Core::RequestID();
+        IDMap.emplace(objectID, this);
 
     }
 
@@ -142,6 +153,8 @@ namespace core {
         this->zIndex = zIndex;
     }
 
+    
+
     void GameObject::imgui(float dt) {
         ImGui::Text("Generic stuff:");
         ImGui::SliderFloat(std::string("X:").c_str(), &this->transform.position.x, -10.0f, 10.0f, 0);
@@ -154,14 +167,4 @@ namespace core {
         }
     }
 
-    void GameObject::event(Event& event)
-    {
-        for (Component* component : components)
-        {
-	        if (!event.handled)
-	        {
-                component->event(event);
-	        }
-        }
-    }
 }

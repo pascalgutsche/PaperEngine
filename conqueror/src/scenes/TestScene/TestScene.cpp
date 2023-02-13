@@ -65,7 +65,7 @@ void TestScene::update(float dt) {
     }
 
     if (Input::IsKeyPressed(KEY_U)) {
-        Application::Get()->changeScene(new TestScene());
+        Application::ChangeScene(new TestScene());
     }
 
 
@@ -84,4 +84,31 @@ bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
         this->getCamera()->position.z += 10.0f * core::Application::GetDT() * e.getYOffset();
     this->getCamera()->fov += 1.0f * core::Application::GetDT() * e.getXOffset();
     return true;
+}
+
+bool TestScene::OnGameObjectPressed(GameObjectPressedEvent& e)
+{
+    LOG_DEBUG(e);
+    return false;
+}
+
+bool TestScene::OnGameObjectReleased(GameObjectReleasedEvent& e)
+{
+    LOG_DEBUG(e);
+    return false;
+
+}
+
+bool TestScene::OnGameObjectHoverBegin(GameObjectHoverBeginEvent& e)
+{
+    LOG_DEBUG(e);
+    return false;
+
+}
+
+bool TestScene::OnGameObjectHoverEnd(GameObjectHoverEndEvent& e)
+{
+    LOG_DEBUG(e);
+    return false;
+
 }
