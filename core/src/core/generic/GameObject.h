@@ -28,6 +28,8 @@ namespace core {
         GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode);
         ~GameObject();
 
+        template<typename T>
+        Component* GetComponent();
         Component* getComponent(std::string componentTypeID);
         bool removeComponent(Component* component);
         bool addComponent(Component* component);
@@ -51,5 +53,17 @@ namespace core {
         static GameObject* GetGameObjectByID(core_id id);
     };
 
-    
+    template <typename T>
+    Component* GameObject::GetComponent()
+    {
+        for (auto com : components)
+        {
+            T* derived = dynamic_cast<T*>(com);
+	        if (derived != nullptr)
+	        {
+                printf("%p\n", derived);
+	        }
+        }
+        return nullptr;
+    }
 }

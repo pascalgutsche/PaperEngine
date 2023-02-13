@@ -35,4 +35,16 @@ void ForegroundLayer::imgui(const float dt)
 
 void ForegroundLayer::OnEvent(Event& event)
 {
+	EventDispatcher dispatcher(event);
+	dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(ForegroundLayer::OnKeyPressed));
+}
+
+bool ForegroundLayer::OnKeyPressed(KeyPressedEvent& e)
+{
+
+	if (e.getKeyCode() == KEY_N && !e.getRepeated())
+	{
+		character1->GetComponent<SpriteRenderer>();
+	}
+	return false;
 }

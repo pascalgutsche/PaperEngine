@@ -17,5 +17,7 @@ public:
 	void update(const float dt) override;
 	void imgui(const float dt) override;
 	void OnEvent(Event& event) override;
+
+	bool OnKeyPressed(KeyPressedEvent& e);
 };
 

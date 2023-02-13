@@ -86,29 +86,5 @@ bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
     return true;
 }
 
-bool TestScene::OnGameObjectPressed(GameObjectPressedEvent& e)
-{
-    LOG_DEBUG(e);
-    return false;
-}
 
-bool TestScene::OnGameObjectReleased(GameObjectReleasedEvent& e)
-{
-    LOG_DEBUG(e);
-    return false;
 
-}
-
-bool TestScene::OnGameObjectHoverBegin(GameObjectHoverBeginEvent& e)
-{
-    LOG_DEBUG(e);
-    return false;
-
-}
-
-bool TestScene::OnGameObjectHoverEnd(GameObjectHoverEndEvent& e)
-{
-    LOG_DEBUG(e);
-    return false;
-
-}
