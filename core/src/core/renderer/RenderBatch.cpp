@@ -282,8 +282,8 @@ namespace core {
             // set the first values to the according positions
 
             if (vertices.size() > offset + 9) {
-                vertices[offset + 0] = GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x;
-                vertices[offset + 1] = GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y;
+                vertices[offset + 0] = sprite->GetGameObject()->transform.position.x + xAdd * sprite->GetGameObject()->transform.scale.x;
+                vertices[offset + 1] = sprite->GetGameObject()->transform.position.y + yAdd * sprite->GetGameObject()->transform.scale.y;
 
                 // set colors
                 vertices[offset + 2] = color.x;
@@ -298,11 +298,11 @@ namespace core {
                 // set texture id
                 vertices[offset + 8] = texID;
 
-                vertices[offset + 9] = GameObject::CGMap[sprite]->GetObjectID();
+                vertices[offset + 9] = sprite->GetGameObject()->GetObjectID();
             }
             else {
-                vertices.emplace_back(GameObject::CGMap[sprite]->transform.position.x + xAdd * GameObject::CGMap[sprite]->transform.scale.x);
-                vertices.emplace_back(GameObject::CGMap[sprite]->transform.position.y + yAdd * GameObject::CGMap[sprite]->transform.scale.y);
+                vertices.emplace_back(sprite->GetGameObject()->transform.position.x + xAdd * sprite->GetGameObject()->transform.scale.x);
+                vertices.emplace_back(sprite->GetGameObject()->transform.position.y + yAdd * sprite->GetGameObject()->transform.scale.y);
                                 
                 // set colors   
                 vertices.emplace_back(color.x);
@@ -319,7 +319,7 @@ namespace core {
 
 
                 //set core id
-                vertices.emplace_back(GameObject::CGMap[sprite]->GetObjectID());
+                vertices.emplace_back(sprite->GetGameObject()->GetObjectID());
 
             }
             // set offset to the next line for a next triangle in order to make use of batch rendering

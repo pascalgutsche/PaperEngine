@@ -75,7 +75,7 @@ namespace core {
         }
     }
 
-    void Renderer::render(LayerStack& layer_stack, const float dt) {
+    void Renderer::render(const float dt) {
         frame_buffer->Bind();
         if (!Application::GetImGuiEnabled())
         {
@@ -84,17 +84,13 @@ namespace core {
                 frame_buffer->Resize(Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
             }
             glViewport(0, 0, Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
-
-            //glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-            //glBlitFramebuffer(0, 0, frame_buffer->GetProperties().width, frame_buffer->GetProperties().height, 0, 0, Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
         }
 
         //calculating camera vectors
         Application::GetCurrentScene()->getCamera()->calcCameraVectors();
 
         //update GameObjects
-        updateGameObjects(dt, Application::GetCurrentScene()->gameObjects);
+        updateGameObjects(dt);
 
         //clear core id attachment to -1
         frame_buffer->ClearAttachment(1, -1);
@@ -168,7 +164,7 @@ namespace core {
             mouseClickedID[0] = mouseHoverID[0];
             if (mouseClickedID[0] != mouseClickedID[1] && mouseClickedID[0] != -1 && !pressed) 
             {
-                Application::QueueEvents(new GameObjectPressedEvent(GameObject::GetGameObject(mouseClickedID[0])));
+                Application::QueueEvents(new GameObjectPressedEvent(GameObject::GetGameObjectByID(mouseClickedID[0])));
             }
             pressed = true;
             mouseClickedID[1] = mouseClickedID[0];
@@ -176,7 +172,7 @@ namespace core {
         else {
             pressed = false;
             if (mouseClickedID[1] != -1) {
-                Application::QueueEvents(new GameObjectReleasedEvent(GameObject::GetGameObject(mouseClickedID[1])));
+                Application::QueueEvents(new GameObjectReleasedEvent(GameObject::GetGameObjectByID(mouseClickedID[1])));
             }
 
 
@@ -185,10 +181,10 @@ namespace core {
             {
                 
                 if (mouseHoverID[1] != -1) {
-                    Application::QueueEvents(new GameObjectHoverEndEvent(GameObject::GetGameObject(mouseHoverID[1])));
+                    Application::QueueEvents(new GameObjectHoverEndEvent(GameObject::GetGameObjectByID(mouseHoverID[1])));
                 }
                 if (mouseHoverID[0] != -1) {
-                    Application::QueueEvents(new GameObjectHoverBeginEvent(GameObject::GetGameObject(mouseHoverID[0])));
+                    Application::QueueEvents(new GameObjectHoverBeginEvent(GameObject::GetGameObjectByID(mouseHoverID[0])));
                 }
 					
             }

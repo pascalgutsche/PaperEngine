@@ -10,7 +10,7 @@ namespace core {
 
     class Component;
 
-    class CORE_API GameObject {
+    class GameObject {
     private:
         std::string name;
         std::vector<Component*> components;
@@ -48,8 +48,7 @@ namespace core {
 
         DataPool::DISPLAYMODE displayMode;
 
-        static std::unordered_map<Component*, GameObject*> CGMap;
-        static GameObject* GetGameObject(core_id id);
+        static GameObject* GetGameObjectByID(core_id id);
     };
 
     

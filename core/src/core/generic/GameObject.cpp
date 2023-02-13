@@ -11,7 +11,6 @@
 
 namespace core {
 
-    std::unordered_map<core::Component*, core::GameObject*> core::GameObject::CGMap;
 	std::unordered_map<core_id, GameObject*> GameObject::IDMap;
 
     GameObject::GameObject(std::string name) {
@@ -153,7 +152,14 @@ namespace core {
         this->zIndex = zIndex;
     }
 
-    
+    void GameObject::event(Event& event)
+    {
+	    for (auto* component : components)
+	    {
+            component->event(event);
+	    }
+    }
+
 
     void GameObject::imgui(float dt) {
         ImGui::Text("Generic stuff:");
@@ -166,5 +172,15 @@ namespace core {
             component->imgui(dt);
         }
     }
+
+    GameObject* GameObject::GetGameObjectByID(core_id id)
+    {
+        CORE_ASSERT(id > 0, "invalid ID");
+        if (IDMap.find(id) != IDMap.end()) {
+            return IDMap.at(id);
+        }
+        return nullptr;
+    }
+
 
 }
