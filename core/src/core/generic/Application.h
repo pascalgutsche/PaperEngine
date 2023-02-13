@@ -9,6 +9,7 @@
 
 #include "event/ApplicationEvent.h"
 #include "event/KeyEvent.h"
+#include "event/MouseEvent.h"
 
 #include "ImGui/ImGuiLayer.h"
 
@@ -30,6 +31,7 @@ namespace core {
 		bool onWindowClose(WindowCloseEvent& e);
 		bool onWindowResize(WindowResizeEvent& e);
 		bool onKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void ProcessQueues();
 

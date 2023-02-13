@@ -4,6 +4,7 @@
 #include "component/SpriteRenderer.h"
 #include "generic/Application.h"
 #include "event/Input.h"
+#include "event/MouseCodes.h"
 
 #include "glad/glad.h"
 namespace core {
@@ -144,24 +145,35 @@ namespace core {
 
         if (!Application::GetImGuiEnabled())
         {
-            // TODO: fix bug to cancel input when  mouse is outside of window
             glm::vec2 mousePos = Input::GetMousPos();
-            
+
             mousePos.y = Application::GetWindow()->getHeight() - mousePos.y;
             if (mousePos.x < Application::GetWindow()->getWidth() && mousePos.y < Application::GetWindow()->getHeight())
             {
                 pos = mousePos;
             }
-	        
+
         }
         else if (Application::GetImGuiLayer().IsMouseInsideViewport())
         {
             pos = Application::GetImGuiLayer().GetMousePosViewportRelative();
         }
-        
+
         if (pos.x >= 0 && pos.y >= 0) {
-            LOG_CORE_ERROR(frame_buffer->ReadPixel(1, pos));
+            mouseHoverID = frame_buffer->ReadPixel(1, pos);
         }
+
+        if (Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            mouseClickedID[0] = mouseHoverID;
+            if (mouseClickedID[0] != mouseClickedID[1] && mouseClickedID[0] != -1) {
+                LOG_CORE_DEBUG(mouseClickedID[0]);
+            }
+            mouseClickedID[1] = mouseClickedID[0];
+        }
+        else {
+            mouseClickedID[1] = -1;
+        }
+
 
         frame_buffer->Unbind();
     }

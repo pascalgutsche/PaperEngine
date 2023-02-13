@@ -19,6 +19,9 @@ namespace core {
         FramebufferSpecification properties;
         FrameBuffer* frame_buffer = nullptr;
 
+        int mouseHoverID = -1;
+        int mouseClickedID[2] = { -1, -1 };
+
         inline static int sprites_count = 0;
         inline static int vertex_count = 0;
 

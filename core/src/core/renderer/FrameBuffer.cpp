@@ -183,7 +183,7 @@ namespace core {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void FrameBuffer::Resize(unsigned width, unsigned height)
+	void FrameBuffer::Resize(unsigned int width, unsigned int height)
 	{
 		specification.width = width;
 		specification.height = height;
