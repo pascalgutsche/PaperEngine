@@ -83,7 +83,7 @@ namespace core {
         return false;
     }
     // add components to component list, render them by calling 
-    bool GameObject::addComponent(Component* component) {
+    bool GameObject::AddComponent(Component* component) {
         // if the component exists, set bool to true and
         // return false because it already exists
 
@@ -182,5 +182,6 @@ namespace core {
         return nullptr;
     }
 
+    
 
 }

@@ -9,6 +9,7 @@
 namespace core {
 
     class Component;
+    class SpriteRenderer;
 
     class GameObject {
     private:
@@ -29,10 +30,14 @@ namespace core {
         ~GameObject();
 
         template<typename T>
-        Component* GetComponent();
+        T& GetComponent();
         Component* getComponent(std::string componentTypeID);
+
+        template<typename T>
+        bool RemoveComponent();
         bool removeComponent(Component* component);
-        bool addComponent(Component* component);
+
+        bool AddComponent(Component* component);
 
         void update(float dt);
         void start();
@@ -51,19 +56,32 @@ namespace core {
         DataPool::DISPLAYMODE displayMode;
 
         static GameObject* GetGameObjectByID(core_id id);
+
+        
     };
 
     template <typename T>
-    Component* GameObject::GetComponent()
+    T& GameObject::GetComponent()
     {
-        for (auto com : components)
+        T* derived = nullptr;
+        for (Component* com : components)
         {
-            T* derived = dynamic_cast<T*>(com);
-	        if (derived != nullptr)
-	        {
-                printf("%p\n", derived);
-	        }
+            derived = dynamic_cast<T*>(com);
         }
-        return nullptr;
+        return *derived;
+    }
+
+    template <typename T>
+    bool GameObject::RemoveComponent() {
+        for (int i = 0; i < components.size(); i++)
+        {
+            if (dynamic_cast<T*>(components[i]) != nullptr) {
+                if (running)
+                    components[i]->stop();
+                delete components[i];
+                components.erase(i);
+            }
+        }
+        return *derived;
     }
 }

@@ -5,12 +5,10 @@
 
 namespace core {
 
-    // SPRITE
-
     Sprite::Sprite(std::shared_ptr<Texture> texture)
 	    : Component("sprite")
 	{
-    Sprite::texture = texture;
+        this->texture = texture;
         // standard texture coordinates (mostly used)
         int offset = 0;
         float xAdd = 0.0f;

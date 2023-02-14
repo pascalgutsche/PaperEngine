@@ -9,11 +9,9 @@
 #include "imgui/ImGuiLayer.h"
 
 namespace core {
-
-
-    //SPRITERENDERER
+    
     SpriteRenderer::SpriteRenderer(glm::vec4 color)
-	    : Component("sprite_renderer")
+        : Component("sprite_renderer")
 	{
     	this->color = color;
         isDirty = true;
