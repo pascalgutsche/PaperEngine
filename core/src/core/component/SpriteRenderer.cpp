@@ -11,7 +11,6 @@
 namespace core {
     
     SpriteRenderer::SpriteRenderer(glm::vec4 color)
-        : Component("sprite_renderer")
 	{
     	this->color = color;
         isDirty = true;
@@ -20,8 +19,7 @@ namespace core {
     }
 
     SpriteRenderer::SpriteRenderer(Sprite* sprite)
-	    : Component("sprite_renderer")
-    {
+	{
     	// our sprite is the sprite from the function call
         this->sprite = sprite;
         // set default colors

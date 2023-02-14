@@ -36,8 +36,8 @@ namespace core {
     void Renderer::add(Layer* layer, int index) {
         for (GameObject* game_object : layer->GetGameObjects()) {
             // create spriterenderer with the coponent spriterneder if a spriterenderer exists
-            SpriteRenderer* spriteRenderer = (SpriteRenderer*)game_object->getComponent(std::string("sprite_renderer"));
-            if (spriteRenderer != nullptr) {
+            SpriteRenderer* spriteRenderer = game_object->GetComponent<SpriteRenderer>();
+            if (spriteRenderer) {
                 add(spriteRenderer, index);
             }
         }

@@ -21,6 +21,8 @@ namespace core {
 
         core_id objectID;
 
+        void StopComponentIndex(uint32_t index);
+        void DeleteComponentIndex(uint32_t index);
         static std::unordered_map<core_id, GameObject*> IDMap;
     public:
         Transform transform;
@@ -30,12 +32,10 @@ namespace core {
         ~GameObject();
 
         template<typename T>
-        T& GetComponent();
-        Component* getComponent(std::string componentTypeID);
+        T* GetComponent();
 
         template<typename T>
         bool RemoveComponent();
-        bool removeComponent(Component* component);
 
         bool AddComponent(Component* component);
 
@@ -61,14 +61,14 @@ namespace core {
     };
 
     template <typename T>
-    T& GameObject::GetComponent()
+    T* GameObject::GetComponent()
     {
         T* derived = nullptr;
         for (Component* com : components)
         {
             derived = dynamic_cast<T*>(com);
         }
-        return *derived;
+        return derived;
     }
 
     template <typename T>
@@ -77,11 +77,12 @@ namespace core {
         {
             if (dynamic_cast<T*>(components[i]) != nullptr) {
                 if (running)
-                    components[i]->stop();
-                delete components[i];
-                components.erase(i);
+                    StopComponentIndex(i);
+                DeleteComponentIndex(i);
+                components.erase(components.begin() + i);
+                return true;
             }
         }
-        return *derived;
+        return false;
     }
 }

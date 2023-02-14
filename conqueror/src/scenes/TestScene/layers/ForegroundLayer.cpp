@@ -7,9 +7,9 @@ void ForegroundLayer::OnAttach()
 	character2 = new GameObject("character2");
 	object1 = new GameObject("object1", Transform(glm::vec2(-3, -4), glm::vec2(1.0f, 3.0f)));
 
-	character1->addComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("IMG_0131.jpg"))));
-	character2->addComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("antimarx.png"))));
-	object1->addComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("server-icon.png"))));
+	character1->AddComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("IMG_0131.jpg"))));
+	character2->AddComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("antimarx.png"))));
+	object1->AddComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("server-icon.png"))));
 
 	this->AddGameObjectToLayer(character1);
 	this->AddGameObjectToLayer(character2);
@@ -35,16 +35,4 @@ void ForegroundLayer::imgui(const float dt)
 
 void ForegroundLayer::OnEvent(Event& event)
 {
-	EventDispatcher dispatcher(event);
-	dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(ForegroundLayer::OnKeyPressed));
-}
-
-bool ForegroundLayer::OnKeyPressed(KeyPressedEvent& e)
-{
-
-	if (e.getKeyCode() == KEY_N && !e.getRepeated())
-	{
-		character1->GetComponent<SpriteRenderer>();
-	}
-	return false;
 }
