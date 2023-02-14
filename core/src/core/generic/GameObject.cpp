@@ -23,40 +23,17 @@ namespace core {
         delete components[index];
 	}
 
-	GameObject::GameObject(std::string name) {
-        // create gameObject with name and create a standard transform object
-        this->name = name;
-        this->transform = Transform();
-        this->zIndex = 0;
-        this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
-
-        objectID = Core::RequestID();
-        IDMap.emplace(objectID, this);
-    }
-
-    GameObject::GameObject(std::string name, Transform transform) {
-        // create gameObject with name and a specific transform object
-        // this is being called if you want specific coordinates (you would want this most of the time)
-        this->name = name;
-        this->transform = transform;
-        this->zIndex = 0;
-        this->displayMode = DataPool::DISPLAYMODE::PERSPECTIVE;
-
-        objectID = Core::RequestID();
-        IDMap.emplace(objectID, this);
-
-    }
-
-    GameObject::GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode)
+    GameObject::GameObject(std::string name, std::string tag, Transform transform, DataPool::DISPLAYMODE displaymode)
     {
         this->name = name;
         this->transform = transform;
         this->zIndex = 0;
         this->displayMode = displaymode;
 
+        AddTag(tag);
+
         objectID = Core::RequestID();
         IDMap.emplace(objectID, this);
-
     }
 
     GameObject::~GameObject()
@@ -65,34 +42,6 @@ namespace core {
     }
 
 
-    //Component* GameObject::getComponent(std::string componentTypeID) {
-    //    // iterate through components vector and return the component if it fits to the desired component type (renderer type)
-    //    for (auto component : components)
-    //    {
-    //        if (componentTypeID == component->getTypeID())
-    //        {
-    //            return component;
-    //        }
-    //    }
-    //    // if there is nothing, go to las vegas
-    //    return nullptr;
-    //}
-    //
-    //bool GameObject::removeComponent(Component* delComponent) {
-    //    // iterate through components array and delete the component regarding this sprite that equals to the desired component type
-    //    for (int i = 0; i < components.size(); i++) {
-    //        if (components[i] == delComponent) {
-    //            if (running)
-	//				components[i]->stop();
-    //            delete components[i];
-    //            components[i] = nullptr;
-    //            return true;
-    //        }
-    //    }
-    //    // return false if there was no such component
-    //    return false;
-    //}
-    // add components to component list, render them by calling 
     bool GameObject::AddComponent(Component* component)
 	{
         for (const auto i : components) 
@@ -146,22 +95,50 @@ namespace core {
         components.clear();
     }
 
-    std::string GameObject::getName()
-	{
-        // return name
-        return this->name;
-    }
-
-    int GameObject::getZIndex()
-	{
-        // return ZIndex (screen priority)
-        return this->zIndex;
-    }
-
-    void GameObject::setZIndex(int zIndex)
+    void GameObject::AddTag(std::string tag)
     {
-        this->zIndex = zIndex;
+        std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
+        if (std::find(tagList.begin(), tagList.end(), tag) != tagList.end())
+        {
+            LOG_CORE_WARN("Adding a tag to a GameObject which it already has: '" + tag + "'");
+            return;
+        }
+        tagList.emplace_back(tag);
     }
+
+    void GameObject::AddTag(std::initializer_list<std::string> tags)
+    {
+        for (std::string tag : tags) {
+            std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
+            if (std::find(tagList.begin(), tagList.end(), tag) != tagList.end())
+            {
+                LOG_CORE_WARN("Adding a tag to a GameObject which it already has: '" + tag + "'");
+                return;
+            }
+            tagList.emplace_back(tag);
+        }
+    }
+
+    bool GameObject::RemoveTag(std::string tag)
+    {
+        std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
+        std::vector<std::string>::iterator it = std::find(tagList.begin(), tagList.end(), tag);
+        if (it == tagList.end())
+        {
+            LOG_CORE_WARN("Removing a tag from a GameObject which it doesn't have: '" + tag + "'");
+            return false;
+        }
+        tagList.erase(it);
+        return true;
+    }
+
+    bool GameObject::HasTag(std::string tag)
+    {
+        std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
+        std::vector<std::string>::iterator it = std::find(tagList.begin(), tagList.end(), tag);
+        return it != tagList.end();
+    }
+
 
     void GameObject::event(Event& event)
     {

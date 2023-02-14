@@ -21,14 +21,17 @@ namespace core {
 
         core_id objectID;
 
+        std::vector<std::string> tagList;
+
         void StopComponentIndex(uint32_t index);
         void DeleteComponentIndex(uint32_t index);
+
         static std::unordered_map<core_id, GameObject*> IDMap;
     public:
         Transform transform;
-        GameObject(std::string name);
-        GameObject(std::string name, Transform transform);
-        GameObject(std::string name, Transform transform, DataPool::DISPLAYMODE displaymode);
+        GameObject(std::string name, std::string tag = "", Transform transform = Transform(), DataPool::DISPLAYMODE displaymode = DataPool::PERSPECTIVE);
+
+
         ~GameObject();
 
         template<typename T>
@@ -47,9 +50,14 @@ namespace core {
 
         void deleteComponents();
 
-        std::string getName();
-        int getZIndex();
-        void setZIndex(int zIndex);
+        void AddTag(std::string tag);
+        void AddTag(std::initializer_list<std::string> tags);
+        bool RemoveTag(std::string tag);
+        bool HasTag(std::string tag);
+
+        std::string GetName() { return this->name; }
+        int GetZIndex() { return this->zIndex; }
+        void SetZIndex(int zIndex) { this->zIndex = zIndex; }
         core_id GetObjectID() const { return objectID; }
         bool IsRunning() const { return running; }
 

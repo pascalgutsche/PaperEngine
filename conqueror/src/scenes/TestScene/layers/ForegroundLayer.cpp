@@ -3,9 +3,9 @@
 
 void ForegroundLayer::OnAttach()
 {
-	character1 = new GameObject("character1", Transform(glm::vec2(0.0f, -4.0f)));
+	character1 = new GameObject("character1", "CHARACTER", Transform(glm::vec2(0.0f, -4.0f)));
 	character2 = new GameObject("character2");
-	object1 = new GameObject("object1", Transform(glm::vec2(-3, -4), glm::vec2(1.0f, 3.0f)));
+	object1 = new GameObject("object1", "CH1", Transform(glm::vec2(-3, -4), glm::vec2(1.0f, 3.0f)));
 
 	character1->AddComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("IMG_0131.jpg"))));
 	character2->AddComponent(new SpriteRenderer(new Sprite(DataPool::getTexture("antimarx.png"))));
