@@ -67,7 +67,7 @@ namespace core {
         }
         if (!added && !found) {
             // if there is no place for the spriterenderer, create a new renderbatch with the needed setup (functions)
-            RenderBatch* newBatch = new RenderBatch(MAX_BATCH_SIZE, index, spriteRenderer->GetGameObject()->displayMode);
+            RenderBatch* newBatch = new RenderBatch(MAX_BATCH_SIZE, index, spriteRenderer->GetGameObject()->mode);
             newBatch->start();
             batches.push_back(newBatch);
             newBatch->addSprite(spriteRenderer);

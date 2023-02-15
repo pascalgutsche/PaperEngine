@@ -11,6 +11,13 @@ namespace core {
     class Component;
     class SpriteRenderer;
 
+    struct GOSpec {
+        std::string name = "GameObject";
+        std::initializer_list<std::string> tags;
+        Transform transform = Transform();
+        ProjectionMode mode = ProjectionMode::PERSPECTIVE;
+    };
+
     class GameObject {
     private:
         std::string name;
@@ -29,7 +36,7 @@ namespace core {
         static std::unordered_map<core_id, GameObject*> IDMap;
     public:
         Transform transform;
-        GameObject(std::string name, std::string tag = "", Transform transform = Transform(), DataPool::DISPLAYMODE displaymode = DataPool::PERSPECTIVE);
+        GameObject(std::string name, Transform& transform = Transform(), ProjectionMode mode = ProjectionMode::PERSPECTIVE);
 
 
         ~GameObject();
@@ -50,8 +57,8 @@ namespace core {
 
         void deleteComponents();
 
-        void AddTag(std::string tag);
-        void AddTag(std::initializer_list<std::string> tags);
+        GameObject* AddTag(std::string tag);
+        GameObject* AddTag(std::initializer_list<std::string> tags);
         bool RemoveTag(std::string tag);
         bool HasTag(std::string tag);
 
@@ -61,7 +68,7 @@ namespace core {
         core_id GetObjectID() const { return objectID; }
         bool IsRunning() const { return running; }
 
-        DataPool::DISPLAYMODE displayMode;
+        ProjectionMode mode;
 
         static GameObject* GetGameObjectByID(core_id id);
 

@@ -23,18 +23,15 @@ namespace core {
         delete components[index];
 	}
 
-    GameObject::GameObject(std::string name, std::string tag, Transform transform, DataPool::DISPLAYMODE displaymode)
+    GameObject::GameObject(std::string name, Transform& transform, ProjectionMode mode)
+        : name(name), transform(transform), mode(mode)
     {
-        this->name = name;
-        this->transform = transform;
         this->zIndex = 0;
-        this->displayMode = displaymode;
-
-        AddTag(tag);
 
         objectID = Core::RequestID();
         IDMap.emplace(objectID, this);
     }
+
 
     GameObject::~GameObject()
     {
@@ -95,28 +92,25 @@ namespace core {
         components.clear();
     }
 
-    void GameObject::AddTag(std::string tag)
+    GameObject* GameObject::AddTag(std::string tag)
     {
         std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
         if (std::find(tagList.begin(), tagList.end(), tag) != tagList.end())
         {
             LOG_CORE_WARN("Adding a tag to a GameObject which it already has: '" + tag + "'");
-            return;
+            return this;
         }
         tagList.emplace_back(tag);
+        return this;
     }
 
-    void GameObject::AddTag(std::initializer_list<std::string> tags)
+    GameObject* GameObject::AddTag(std::initializer_list<std::string> tags)
     {
         for (std::string tag : tags) {
             std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
-            if (std::find(tagList.begin(), tagList.end(), tag) != tagList.end())
-            {
-                LOG_CORE_WARN("Adding a tag to a GameObject which it already has: '" + tag + "'");
-                return;
-            }
-            tagList.emplace_back(tag);
+            AddTag(tag);
         }
+        return this;
     }
 
     bool GameObject::RemoveTag(std::string tag)
