@@ -124,24 +124,24 @@ namespace  core
 	class VertexBuffer
 	{
 	public:
-		void Bind() const;
-		void Unbind() const;
+		virtual void Bind() const;
+		virtual void Unbind() const;
 
-		void Add(std::vector<float> data, uint32_t id);
-		void Update(std::vector<float> data, uint32_t id);
-		void Remove(uint32_t id);
+		virtual void Add(std::vector<float> data, uint32_t id);
+		virtual void Update(std::vector<float> data, uint32_t id);
+		virtual void Remove(uint32_t id);
 
-		void BufferSubData() const;
+		virtual void BufferSubData() const;
 
-		const BufferLayout& GetLayout() const
-		{
-			return this->layout;
-		}
+		virtual const BufferLayout& GetLayout() const;
+		//{
+		//	return this->layout;
+		//}
 
 		static Shr<VertexBuffer> CreateBuffer(BufferLayout layout, unsigned int size);
 
-		VertexBuffer(BufferLayout layout, unsigned int size);
-		~VertexBuffer();
+		//VertexBuffer(BufferLayout layout, unsigned int size);
+		virtual ~VertexBuffer();
 	private:
 		size_t size;
 		BufferLayout layout;
@@ -165,23 +165,23 @@ namespace  core
 	class ElementBuffer
 	{
 	public:
-		void Bind() const;
-		void Unbind() const;
+		virtual void Bind() const;
+		virtual void Unbind() const;
 
-		void Add(std::vector<unsigned int> data, uint32_t id);
-		void Update(std::vector<unsigned int> data, uint32_t id);
-		void Remove(uint32_t id);
+		virtual void Add(std::vector<unsigned int> data, uint32_t id);
+		virtual void Update(std::vector<unsigned int> data, uint32_t id);
+		virtual void Remove(uint32_t id);
 
-		void BufferSubData() const;
-
-		unsigned int GetElementCount() const { return rawElements.size(); }
-
+		virtual void BufferSubData() const;
+		
+		virtual unsigned int GetElementCount() const { return rawElements.size(); }
+		 
 		static Shr<ElementBuffer> CreateBuffer(size_t size);
 
-		ElementBuffer(unsigned int size);
-		~ElementBuffer();
+		// ElementBuffer(unsigned int size);
+		virtual ~ElementBuffer();
 	private:
-		size_t size;
+		/*size_t size;
 
 		std::vector<Element*> elements;
 		std::vector<unsigned int> rawElements;
@@ -191,5 +191,6 @@ namespace  core
 
 
 		void ConvertElementsToRawData();
+		*/	
 	};
 }
