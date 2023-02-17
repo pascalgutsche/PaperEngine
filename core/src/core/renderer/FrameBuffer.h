@@ -14,26 +14,19 @@ namespace core {
 	
 	class FrameBuffer
 	{
-	private:
-		FrameBufferProperties frame_buffer_properties;
-		unsigned int fboID = 0;
-		unsigned int rbo = 0;
-		uint32_t color;
-		uint32_t depth;
 	public:
-		FrameBuffer(const FrameBufferProperties& properties);
-		~FrameBuffer();
+		virtual ~FrameBuffer() = default;
 
-		uint32_t GetColorID() const { return color; }
+		virtual uint32_t GetColorID() const = 0;
 
-		void Invalidate();
-		void Resize(unsigned int width, unsigned int height);
+		virtual void Invalidate() = 0;
+		virtual void Resize(unsigned int width, unsigned int height) = 0;
 
-		void Bind();
-		void Unbind();
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
 
-		FrameBufferProperties& GetProperties() { return frame_buffer_properties; }
+		virtual FrameBufferProperties& GetProperties() = 0;
+
+		static Shr<FrameBuffer> CreateBuffer(const FrameBufferProperties& properties);
 	};
 }
-
-

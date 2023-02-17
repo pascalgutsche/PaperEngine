@@ -21,7 +21,7 @@ namespace core {
         instance = this;
         properties.width = 1080;
         properties.height = 720;
-        frame_buffer = new FrameBuffer(properties);
+        frame_buffer = FrameBuffer::CreateBuffer(properties);
     }
 
     Renderer::~Renderer() {

@@ -58,6 +58,7 @@ project "core"
 		"%{prj.name}/lib",
 		"%{prj.name}/src",
 		"%{prj.name}/src/core",
+		"%{prj.name}/src/platform",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",

@@ -5,8 +5,8 @@
 
 extern core::Application* core::createApplication();
 
-int main(int argc, char ** argv) {
-
+int main(int argc, char ** argv) 
+{
 	auto app = core::createApplication();
 	app->run();
 	delete app;

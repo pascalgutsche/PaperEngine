@@ -34,7 +34,7 @@ namespace core {
         std::vector<RenderBatch*> batches;
         std::vector<GameObject*> game_objects_in_use;
         FrameBufferProperties properties;
-        FrameBuffer* frame_buffer = nullptr;
+        Shr<FrameBuffer> frame_buffer = nullptr;
 
         inline static int sprites_count = 0;
         inline static int vertex_count = 0;
@@ -52,7 +52,7 @@ namespace core {
         void render(float dt);
         void updateGameObjects(float dt);
 
-        FrameBuffer& GetFrameBuffer() const { return *frame_buffer; }
+        Shr<FrameBuffer> GetFrameBuffer() const { return frame_buffer; }
 
         static uint32_t RequestID();
         static void RemoveID(uint32_t id);

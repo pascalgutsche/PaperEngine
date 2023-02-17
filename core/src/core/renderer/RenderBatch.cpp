@@ -39,7 +39,7 @@ namespace core {
     };
 
     void RenderBatch::start() {
-        const BufferLayout layout = {
+        BufferLayout layout = {
             { GLSLDataType::FLOAT2, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT2, "aTexCoord" },
@@ -92,7 +92,7 @@ namespace core {
         for (int i = 0; i < textures.size(); i++)
         {
             // activate all created textures
-            textures[i]->bind(i);
+            textures[i]->Bind(i);
         }
         for (int i = 0; i < 32; i++)
         {
@@ -118,7 +118,7 @@ namespace core {
         vertexArray->Unbind();
         for (int i = 0; i < textures.size(); i++)
         {
-            textures[i]->unbind();
+            textures[i]->Unbind();
         }
         shader->detach();
 

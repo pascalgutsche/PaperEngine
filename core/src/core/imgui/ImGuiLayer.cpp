@@ -314,7 +314,7 @@ namespace core {
 	            for (Shr<Texture> texture : Renderer::GetTexturesInUse())
 	            {
                     
-	            	ImGui::Selectable(texture->getName().c_str(), false);
+	            	ImGui::Selectable(texture->GetName().c_str(), false);
                     
 	            }
 

@@ -10,25 +10,18 @@ namespace core
 	class VertexArray
 	{
 	public:
-		void Bind() const;
-		void Unbind() const;
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
 
-		void SetVertexBuffer(const Shr<VertexBuffer>& vertexBuffer);
-		void SetElementBuffer(const Shr<ElementBuffer>& elementBuffer);
+		virtual void SetVertexBuffer(Shr<VertexBuffer>& vertexBuffer) = 0;
+		virtual void SetElementBuffer(Shr<ElementBuffer>& elementBuffer) = 0;
 
-		const Shr<VertexBuffer>& GetVertexBuffer() const { return vertexBuffer; }
-		const Shr<ElementBuffer>& GetElementBuffer() const { return elementBuffer; }
+		virtual Shr<VertexBuffer>& GetVertexBuffer() = 0;
+		virtual Shr<ElementBuffer>& GetElementBuffer() = 0;
+
+		virtual ~VertexArray() = default;
 
 		static Shr<VertexArray> CreateArray();
-
-		VertexArray();
-		~VertexArray();
-	private:
-		uint32_t vaoID;
-		uint32_t vboIndex = 0;
-
-		Shr<VertexBuffer> vertexBuffer;
-		Shr<ElementBuffer> elementBuffer;
 	};
 }
 

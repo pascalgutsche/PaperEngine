@@ -6,37 +6,23 @@
 
 namespace core {
 
-    class CORE_API Texture {
+    class Texture {
     private:
-        std::string filePath;
-        std::string name;
-
-        unsigned char* localBuffer;
-
-        int width;
-        int height;
-        int channels;
-
-        unsigned int texID;
-
-        bool init(std::string path);
-
-    public:
-        // load texture with desired filePath
-        Texture(std::string filePath, std::string name);
-        ~Texture();
-        // use texture slot
-        void bind(unsigned int slot);
         
 
+    public:
+    	virtual void Bind(unsigned int slot) = 0;
+        virtual void Unbind() = 0;
 
-        // stop using texture slot
-        void unbind();
-        int getID();
-        int getWidth();
-        int getHeight();
-        std::string getFilePath();
-        std::string getName();
+        virtual int GetID() = 0;
+        virtual int GetWidth() = 0;
+        virtual int GetHeight() = 0;
+        virtual std::string GetFilePath() = 0;
+        virtual std::string GetName() = 0;
+
+        virtual ~Texture() = default;
+
+        static Shr<Texture> CreateTexture(std::string filePath, std::string name);
     };
 
 }

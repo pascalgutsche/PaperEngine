@@ -3,13 +3,13 @@
 #include "utility.h"
 
 #include "renderer/VertexArray.h";
-#include "renderer/RendererAPI.h"
+#include "renderer/RenderAPI.h"
 
 namespace core {
 	class RenderCommand
 	{
 	private:
-		static Shr<RendererAPI> rendererAPI;
+		static Shr<RenderAPI> rendererAPI;
 
 	public:
 		inline static void Init()

@@ -3,5 +3,5 @@
 
 namespace core
 {
-	Shr<RendererAPI> RenderCommand::rendererAPI = RendererAPI::CreateAPI();
+	Shr<RenderAPI> RenderCommand::rendererAPI = RenderAPI::CreateAPI();
 }

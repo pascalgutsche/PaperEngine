@@ -17,24 +17,25 @@ namespace  core
 	{
 		switch (type)
 		{
-		case GLSLDataType::FLOAT:   return 4 * 1;
-		case GLSLDataType::FLOAT2:  return 4 * 2;
-		case GLSLDataType::FLOAT3:  return 4 * 3;
-		case GLSLDataType::FLOAT4:  return 4 * 4;
-		case GLSLDataType::INT:		return 4 * 1;
-		case GLSLDataType::INT2:	return 4 * 2;
-		case GLSLDataType::INT3:	return 4 * 3;
-		case GLSLDataType::INT4:	return 4 * 4;
-		case GLSLDataType::MAT3:	return 4 * 3 * 3;
-		case GLSLDataType::MAT4:	return 4 * 4 * 4;
-		case GLSLDataType::BOOL:	return 1;
-		default:;
+			case GLSLDataType::FLOAT:   return 4 * 1;
+			case GLSLDataType::FLOAT2:  return 4 * 2;
+			case GLSLDataType::FLOAT3:  return 4 * 3;
+			case GLSLDataType::FLOAT4:  return 4 * 4;
+			case GLSLDataType::INT:		return 4 * 1;
+			case GLSLDataType::INT2:	return 4 * 2;
+			case GLSLDataType::INT3:	return 4 * 3;
+			case GLSLDataType::INT4:	return 4 * 4;
+			case GLSLDataType::MAT3:	return 4 * 3 * 3;
+			case GLSLDataType::MAT4:	return 4 * 4 * 4;
+			case GLSLDataType::BOOL:	return 1;
 		}
 
 		CORE_ASSERT(false, "unknown GLSLDataType");
 		return 0;
 	}
 
+	// vbo variable type
+	// e.g: position, color, textureID, textureCoords, ...
 	struct BufferElement
 	{
 		std::string name;
@@ -74,6 +75,7 @@ namespace  core
 		}
 	};
 
+	// buffer element combination
 	class BufferLayout
 	{
 	public:
@@ -110,8 +112,6 @@ namespace  core
 				size += element.count;
 			}
 		}
-
-		
 	};
 
 	struct Vertex
@@ -124,35 +124,20 @@ namespace  core
 	class VertexBuffer
 	{
 	public:
-		virtual void Bind() const;
-		virtual void Unbind() const;
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
 
-		virtual void Add(std::vector<float> data, uint32_t id);
-		virtual void Update(std::vector<float> data, uint32_t id);
-		virtual void Remove(uint32_t id);
+		virtual void Add(std::vector<float> data, uint32_t id) = 0;
+		virtual void Update(std::vector<float> data, uint32_t id) = 0;
+		virtual void Remove(uint32_t id) = 0;
 
-		virtual void BufferSubData() const;
+		virtual void BufferSubData() = 0;
 
-		virtual const BufferLayout& GetLayout() const;
-		//{
-		//	return this->layout;
-		//}
+		virtual const BufferLayout& GetLayout() = 0;
 
-		static Shr<VertexBuffer> CreateBuffer(BufferLayout layout, unsigned int size);
+		virtual ~VertexBuffer() = default;
 
-		//VertexBuffer(BufferLayout layout, unsigned int size);
-		virtual ~VertexBuffer();
-	private:
-		size_t size;
-		BufferLayout layout;
-
-		std::vector<Vertex*> vertices;
-		std::vector<float> rawVertices;
-		bool reloadData = false;
-
-		uint32_t vboID;
-
-		void ConvertVerticesToRawData();
+		static Shr<VertexBuffer> CreateBuffer(BufferLayout& layout, unsigned int size);
 	};
 
 	struct Element
@@ -165,32 +150,19 @@ namespace  core
 	class ElementBuffer
 	{
 	public:
-		virtual void Bind() const;
-		virtual void Unbind() const;
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
 
-		virtual void Add(std::vector<unsigned int> data, uint32_t id);
-		virtual void Update(std::vector<unsigned int> data, uint32_t id);
-		virtual void Remove(uint32_t id);
+		virtual void Add(std::vector<unsigned int> data, uint32_t id) = 0;
+		virtual void Update(std::vector<unsigned int> data, uint32_t id) = 0;
+		virtual void Remove(uint32_t id) = 0;
 
-		virtual void BufferSubData() const;
+		virtual void BufferSubData() = 0;
 		
-		virtual unsigned int GetElementCount() const { return rawElements.size(); }
-		 
+		virtual unsigned int GetElementCount() = 0;
+
+		virtual ~ElementBuffer() = default;
+
 		static Shr<ElementBuffer> CreateBuffer(size_t size);
-
-		// ElementBuffer(unsigned int size);
-		virtual ~ElementBuffer();
-	private:
-		/*size_t size;
-
-		std::vector<Element*> elements;
-		std::vector<unsigned int> rawElements;
-		bool reloadData = false;
-
-		uint32_t eboID;
-
-
-		void ConvertElementsToRawData();
-		*/	
 	};
 }

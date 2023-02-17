@@ -47,7 +47,7 @@ namespace core {
 
         if (it == data_pool.end())
         {
-            texture = std::make_shared<Texture>(path, textureName);
+            texture = Texture::CreateTexture(path, textureName);
             data_pool.emplace(texture_id, texture);
         }
         else
