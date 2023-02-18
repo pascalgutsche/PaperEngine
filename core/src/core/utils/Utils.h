@@ -5,7 +5,7 @@
 
 namespace core {
 
-    class CORE_API Utils {
+    class Utils {
     public:
         static std::string getSystemDateInString();
         static std::string getSystemTimeInString();

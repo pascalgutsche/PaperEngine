@@ -7,7 +7,7 @@
 namespace core
 {
 
-	class CORE_API LayerStack
+	class LayerStack
 	{
 		using stack = std::vector<Layer*>;
 	private:

@@ -6,7 +6,7 @@
 
 namespace core {
 
-    class CORE_API Sound
+    class Sound
     {
     private:
         std::string soundFile;

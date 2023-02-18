@@ -14,7 +14,7 @@
 
 namespace core {
 
-	class CORE_API Application
+	class Application
 	{
 	private:
 		static Application* instance;

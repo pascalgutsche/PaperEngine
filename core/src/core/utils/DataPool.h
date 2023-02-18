@@ -16,7 +16,7 @@ namespace core {
     };*/
     using Map = std::unordered_map<std::string, std::shared_ptr<void>>;
 
-    class CORE_API DataPool {
+    class DataPool {
     private:
         static Map data_pool;
 

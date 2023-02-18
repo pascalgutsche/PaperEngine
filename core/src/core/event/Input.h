@@ -4,7 +4,7 @@
 
 namespace core {
 
-	class CORE_API Input
+	class Input
 	{
 	public:
 		static bool IsKeyPressed(int key_code);

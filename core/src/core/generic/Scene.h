@@ -7,7 +7,7 @@
 
 namespace core {
 
-    class CORE_API Scene {
+    class Scene {
     private:
         bool isRunning = false;
     protected:

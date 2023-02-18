@@ -5,7 +5,7 @@
 
 namespace core {
 
-    class CORE_API Transform {
+    class Transform {
     public:
         glm::vec2 position;
         glm::vec2 scale;
