@@ -7,7 +7,7 @@
 //AppTick, AppUpdate, AppRender,
 
 namespace core {
-	class WindowCloseEvent : public Event
+	class WindowCloseEvent final : public Event
 	{
 	public:
 		WindowCloseEvent() { }
@@ -16,7 +16,7 @@ namespace core {
 		EVENT_CLASS_TYPE(WindowClose)
 	};
 
-	class WindowResizeEvent : public Event
+	class WindowResizeEvent final : public Event
 	{
 	private:
 		unsigned int width, height;
@@ -28,7 +28,7 @@ namespace core {
 		inline unsigned int getWidth() const { return width; }
 		inline unsigned int getHeight() const { return height; }
 
-		std::string toString() const override
+		std::string ToString() const override
 		{
 			std::stringstream string;
 			string << "WindowResizeEvent width: " << width << " height: " << height;
@@ -39,7 +39,7 @@ namespace core {
 		EVENT_CLASS_TYPE(WindowResize)
 	};
 
-	class AppTickEvent : public Event
+	class AppTickEvent final : public Event
 	{
 	public:
 		AppTickEvent() {}
@@ -48,7 +48,7 @@ namespace core {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppUpdateEvent : public Event
+	class AppUpdateEvent final : public Event
 	{
 	public:
 		AppUpdateEvent() {}
@@ -57,7 +57,7 @@ namespace core {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppRenderEvent : public Event
+	class AppRenderEvent final : public Event
 	{
 	public:
 		AppRenderEvent() {}

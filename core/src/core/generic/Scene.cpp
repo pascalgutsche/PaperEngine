@@ -14,7 +14,8 @@ namespace core {
     }
 
     Scene::~Scene() {
-
+        delete camera;
+        delete renderer;
     }
 
     void Scene::InitGeneral() {
@@ -43,7 +44,7 @@ namespace core {
         return this->camera;
     }
 
-    glm::vec4 Scene::GetBackcolor() {
+    glm::vec4& Scene::GetBackcolor() {
         return this->backcolor;
     }
 }

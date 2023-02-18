@@ -21,11 +21,11 @@ namespace core {
 		EventCategoryMouseButton	= BIT(4)
 	};
 
-#define EVENT_CLASS_TYPE(type) static EventType getStaticEventType() { return EventType::##type; }\
-								virtual EventType getEventType() const override { return getStaticEventType(); }\
-								virtual const char* getName() const override { return #type; }
+#define EVENT_CLASS_TYPE(type) static EventType GetStaticEventType() { return EventType::##type; }\
+								virtual EventType GetEventType() const override { return GetStaticEventType(); }\
+								virtual const char* GetName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual int getCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
 	class CORE_API Event
 	{
@@ -33,15 +33,16 @@ namespace core {
 	public:
 		virtual ~Event() = default;
 
-		virtual EventType getEventType() const = 0;
-		virtual const char* getName() const = 0;
-		virtual int getCategoryFlags() const = 0;
-		virtual std::string toString() const { return getName(); }
+		virtual EventType GetEventType() const = 0;
+		virtual const char* GetName() const = 0;
+		virtual int GetCategoryFlags() const = 0;
+		virtual std::string ToString() const { return GetName(); }
 
-		inline bool isInCategory(const EventCategory category) const {
-			return getCategoryFlags() & category;
+		// why do you take the same value twice and then compare it twice
+		inline bool IsInCategory(const EventCategory category) const {
+			return GetCategoryFlags() & category;
 		}
-
+		
 		bool handled = false;
 	};
 
@@ -54,7 +55,7 @@ namespace core {
 
 		template <typename T> 
 		bool dispatch(std::function<bool(T&)> func) {
-			if (event.getEventType() == T::getStaticEventType()) {
+			if (event.GetEventType() == T::GetStaticEventType()) {
 				event.handled = func(*static_cast<T*>(&event));
 				return true;
 			}
@@ -62,8 +63,9 @@ namespace core {
 		}
 	};
 
+	// basically print the string of event everytime ostream 'os' gets directed to cout
 	inline std::ostream& operator<<(std::ostream& os, const Event& event) {
-		return os << event.toString();
+		return os << event.ToString();
 	}
 
 }

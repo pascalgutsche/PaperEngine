@@ -23,7 +23,7 @@ namespace core {
         virtual ~Scene();
 
         Camera* GetCamera();
-        glm::vec4 GetBackcolor();
+        glm::vec4& GetBackcolor();
 
         void AddGameObjectToScene(GameObject* gameObject);
         void Start();

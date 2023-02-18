@@ -4,7 +4,6 @@
 
 #include "event/Event.h"
 
-
 #include <GLFW/glfw3.h>
 
 namespace core {

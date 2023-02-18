@@ -69,7 +69,7 @@ namespace core {
 			WindowCloseEvent event;
 			data.callback(event);
         });
-
+        
         glfwSetKeyCallback(glfw_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
         	WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -78,19 +78,19 @@ namespace core {
 	        {
 	            case GLFW_PRESS:
                 {
-	            		KeyPressedEvent event(key, 0);
+	            		KeyPressedEvent event(key, false, mods);
 	            		data.callback(event);
 	            		break;
                 }
                 case GLFW_RELEASE:
                 {
-                    KeyReleasedEvent event(key);
+                    KeyReleasedEvent event(key, mods);
                     data.callback(event);
                     break;
                 }
                 case GLFW_REPEAT:
                 {
-                    KeyPressedEvent event(key, 1);
+                    KeyPressedEvent event(key, true, mods);
                     data.callback(event);
                     break;
                 }
@@ -113,13 +113,13 @@ namespace core {
             {
                 case GLFW_PRESS:
                 {
-                    MouseButtonPressedEvent event(button);
+                    MouseButtonPressedEvent event(button, mods);
                     data.callback(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    MouseButtonReleasedEvent event(button);
+                    MouseButtonReleasedEvent event(button, mods);
                     data.callback(event);
                     break;
                 }

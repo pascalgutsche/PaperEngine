@@ -28,8 +28,6 @@ namespace core {
             shader = DataPool::getShader("default");
         }
 
-        
-
         shader->compile();
     }
 

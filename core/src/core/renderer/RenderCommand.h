@@ -17,9 +17,14 @@ namespace core {
 			rendererAPI->Init();
 		}
 
-		inline static void Clear(glm::vec4 color)
+		inline static void ClearColor(glm::vec4& color)
 		{
-			rendererAPI->Clear(color);
+			rendererAPI->SetClearColor(color);
+		}
+
+		inline static void Clear()
+		{
+			rendererAPI->Clear();
 		}
 
 		inline static void DrawElements(Shr<VertexArray>& vertexArray)

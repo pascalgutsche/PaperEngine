@@ -79,7 +79,6 @@ namespace core {
 
 	void Application::run() 
 	{
-
 		init();
 
 		AddOverLay(imguilayer, false);
@@ -105,8 +104,10 @@ namespace core {
 
 			//MouseListener::resetValues();
 			if (current_scene != nullptr) {
-				//clear color buffer
-				RenderCommand::Clear(current_scene->GetBackcolor());
+				// request color
+				RenderCommand::ClearColor(current_scene->GetBackcolor());
+				// set color
+				RenderCommand::Clear();
 
 				if (dt >= 0) {
 					if (queued_scene != nullptr) {
@@ -122,7 +123,6 @@ namespace core {
 						// don't forget to reset the tempscene, because we want to override it
 						queued_scene = nullptr;
 					}
-
 
 					for (Layer* layer : layer_stack)
 						layer->update(dt);
