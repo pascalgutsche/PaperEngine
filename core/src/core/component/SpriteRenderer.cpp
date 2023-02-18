@@ -12,19 +12,17 @@
 #include "generic/Application.h"
 
 namespace core {
-
-    //SPRITERENDERER
-    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture)
-        : Component("sprite_renderer")
+    
+    SpriteRenderer::SpriteRenderer(glm::vec4 color)
 	{
-        this->color = color;
-        this->sprite = new Sprite(texture);
+    	this->color = color;
+        // set newest sprite to no texture (symoblizes that this sprite only contains colors and no texture)
+        this->sprite = new Sprite(nullptr);
     }
 
-    SpriteRenderer::SpriteRenderer(glm::vec4 color, Sprite* sprite)
-	    : Component("sprite_renderer")
-    {
-        this->color = color;
+    SpriteRenderer::SpriteRenderer(Sprite* sprite)
+	{
+    	// our sprite is the sprite from the function call
         this->sprite = sprite;
     }
 
@@ -38,7 +36,7 @@ namespace core {
     void SpriteRenderer::start() {
         // change values from the previous frame in order to check if the gameObject changed values
         // the local lastTransform variable always holds the old values, in order to be compared to the 'new' value
-        lastTransform = core::GameObject::CGMap[this]->transform.copy();
+        lastTransform = gameObject->transform.copy();
         
         renderData = new RenderData();
 
@@ -51,7 +49,6 @@ namespace core {
             textureInsert = renderData->textures.size();
             renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->getTexture());
         }
-        // please have mercy with us
 
         float xAdd = 0.0f;
         float yAdd = 0.0f;
@@ -105,11 +102,11 @@ namespace core {
     
     void SpriteRenderer::update(float dt) {
         // check if there have been made changes to the sprite (transform of the gameObject)
-        if (!(GameObject::CGMap[this]->transform.equals(*lastTransform)))
+        if (!(gameObject->transform.equals(*lastTransform)))
         {
             // if it is not equal, save it to the local transform and
             // set the dirty bit (variable that is being checked in order to display changes)
-            GameObject::CGMap[this]->transform.copy(*this->lastTransform);
+            gameObject->transform.copy(*this->lastTransform);
 
             //update position in struct
             float xAdd = 0.0f;
@@ -184,7 +181,7 @@ namespace core {
                 std::shared_ptr<Texture> texture = DataPool::getTexture(texturePaths[i]);
 
                 const int IMGSIZE_HEIGHT = 100;
-                Utils::XY ratio = Utils::calculateAspectRatioFit(texture->GetWidth(), texture->GetHeight(), texture->GetWidth() + IMGSIZE_HEIGHT, IMGSIZE_HEIGHT);
+                Utils::Size ratio = Utils::calculateAspectRatioFit(texture->GetWidth(), texture->GetHeight(), texture->GetWidth() + IMGSIZE_HEIGHT, IMGSIZE_HEIGHT);
 
                 ImGui::PushID(i);
                 if (ImGui::ImageButton((void*)texture->GetID(), ImVec2(ratio.width, ratio.height), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f), 2, ImColor(0, 0, 0, 1))) {

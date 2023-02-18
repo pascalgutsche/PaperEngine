@@ -33,16 +33,17 @@ namespace core {
         const int MAX_BATCH_SIZE = 1000;
         std::vector<RenderBatch*> batches;
         std::vector<GameObject*> game_objects_in_use;
-        FrameBufferProperties properties;
-        Shr<FrameBuffer> frame_buffer = nullptr;
+        FramebufferSpecification properties;
+        FrameBuffer* frame_buffer = nullptr;
+
+        int mouseHoverID[2] = { -1, -1 };
+        int mouseClickedID[2] = { -1, -1 };
+        bool pressed = false;
 
         inline static int sprites_count = 0;
         inline static int vertex_count = 0;
-        inline static std::vector<Shr<Texture>> texturesInUse;
 
-        inline static std::vector<uint32_t> idInUse;
-        inline static uint32_t leastAvailableId = 1;
-
+        glm::vec2 viewportSize;
     public:
         Renderer();
         ~Renderer();

@@ -31,5 +31,6 @@ namespace core {
         
     };
 
-    enum DisplayMode { PERSPECTIVE, ORTHOGRAPHIC, SCREEN };
+    enum class ProjectionMode { SCREEN, PERSPECTIVE, ORTHOGRAPHIC };
+
 }

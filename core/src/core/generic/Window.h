@@ -7,7 +7,7 @@
 #include <GLFW/glfw3.h>
 
 namespace core {
-	using EventCallbackFunction = std::function<void(Event&)>;
+	
 
     struct WindowProps
     {

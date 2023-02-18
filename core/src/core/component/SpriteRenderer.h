@@ -23,10 +23,10 @@ namespace core {
         virtual ~SpriteRenderer();
 
         void start() override;
-        void stop() override;
-        // update function call on every update (frame)
+        void stop() override { }
         void update(float dt) override;
         void imgui(float dt) override;
+        void event(Event& event) override { }
 
         void UpdateColor(glm::vec4 color);
         void UpdateTexture(Shr<Texture> texture);

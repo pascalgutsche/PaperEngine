@@ -8,8 +8,7 @@ private:
 	GameObject* object1;
 
 public:
-	ForegroundLayer()
-		: Layer("Foreground") { }
+	ForegroundLayer() = default;
 	virtual ~ForegroundLayer() = default;
 
 	void OnAttach() override;
@@ -17,5 +16,6 @@ public:
 	void update(const float dt) override;
 	void imgui(const float dt) override;
 	void OnEvent(Event& event) override;
+
 };
 

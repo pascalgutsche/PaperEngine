@@ -32,4 +32,5 @@ namespace core {
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
+	using core_id = uint32_t;
 }

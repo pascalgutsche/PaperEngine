@@ -11,14 +11,14 @@
 
 namespace core {
 
-    RenderBatch::RenderBatch(int zIndex, DisplayMode displaymode)
+    RenderBatch::RenderBatch(int maxBatchSize, int zIndex, ProjectionMode mode)
+        : zIndex(zIndex), maxBatchSize(maxBatchSize), mode(mode)
     {
-        // set local and current values
-        this->zIndex = zIndex;
-        this->displayMode = displaymode;
+        this->elements = new unsigned int[maxBatchSize * 6];
+        numSprites = 0;
 
         // menu gui mode needs a special shader because of uProjection is aPos basically
-        if (displaymode == SCREEN)
+        if (mode == ProjectionMode::SCREEN)
         {
             shader = DataPool::getShader("menu");
         }

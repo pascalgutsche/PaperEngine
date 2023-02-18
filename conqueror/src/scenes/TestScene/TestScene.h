@@ -23,6 +23,8 @@ public:
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(TestScene::OnMouseScroll));
+		
+
 	};
 
 	bool OnMouseScroll(MouseScrolledEvent& e);

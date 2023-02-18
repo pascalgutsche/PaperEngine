@@ -59,7 +59,8 @@ namespace core {
 		float mouseX, mouseY;
 
 	public:
-		MouseMovedEvent(const float x, const float y) 
+		MouseMovedEvent() = default;
+		MouseMovedEvent(const float x, const float y)
 			: mouseX(x), mouseY(y) { }
 
 		inline float GetX() const { return mouseX; }
@@ -83,6 +84,7 @@ namespace core {
 		float yOff;
 
 	public:
+		MouseScrolledEvent() = default;
 		MouseScrolledEvent(float xOff, float yOff)
 			: xOff(xOff), yOff(yOff) { }
 

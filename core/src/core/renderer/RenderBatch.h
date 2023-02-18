@@ -75,6 +75,8 @@ namespace core {
         int structCount = 0;
 
 
+
+
         inline static int draw_calls = 0;
         inline static bool enable_polygon = false;
         inline static int polygonMode = 6914;
@@ -87,7 +89,7 @@ namespace core {
 
     public:
 
-        RenderBatch(int zIndex, DisplayMode displaymode);
+        RenderBatch(int maxBatchSize, int zIndex, ProjectionMode mode);
         ~RenderBatch();
         void start();
         int render();

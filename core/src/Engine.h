@@ -6,6 +6,7 @@
 #include "core/event/KeyEvent.h"
 #include "core/event/MouseEvent.h"
 #include "core/event/ApplicationEvent.h"
+#include "core/event/GameEvent.h"
 #include "core/event/Input.h"
 #include "core/event/KeyCodes.h"
 #include "core/event/MouseCodes.h"
@@ -28,4 +29,5 @@
 #include "core/utils/Log.h"
 #include "core/utils/Utils.h"
 
+#include "utility.h"
 using namespace core;

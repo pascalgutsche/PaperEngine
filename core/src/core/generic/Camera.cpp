@@ -45,7 +45,7 @@ namespace core {
 
     glm::mat4 Camera::getProjectionMatrix() {
         // get aspect ratio because we need it in order to project the camera correctly
-        float aspect = (float)Application::getWindow()->getWidth() / (float)Application::getWindow()->getHeight();
+        float aspect = (float)Application::GetWindow()->getWidth() / (float)Application::GetWindow()->getHeight();
         return glm::perspective(fov, aspect, 0.1f, 1000.0f);
     }
 

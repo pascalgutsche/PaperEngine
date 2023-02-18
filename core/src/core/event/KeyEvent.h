@@ -56,6 +56,7 @@ namespace core {
 	private:
 		int keyCode;
 	public:
+		KeyTypedEvent() = default;
 		KeyTypedEvent(const int key_code)
 			: keyCode(key_code) { }
 

@@ -12,15 +12,15 @@ namespace core {
         std::shared_ptr<Texture> texture;
         float texCoords[8];
     public:
-        // get default texture coordinates
+        Sprite();
         Sprite(Shr<Texture> texture);
-        // set sprite texture with specific textureCoordinates
         Sprite(Shr<Texture> texture, float* texCoords);
         virtual ~Sprite();
 
         void start() override { }
         void stop() override { }
         void update(float dt) override { }
+        void event(Event& event) override { }
 
         Shr<Texture> getTexture()
         {
