@@ -26,7 +26,7 @@ namespace core {
         properties.attachment = attach;
         properties.width = 1080;
         properties.height = 720;
-        frame_buffer = FrameBuffer::CreateBuffer(properties);
+        framebuffer = Framebuffer::CreateBuffer(properties);
     }
 
     Renderer::~Renderer() {
@@ -40,7 +40,7 @@ namespace core {
         bool found = false;
         for (auto g : batches)
         {
-            if (renderData->zIndex == g->GetZIndex() && renderData->displayMode == g->GetDisplayMode())
+            if (renderData->zIndex == g->GetZIndex() && renderData->projectionMode == g->GetProjectionMode())
             {
                 found = true;
                 g->addVertexProperties(renderData);
@@ -48,7 +48,7 @@ namespace core {
         }
         if (!found)
         {
-            RenderBatch* renderBatch = new RenderBatch(renderData->zIndex, renderData->displayMode);
+            RenderBatch* renderBatch = new RenderBatch(renderData->zIndex, renderData->projectionMode);
             batches.emplace(batches.end(), renderBatch);
             renderBatch->start();
 
@@ -65,12 +65,12 @@ namespace core {
     }
 
     void Renderer::render(const float dt) {
-        frame_buffer->Bind();
+        framebuffer->Bind();
         if (!Application::GetImGuiEnabled())
         {
-            if (frame_buffer->GetProperties().width != Application::GetWindow()->getWidth() || frame_buffer->GetProperties().height != Application::GetWindow()->getHeight())
+            if (framebuffer->GetSpecification().width != Application::GetWindow()->getWidth() || framebuffer->GetSpecification().height != Application::GetWindow()->getHeight())
             {
-                frame_buffer->Resize(Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
+                framebuffer->Resize(Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
             }
             glViewport(0, 0, Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
         }
@@ -82,15 +82,10 @@ namespace core {
         updateGameObjects(dt);
 
         //clear core id attachment to -1
-        frame_buffer->ClearAttachment(1, -1);
+        framebuffer->ClearAttachment(1, -1);
 
-        texturesInUse.clear();
-        int vertices_count_calc = 0;
         // render all batches
         for (int i = 0; i < batches.size(); i++) {
-            vertices_count_calc += batches[i]->GetVertexCount();
-            std::vector<Shr<Texture>> textures = batches[i]->GetTexturesInUse();
-            texturesInUse.insert(texturesInUse.end(), textures.begin(), textures.end());
             if (batches[i]->render())
             {
                 delete batches[i];
@@ -98,7 +93,6 @@ namespace core {
             }
             
         }
-        vertex_count = vertices_count_calc;
 
         //IMGUI window panel for framebuffer picture
         if (!Application::GetImGuiEnabled()) {
@@ -122,9 +116,9 @@ namespace core {
             if (viewportSize != *(glm::vec2*)&viewport_panel_size)
             {
                 viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-                Application::GetCurrentScene()->GetRenderer().GetFrameBuffer().Resize(viewportSize.x, viewportSize.y);
+                framebuffer->Resize(viewportSize.x, viewportSize.y);
             }
-            uint32_t textureID = Application::GetCurrentScene()->GetRenderer().GetFrameBuffer().GetColorID(0);
+            uint32_t textureID = framebuffer->GetColorID(0);
 
             ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
             ImGui::End();
@@ -150,7 +144,7 @@ namespace core {
         }
 
         if (pos.x >= 0 && pos.y >= 0) {
-            mouseHoverID[0] = frame_buffer->ReadPixel(1, pos);
+            mouseHoverID[0] = framebuffer->ReadPixel(1, pos);
         }
 
         if (Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -188,7 +182,7 @@ namespace core {
         }
 
 
-        frame_buffer->Unbind();
+        framebuffer->Unbind();
     }
 
     void Renderer::updateGameObjects(float dt)
@@ -203,26 +197,6 @@ namespace core {
                 game_object->update(dt);
             }
         }
-    }
-
-    uint32_t Renderer::RequestID()
-    {
-        uint32_t id = leastAvailableId;
-        idInUse.emplace_back(leastAvailableId);
-        leastAvailableId = idInUse.size();
-        return id;
-    }
-
-    void Renderer::RemoveID(uint32_t id)
-    {
-        std::vector<uint32_t>::iterator it = std::find(idInUse.begin(), idInUse.end(), id);
-        if (it == idInUse.end())
-        {
-            CORE_ASSERT(false, "ID does not exist");
-            return;
-        }
-        idInUse.erase(it);
-        if (id < leastAvailableId) leastAvailableId = id;
     }
 
     void Renderer::Init()

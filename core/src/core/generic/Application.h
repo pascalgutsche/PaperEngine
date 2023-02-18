@@ -20,8 +20,8 @@ namespace core {
 		static Application* instance;
 		Window* window = nullptr;
 		ImGuiLayer* imguilayer = nullptr;
-		Scene* current_scene = nullptr;
-		Scene* queued_scene = nullptr;
+		Scene* currentScene = nullptr;
+		Scene* queuedScene = nullptr;
 		std::vector<Event*> eventQueue;
 		float dt;
 		long int frames_rendered = 0;
@@ -61,10 +61,10 @@ namespace core {
 		static long int GetFramesRendered() { return GetInstance()->frames_rendered; }
 		static bool GetImGuiEnabled() { return GetInstance()->imgui_enabled; }
 		static float GetDT() { return GetInstance()->dt; }
-		static void SetEventCallback(const EventCallbackFunction& callback_function) { GetInstance()->window->setEventCallback(callback_function); }
+		static void SetEventCallback(const EventCallbackFunction& callbackFunction) { GetInstance()->window->setEventCallback(callbackFunction); }
 
 		static Window* GetWindow() { return GetInstance()->window; }
-		static Scene* GetCurrentScene() { return GetInstance()->current_scene; }
+		static Scene* GetActiveScene() { return GetInstance()->currentScene; }
 		static ImGuiLayer& GetImGuiLayer() { return *GetInstance()->imguilayer; }
 		static LayerStack& GetLayerStack() { return GetInstance()->layer_stack; }
 	};

@@ -7,15 +7,15 @@
 #include "generic/GameObject.h"
 #include "generic/Application.h"
 
+#include "utils/Core.h"
+
 #include <GLAD/glad.h>
 
 namespace core {
 
-    RenderBatch::RenderBatch(int maxBatchSize, int zIndex, ProjectionMode mode)
-        : zIndex(zIndex), maxBatchSize(maxBatchSize), mode(mode)
+    RenderBatch::RenderBatch(int zIndex, ProjectionMode mode)
+        : zIndex(zIndex), projectionMode(mode)
     {
-        this->elements = new unsigned int[maxBatchSize * 6];
-        numSprites = 0;
 
         // menu gui mode needs a special shader because of uProjection is aPos basically
         if (mode == ProjectionMode::SCREEN)
@@ -71,15 +71,15 @@ namespace core {
         shader->use();
 
 
-        switch (displayMode)
+        switch (projectionMode)
         {
-        case PERSPECTIVE:
+        case ProjectionMode::PERSPECTIVE:
             shader->uploadMat4f("uProjection", Application::GetActiveScene()->GetCamera()->getProjectionMatrix());
             break;
-        case ORTHOGRAPHIC:
+        case ProjectionMode::ORTHOGRAPHIC:
             shader->uploadMat4f("uProjection", Application::GetActiveScene()->GetCamera()->getOrthographicMatrix());
             break;
-        case SCREEN:
+        case ProjectionMode::SCREEN:
             //shader->uploadVec2f("uProjection", glm::vec2(vertices[POS_OFFSET], vertices[POS_OFFSET + 1]));
             break;
         }
@@ -131,7 +131,7 @@ namespace core {
             LOG_CORE_ERROR("Adding a render struct, which already has an ID! Aborting...");
             return;
         }
-        renderData->id = Renderer::RequestID();
+        renderData->id = Core::RequestID();
 
         //std::vector<float> RDVerticesCopy = renderData->vertices;
         ////TEXTURE

@@ -14,8 +14,8 @@ namespace core {
     private:
         glm::vec4 color;
         Sprite* sprite;
-        Transform* lastTransform;
-        RenderData* renderData;
+        Transform* lastTransform = nullptr;
+        RenderData* renderData = nullptr;
     public:
         SpriteRenderer(glm::vec4 color, Shr<Texture> texture = nullptr);
         SpriteRenderer(glm::vec4 color, Sprite* sprite);
@@ -23,7 +23,7 @@ namespace core {
         virtual ~SpriteRenderer();
 
         void start() override;
-        void stop() override { }
+        void stop() override;
         void update(float dt) override;
         void imgui(float dt) override;
         void event(Event& event) override { }
@@ -33,24 +33,24 @@ namespace core {
 
         
 
-        glm::vec4 getColor() {
+        glm::vec4 GetColor() {
             // return current sprite color
             return this->color;
         }
 
-        Shr<Texture> getTexture()
+        Shr<Texture> GetTexture()
         {
             // return current texture that is being used in this sprite
-            return sprite->getTexture();
+            return sprite->GetTexture();
         }
 
-        float* getTexCoords()
+        float* GetTexCoords()
         {
             // return the coordinates of the texture that is being used in this sprite
-            return this->sprite->getTexCoords();
+            return this->sprite->GetTexCoords();
         }
 
-        void setSprite(Sprite* sprite)
+        void SetSprite(Sprite* sprite)
         {
             // set the sprite to the function parameter desired sprite
             this->sprite = sprite;

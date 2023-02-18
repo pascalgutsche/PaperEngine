@@ -47,40 +47,23 @@ namespace core {
 	};
 
 	
-	class FrameBuffer
+	class Framebuffer
 	{
-	private:
-		FramebufferSpecification specification;
-		unsigned int fboID = 0;
-
-		std::vector<FramebufferTexSpecification> colorAttachmentSpec; // color specifications
-		FramebufferTexSpecification depthAttachmentSpec = FramebufferTexFormat::None; //depth specification
-		
-		std::vector<uint32_t> colorAttachmentsID; // texture id's
-		uint32_t depthAttachmentID;
-
 	public:
-		FrameBuffer(const FramebufferSpecification& specification);
-		~FrameBuffer();
-		virtual ~FrameBuffer() = default;
+		virtual ~Framebuffer() = default;
 
-		uint32_t GetColorID(uint32_t index = 0) const { CORE_ASSERT(index < colorAttachmentsID.size(), ""); return colorAttachmentsID[index]; }
-		virtual uint32_t GetColorID() const = 0;
+		virtual uint32_t GetColorID(uint32_t index = 0) = 0; 
 
 		virtual void Invalidate() = 0;
 		virtual void Resize(unsigned int width, unsigned int height) = 0;
 
-		void Invalidate();
-		void Resize(unsigned int width, unsigned int height);
-		int ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos);
+		virtual int ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos) = 0;
 
-		void ClearAttachment(uint32_t attachmentIndex, int value);
+		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
-		virtual FrameBufferProperties& GetProperties() = 0;
-
-		FramebufferSpecification& GetProperties() { return specification; }
-		static Shr<FrameBuffer> CreateBuffer(const FrameBufferProperties& properties);
+		virtual FramebufferSpecification& GetSpecification() = 0;
+		static Shr<Framebuffer> CreateBuffer(const FramebufferSpecification& specification);
 	};
 }

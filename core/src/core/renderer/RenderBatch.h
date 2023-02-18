@@ -22,7 +22,7 @@ namespace core {
         int zIndex;
         bool dirty;
 
-        DisplayMode displayMode;
+        ProjectionMode projectionMode;
 
         RenderData()
         {
@@ -30,7 +30,7 @@ namespace core {
             ebo.resize(0);
             textures.resize(0);
             zIndex = 0;
-            displayMode = PERSPECTIVE;
+            projectionMode = ProjectionMode::PERSPECTIVE;
             dirty = false;
         }
 
@@ -69,19 +69,14 @@ namespace core {
         int oldElementSize = -1;
 
         Shr<Shader> shader;
-        //std::vector<float> vertices;
-        //std::vector<unsigned int> elements;
 
         int structCount = 0;
-
-
-
 
         inline static int draw_calls = 0;
         inline static bool enable_polygon = false;
         inline static int polygonMode = 6914;
 
-        DisplayMode displayMode;
+        ProjectionMode projectionMode;
 
         Shr<VertexArray> vertexArray;
         Shr<VertexBuffer> vertexBuffer;
@@ -89,7 +84,7 @@ namespace core {
 
     public:
 
-        RenderBatch(int maxBatchSize, int zIndex, ProjectionMode mode);
+        RenderBatch(int zIndex, ProjectionMode mode);
         ~RenderBatch();
         void start();
         int render();
@@ -106,9 +101,9 @@ namespace core {
             polygonMode = mode;
         }
 
-        DisplayMode const GetDisplayMode()
+        inline ProjectionMode GetProjectionMode()
         {
-            return displayMode;
+            return projectionMode;
         }
 
         inline static int GetDrawCalls() { 

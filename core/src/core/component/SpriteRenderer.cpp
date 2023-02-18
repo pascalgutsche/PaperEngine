@@ -13,19 +13,11 @@
 
 namespace core {
     
-    SpriteRenderer::SpriteRenderer(glm::vec4 color)
-	{
-    	this->color = color;
-        // set newest sprite to no texture (symoblizes that this sprite only contains colors and no texture)
-        this->sprite = new Sprite(nullptr);
-    }
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture)
+        : color(color), sprite(new Sprite(nullptr)) { }
 
-    SpriteRenderer::SpriteRenderer(Sprite* sprite)
-	{
-    	// our sprite is the sprite from the function call
-        this->sprite = sprite;
-    }
-
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Sprite* sprite)
+	    : color(color), sprite(sprite) { }
 
     SpriteRenderer::~SpriteRenderer() {
         delete sprite;
@@ -40,14 +32,14 @@ namespace core {
         
         renderData = new RenderData();
 
-        renderData->displayMode = GameObject::CGMap[this]->displayMode;
-        renderData->zIndex = GameObject::CGMap[this]->getZIndex();
+        renderData->projectionMode = gameObject->GetProjectionMode();
+        renderData->zIndex = gameObject->GetZIndex();
 
         int textureInsert = -1;
 
-        if (sprite->getTexture() != nullptr) {
+        if (sprite->GetTexture() != nullptr) {
             textureInsert = renderData->textures.size();
-            renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->getTexture());
+            renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->GetTexture());
         }
 
         float xAdd = 0.0f;
@@ -69,8 +61,8 @@ namespace core {
                 break;
             }
 
-        	renderData->vertices.emplace(renderData->vertices.end(), GameObject::CGMap[this]->transform.position.x + xAdd * GameObject::CGMap[this]->transform.scale.x);
-            renderData->vertices.emplace(renderData->vertices.end(), GameObject::CGMap[this]->transform.position.y + yAdd * GameObject::CGMap[this]->transform.scale.y);
+        	renderData->vertices.emplace(renderData->vertices.end(), gameObject->transform.position.x + xAdd * gameObject->transform.scale.x);
+            renderData->vertices.emplace(renderData->vertices.end(), gameObject->transform.position.y + yAdd * gameObject->transform.scale.y);
 
             renderData->vertices.emplace(renderData->vertices.end(), this->color.x);
             renderData->vertices.emplace(renderData->vertices.end(), this->color.y);
@@ -127,8 +119,8 @@ namespace core {
                 default:
                     break;
                 }
-                renderData->vertices[i * RenderBatch::GetVertexSize()] = GameObject::CGMap[this]->transform.position.x + xAdd * GameObject::CGMap[this]->transform.scale.x;
-                renderData->vertices[(i * RenderBatch::GetVertexSize()) + 1] = GameObject::CGMap[this]->transform.position.y + yAdd * GameObject::CGMap[this]->transform.scale.y;
+                renderData->vertices[i * RenderBatch::GetVertexSize()] = gameObject->transform.position.x + xAdd * gameObject->transform.scale.x;
+                renderData->vertices[(i * RenderBatch::GetVertexSize()) + 1] = gameObject->transform.position.y + yAdd * gameObject->transform.scale.y;
             }
             renderData->dirty = true;
         }
@@ -185,7 +177,7 @@ namespace core {
 
                 ImGui::PushID(i);
                 if (ImGui::ImageButton((void*)texture->GetID(), ImVec2(ratio.width, ratio.height), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f), 2, ImColor(0, 0, 0, 1))) {
-                	if (this->sprite->getTexture() != texture)
+                	if (this->sprite->GetTexture() != texture)
                 		UpdateTexture(texture);
                 }
                 ImGui::PopID();
@@ -226,11 +218,11 @@ namespace core {
 
     void SpriteRenderer::UpdateTexture(Shr<Texture> texture)
     {
-        this->sprite->setTexture(texture);
+        this->sprite->SetTexture(texture);
         renderData->textures.clear();
 
         int textureInsert = renderData->textures.size();
-        renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->getTexture());
+        renderData->textures.emplace(renderData->textures.begin() + textureInsert, sprite->GetTexture());
 
         for (int i = 8; i < renderData->vertices.size(); i += RenderBatch::GetVertexSize()) {
             renderData->vertices[i] = textureInsert;

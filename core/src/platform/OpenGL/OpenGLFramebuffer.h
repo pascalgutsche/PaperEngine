@@ -2,30 +2,38 @@
 #include "_Core.h"
 #include "utility.h"
 
-#include "core/renderer/FrameBuffer.h"
+#include "core/renderer/Framebuffer.h"
 
 namespace core
 {
-	class OpenGLFramebuffer : public FrameBuffer
+	class OpenGLFramebuffer : public Framebuffer
 	{
 	public:
-		OpenGLFramebuffer(const FrameBufferProperties& properties);
+		
+		OpenGLFramebuffer(const FramebufferSpecification& specification);
 		~OpenGLFramebuffer() override;
 
 		void Invalidate() override;
 		void Resize(unsigned width, unsigned height) override;
 
+		int ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos) override;
+
+		void ClearAttachment(uint32_t attachmentIndex, int value) override;
+
 		void Bind() override;
 		void Unbind() override;
 
-		FrameBufferProperties& GetProperties() override { return frame_buffer_properties; }
-		uint32_t GetColorID() const override { return color; }
+		FramebufferSpecification& GetSpecification() override { return specification; }
+		uint32_t GetColorID(uint32_t index) override { CORE_ASSERT(index < colorAttachmentsID.size(), ""); return colorAttachmentsID[index]; }
 
 	private:
-		FrameBufferProperties frame_buffer_properties;
+		FramebufferSpecification specification;
 		unsigned int fboID = 0;
-		unsigned int rbo = 0;
-		uint32_t color;
-		uint32_t depth;
+
+		std::vector<FramebufferTexSpecification> colorAttachmentSpec; // color specifications
+		FramebufferTexSpecification depthAttachmentSpec = FramebufferTexFormat::None; //depth specification
+
+		std::vector<uint32_t> colorAttachmentsID; // texture id's
+		uint32_t depthAttachmentID;
 	};
 }

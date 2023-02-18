@@ -12,10 +12,7 @@ namespace core {
     class SpriteRenderer;
 
     struct GOSpec {
-        std::string name = "GameObject";
-        std::initializer_list<std::string> tags;
-        Transform transform = Transform();
-        ProjectionMode mode = ProjectionMode::PERSPECTIVE;
+        
     };
 
     class GameObject {
@@ -23,6 +20,10 @@ namespace core {
         std::string id;
         std::vector<Component*> components;
         int zIndex;
+
+        std::string name = "GameObject";
+        std::initializer_list<std::string> tags;
+        ProjectionMode mode;
 
         bool running = false;
 
@@ -68,7 +69,10 @@ namespace core {
         core_id GetObjectID() const { return objectID; }
         bool IsRunning() const { return running; }
 
-        ProjectionMode mode;
+        ProjectionMode GetProjectionMode() const
+        {
+            return mode;
+        }
 
         static GameObject* GetGameObjectByID(core_id id);
 

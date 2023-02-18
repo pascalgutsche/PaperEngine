@@ -32,7 +32,7 @@ namespace core {
         void InitGeneral();
         void Render();
 
-
+        Renderer* GetRenderer() const { return renderer; }
 
         virtual void update(float dt) = 0;
         virtual void OnEvent(Event& e) = 0;

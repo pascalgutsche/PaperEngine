@@ -22,23 +22,23 @@ namespace core {
         void update(float dt) override { }
         void event(Event& event) override { }
 
-        Shr<Texture> getTexture()
+        Shr<Texture> GetTexture()
         {
             // get current texture
             return this->texture;
         }
 
-        void setTexture(Shr<Texture> texture) {
+        void SetTexture(Shr<Texture> texture) {
             this->texture = texture;
         }
 
-        float* getTexCoords()
+        float* GetTexCoords()
         {
             // get current texture coordinates
             return this->texCoords;
         }
 
-        void setTexCoords(float* texCoords)
+        void SetTexCoords(float* texCoords)
         {
             for (int i = 0; i < 8; i++) {
                 this->texCoords[i] = texCoords[i];

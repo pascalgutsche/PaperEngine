@@ -57,7 +57,7 @@ namespace core {
     ImGuiLayer::ImGuiLayer()
 		: Layer("ImGuiLayer")
     {
-        this->viewport_size = glm::vec2();
+        this->viewportSize = glm::vec2();
     }
 
     ImGuiLayer::~ImGuiLayer()
@@ -301,16 +301,16 @@ namespace core {
 
         if (ImGui::TreeNode("Renderer"))
         {
-            stream << "Draw calls: " << RenderBatch::GetDrawCalls();
+            stream << "Draw calls: N/A";// << RenderBatch::GetDrawCalls();
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-        	stream << "Batch count: " << Renderer::GetBatchCount();
+            stream << "Batch count: N/A";// << Renderer::GetBatchCount();
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Vertex count: " << Renderer::GetVerticesCount();
+            stream << "Vertex count: N/A";// << Renderer::GetVerticesCount();
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Sprite count: " << Renderer::GetSpriteCount();
+            stream << "Sprite count: N/A";// << Renderer::GetSpriteCount();
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
             ImGui::Text("");
@@ -327,18 +327,21 @@ namespace core {
                 selected = 6913;
             RenderBatch::SetPolygonMode(selected);
 
+            ImGui::BeginDisabled();
             if (ImGui::TreeNode("Textures in use"))
             {
+                /*
 	            for (Shr<Texture> texture : Renderer::GetTexturesInUse())
 	            {
                     
 	            	ImGui::Selectable(texture->GetName().c_str(), false);
                     
 	            }
-
+                */
 	            ImGui::Text("");
 	            ImGui::TreePop();
             }
+            ImGui::EndDisabled();
 
 
             ImGui::TreePop();
@@ -430,9 +433,9 @@ namespace core {
         if (viewportSize != *(glm::vec2*)&viewport_panel_size)
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            Application::GetCurrentScene()->GetRenderer().GetFrameBuffer().Resize(viewportSize.x, viewportSize.y);
+            Application::GetActiveScene()->GetRenderer()->GetFrameBuffer()->Resize(viewportSize.x, viewportSize.y);
         }
-        uint32_t textureID = Application::GetCurrentScene()->GetRenderer().GetFrameBuffer().GetColorID(0);
+        uint32_t textureID = Application::GetActiveScene()->GetRenderer()->GetFrameBuffer()->GetColorID(0);
 
         ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 

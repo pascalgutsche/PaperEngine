@@ -4,6 +4,8 @@
 #include "event/KeyCodes.h"
 #include "event/Input.h"
 
+#include "utils/Core.h"
+
 
 namespace core {
 
@@ -46,7 +48,7 @@ namespace core {
 		}
 		if (!event.handled)
 		{
-			current_scene->OnEvent(event);
+			currentScene->OnEvent(event);
 		}
 	}
 
@@ -92,10 +94,10 @@ namespace core {
 		Core::Init();
 
 		//set start scene
-		if (queued_scene) {
-			current_scene = queued_scene;
-			current_scene->InitGeneral();
-			queued_scene = nullptr;
+		if (queuedScene) {
+			currentScene = queuedScene;
+			currentScene->InitGeneral();
+			queuedScene = nullptr;
 		}
 
 		// start of the calculations
@@ -110,25 +112,25 @@ namespace core {
 			ProcessQueues();
 
 			//MouseListener::resetValues();
-			if (current_scene != nullptr) {
+			if (currentScene != nullptr) {
 				// request color
-				RenderCommand::ClearColor(current_scene->GetBackcolor());
+				RenderCommand::ClearColor(currentScene->GetBackcolor());
 				// set color
 				RenderCommand::Clear();
 
 				if (dt >= 0) {
-					if (queued_scene != nullptr) {
+					if (queuedScene != nullptr) {
 						// TODO: save scenes instead of deleting them
 						// delete the scene with it's heap components (renderer and camera)
-						current_scene->Disable();
+						currentScene->Disable();
 
 						// remove the scene
-						delete current_scene;
+						delete currentScene;
 						// switch and initialize the scene
-						current_scene = queued_scene;
-						current_scene->InitGeneral();
+						currentScene = queuedScene;
+						currentScene->InitGeneral();
 						// don't forget to reset the tempscene, because we want to override it
-						queued_scene = nullptr;
+						queuedScene = nullptr;
 					}
 
 
@@ -145,7 +147,7 @@ namespace core {
 					for (Layer* layer : layer_stack)
 						layer->update(dt);
 
-					current_scene->update(dt);
+					currentScene->update(dt);
 
 					imguilayer->end();
 					
@@ -170,7 +172,7 @@ namespace core {
 
 	void Application::ChangeScene(Scene* new_scene)
 	{
-		GetInstance()->queued_scene = new_scene;
+		GetInstance()->queuedScene = new_scene;
 	}
 
 	void Application::AddLayer(Layer* layer, bool add_to_renderer)
