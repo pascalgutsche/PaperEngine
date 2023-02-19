@@ -8,6 +8,8 @@
 #include "renderer/Renderer.h"
 #include "renderer/RenderBatch.h"
 
+#include <GLFW/glfw3.h>
+
 
 
 namespace core {
@@ -99,7 +101,7 @@ namespace core {
         fontConfig.MergeMode = true;
 
         //init backend
-        ImGui_ImplGlfw_InitForOpenGL(Application::GetWindow()->getNativeWindow(), true);
+        ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)Application::GetWindow()->GetNativeWindow(), true);
         ImGui_ImplOpenGL3_Init("#version 410");
     }
 
@@ -114,7 +116,7 @@ namespace core {
     void ImGuiLayer::begin(const float dt)
     {
         ImGuiIO& io = ImGui::GetIO();
-        io.DisplaySize = ImVec2(Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
+        io.DisplaySize = ImVec2(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
         io.DeltaTime = dt;
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -125,7 +127,7 @@ namespace core {
     void ImGuiLayer::end()
     {
         ImGuiIO& io = ImGui::GetIO();
-        io.DisplaySize = ImVec2(Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
+        io.DisplaySize = ImVec2(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -206,7 +208,7 @@ namespace core {
             initialized = true;
             ImGui::DockBuilderRemoveNode(dockspace_id);
             ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
-            ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->getWidth() + 500, Application::GetWindow()->getHeight() + 500));
+            ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->GetWidth() + 500, Application::GetWindow()->GetHeight() + 500));
 
             dock_id_main = dockspace_id;
             dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Right, 0.2f, nullptr, &dock_id_main);
@@ -290,7 +292,7 @@ namespace core {
 
 		    static bool vsync = true;
 		    ImGui::Checkbox("V-Sync", &vsync);
-		    Application::GetWindow()->setVSync(vsync);
+		    Application::GetWindow()->SetVSync(vsync);
 
 		    
 

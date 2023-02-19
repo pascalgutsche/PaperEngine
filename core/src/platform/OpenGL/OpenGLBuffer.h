@@ -1,4 +1,5 @@
 #pragma once
+#include "_Core.h"
 #include "utility.h"
 
 #include "core/renderer/Buffer.h"

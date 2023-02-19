@@ -12,11 +12,18 @@ namespace core {
 	Application* Application::instance;
 
 	Application::Application() {
+		CORE_ASSERT(!instance, "application is already instanced!");
 		instance = this;
-		Log::init();
 
-		window = Window::createWindow();
+		Log::init();
+		Core::Init();
+
+		window = Window::Create();
 		SetEventCallback(BIND_EVENT_FN(Application::onEvent));
+
+		Renderer::Init();
+
+		
 
 		imguilayer = new ImGuiLayer();
 	}
@@ -91,7 +98,6 @@ namespace core {
 
 		AddOverLay(imguilayer, false);
 
-		Core::Init();
 
 		//set start scene
 		if (queuedScene) {
@@ -101,14 +107,12 @@ namespace core {
 		}
 
 		// start of the calculations
-		float begin_time = static_cast<float>(glfwGetTime());
+		float begin_time = window->GetTime();
 		dt = 0.0167f;
 		bool warn = true;
 
 		while (game_running)
 		{
-			glfwPollEvents();
-
 			ProcessQueues();
 
 			//MouseListener::resetValues();
@@ -133,8 +137,6 @@ namespace core {
 						queuedScene = nullptr;
 					}
 
-
-					
 					imguilayer->begin(dt);
 
 					if (imgui_enabled) {
@@ -152,7 +154,6 @@ namespace core {
 					imguilayer->end();
 					
 					frames_rendered++;
-
 				}
 			}
 			else if (warn) {
@@ -160,14 +161,13 @@ namespace core {
 				warn = false;
 			}
 
-			glfwSwapBuffers(window->getNativeWindow());
+			window->Update();
 
-			dt = static_cast<float>(glfwGetTime()) - begin_time;
-			begin_time = static_cast<float>(glfwGetTime());
+			dt = window->GetTime() - begin_time;
+			begin_time = window->GetTime();
 		}
 
 		LOG_CORE_WARN("Reached end of game function. Shutting down.");
-		delete window;
 	}
 
 	void Application::ChangeScene(Scene* new_scene)

@@ -2,8 +2,6 @@
 #include "_Core.h"
 #include "utility.h"
 
-#include <STB_IMAGE/stb_image.h>
-
 namespace core {
 
     class Texture {

@@ -68,11 +68,11 @@ namespace core {
         framebuffer->Bind();
         if (!Application::GetImGuiEnabled())
         {
-            if (framebuffer->GetSpecification().width != Application::GetWindow()->getWidth() || framebuffer->GetSpecification().height != Application::GetWindow()->getHeight())
+            if (framebuffer->GetSpecification().width != Application::GetWindow()->GetWidth() || framebuffer->GetSpecification().height != Application::GetWindow()->GetHeight())
             {
-                framebuffer->Resize(Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
+                framebuffer->Resize(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
             }
-            glViewport(0, 0, Application::GetWindow()->getWidth(), Application::GetWindow()->getHeight());
+            glViewport(0, 0, Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
         }
 
         //calculating camera vectors
@@ -131,8 +131,8 @@ namespace core {
         {
             glm::vec2 mousePos = Input::GetMousPos();
 
-            mousePos.y = Application::GetWindow()->getHeight() - mousePos.y;
-            if (mousePos.x < Application::GetWindow()->getWidth() && mousePos.y < Application::GetWindow()->getHeight())
+            mousePos.y = Application::GetWindow()->GetHeight() - mousePos.y;
+            if (mousePos.x < Application::GetWindow()->GetWidth() && mousePos.y < Application::GetWindow()->GetHeight())
             {
                 pos = mousePos;
             }
@@ -201,7 +201,7 @@ namespace core {
 
     void Renderer::Init()
     {
-	    
+        RenderCommand::Init();
     }
 
     void Renderer::Shutdown()

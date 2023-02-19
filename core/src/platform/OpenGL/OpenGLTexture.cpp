@@ -2,6 +2,8 @@
 #include "OpenGLTexture.h"
 
 #include <glad/glad.h>
+#include <STB_IMAGE/stb_image.h>
+
 
 namespace core
 {

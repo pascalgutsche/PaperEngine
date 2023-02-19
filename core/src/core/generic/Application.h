@@ -18,7 +18,7 @@ namespace core {
 	{
 	private:
 		static Application* instance;
-		Window* window = nullptr;
+		Shr<Window> window = nullptr;
 		ImGuiLayer* imguilayer = nullptr;
 		Scene* currentScene = nullptr;
 		Scene* queuedScene = nullptr;
@@ -61,9 +61,9 @@ namespace core {
 		static long int GetFramesRendered() { return GetInstance()->frames_rendered; }
 		static bool GetImGuiEnabled() { return GetInstance()->imgui_enabled; }
 		static float GetDT() { return GetInstance()->dt; }
-		static void SetEventCallback(const EventCallbackFunction& callbackFunction) { GetInstance()->window->setEventCallback(callbackFunction); }
+		static void SetEventCallback(const EventCallbackFunction& callbackFunction) { GetInstance()->window->SetEventCallback(callbackFunction); }
 
-		static Window* GetWindow() { return GetInstance()->window; }
+		static Shr<Window> GetWindow() { return GetInstance()->window; }
 		static Scene* GetActiveScene() { return GetInstance()->currentScene; }
 		static ImGuiLayer& GetImGuiLayer() { return *GetInstance()->imguilayer; }
 		static LayerStack& GetLayerStack() { return GetInstance()->layer_stack; }
