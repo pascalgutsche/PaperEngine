@@ -50,7 +50,7 @@ namespace core {
             triangleVertexArray->ClearBuffers();
 	        for (auto* data : vec)
 	        {
-		        
+		        if (triangleVertexArray->GetVertexBuffer()->)
 	        }
         }
     }
