@@ -13,34 +13,7 @@ namespace core {
 
     class RenderBatch;
 
-    struct RenderData
-    {
-        std::vector<float> vertices;
-        std::vector<unsigned int> ebo;
-        std::vector<Shr<Texture>> textures;
-
-        int zIndex;
-        bool dirty;
-
-        ProjectionMode projectionMode;
-
-        RenderData()
-        {
-            vertices.resize(0);
-            ebo.resize(0);
-            textures.resize(0);
-            zIndex = 0;
-            projectionMode = ProjectionMode::PERSPECTIVE;
-            dirty = false;
-        }
-
-    private:
-        int id = 0;
-
-        std::vector<Shr<Texture>> oldTextures;
-
-        friend class RenderBatch;
-    };
+    
 
     class RenderBatch {
     private:

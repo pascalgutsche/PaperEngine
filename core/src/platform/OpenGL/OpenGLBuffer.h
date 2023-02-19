@@ -16,6 +16,8 @@ namespace core
 		void Update(std::vector<float> data, uint32_t id) override;
 		void Remove(uint32_t id) override;
 
+		void ClearBuffer() override;
+
 		void BufferSubData() override;
 
 		const BufferLayout& GetLayout() override;

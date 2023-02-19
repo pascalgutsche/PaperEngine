@@ -66,6 +66,12 @@ namespace core
 		ConvertVerticesToRawData();
 	}
 
+	void OpenGLVertexBuffer::ClearBuffer()
+	{
+		vertices.clear();
+		ConvertVerticesToRawData();
+	}
+
 	void OpenGLVertexBuffer::ConvertVerticesToRawData()
 	{
 		rawVertices.clear();
@@ -156,6 +162,12 @@ namespace core
 		}
 		elements.erase(std::find(elements.begin(), elements.end(), temp));
 		delete temp;
+		ConvertElementsToRawData();
+	}
+
+	void OpenGLElementBuffer::ClearBuffer()
+	{
+		elements.clear();
 		ConvertElementsToRawData();
 	}
 

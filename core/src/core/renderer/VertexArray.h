@@ -13,6 +13,8 @@ namespace core
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
+		virtual void ClearBuffers() = 0;
+
 		virtual void SetVertexBuffer(Shr<VertexBuffer>& vertexBuffer) = 0;
 		virtual void SetElementBuffer(Shr<ElementBuffer>& elementBuffer) = 0;
 

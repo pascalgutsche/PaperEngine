@@ -7,9 +7,55 @@
 #include "event/MouseCodes.h"
 #include "event/GameEvent.h"
 
-#include "glad/glad.h"
 namespace core {
 
+    void Renderer::Init()
+    {
+        RenderCommand::Init();
+
+        BufferLayout layout = {
+            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT4, "aColor" },
+            { GLSLDataType::FLOAT2, "aTexCoord" },
+            { GLSLDataType::FLOAT , "aTexID" }
+        };
+
+        triangleVertexArray = VertexArray::CreateArray();
+        triangleVertexBuffer = VertexBuffer::CreateBuffer(layout, MAX_VERTICES * sizeof(float));
+        triangleElementBuffer = ElementBuffer::CreateBuffer(MAX_ELEMENTS * sizeof(unsigned int));
+
+        triangleVertexArray->SetVertexBuffer(triangleVertexBuffer);
+        triangleVertexArray->SetElementBuffer(triangleElementBuffer);
+    }
+
+    void Renderer::Shutdown()
+    {
+
+    }
+
+
+    void Renderer::SubmitData(RenderData* renderData)
+    {
+        if (batches.size() < renderData->zIndex + 1)
+        {
+            batches.resize(renderData->zIndex, std::vector<RenderData*>());
+        }
+        batches[renderData->zIndex].push_back(renderData);
+    } 
+
+    void Renderer::Render(Shr<Camera>& camera)
+    {
+        for (auto& vec : batches)
+        {
+            triangleVertexArray->ClearBuffers();
+	        for (auto* data : vec)
+	        {
+		        
+	        }
+        }
+    }
+
+    /*
     Renderer* Renderer::instance;
 
     struct less_than_key
@@ -198,30 +244,7 @@ namespace core {
             }
         }
     }
+    */
 
-    void Renderer::Init()
-    {
-        RenderCommand::Init();
-    }
-
-    void Renderer::Shutdown()
-    {
-	    
-    }
-
-    void Renderer::BeginRender(Shr<Camera>& camera)
-    {
-	    
-    }
-
-    void Renderer::SubmitData(Shr<VertexArray>& vertexArray)
-    {
-        vertexArray->Bind();
-        RenderCommand::DrawElements(vertexArray);
-    }
-
-    void Renderer::EndRender()
-    {
-	    
-    }
+    
 }

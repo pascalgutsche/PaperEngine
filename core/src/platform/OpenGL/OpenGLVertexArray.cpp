@@ -37,6 +37,12 @@ namespace core
 		glDeleteVertexArrays(1, &vaoID);
 	}
 
+	void OpenGLVertexArray::ClearBuffers()
+	{
+		vertexBuffer->ClearBuffer();
+		elementBuffer->ClearBuffer();
+	}
+
 	void OpenGLVertexArray::SetVertexBuffer(Shr<VertexBuffer>& vertexBuffer)
 	{
 		Bind();

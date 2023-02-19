@@ -131,6 +131,8 @@ namespace  core
 		virtual void Update(std::vector<float> data, uint32_t id) = 0;
 		virtual void Remove(uint32_t id) = 0;
 
+		virtual void ClearBuffer() = 0;
+
 		virtual void BufferSubData() = 0;
 
 		virtual const BufferLayout& GetLayout() = 0;
@@ -156,6 +158,8 @@ namespace  core
 		virtual void Add(std::vector<unsigned int> data, uint32_t id) = 0;
 		virtual void Update(std::vector<unsigned int> data, uint32_t id) = 0;
 		virtual void Remove(uint32_t id) = 0;
+
+		virtual void ClearBuffer() = 0;
 
 		virtual void BufferSubData() = 0;
 		

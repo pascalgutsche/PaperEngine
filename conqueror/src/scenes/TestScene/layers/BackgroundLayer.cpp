@@ -43,6 +43,7 @@ void BackgroundLayer::OnDetach()
 
 void BackgroundLayer::update(const float dt)
 {
+    
 }
 
 void BackgroundLayer::imgui(const float dt)
