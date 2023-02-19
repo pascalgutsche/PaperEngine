@@ -7,8 +7,6 @@
 
 #include "renderer/RenderCommand.h"
 #include "generic/Camera.h"
-#include "generic/Shader.h"
-
 
 namespace core {
 

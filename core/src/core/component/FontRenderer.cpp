@@ -4,7 +4,6 @@
 
 namespace core {
 
-    //FONTRENDERER
     FontRenderer::FontRenderer()
 	{
         // pascal you are funny

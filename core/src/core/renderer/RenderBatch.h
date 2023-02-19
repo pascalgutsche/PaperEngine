@@ -2,7 +2,7 @@
 #include "_Core.h"
 #include "utility.h"
 
-#include "generic/Shader.h"
+#include "renderer/Shader.h"
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 

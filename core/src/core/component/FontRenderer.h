@@ -5,7 +5,8 @@
 
 namespace core {
 
-    class FontRenderer : public Component {
+    class FontRenderer : public Component
+	{
     private:
 
     public:

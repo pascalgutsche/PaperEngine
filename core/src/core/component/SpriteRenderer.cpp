@@ -170,7 +170,7 @@ namespace core {
             ImVec2 windowSize = ImGui::GetWindowSize();
             float windowX2 = windowPos.x + windowSize.x;
             for (int i = 0; i < texturePaths.size(); i++) {
-                std::shared_ptr<Texture> texture = DataPool::getTexture(texturePaths[i]);
+                std::shared_ptr<Texture> texture = DataPool::GetTexture(texturePaths[i]);
 
                 const int IMGSIZE_HEIGHT = 100;
                 Utils::Size ratio = Utils::calculateAspectRatioFit(texture->GetWidth(), texture->GetHeight(), texture->GetWidth() + IMGSIZE_HEIGHT, IMGSIZE_HEIGHT);

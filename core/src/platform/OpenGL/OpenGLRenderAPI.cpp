@@ -59,6 +59,6 @@ namespace core
 
 	void OpenGLRenderAPI::DrawElements(Shr<VertexArray>& vertexArray)
 	{
-
+		glDrawElements(GL_TRIANGLES, vertexArray->GetElementBuffer()->GetElementCount(), GL_UNSIGNED_INT, nullptr);
 	}
 }

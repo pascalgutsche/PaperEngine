@@ -2,7 +2,6 @@
 
 #include "utils/DataPool.h"
 #include "renderer/Texture.h"
-#include "generic/Shader.h"
 
 namespace core {
 
@@ -13,7 +12,7 @@ namespace core {
     // declare static maps in order to find a reference
     Map DataPool::data_pool;
 
-    std::shared_ptr<Shader> DataPool::getShader(std::string shaderName) {
+    std::shared_ptr<Shader> DataPool::GetShader(std::string shaderName) {
         // set default path
         std::string path = "assets/shaders/" + shaderName + ".glsl";
         std::string shader_id = "shader_" + shaderName;
@@ -24,7 +23,7 @@ namespace core {
 
         if (it == data_pool.end())
         {
-            shader = std::make_shared<Shader>(path);
+            shader = Shader::CreateShader(path);
             data_pool.emplace(shader_id, shader);
         }
         else
@@ -35,7 +34,7 @@ namespace core {
         return shader;
     }
 
-    std::shared_ptr<Texture> DataPool::getTexture(std::string textureName) {
+    std::shared_ptr<Texture> DataPool::GetTexture(std::string textureName) {
         // set default path
         std::string path = "assets/textures/" + textureName;
 

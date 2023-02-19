@@ -2,7 +2,7 @@
 #include "_Core.h"
 #include "utility.h"
 
-#include "renderer/VertexArray.h";
+#include "renderer/VertexArray.h"
 #include "renderer/RenderAPI.h"
 
 namespace core {

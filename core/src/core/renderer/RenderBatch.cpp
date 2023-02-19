@@ -20,15 +20,15 @@ namespace core {
         // menu gui mode needs a special shader because of uProjection is aPos basically
         if (mode == ProjectionMode::SCREEN)
         {
-            shader = DataPool::getShader("menu");
+            shader = DataPool::GetShader("menu");
         }
         else
         {
             // orthographic and and perspective camera modes can be utlilized by the default shader
-            shader = DataPool::getShader("default");
+            shader = DataPool::GetShader("default");
         }
 
-        shader->compile();
+        shader->Compile();
     }
 
     RenderBatch::~RenderBatch() 
@@ -68,22 +68,22 @@ namespace core {
         elementBuffer->BufferSubData();
 
         // use the shader and upload the shader variables
-        shader->use();
+        shader->Bind();
 
 
         switch (projectionMode)
         {
         case ProjectionMode::PERSPECTIVE:
-            shader->uploadMat4f("uProjection", Application::GetActiveScene()->GetCamera()->getProjectionMatrix());
+            shader->UploadMat4f("uProjection", Application::GetActiveScene()->GetCamera()->getProjectionMatrix());
             break;
         case ProjectionMode::ORTHOGRAPHIC:
-            shader->uploadMat4f("uProjection", Application::GetActiveScene()->GetCamera()->getOrthographicMatrix());
+            shader->UploadMat4f("uProjection", Application::GetActiveScene()->GetCamera()->getOrthographicMatrix());
             break;
         case ProjectionMode::SCREEN:
             //shader->uploadVec2f("uProjection", glm::vec2(vertices[POS_OFFSET], vertices[POS_OFFSET + 1]));
             break;
         }
-        shader->uploadMat4f("uView", Application::GetActiveScene()->GetCamera()->getViewMatrix());
+        shader->UploadMat4f("uView", Application::GetActiveScene()->GetCamera()->getViewMatrix());
 
 
         int* texArray = new int[32];
@@ -98,7 +98,7 @@ namespace core {
         }
         // upload the texture array into the shader
         // convert vector to array in order to pass the parameters through
-        shader->uploadIntArray("uTexture", textures.size(), texArray);
+        shader->UploadIntArray("uTexture", textures.size(), texArray);
         
 
 #ifdef BUILD_DEBUG
@@ -118,7 +118,7 @@ namespace core {
         {
             textures[i]->Unbind();
         }
-        shader->detach();
+        shader->Unbind();
 
         delete[] texArray;
         return 0;
