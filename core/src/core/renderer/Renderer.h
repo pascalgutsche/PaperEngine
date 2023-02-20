@@ -10,24 +10,10 @@
 
 namespace core {
 
-    struct RenderData
-    {
-        int zIndex;
-        ProjectionMode projectionMode;
-
-    protected:
-        RenderData() = default;
-    };
+    
 
     class Renderer {
     public:
-        enum RenderType
-        {
-	        NONE = 0,
-            TRIANGLE,
-            CIRCLE,
-            LINE
-        };
 
         static void DrawRectangle();
         static void DrawTriangle();
@@ -44,15 +30,19 @@ namespace core {
 
 
     private:
-        static std::vector<std::vector<RenderData*>> batches;
 
-        static Shr<VertexArray> triangleVertexArray;
-        static Shr<VertexBuffer> triangleVertexBuffer;
-        static Shr<ElementBuffer> triangleElementBuffer;
+        struct RenderData
+        {
+            static constexpr uint32_t MAX_VERTICES = 40000;
+            static constexpr uint32_t MAX_ELEMENTS = 60000;
+            static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
 
-        static constexpr uint32_t MAX_VERTICES = 40000;
-        static constexpr uint32_t MAX_ELEMENTS = 60000;
-        static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
+            static Shr<VertexArray> triangleVertexArray;
+            static Shr<VertexBuffer> triangleVertexBuffer;
+            static Shr<ElementBuffer> triangleElementBuffer;
+
+        };
+
 
 /*
     private:
