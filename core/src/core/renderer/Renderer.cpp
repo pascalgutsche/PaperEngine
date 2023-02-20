@@ -45,14 +45,7 @@ namespace core {
 
     void Renderer::Render(Shr<Camera>& camera)
     {
-        for (auto& vec : batches)
-        {
-            triangleVertexArray->ClearBuffers();
-	        for (auto* data : vec)
-	        {
-		        if (triangleVertexArray->GetVertexBuffer()->)
-	        }
-        }
+        
     }
 
     /*
