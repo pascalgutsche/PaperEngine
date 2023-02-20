@@ -5,7 +5,7 @@
 
 namespace core {
 
-	class SpriteSheet : public Component {
+	class SpriteSheet {
 		virtual ~SpriteSheet() = default;
 	};
 

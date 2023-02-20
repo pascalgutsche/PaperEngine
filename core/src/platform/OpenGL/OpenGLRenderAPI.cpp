@@ -57,8 +57,10 @@ namespace core
 		glViewport(x, y, width, height);
 	}
 
-	void OpenGLRenderAPI::DrawElements(Shr<VertexArray>& vertexArray)
+	void OpenGLRenderAPI::DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount)
 	{
-		glDrawElements(GL_TRIANGLES, vertexArray->GetElementBuffer()->GetElementCount(), GL_UNSIGNED_INT, nullptr);
+		vertexArray->Bind();
+		uint32_t count = elementCount ? elementCount : vertexArray->GetElementBuffer()->GetElementCount();
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 	}
 }

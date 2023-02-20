@@ -17,7 +17,7 @@ public:
 
 	void loadResources() override;
 	void init() override;
-	void update(float dt) override;
+	void Update() override;
 	void imgui(float dt) override;
 	void OnEvent(Event& e) override
 	{

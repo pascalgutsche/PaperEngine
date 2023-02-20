@@ -18,7 +18,7 @@ namespace core {
 
         virtual void start() = 0;
         virtual void stop() = 0;
-        virtual void update(float dt) = 0;
+        virtual void Update() = 0;
         virtual void event(Event& event) = 0;
         virtual void imgui(float dt) { }
 

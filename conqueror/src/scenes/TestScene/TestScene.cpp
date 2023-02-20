@@ -29,8 +29,8 @@ void TestScene::init() {
 }
 int selectedItem = 0;
 
-void TestScene::update(float dt) {
-
+void TestScene::Update() {
+    float dt = Application::GetDT();
     if (Input::IsKeyPressed(KEY_S)) {
         camera->position.y -= 5.0f * dt;
     }
@@ -63,9 +63,6 @@ void TestScene::update(float dt) {
     if (Input::IsKeyPressed(KEY_U)) {
         Application::ChangeScene(new TestScene());
     }
-
-
-    Render();
 }
 
 void TestScene::imgui(float dt) {

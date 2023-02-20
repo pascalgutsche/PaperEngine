@@ -15,7 +15,7 @@ namespace core {
 
         void start() override;
         void stop() override { }
-        void update(float dt) override;
+        void Update() override;
         void event(Event& event) override { }
     };
 

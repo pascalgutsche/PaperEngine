@@ -1,10 +1,11 @@
 #type vertex
 #version 460 core
-layout (location = 0) in vec2 aPos; // the position variable has attribute position 0
-layout (location = 1) in vec4 aColor; //the color of the vector
-layout (location = 2) in vec2 aTexCoord; //the coords of the texture
-layout (location = 3) in float aTexID; //The slot of the texture
-layout (location = 4) in float aCoreID;
+layout(location = 0) in vec2 aPos; // the position variable has attribute position 0
+layout(location = 1) in vec4 aColor; //the color of the vector
+layout(location = 2) in vec2 aTexCoord; //the coords of the texture
+layout(location = 3) in float aTilingFactor;
+layout(location = 4) in float aTexID; //The slot of the texture
+layout(location = 5) in int aCoreID;
 
 // camera variables
 uniform mat4 uProjection;
@@ -14,6 +15,7 @@ struct VertexOutput
 {
     vec4 Color;
     vec2 TexCoord;
+    float TilingFactor;
     float TexID;
     float CoreID;
 };
@@ -22,12 +24,13 @@ layout(location = 0) out VertexOutput Output;
 
 void main()
 {
-    gl_Position = uProjection * uView * vec4(aPos, 0.0f, 1.0f); // adjust gl_Position with the help of 'u' Factors
     Output.Color = aColor;
     Output.TexCoord = aTexCoord;
+    Output.TilingFactor = aTilingFactor;
     Output.TexID = aTexID;
     Output.CoreID = aCoreID;
-    // pipe variables from the vbo
+
+    gl_Position = uProjection * uView * vec4(aPos, 0.0f, 1.0f); // adjust gl_Position with the help of 'u' Factors
 }
 
 
@@ -35,7 +38,7 @@ void main()
 #version 460 core
 
 layout(location = 0) out vec4 display;
-layout(location = 1) out int objectID;
+//layout(location = 1) out int objectID;
 
 
 
@@ -43,8 +46,9 @@ struct VertexOutput
 {
     vec4 Color;
     vec2 TexCoord;
+    float TilingFactor;
     float TexID;
-    float CoreID
+    float CoreID;
 };
 
 layout(location = 0) in VertexOutput Input;
@@ -55,11 +59,11 @@ void main()
 {
     // if there is a desired texture, load it
     if (int(Input.TexID) >= 0) {
-        display = texture(uTexture[int(Input.TexID)], Input.TexCoord);
+        display = texture(uTexture[int(Input.TexID)], Input.TilingFactor * Input.TexCoord);
     }
     else {
         // if there is no texture, display the colors
         display = Input.Color;
     }
-    objectID = int(fCoreID);
+    //objectID = int(Input.CoreID);
 }

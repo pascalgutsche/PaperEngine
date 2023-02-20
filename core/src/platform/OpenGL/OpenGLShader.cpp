@@ -42,7 +42,7 @@ namespace core
         vertexID = glCreateShader(GL_VERTEX_SHADER);
 
         const GLchar* vsource = (const GLchar*)vertexSources.c_str();
-        glad_glShaderSource(vertexID, 1, &vsource, 0); //Retrieves the vertex shader source code
+        glShaderSource(vertexID, 1, &vsource, 0); //Retrieves the vertex shader source code
 
         glCompileShader(vertexID);
 
@@ -50,7 +50,7 @@ namespace core
         glGetShaderiv(vertexID, GL_COMPILE_STATUS, &isCompiled);
         if (isCompiled == GL_FALSE) {
             glGetShaderiv(vertexID, GL_INFO_LOG_LENGTH, &len);
-            char vertexError[1000];
+            char vertexError[1000] = {};
             glGetShaderInfoLog(vertexID, len, NULL, &vertexError[0]);
 
             LOG_CORE_ERROR("'" + filePath + "'\n\tVertex shader compilation failed.\n" + &vertexError[0]);
@@ -69,10 +69,11 @@ namespace core
         if (isCompiled == GL_FALSE) {
             glGetShaderiv(fragmentID, GL_INFO_LOG_LENGTH, &len);
             std::vector<char> v(len);
-            char fragmentError[1000];
+            char fragmentError[1000] = {};
             glGetShaderInfoLog(fragmentID, len, NULL, &fragmentError[0]);
 
             LOG_CORE_ERROR("'" + filePath + "'\n\tFragment shader compilation failed.\n" + &fragmentError[0]);
+            LOG_CORE_WARN(fragmentSources);
         }
 
         //linking
@@ -81,12 +82,13 @@ namespace core
         glAttachShader(shaderProgrammID, fragmentID);
         glLinkProgram(shaderProgrammID);
 
+        isCompiled = 0;
         //error handling
         glGetShaderiv(shaderProgrammID, GL_LINK_STATUS, &isCompiled);
 
         if (isCompiled == GL_FALSE) {
             glGetShaderiv(shaderProgrammID, GL_INFO_LOG_LENGTH, &len);
-            char linkingError[1000];
+            char linkingError[1000] = {};
             glGetShaderInfoLog(shaderProgrammID, len, NULL, &linkingError[0]);
 
             LOG_CORE_ERROR("'" + filePath + "'\n\tLinking of shaders failed!\n" + &linkingError[0]);
@@ -96,15 +98,11 @@ namespace core
     }
 
     void OpenGLShader::Bind() {
-        if (!beingUsed) {
-            glUseProgram(shaderProgrammID);
-            beingUsed = true;
-        }
+        glUseProgram(shaderProgrammID);
     }
 
     void OpenGLShader::Unbind() {
         glUseProgram(0);
-        beingUsed = false;
     }
 
     // upload different types to the shader

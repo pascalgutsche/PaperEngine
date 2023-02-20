@@ -18,7 +18,7 @@ namespace core {
 
     }
 
-    void FontRenderer::update(float dt) {
+    void FontRenderer::Update() {
 
     }
 

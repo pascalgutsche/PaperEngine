@@ -12,7 +12,6 @@ namespace core {
         bool isRunning = false;
     protected:
         Camera* camera = nullptr;
-        Renderer* renderer = nullptr;
         GameObject* activeGameObject = nullptr;
         glm::vec4 backcolor = glm::vec4();
     public:
@@ -25,16 +24,12 @@ namespace core {
         Camera* GetCamera();
         glm::vec4& GetBackcolor();
 
-        void AddGameObjectToScene(GameObject* gameObject);
         void Start();
         void Disable();
-        void SceneImgui(float dt);
         void InitGeneral();
-        void Render();
+        void OnUpdate();
 
-        Renderer* GetRenderer() const { return renderer; }
-
-        virtual void update(float dt) = 0;
+        virtual void Update() = 0;
         virtual void OnEvent(Event& e) = 0;
     private:
         virtual void imgui(float dt) {};

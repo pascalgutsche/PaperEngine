@@ -15,20 +15,32 @@ namespace core {
 
     Scene::~Scene() {
         delete camera;
-        delete renderer;
     }
 
     void Scene::InitGeneral() {
         camera = new Camera();
-        renderer = new Renderer();
 
         loadResources();
         init();
         Start();
     }
 
-    void Scene::Render()
+    void Scene::OnUpdate()
     {
+        Update();
+        Renderer::BeginRender(*camera);
+
+        //updating gameobjects and its components
+        for (Layer* layer : Application::GetLayerStack())
+        {
+            for (GameObject* gameObject : layer->GetGameObjects())
+            {
+                if (!gameObject->IsRunning()) continue;
+                gameObject->Update();
+            }
+        }
+
+        Renderer::EndRender();
     }
 
     void Scene::Start() {

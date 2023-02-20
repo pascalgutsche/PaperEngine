@@ -327,7 +327,7 @@ namespace core {
                 selected = 6912;
             if (ImGui::Selectable("LINE", selected == 6913))
                 selected = 6913;
-            RenderBatch::SetPolygonMode(selected);
+            //RenderBatch::SetPolygonMode(selected);
 
             ImGui::BeginDisabled();
             if (ImGui::TreeNode("Textures in use"))
@@ -420,6 +420,7 @@ namespace core {
 
     void ImGuiLayer::ViewPortPanel(const float dt, bool first)
     {
+        /*
         const char* name = "ViewPort: ";
         std::stringstream stream;
 
@@ -453,6 +454,7 @@ namespace core {
 
         ImGui::End();
         ImGui::PopStyleVar();
+        */
     }
 
 }

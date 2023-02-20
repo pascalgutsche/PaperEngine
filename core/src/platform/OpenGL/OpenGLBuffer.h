@@ -12,9 +12,11 @@ namespace core
 		void Bind() override;
 		void Unbind() override;
 
-		void Add(std::vector<float> data, uint32_t id) override;
-		void Update(std::vector<float> data, uint32_t id) override;
-		void Remove(uint32_t id) override;
+		void AddData(const void* data, uint32_t size) override;
+
+		void Add(std::vector<float> data, uint32_t id);
+		void Update(std::vector<float> data, uint32_t id);
+		void Remove(uint32_t id);
 
 		void ClearBuffer() override;
 
@@ -40,9 +42,9 @@ namespace core
 		void Bind() override;
 		void Unbind() override;
 
-		void Add(std::vector<unsigned int> data, uint32_t id) override;
-	    void Update(std::vector<unsigned int> data, uint32_t id) override;
-	    void Remove(uint32_t id) override;
+		void Add(std::vector<unsigned int> data, uint32_t id);
+	    void Update(std::vector<unsigned int> data, uint32_t id);
+	    void Remove(uint32_t id);
 
 		void ClearBuffer() override;
 
@@ -50,7 +52,7 @@ namespace core
 		
 	    unsigned int GetElementCount() override;
 		 
-		OpenGLElementBuffer(size_t size);
+		OpenGLElementBuffer(uint32_t* data, uint32_t size);
 	    ~OpenGLElementBuffer() override;
     private:
     	size_t size;

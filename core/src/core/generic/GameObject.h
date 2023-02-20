@@ -50,7 +50,7 @@ namespace core {
 
         bool AddComponent(Component* component);
 
-        void update(float dt);
+        void Update();
         void start();
         void stop();
         void imgui(float dt);

@@ -106,17 +106,23 @@ namespace core
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
+	void OpenGLVertexBuffer::AddData(const void* data, uint32_t size)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, vboID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+	}
+
 
 	//
 	// ELEMENT BUFFER
 	//
 
-	OpenGLElementBuffer::OpenGLElementBuffer(size_t size)
+	OpenGLElementBuffer::OpenGLElementBuffer(uint32_t* data, uint32_t size)
 		:size(size)
 	{
 		glCreateBuffers(1, &eboID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
 	}
 
 	OpenGLElementBuffer::~OpenGLElementBuffer()

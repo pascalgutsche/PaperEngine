@@ -1,49 +1,34 @@
 #pragma once
 #include "utility.h"
 
-#include "renderer/RenderBatch.h"
 #include "renderer/FrameBuffer.h"
-#include "generic/GameObject.h"
-
-#include "renderer/RenderCommand.h"
 #include "generic/Camera.h"
 
 namespace core {
 
-    
-
     class Renderer {
     public:
-
-        static void DrawRectangle();
-        static void DrawTriangle();
-        static void DrawCircle();
-        static void DrawLine();
-        static void DrawGlyphs();
-
         static void Init();
         static void Shutdown();
 
+        static void BeginRender(const Camera& camera);
+        static void EndRender();
 
-        static void SubmitData(RenderData* renderData);
-        static void Render(Shr<Camera>& camera);
+        static void Render();
 
+        static void DrawRectangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID = -1);
+        static void DrawRectangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
+        //static void DrawTriangle();
+        //static void DrawCircle();
+        //static void DrawLine();
+        //static void DrawGlyphs();
 
     private:
 
-        struct RenderData
-        {
-            static constexpr uint32_t MAX_VERTICES = 40000;
-            static constexpr uint32_t MAX_ELEMENTS = 60000;
-            static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
+        static void StartBatch();
+        static void NextBatch();
 
-            static Shr<VertexArray> triangleVertexArray;
-            static Shr<VertexBuffer> triangleVertexBuffer;
-            static Shr<ElementBuffer> triangleElementBuffer;
-
-        };
-
-
+        
 /*
     private:
         static Renderer* instance;

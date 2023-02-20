@@ -24,12 +24,11 @@ namespace core {
 
         void start() override;
         void stop() override;
-        void update(float dt) override;
+        void Update() override;
         void imgui(float dt) override;
         void event(Event& event) override { }
 
-        void UpdateColor(glm::vec4 color);
-        void UpdateTexture(Shr<Texture> texture);
+        //void UpdateTexture(Shr<Texture> texture);
 
         
 

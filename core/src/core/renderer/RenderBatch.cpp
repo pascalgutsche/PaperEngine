@@ -1,5 +1,5 @@
 #include "_Core.h"
-
+/*
 #include "renderer/RenderBatch.h"
 #include "utils/DataPool.h"
 #include "generic/Window.h"
@@ -368,3 +368,4 @@ namespace core {
     }
 
 }
+*/

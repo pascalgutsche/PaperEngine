@@ -127,9 +127,7 @@ namespace  core
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
-		virtual void Add(std::vector<float> data, uint32_t id) = 0;
-		virtual void Update(std::vector<float> data, uint32_t id) = 0;
-		virtual void Remove(uint32_t id) = 0;
+		virtual void AddData(const void* data, uint32_t size) = 0;
 
 		virtual void ClearBuffer() = 0;
 
@@ -155,10 +153,6 @@ namespace  core
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
-		virtual void Add(std::vector<unsigned int> data, uint32_t id) = 0;
-		virtual void Update(std::vector<unsigned int> data, uint32_t id) = 0;
-		virtual void Remove(uint32_t id) = 0;
-
 		virtual void ClearBuffer() = 0;
 
 		virtual void BufferSubData() = 0;
@@ -167,6 +161,6 @@ namespace  core
 
 		virtual ~ElementBuffer() = default;
 
-		static Shr<ElementBuffer> CreateBuffer(size_t size);
+		static Shr<ElementBuffer> CreateBuffer(uint32_t* data, uint32_t size);
 	};
 }

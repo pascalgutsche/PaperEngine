@@ -53,11 +53,11 @@ namespace core {
         return true;
     }
 
-    void GameObject::update(float dt)
+    void GameObject::Update()
 	{
         // update gameObject, in order to display moving changes
         for (auto component : components) {
-            component->update(dt);
+            component->Update();
         }
     }
 

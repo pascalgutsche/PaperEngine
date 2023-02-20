@@ -20,12 +20,12 @@ namespace core
 		return nullptr;
 	}
 
-	Shr<ElementBuffer> ElementBuffer::CreateBuffer(size_t size)
+	Shr<ElementBuffer> ElementBuffer::CreateBuffer(uint32_t* data, uint32_t size)
 	{
 		switch (RenderAPI::GetAPI())
 		{
 		case RenderAPI::NONE: CORE_ASSERT(false, "'NONE' is a non valid API"); return nullptr;
-		case RenderAPI::OPENGL: return MakeShr<OpenGLElementBuffer>(size);
+		case RenderAPI::OPENGL: return MakeShr<OpenGLElementBuffer>(data, size);
 		case RenderAPI::VULKAN: CORE_ASSERT(false, "'VULKAN' is currently a not supportet API"); return nullptr;;
 		}
 

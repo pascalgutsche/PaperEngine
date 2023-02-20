@@ -3,6 +3,7 @@
 #include "generic/Application.h"
 #include "event/KeyCodes.h"
 #include "event/Input.h"
+#include "renderer/RenderCommand.h"
 
 #include "utils/Core.h"
 
@@ -149,7 +150,7 @@ namespace core {
 					for (Layer* layer : layer_stack)
 						layer->update(dt);
 
-					currentScene->update(dt);
+					currentScene->OnUpdate();
 
 					imguilayer->end();
 					
