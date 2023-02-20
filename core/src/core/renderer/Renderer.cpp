@@ -36,11 +36,7 @@ namespace core {
 
     void Renderer::SubmitData(RenderData* renderData)
     {
-        if (batches.size() < renderData->zIndex + 1)
-        {
-            batches.resize(renderData->zIndex, std::vector<RenderData*>());
-        }
-        batches[renderData->zIndex].push_back(renderData);
+
     } 
 
     void Renderer::Render(Shr<Camera>& camera)
