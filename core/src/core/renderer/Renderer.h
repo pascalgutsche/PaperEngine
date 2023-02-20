@@ -19,27 +19,6 @@ namespace core {
         RenderData() = default;
     };
 
-    struct TriangleData : RenderData
-    {
-        std::vector<float> vertices;
-        std::vector<unsigned int> elements;
-        //std::vector<Shr<Texture>> textures;
-
-        TriangleData()
-        {
-            vertices.resize(0);
-            elements.resize(0);
-            //textures.resize(0);
-            zIndex = 0;
-            projectionMode = ProjectionMode::PERSPECTIVE;
-        }
-
-    private:
-        int id = 0;
-
-        std::vector<Shr<Texture>> oldTextures;
-    };
-
     class Renderer {
     public:
         enum RenderType
@@ -49,6 +28,12 @@ namespace core {
             CIRCLE,
             LINE
         };
+
+        static void DrawRectangle();
+        static void DrawTriangle();
+        static void DrawCircle();
+        static void DrawLine();
+        static void DrawGlyphs();
 
         static void Init();
         static void Shutdown();

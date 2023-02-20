@@ -28,6 +28,8 @@ namespace core {
         triangleVertexArray->SetElementBuffer(triangleElementBuffer);
     }
 
+
+
     void Renderer::Shutdown()
     {
 
