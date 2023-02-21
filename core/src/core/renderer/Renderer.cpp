@@ -15,8 +15,8 @@ namespace core {
         glm::vec2 position;
         glm::vec4 color;
         glm::vec2 texCoords;
-        int texIndex;
         float tilingFactor;
+        int texIndex;
         int coreID;
     };
 
@@ -25,8 +25,8 @@ namespace core {
         glm::vec2 position;
         glm::vec4 color;
         glm::vec2 texCoords;
-        int texIndex;
         float tilingFactor;
+        int texIndex;
         int coreID;
     };
 
@@ -58,6 +58,8 @@ namespace core {
 
         glm::vec4 rectangleVertexData[4];
         glm::vec4 triangleVertexData[3];
+
+        Renderer::Stats stats;
     };
 
     static RenderData data;
@@ -71,12 +73,13 @@ namespace core {
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT2, "aTexCoord" },
             { GLSLDataType::FLOAT , "aTilingFactor"},
-            { GLSLDataType::FLOAT , "aTexID" },
-            { GLSLDataType::INT   , "aCoreID" }
+            { GLSLDataType::INT , "aTexID" },
+            { GLSLDataType::INT , "aCoreID" }
         };
 
-        data.edgeGeometryShader = DataPool::GetShader("default"); //TODO: change name
+        data.edgeGeometryShader = DataPool::GetShader("EdgeGeometryShader");
         data.edgeGeometryShader->Compile();
+
         data.rectangleVertexArray = VertexArray::CreateArray();
         data.rectangleVertexBuffer = VertexBuffer::CreateBuffer(edgeGeometryLayout, data.MAX_VERTICES * sizeof(RectangleVertex));
         data.rectangleVertexArray->SetVertexBuffer(data.rectangleVertexBuffer);
@@ -111,22 +114,17 @@ namespace core {
         delete[] rectangleElements;
 
         uint32_t* triangleElements = new uint32_t[data.MAX_ELEMENTS];
-
+        
         int offsetTriangle = 0;
-        for (int i = 0; i < data.MAX_ELEMENTS; i += 6)
+        for (int i = 0; i < data.MAX_ELEMENTS; i += 3)
         {
-            // first triangle
-            triangleElements[i + 0] = offsetTriangle + 3;
-            triangleElements[i + 1] = offsetTriangle + 2;
+            triangleElements[i + 0] = offsetTriangle + 2;
+            triangleElements[i + 1] = offsetTriangle + 1;
             triangleElements[i + 2] = offsetTriangle + 0;
-            // second triangle              
-            triangleElements[i + 3] = offsetTriangle + 0;
-            triangleElements[i + 4] = offsetTriangle + 2;
-            triangleElements[i + 5] = offsetTriangle + 1;
 
-            offsetTriangle += 4;
+            offsetTriangle += 3;
         }
-
+        
         Shr<ElementBuffer> triangleElementbuffer = ElementBuffer::CreateBuffer(triangleElements, data.MAX_ELEMENTS);
         data.triangleVertexArray->SetElementBuffer(triangleElementbuffer);
         delete[] triangleElements;
@@ -162,6 +160,8 @@ namespace core {
         Render();
     }
 
+    
+
     void Renderer::StartBatch()
     {
         data.rectangleElementCount = 0;
@@ -183,23 +183,28 @@ namespace core {
 	    if (data.rectangleElementCount)
 	    {
             const uint32_t dataSize = (uint32_t)((uint8_t*)data.rectangleVertexBufferPtr - (uint8_t*)data.rectangleVertexBufferBase);
-            data.triangleVertexBuffer->AddData(data.rectangleVertexBufferBase, dataSize);
+            data.rectangleVertexBuffer->AddData(data.rectangleVertexBufferBase, dataSize);
+            data.stats.dataSize += dataSize;
 
             data.edgeGeometryShader->Bind();
             data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
-            RenderCommand::DrawElements(data.triangleVertexArray, data.rectangleElementCount);
+            RenderCommand::DrawElements(data.rectangleVertexArray, data.rectangleElementCount);
+            data.stats.drawCalls++;
 	    }
 
         if (data.triangleElementCount)
         {
             const uint32_t dataSize = (uint32_t)((uint8_t*)data.triangleVertexBufferPtr - (uint8_t*)data.triangleVertexBufferBase);
             data.triangleVertexBuffer->AddData(data.triangleVertexBufferBase, dataSize);
+            data.stats.dataSize += dataSize;
+
 
             data.edgeGeometryShader->Bind();
             data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
             RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
+            data.stats.drawCalls++;
         }
     }
 
@@ -232,10 +237,65 @@ namespace core {
             data.rectangleVertexBufferPtr->texIndex = texIndex;
             data.rectangleVertexBufferPtr->coreID = coreID;
             data.rectangleVertexBufferPtr++;
+
+            data.stats.vertexCount++;
         }
 
         data.rectangleElementCount += 6;
+
+        data.stats.elementCount += 6;
+        data.stats.objectCount++;
     }
+
+    void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+    
+        DrawTriangle(transform, color, coreID);
+    }
+    
+    void Renderer::DrawTriangle(glm::mat4 transform, glm::vec4 color, core_id coreID)
+    {
+        const uint32_t triangleVertexCount = 3;
+        const float texIndex = -1.0f;
+        const glm::vec2 texCoords[3] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f } };
+        const float tilingFactor = 1.0f;
+    
+        if (data.triangleElementCount >= data.MAX_ELEMENTS)
+        {
+            NextBatch();
+        }
+    
+        for (int i = 0; i < triangleVertexCount; i++)
+        {
+            data.triangleVertexBufferPtr->position = transform * data.triangleVertexData[i];
+            data.triangleVertexBufferPtr->color = color;
+            data.triangleVertexBufferPtr->texCoords = texCoords[i];
+            data.triangleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.triangleVertexBufferPtr->texIndex = texIndex;
+            data.triangleVertexBufferPtr->coreID = coreID;
+            data.triangleVertexBufferPtr++;
+
+            data.stats.vertexCount++;
+        }
+    
+        data.triangleElementCount += 3;
+
+        data.stats.elementCount += 3;
+        data.stats.objectCount++;
+    }
+
+    Renderer::Stats Renderer::GetStats()
+    {
+        return data.stats;
+    }
+
+    void Renderer::ClearStats()
+    {
+        memset(&data.stats, 0, sizeof(Stats));
+    }
+
 
 
     /*

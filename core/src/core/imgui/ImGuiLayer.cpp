@@ -301,18 +301,21 @@ namespace core {
         }
 
 
-        if (ImGui::TreeNode("Renderer"))
+        if (ImGui::TreeNode("Render Stats"))
         {
-            stream << "Draw calls: N/A";// << RenderBatch::GetDrawCalls();
+            stream << "Draw calls: " << Renderer::GetStats().drawCalls;
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Batch count: N/A";// << Renderer::GetBatchCount();
+            stream << "Object count: " << Renderer::GetStats().objectCount;
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Vertex count: N/A";// << Renderer::GetVerticesCount();
+            stream << "Data size: " << Renderer::GetStats().dataSize << " Bytes";
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Sprite count: N/A";// << Renderer::GetSpriteCount();
+            stream << "Vertex count: " << Renderer::GetStats().vertexCount;
+            ImGui::BulletText(stream.str().c_str()); stream.str("");
+
+            stream << "Indices count: " << Renderer::GetStats().elementCount;
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
             ImGui::Text("");

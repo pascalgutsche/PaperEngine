@@ -42,7 +42,7 @@ namespace core
         vertexID = glCreateShader(GL_VERTEX_SHADER);
 
         const GLchar* vsource = (const GLchar*)vertexSources.c_str();
-        glShaderSource(vertexID, 1, &vsource, 0); //Retrieves the vertex shader source code
+        glad_glShaderSource(vertexID, 1, &vsource, 0); //Retrieves the vertex shader source code
 
         glCompileShader(vertexID);
 
@@ -60,7 +60,7 @@ namespace core
         fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
 
         const GLchar* fsource = (const GLchar*)fragmentSources.c_str();
-        glShaderSource(fragmentID, 1, &fsource, 0); //Retrieves the fragment shader source code
+        glad_glShaderSource(fragmentID, 1, &fsource, 0); //Retrieves the fragment shader source code
 
         glCompileShader(fragmentID);
 
@@ -73,7 +73,6 @@ namespace core
             glGetShaderInfoLog(fragmentID, len, NULL, &fragmentError[0]);
 
             LOG_CORE_ERROR("'" + filePath + "'\n\tFragment shader compilation failed.\n" + &fragmentError[0]);
-            LOG_CORE_WARN(fragmentSources);
         }
 
         //linking
@@ -82,9 +81,8 @@ namespace core
         glAttachShader(shaderProgrammID, fragmentID);
         glLinkProgram(shaderProgrammID);
 
-        isCompiled = 0;
         //error handling
-        glGetShaderiv(shaderProgrammID, GL_LINK_STATUS, &isCompiled);
+        //glGetShaderiv(shaderProgrammID, GL_LINK_STATUS, &isCompiled);
 
         if (isCompiled == GL_FALSE) {
             glGetShaderiv(shaderProgrammID, GL_INFO_LOG_LENGTH, &len);

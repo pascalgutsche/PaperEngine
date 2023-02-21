@@ -14,26 +14,13 @@ namespace core
 
 		void AddData(const void* data, uint32_t size) override;
 
-		void Add(std::vector<float> data, uint32_t id);
-		void Update(std::vector<float> data, uint32_t id);
-		void Remove(uint32_t id);
-
-		void ClearBuffer() override;
-
-		void BufferSubData() override;
-
 		const BufferLayout& GetLayout() override;
 
-		OpenGLVertexBuffer(BufferLayout& layout, unsigned int size);
+		OpenGLVertexBuffer(BufferLayout& layout, uint32_t size);
 		~OpenGLVertexBuffer() override;
 	private:
-		size_t size;
-		BufferLayout layout;
-		std::vector<Vertex*> vertices;
-		std::vector<float> rawVertices;
-		bool reloadData = false;
 		uint32_t vboID;
-		void ConvertVerticesToRawData();
+		BufferLayout layout;
 	};
 
 	class OpenGLElementBuffer : public ElementBuffer
@@ -41,28 +28,13 @@ namespace core
     public:
 		void Bind() override;
 		void Unbind() override;
-
-		void Add(std::vector<unsigned int> data, uint32_t id);
-	    void Update(std::vector<unsigned int> data, uint32_t id);
-	    void Remove(uint32_t id);
-
-		void ClearBuffer() override;
-
-		void BufferSubData() override;
 		
 	    unsigned int GetElementCount() override;
 		 
-		OpenGLElementBuffer(uint32_t* data, uint32_t size);
+		OpenGLElementBuffer(uint32_t* data, uint32_t count);
 	    ~OpenGLElementBuffer() override;
     private:
-    	size_t size;
-
-		std::vector<Element*> elements;
-		std::vector<unsigned int> rawElements;
-		bool reloadData = false;
-
 		uint32_t eboID;
-
-		void ConvertElementsToRawData();
+    	uint32_t count;
     };
 }

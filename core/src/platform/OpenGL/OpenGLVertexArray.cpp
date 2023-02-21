@@ -12,12 +12,12 @@ namespace core
 			case GLSLDataType::FLOAT:	return GL_FLOAT;
 			case GLSLDataType::FLOAT3:  return GL_FLOAT;
 			case GLSLDataType::FLOAT4:  return GL_FLOAT;
-			case GLSLDataType::INT:		return GL_FLOAT;
-			case GLSLDataType::INT2:	return GL_FLOAT;
+			case GLSLDataType::INT:		return GL_INT;
+			case GLSLDataType::INT2:	return GL_INT;
 			case GLSLDataType::INT3:	return GL_INT;
 			case GLSLDataType::INT4:	return GL_INT;
-			case GLSLDataType::MAT3:	return GL_INT;
-			case GLSLDataType::MAT4:	return GL_INT;
+			case GLSLDataType::MAT3:	return GL_FLOAT;
+			case GLSLDataType::MAT4:	return GL_FLOAT;
 			case GLSLDataType::BOOL:	return GL_BOOL;
 			default:;
 		}
@@ -37,12 +37,6 @@ namespace core
 		glDeleteVertexArrays(1, &vaoID);
 	}
 
-	void OpenGLVertexArray::ClearBuffers()
-	{
-		vertexBuffer->ClearBuffer();
-		elementBuffer->ClearBuffer();
-	}
-
 	void OpenGLVertexArray::SetVertexBuffer(Shr<VertexBuffer>& vertexBuffer)
 	{
 		Bind();
@@ -54,17 +48,39 @@ namespace core
 		const BufferLayout& layout = vertexBuffer->GetLayout();
 		for (const BufferElement& element : layout)
 		{
-			glVertexAttribPointer(index,
-				element.count,
-				GLSLDataTypeToOpenGlBaseType(element.type),
-				element.normalized ? GL_TRUE : GL_FALSE,
-				layout.GetStride(),
-				(const void*)element.offset);
-			glEnableVertexAttribArray(index);
+			switch (element.type)
+			{
+			case GLSLDataType::FLOAT:
+			case GLSLDataType::FLOAT2: 
+			case GLSLDataType::FLOAT3: 
+			case GLSLDataType::FLOAT4:
+				glVertexAttribPointer(index,
+					element.count,
+					GLSLDataTypeToOpenGlBaseType(element.type),
+					element.normalized ? GL_TRUE : GL_FALSE,
+					layout.GetStride(),
+					(const void*)element.offset);
+				glEnableVertexAttribArray(index);
+				break;
+			case GLSLDataType::INT: 
+			case GLSLDataType::INT2:
+			case GLSLDataType::INT3:
+			case GLSLDataType::INT4:
+			case GLSLDataType::BOOL:
+				glVertexAttribIPointer(index,
+					element.count,
+					GLSLDataTypeToOpenGlBaseType(element.type),
+					layout.GetStride(),
+					(const void*)element.offset);
+				glEnableVertexAttribArray(index);
+				break;
+			}
+			
 			index++;
 		}
 
 		this->vertexBuffer = vertexBuffer;
+		Unbind();
 	}
 
 	void OpenGLVertexArray::SetElementBuffer(Shr<ElementBuffer>& elementBuffer)
@@ -72,16 +88,25 @@ namespace core
 		Bind();
 		elementBuffer->Bind();
 		this->elementBuffer = elementBuffer;
+		Unbind();
 	}
 
 	void OpenGLVertexArray::Bind()
 	{
+		if (vertexBuffer)
+			vertexBuffer->Bind();
+		if (elementBuffer)
+			elementBuffer->Bind();
 		glBindVertexArray(vaoID);
 	}
 
 	void OpenGLVertexArray::Unbind()
 	{
 		glBindVertexArray(0);
+		if (vertexBuffer)
+			vertexBuffer->Unbind();
+		if (elementBuffer)
+			elementBuffer->Unbind();
 	}
 
 }

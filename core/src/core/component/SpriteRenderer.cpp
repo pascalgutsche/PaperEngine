@@ -44,7 +44,12 @@ namespace core {
             // set the dirty bit (variable that is being checked in order to display changes)
             gameObject->transform.copy(*this->lastTransform);
         }
-        Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
+        if (gameObject->GetProjectionMode() == ProjectionMode::PERSPECTIVE)
+			Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
+        else
+    		Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
+
+
     }
 
     static float timeUntilRefresh = 0.0f;

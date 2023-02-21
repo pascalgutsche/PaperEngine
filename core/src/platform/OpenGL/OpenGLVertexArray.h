@@ -12,8 +12,6 @@ namespace core
 		void Bind() override;
 		void Unbind() override;
 
-		void ClearBuffers() override;
-
 		void SetVertexBuffer(Shr<VertexBuffer>& vertexBuffer) override;
 		void SetElementBuffer(Shr<ElementBuffer>& elementBuffer) override;
 

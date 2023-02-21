@@ -113,13 +113,6 @@ namespace  core
 			}
 		}
 	};
-
-	struct Vertex
-	{
-		std::vector<float> data;
-
-		uint32_t id;
-	};
 	
 	class VertexBuffer
 	{
@@ -129,22 +122,11 @@ namespace  core
 
 		virtual void AddData(const void* data, uint32_t size) = 0;
 
-		virtual void ClearBuffer() = 0;
-
-		virtual void BufferSubData() = 0;
-
 		virtual const BufferLayout& GetLayout() = 0;
 
 		virtual ~VertexBuffer() = default;
 
-		static Shr<VertexBuffer> CreateBuffer(BufferLayout& layout, unsigned int size);
-	};
-
-	struct Element
-	{
-		std::vector<unsigned int> data;
-
-		uint32_t id;
+		static Shr<VertexBuffer> CreateBuffer(BufferLayout& layout, uint32_t size);
 	};
 
 	class ElementBuffer
@@ -153,14 +135,10 @@ namespace  core
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
-		virtual void ClearBuffer() = 0;
-
-		virtual void BufferSubData() = 0;
-		
 		virtual unsigned int GetElementCount() = 0;
 
 		virtual ~ElementBuffer() = default;
 
-		static Shr<ElementBuffer> CreateBuffer(uint32_t* data, uint32_t size);
+		static Shr<ElementBuffer> CreateBuffer(uint32_t* data, uint32_t count);
 	};
 }

@@ -18,10 +18,24 @@ namespace core {
 
         static void DrawRectangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID = -1);
         static void DrawRectangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
-        //static void DrawTriangle();
-        //static void DrawCircle();
+
+        static void DrawTriangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID = -1);
+        static void DrawTriangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
+
+    	//static void DrawCircle();
         //static void DrawLine();
         //static void DrawGlyphs();
+
+        struct Stats
+        {
+            uint32_t drawCalls = 0;
+            uint32_t objectCount = 0;
+            uint32_t dataSize = 0;
+            uint32_t vertexCount = 0;
+            uint32_t elementCount = 0;
+        };
+        static Stats GetStats();
+        static void ClearStats();
 
     private:
 
@@ -29,35 +43,8 @@ namespace core {
         static void NextBatch();
 
         
-/*
-    private:
-        static Renderer* instance;
 
-        const int MAX_BATCH_SIZE = 1000;
-        std::vector<RenderBatch*> batches;
-        std::vector<GameObject*> game_objects_in_use;
-        FramebufferSpecification properties;
-        Shr<Framebuffer> framebuffer = nullptr;
-
-        int mouseHoverID[2] = { -1, -1 };
-        int mouseClickedID[2] = { -1, -1 };
-        bool pressed = false;
-
-        inline static int sprites_count = 0;
-        inline static int vertex_count = 0;
-
-        glm::vec2 viewportSize;
-    public:
-        Renderer();
-        ~Renderer();
-        void add(RenderData* renderData);
-        void remove(RenderData* renderData);
-        // this function has to be called on every frame (update)
-        void render(float dt);
-        void updateGameObjects(float dt);
-
-        Shr<Framebuffer> GetFrameBuffer() const { return framebuffer; }
-        */
+		
     };
 
 }

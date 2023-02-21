@@ -62,5 +62,6 @@ namespace core
 		vertexArray->Bind();
 		uint32_t count = elementCount ? elementCount : vertexArray->GetElementBuffer()->GetElementCount();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		vertexArray->Unbind();
 	}
 }

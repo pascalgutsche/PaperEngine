@@ -4,7 +4,7 @@ layout(location = 0) in vec2 aPos; // the position variable has attribute positi
 layout(location = 1) in vec4 aColor; //the color of the vector
 layout(location = 2) in vec2 aTexCoord; //the coords of the texture
 layout(location = 3) in float aTilingFactor;
-layout(location = 4) in float aTexID; //The slot of the texture
+layout(location = 4) in int aTexID; //The slot of the texture
 layout(location = 5) in int aCoreID;
 
 // camera variables
@@ -16,11 +16,11 @@ struct VertexOutput
     vec4 Color;
     vec2 TexCoord;
     float TilingFactor;
-    float TexID;
-    float CoreID;
+    int TexID;
+    int CoreID;
 };
 
-layout(location = 0) out VertexOutput Output;
+flat layout(location = 0) out VertexOutput Output;
 
 void main()
 {
@@ -47,19 +47,19 @@ struct VertexOutput
     vec4 Color;
     vec2 TexCoord;
     float TilingFactor;
-    float TexID;
-    float CoreID;
+    int TexID;
+    int CoreID;
 };
 
-layout(location = 0) in VertexOutput Input;
+flat layout(location = 0) in VertexOutput Input;
 
 layout(binding = 0) uniform sampler2D uTexture[32];
 
 void main()
 {
     // if there is a desired texture, load it
-    if (int(Input.TexID) >= 0) {
-        display = texture(uTexture[int(Input.TexID)], Input.TilingFactor * Input.TexCoord);
+    if (Input.TexID >= 0) {
+        display = texture(uTexture[Input.TexID], Input.TilingFactor * Input.TexCoord);
     }
     else {
         // if there is no texture, display the colors

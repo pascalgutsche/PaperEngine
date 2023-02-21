@@ -28,6 +28,7 @@ namespace core {
     void Scene::OnUpdate()
     {
         Update();
+        Renderer::ClearStats();
         Renderer::BeginRender(*camera);
 
         //updating gameobjects and its components
