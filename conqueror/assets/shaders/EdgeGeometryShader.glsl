@@ -57,12 +57,10 @@ layout(binding = 0) uniform sampler2D uTexture[32];
 
 void main()
 {
-    // if there is a desired texture, load it
     if (Input.TexID >= 0) {
-        display = texture(uTexture[Input.TexID], Input.TilingFactor * Input.TexCoord);
+        display = texture(uTexture[Input.TexID], Input.TexCoord);
     }
     else {
-        // if there is no texture, display the colors
         display = Input.Color;
     }
     //objectID = int(Input.CoreID);

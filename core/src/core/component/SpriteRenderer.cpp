@@ -14,7 +14,7 @@
 namespace core {
     
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture)
-        : color(color), sprite(new Sprite(nullptr)) { }
+        : color(color), sprite(new Sprite(texture)) { }
 
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Sprite* sprite)
 	    : color(color), sprite(sprite) { }
@@ -44,11 +44,18 @@ namespace core {
             // set the dirty bit (variable that is being checked in order to display changes)
             gameObject->transform.copy(*this->lastTransform);
         }
-        if (gameObject->GetProjectionMode() == ProjectionMode::PERSPECTIVE)
-			Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
-        else
-    		Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
 
+        if (sprite->GetTexture())
+            Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, sprite->GetTexture(), 1.0f, color, gameObject->GetObjectID());
+        else
+            Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
+
+
+        //if (Utils::randRange(0, 10) < 1)
+		//	
+        //else
+    	//	Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
+        //
 
     }
 

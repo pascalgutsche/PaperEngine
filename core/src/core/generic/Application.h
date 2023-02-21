@@ -29,6 +29,7 @@ namespace core {
 		bool imgui_enabled = true; int imgui_enabled_queue = 0;
 
 		bool onWindowClose(WindowCloseEvent& e);
+		bool onWindowResize(WindowResizeEvent& e);
 		bool onKeyPressed(KeyPressedEvent& e);
 
 		void ProcessQueues();
@@ -68,7 +69,7 @@ namespace core {
 		static ImGuiLayer& GetImGuiLayer() { return *GetInstance()->imguilayer; }
 		static LayerStack& GetLayerStack() { return GetInstance()->layer_stack; }
 	};
-	
+
 	//defined by client
 	Application* createApplication();
 }

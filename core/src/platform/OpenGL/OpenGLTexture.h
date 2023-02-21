@@ -15,9 +15,11 @@ namespace core
 		void Bind(unsigned slot) override;
 		void Unbind() override;
 
-		int GetID() override;
+		uint32_t GetID() const override;
 		int GetWidth() override;
 		int GetHeight() override;
+
+		bool operator==(const Texture& other) const override;
 
 		std::string GetFilePath() override;
 		std::string GetName() override;
@@ -32,7 +34,7 @@ namespace core
 		int height;
 		int channels;
 
-		unsigned int texID;
+		uint32_t texID;
 
 		bool Init(std::string path);
 	};

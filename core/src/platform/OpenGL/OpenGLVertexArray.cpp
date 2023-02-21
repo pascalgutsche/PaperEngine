@@ -7,19 +7,19 @@ namespace core
 {
 	static GLenum GLSLDataTypeToOpenGlBaseType(GLSLDataType type)
 	{
-		switch (type) {
-			case GLSLDataType::FLOAT2:  return GL_FLOAT;
-			case GLSLDataType::FLOAT:	return GL_FLOAT;
-			case GLSLDataType::FLOAT3:  return GL_FLOAT;
-			case GLSLDataType::FLOAT4:  return GL_FLOAT;
-			case GLSLDataType::INT:		return GL_INT;
-			case GLSLDataType::INT2:	return GL_INT;
-			case GLSLDataType::INT3:	return GL_INT;
-			case GLSLDataType::INT4:	return GL_INT;
-			case GLSLDataType::MAT3:	return GL_FLOAT;
-			case GLSLDataType::MAT4:	return GL_FLOAT;
-			case GLSLDataType::BOOL:	return GL_BOOL;
-			default:;
+		switch (type)
+		{
+			case GLSLDataType::FLOAT:    return GL_FLOAT;
+			case GLSLDataType::FLOAT2:   return GL_FLOAT;
+			case GLSLDataType::FLOAT3:   return GL_FLOAT;
+			case GLSLDataType::FLOAT4:   return GL_FLOAT;
+			case GLSLDataType::MAT3:     return GL_FLOAT;
+			case GLSLDataType::MAT4:     return GL_FLOAT;
+			case GLSLDataType::INT:      return GL_INT;
+			case GLSLDataType::INT2:     return GL_INT;
+			case GLSLDataType::INT3:     return GL_INT;
+			case GLSLDataType::INT4:     return GL_INT;
+			case GLSLDataType::BOOL:     return GL_BOOL;
 		}
 
 		CORE_ASSERT(false, "unknown GLSLDataType");
@@ -50,30 +50,30 @@ namespace core
 		{
 			switch (element.type)
 			{
-			case GLSLDataType::FLOAT:
-			case GLSLDataType::FLOAT2: 
-			case GLSLDataType::FLOAT3: 
-			case GLSLDataType::FLOAT4:
-				glVertexAttribPointer(index,
-					element.count,
-					GLSLDataTypeToOpenGlBaseType(element.type),
-					element.normalized ? GL_TRUE : GL_FALSE,
-					layout.GetStride(),
-					(const void*)element.offset);
-				glEnableVertexAttribArray(index);
-				break;
-			case GLSLDataType::INT: 
-			case GLSLDataType::INT2:
-			case GLSLDataType::INT3:
-			case GLSLDataType::INT4:
-			case GLSLDataType::BOOL:
-				glVertexAttribIPointer(index,
-					element.count,
-					GLSLDataTypeToOpenGlBaseType(element.type),
-					layout.GetStride(),
-					(const void*)element.offset);
-				glEnableVertexAttribArray(index);
-				break;
+				case GLSLDataType::FLOAT:
+				case GLSLDataType::FLOAT2: 
+				case GLSLDataType::FLOAT3: 
+				case GLSLDataType::FLOAT4:
+					glVertexAttribPointer(index,
+						element.count,
+						GLSLDataTypeToOpenGlBaseType(element.type),
+						element.normalized ? GL_TRUE : GL_FALSE,
+						layout.GetStride(),
+						(const void*)element.offset);
+					glEnableVertexAttribArray(index);
+					break;
+				case GLSLDataType::INT: 
+				case GLSLDataType::INT2:
+				case GLSLDataType::INT3:
+				case GLSLDataType::INT4:
+				case GLSLDataType::BOOL:
+					glVertexAttribIPointer(index,
+						element.count,
+						GLSLDataTypeToOpenGlBaseType(element.type),
+						layout.GetStride(),
+						(const void*)element.offset);
+					glEnableVertexAttribArray(index);
+					break;
 			}
 			
 			index++;
@@ -102,7 +102,7 @@ namespace core
 
 	void OpenGLVertexArray::Unbind()
 	{
-		glBindVertexArray(0);
+		//glBindVertexArray(0);
 		if (vertexBuffer)
 			vertexBuffer->Unbind();
 		if (elementBuffer)

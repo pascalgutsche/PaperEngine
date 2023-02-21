@@ -53,6 +53,11 @@ namespace core {
 
 
 
+        std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
+        uint32_t rectangleTextureSlotIndex = 0;
+
+        std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> triangleTextureSlots;
+        uint32_t triangleTextureSlotIndex = 0;
 
         Camera camera;
 
@@ -63,6 +68,7 @@ namespace core {
     };
 
     static RenderData data;
+    static int texSlots[data.MAX_TEXTURE_SLOTS];
 
     void Renderer::Init()
     {
@@ -98,13 +104,13 @@ namespace core {
         for (int i = 0; i < data.MAX_ELEMENTS; i += 6)
         {
             // first triangle
-            rectangleElements[i + 0] = offsetRectangle + 3;
-            rectangleElements[i + 1] = offsetRectangle + 2;
-            rectangleElements[i + 2] = offsetRectangle + 0;
+            rectangleElements[i + 0] = offsetRectangle + 0;
+            rectangleElements[i + 1] = offsetRectangle + 1;
+            rectangleElements[i + 2] = offsetRectangle + 2;
             // second triangle               
-            rectangleElements[i + 3] = offsetRectangle + 0;
-            rectangleElements[i + 4] = offsetRectangle + 2;
-            rectangleElements[i + 5] = offsetRectangle + 1;
+            rectangleElements[i + 3] = offsetRectangle + 2;
+            rectangleElements[i + 4] = offsetRectangle + 3;
+            rectangleElements[i + 5] = offsetRectangle + 0;
 
             offsetRectangle += 4;
         }
@@ -137,6 +143,11 @@ namespace core {
         data.triangleVertexData[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
         data.triangleVertexData[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
         data.triangleVertexData[2] = glm::vec4( 0.0f,  0.5f, 0.0f, 1.0f);
+
+        for (uint32_t i = 0; i < data.MAX_TEXTURE_SLOTS; i++)
+        {
+            texSlots[i] = i;
+        }
     }
 
 
@@ -145,6 +156,11 @@ namespace core {
     {
         delete[] data.rectangleVertexBufferBase;
         delete[] data.triangleVertexBufferBase;
+    }
+
+    void Renderer::ResizeWindow(uint32_t width, uint32_t height)
+    {
+        RenderCommand::SetViewPort(0, 0, width, height);
     }
 
     void Renderer::BeginRender(const Camera& camera)
@@ -166,9 +182,11 @@ namespace core {
     {
         data.rectangleElementCount = 0;
         data.rectangleVertexBufferPtr = data.rectangleVertexBufferBase;
+        data.rectangleTextureSlotIndex = 0;
 
         data.triangleElementCount = 0;
         data.triangleVertexBufferPtr = data.triangleVertexBufferBase;
+        data.triangleTextureSlotIndex = 0;
     }
 
     void Renderer::NextBatch()
@@ -186,11 +204,20 @@ namespace core {
             data.rectangleVertexBuffer->AddData(data.rectangleVertexBufferBase, dataSize);
             data.stats.dataSize += dataSize;
 
+            //bind textures
+            for (uint32_t i = 0; i < data.rectangleTextureSlotIndex; i++)
+                data.rectangleTextureSlots[i]->Bind(i);
+
             data.edgeGeometryShader->Bind();
             data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
+            data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
             RenderCommand::DrawElements(data.rectangleVertexArray, data.rectangleElementCount);
             data.stats.drawCalls++;
+
+            ////unbind textures
+            //for (uint32_t i = 0; i < data.rectangleTextureSlotIndex; i++)
+            //    data.rectangleTextureSlots[i]->Unbind();
 	    }
 
         if (data.triangleElementCount)
@@ -199,12 +226,19 @@ namespace core {
             data.triangleVertexBuffer->AddData(data.triangleVertexBufferBase, dataSize);
             data.stats.dataSize += dataSize;
 
+            //bind textures
+            for (uint32_t i = 0; i < data.triangleTextureSlotIndex; i++)
+                data.triangleTextureSlots[i]->Bind(i);
 
             data.edgeGeometryShader->Bind();
             data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
             RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
             data.stats.drawCalls++;
+
+            //unbind textures
+            for (uint32_t i = 0; i < data.triangleTextureSlotIndex; i++)
+                data.triangleTextureSlots[i]->Unbind();
         }
     }
 
@@ -214,6 +248,14 @@ namespace core {
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
         DrawRectangle(transform, color, coreID);
+    }
+
+    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+
+        DrawRectangle(transform, texture, tilingFactor, color, coreID);
     }
 
     void Renderer::DrawRectangle(glm::mat4 transform, glm::vec4 color, core_id coreID)
@@ -226,6 +268,55 @@ namespace core {
         if (data.rectangleElementCount >= data.MAX_ELEMENTS)
         {
             NextBatch();
+        }
+
+        for (int i = 0; i < rectanleVertexCount; i++)
+        {
+            data.rectangleVertexBufferPtr->position = transform * data.rectangleVertexData[i];
+            data.rectangleVertexBufferPtr->color = color;
+            data.rectangleVertexBufferPtr->texCoords = texCoords[i];
+            data.rectangleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.rectangleVertexBufferPtr->texIndex = texIndex;
+            data.rectangleVertexBufferPtr->coreID = coreID;
+            data.rectangleVertexBufferPtr++;
+
+            data.stats.vertexCount++;
+        }
+
+        data.rectangleElementCount += 6;
+
+        data.stats.elementCount += 6;
+        data.stats.objectCount++;
+    }
+
+    void Renderer::DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID)
+    {
+        const uint32_t rectanleVertexCount = 4;
+        constexpr glm::vec2 texCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+
+        if (data.rectangleElementCount >= data.MAX_ELEMENTS)
+        {
+            NextBatch();
+        }
+
+        int texIndex = -1;
+        for (uint32_t i = 0; i < data.rectangleTextureSlotIndex; i++)
+        {
+	        if (*data.rectangleTextureSlots[i] == *texture)
+	        {
+                texIndex = i;
+                break;
+	        }
+        }
+
+        if (texIndex == -1)
+        {
+            if (data.rectangleTextureSlotIndex >= data.MAX_TEXTURE_SLOTS)
+                NextBatch();
+
+            texIndex = data.rectangleTextureSlotIndex;
+            data.rectangleTextureSlots[data.rectangleTextureSlotIndex] = texture;
+            data.rectangleTextureSlotIndex++;
         }
 
         for (int i = 0; i < rectanleVertexCount; i++)

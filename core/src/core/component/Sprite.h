@@ -9,7 +9,7 @@ namespace core {
 
     class Sprite : public Component {
     private:
-        std::shared_ptr<Texture> texture;
+        Shr<Texture> texture;
         float texCoords[8];
     public:
         Sprite();

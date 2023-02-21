@@ -46,6 +46,7 @@ namespace core {
 	{
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
+		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
 		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::onKeyPressed));
 
 		for (auto it = layer_stack.end(); it != layer_stack.begin(); )
@@ -65,6 +66,13 @@ namespace core {
 		game_running = false;
 		return true;
 	}
+
+	bool Application::onWindowResize(WindowResizeEvent& e)
+	{
+		Renderer::ResizeWindow(e.getWidth(), e.getHeight());
+		return false;
+	}
+
 
 	bool Application::onKeyPressed(KeyPressedEvent& e)
 	{

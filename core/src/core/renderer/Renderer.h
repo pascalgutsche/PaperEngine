@@ -3,6 +3,7 @@
 
 #include "renderer/FrameBuffer.h"
 #include "generic/Camera.h"
+#include "Texture.h"
 
 namespace core {
 
@@ -11,16 +12,18 @@ namespace core {
         static void Init();
         static void Shutdown();
 
+        static void ResizeWindow(uint32_t width, uint32_t height);
+
         static void BeginRender(const Camera& camera);
         static void EndRender();
 
         static void Render();
 
         static void DrawRectangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID = -1);
-        static void DrawRectangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
+        static void DrawRectangle(glm::vec2 position, glm::vec2 size, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), core_id coreID = -1);
 
         static void DrawTriangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID = -1);
-        static void DrawTriangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
+
 
     	//static void DrawCircle();
         //static void DrawLine();
@@ -42,9 +45,10 @@ namespace core {
         static void StartBatch();
         static void NextBatch();
 
-        
+        static void DrawRectangle(glm::mat4 transform, glm::vec4 color, core_id coreID);
+        static void DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID);
 
-		
+        static void DrawTriangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
     };
 
 }

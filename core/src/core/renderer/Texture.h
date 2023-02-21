@@ -12,11 +12,13 @@ namespace core {
     	virtual void Bind(unsigned int slot) = 0;
         virtual void Unbind() = 0;
 
-        virtual int GetID() = 0;
+        virtual uint32_t GetID() const = 0;
         virtual int GetWidth() = 0;
         virtual int GetHeight() = 0;
         virtual std::string GetFilePath() = 0;
         virtual std::string GetName() = 0;
+
+        virtual bool operator==(const Texture& other) const = 0;
 
         virtual ~Texture() = default;
 

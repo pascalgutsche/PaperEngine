@@ -1,6 +1,8 @@
 #include "_Core.h"
 #include "OpenGLTexture.h"
 
+#include "renderer/Texture.h"
+
 #include <glad/glad.h>
 #include <STB_IMAGE/stb_image.h>
 
@@ -40,7 +42,7 @@ namespace core
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	int OpenGLTexture::GetID()
+	uint32_t OpenGLTexture::GetID() const
 	{
 		return this->texID;
 	}
@@ -53,6 +55,11 @@ namespace core
 	int OpenGLTexture::GetHeight()
 	{
 		return this->height;
+	}
+
+	bool OpenGLTexture::operator==(const Texture& other) const
+	{
+		return texID == other.GetID();
 	}
 
 	std::string OpenGLTexture::GetFilePath()

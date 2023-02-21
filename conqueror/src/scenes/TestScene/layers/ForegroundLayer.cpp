@@ -32,7 +32,7 @@ void ForegroundLayer::update(const float dt)
 	if (Input::IsKeyPressed(KEY_Y) && con)
 	{
 		con = false;
-		character2->GetComponent<SpriteRenderer>()->stop();
+		character2->stop();
 	}
 	if (Input::IsKeyPressed(KEY_T) && !con)
 	{
