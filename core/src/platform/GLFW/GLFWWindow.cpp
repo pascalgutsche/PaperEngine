@@ -23,6 +23,7 @@ namespace core
 
     GLFWWindow::~GLFWWindow()
     {
+        context->Shutdown();
         Quit();
     }
 

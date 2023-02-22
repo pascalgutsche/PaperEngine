@@ -12,6 +12,8 @@ namespace core {
 		~OpenGLContext() override = default;
 
 		void Init() override;
+		void Shutdown() override { };
+
 		void SwapBuffer() override;
 
 	private:
