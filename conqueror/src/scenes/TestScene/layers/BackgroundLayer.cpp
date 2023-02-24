@@ -15,7 +15,7 @@ void BackgroundLayer::OnAttach()
     background1->AddComponent(new SpriteRenderer(glm::vec4(0.5f, 1.0f, 0.5f, 1.0f), SpriteRenderer::RECTANGLE));
     background2->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background3->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), SpriteRenderer::RECTANGLE));
-    background4->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f), SpriteRenderer::TRIANGLE));
+    background4->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background5->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background6->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background7->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), SpriteRenderer::RECTANGLE));
@@ -43,13 +43,7 @@ void BackgroundLayer::OnDetach()
 
 void BackgroundLayer::update(const float dt)
 {
-    for (int i = 0; i < game_objects.size(); i++)
-    {
-        if (i % 2 == 0)
-			game_objects[i]->transform.rotation += i * dt * 100;
-        else
-			game_objects[i]->transform.rotation -= i * dt * 100;
-    }
+    game_objects[0]->transform.rotation += 100 * dt;
 }
 
 void BackgroundLayer::imgui(const float dt)
