@@ -13,56 +13,47 @@
 
 namespace core {
     
-    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture)
-        : color(color), sprite(new Sprite(texture)) { }
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry)
+    { Init(color, nullptr, geometry); }
 
-    SpriteRenderer::SpriteRenderer(glm::vec4 color, Sprite* sprite)
-	    : color(color), sprite(sprite) { }
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
+    { Init(color, texture, geometry); }
 
-    SpriteRenderer::~SpriteRenderer() {
-        delete sprite;
-        delete lastTransform;
-    }
-
-    void SpriteRenderer::start() {
-        // change values from the previous frame in order to check if the gameObject changed values
-        // the local lastTransform variable always holds the old values, in order to be compared to the 'new' value
-        lastTransform = gameObject->transform.copy();
-    }
-
-    void SpriteRenderer::stop()
+    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
     {
+        this->color = color;
+        this->texture = texture;
+        this->texCoords[0] = { 0.0f, 0.0f };
+        this->texCoords[1] = { 1.0f, 0.0f };
+        this->texCoords[2] = { 1.0f, 1.0f };
+        this->texCoords[3] = { 0.0f, 1.0f };
+        this->geometry = geometry;
     }
 
-
-    
-    void SpriteRenderer::Update() {
-        // check if there have been made changes to the sprite (transform of the gameObject)
-        if (!(gameObject->transform.equals(*lastTransform)))
+    void SpriteRenderer::OnUpdate() {
+        switch (geometry)
         {
-            // if it is not equal, save it to the local transform and
-            // set the dirty bit (variable that is being checked in order to display changes)
-            gameObject->transform.copy(*this->lastTransform);
+            case Geometry::RECTANGLE:
+                if (texture)
+                    Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, texture, 1.0f, color, gameObject->GetObjectID());
+                else
+					Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetObjectID());
+                break;
+            case Geometry::TRIANGLE:
+                if (texture)
+                    Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetObjectID());
+                else
+                    Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetObjectID());
+                break;
+            case Geometry::CIRCLE: 
+                break;
         }
-
-        if (sprite->GetTexture())
-            Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, sprite->GetTexture(), 1.0f, color, gameObject->GetObjectID());
-        else
-            Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
-
-
-        //if (Utils::randRange(0, 10) < 1)
-		//	
-        //else
-    	//	Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, color, gameObject->GetObjectID());
-        //
-
     }
 
     static float timeUntilRefresh = 0.0f;
     static std::vector<std::string> texturePaths;
 
-    void SpriteRenderer::imgui(float dt) {
+    void SpriteRenderer::OnImgui(float dt) {
         ImGui::Text("Component - SpriteRenderer:");
         if (ImGui::TreeNode("Color:"))
         {
@@ -109,8 +100,8 @@ namespace core {
 
                 ImGui::PushID(i);
                 if (ImGui::ImageButton((void*)texture->GetID(), ImVec2(ratio.width, ratio.height), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f), 2, ImColor(0, 0, 0, 1))) {
-                    if (this->sprite->GetTexture() != texture);
-                		//UpdateTexture(texture);
+                    //if (this->sprite->GetTexture() != texture);
+                	//	//UpdateTexture(texture);
                 }
                 ImGui::PopID();
 

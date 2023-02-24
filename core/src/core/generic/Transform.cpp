@@ -8,7 +8,7 @@ namespace core {
     Transform::Transform()
     {
         // default transform constructor sets empty values
-        init(glm::vec2(), glm::vec2(1.0f, 1.0f));
+        init(glm::vec2(), glm::vec2(1.0f, 1.0f), 0.0f);
     }
 
     Transform::~Transform()
@@ -29,18 +29,36 @@ namespace core {
 
     Transform::Transform(glm::vec2 position)
     {
-        init(position, glm::vec2(1.0f, 1.0f));
+        init(position, glm::vec2(1.0f, 1.0f), 0.0f);
     }
 
     Transform::Transform(glm::vec2 position, glm::vec2 scale)
     {
-        init(position, scale);
+        init(position, scale, 0.0f);
     }
 
-    void Transform::init(glm::vec2 position, glm::vec2 scale)
+    Transform::Transform(glm::vec2 position, glm::vec2 scale, float rotation)
     {
-        Transform::position = position;
-        Transform::scale = scale;
+        init(position, scale, rotation);
+    }
+
+    void Transform::init(glm::vec2 position, glm::vec2 scale, float rotation)
+    {
+        this->position = position;
+        this->scale = scale;
+        this->rotation = rotation;
+    }
+
+    void Transform::Update()
+    {
+        while (rotation > 359)
+        {
+            rotation -= 360;
+        }
+        while (rotation < 359)
+        {
+            rotation += 360;
+        }
     }
 
     bool Transform::equals(Transform& transform) {

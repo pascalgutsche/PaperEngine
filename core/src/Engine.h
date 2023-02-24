@@ -1,6 +1,5 @@
 #pragma once
 
-#include "core/component/Sprite.h"
 #include "core/component/SpriteRenderer.h"
 
 #include "core/event/KeyEvent.h"
@@ -25,6 +24,7 @@
 #include "layer/LayerStack.h"
 
 #include "core/renderer/Texture.h"
+
 
 #include "core/utils/Log.h"
 #include "core/utils/Utils.h"

@@ -19,10 +19,11 @@ namespace core {
 
         static void Render();
 
-        static void DrawRectangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID = -1);
-        static void DrawRectangle(glm::vec2 position, glm::vec2 size, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), core_id coreID = -1);
+        static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, core_id coreID = -1);
+        static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), core_id coreID = -1);
 
-        static void DrawTriangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID = -1);
+        static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, core_id coreID = -1);
+
 
 
     	//static void DrawCircle();

@@ -124,9 +124,9 @@ namespace core {
         int offsetTriangle = 0;
         for (int i = 0; i < data.MAX_ELEMENTS; i += 3)
         {
-            triangleElements[i + 0] = offsetTriangle + 2;
+            triangleElements[i + 0] = offsetTriangle + 0;
             triangleElements[i + 1] = offsetTriangle + 1;
-            triangleElements[i + 2] = offsetTriangle + 0;
+            triangleElements[i + 2] = offsetTriangle + 2;
 
             offsetTriangle += 3;
         }
@@ -242,17 +242,19 @@ namespace core {
         }
     }
 
-    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID)
+    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), {0.0f, 0.0f, 1.0f})
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
         DrawRectangle(transform, color, coreID);
     }
 
-    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID)
+    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
         DrawRectangle(transform, texture, tilingFactor, color, coreID);
@@ -338,9 +340,10 @@ namespace core {
         data.stats.objectCount++;
     }
 
-    void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, core_id coreID)
+    void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
     
         DrawTriangle(transform, color, coreID);

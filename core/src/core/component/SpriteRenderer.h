@@ -3,58 +3,51 @@
 #include "utility.h"
 
 #include "generic/Component.h"
-#include "generic/Transform.h"
-#include "component/Sprite.h"
+#include "event/Event.h"
 
 namespace core {
 
-    struct RenderData;
-
     class SpriteRenderer : public Component {
+    public:
+        enum Geometry
+        {
+	        NONE,
+            RECTANGLE,
+            TRIANGLE,
+            CIRCLE
+        };
+        SpriteRenderer(glm::vec4 color, Geometry geometry);
+        SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry);
+
+        ~SpriteRenderer() override { }
+
+        void Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry);
+
+        void OnStart() override { }
+        void OnStop() override { }
+        void OnUpdate() override;
+        void OnImgui(float dt) override;
+        void OnEvent(Event& event) override { }
+
+        void SetColor(glm::vec4 color) { this->color = color; }
+        void SetTexture(Shr<Texture> texture) { this->texture = texture; }
+        void SetTexCoords(glm::vec2 texCoords[4])
+        {
+            for (int i = 0; i < 4; i++)
+            {
+				this->texCoords[i] = texCoords[i];
+            }
+        }
+
+        glm::vec4 GetColor() const { return this->color; }
+        Shr<Texture> GetTexture() { return this->texture; }
+        glm::vec2* GetTexCoords() { return this->texCoords; }
+
     private:
         glm::vec4 color;
-        Sprite* sprite;
-        Transform* lastTransform = nullptr;
-        RenderData* renderData = nullptr;
-    public:
-        SpriteRenderer(glm::vec4 color, Shr<Texture> texture = nullptr);
-        SpriteRenderer(glm::vec4 color, Sprite* sprite);
-
-        virtual ~SpriteRenderer();
-
-        void start() override;
-        void stop() override;
-        void Update() override;
-        void imgui(float dt) override;
-        void event(Event& event) override { }
-
-        //void UpdateTexture(Shr<Texture> texture);
-
-        
-
-        glm::vec4 GetColor() {
-            // return current sprite color
-            return this->color;
-        }
-
-        Shr<Texture> GetTexture()
-        {
-            // return current texture that is being used in this sprite
-            return sprite->GetTexture();
-        }
-
-        float* GetTexCoords()
-        {
-            // return the coordinates of the texture that is being used in this sprite
-            return this->sprite->GetTexCoords();
-        }
-
-        void SetSprite(Sprite* sprite)
-        {
-            // set the sprite to the function parameter desired sprite
-            this->sprite = sprite;
-        }
-
+        Shr<Texture> texture;
+        glm::vec2 texCoords[4];
+        Geometry geometry;
     };
 
 }

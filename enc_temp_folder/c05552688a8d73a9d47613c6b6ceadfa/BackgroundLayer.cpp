@@ -43,13 +43,13 @@ void BackgroundLayer::OnDetach()
 
 void BackgroundLayer::update(const float dt)
 {
-    for (int i = 0; i < game_objects.size(); i++)
-    {
-        if (i % 2 == 0)
-			game_objects[i]->transform.rotation += i * dt * 100;
-        else
-			game_objects[i]->transform.rotation -= i * dt * 100;
-    }
+    //for (int i = 0; i < game_objects.size(); i++)
+    //{
+    //    if (i % 2 == 0)
+	//		game_objects[i]->transform.rotation += i * dt * 100;
+    //    else
+	//		game_objects[i]->transform.rotation -= i * dt * 100;
+    //}
 }
 
 void BackgroundLayer::imgui(const float dt)

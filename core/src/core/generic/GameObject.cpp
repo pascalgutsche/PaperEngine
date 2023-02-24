@@ -15,7 +15,7 @@ namespace core {
 
 	void GameObject::StopComponentIndex(uint32_t index)
 	{
-        components[index]->stop();
+        components[index]->OnStop();
 	}
 
 	void GameObject::DeleteComponentIndex(uint32_t index)
@@ -57,8 +57,9 @@ namespace core {
 	{
         // update gameObject, in order to display moving changes
         for (auto component : components) {
-            component->Update();
+            component->OnUpdate();
         }
+        transform.Update();
     }
 
     void GameObject::start()
@@ -66,7 +67,7 @@ namespace core {
         // start all components
         running = true;
         for (auto component : components) {
-            component->start();
+            component->OnStart();
         }
     }
 
@@ -75,7 +76,7 @@ namespace core {
         running = false;
         for (auto component : components) 
         {
-            component->stop();
+            component->OnStop();
         }
     }
 
@@ -85,7 +86,7 @@ namespace core {
         for (auto comp : components)
         {
             if (running) 
-				comp->stop();
+				comp->OnStop();
             delete comp;
             comp = nullptr;
         }
@@ -138,7 +139,7 @@ namespace core {
     {
 	    for (auto* component : components)
 	    {
-            component->event(event);
+            component->OnEvent(event);
 	    }
     }
 
@@ -151,7 +152,7 @@ namespace core {
 		ImGui::SliderFloat(std::string("Height:").c_str(), &this->transform.scale.y, 0.0f, 10.0f, 0);
 
 		for (auto component : components) {
-		    component->imgui(dt);
+		    component->OnImgui(dt);
 		}
     }
 
