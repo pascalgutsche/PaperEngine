@@ -50,7 +50,6 @@ namespace core
         }
 
         glfwWindow = glfwCreateWindow(window_props.width, window_props.height, window_props.title.c_str(), nullptr, nullptr);
-        glfwMakeContextCurrent(glfwWindow);
         glfwSetWindowUserPointer(glfwWindow, &windowData);
         SetVSync(true);
 
