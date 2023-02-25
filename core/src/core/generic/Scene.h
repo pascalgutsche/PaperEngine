@@ -1,11 +1,11 @@
 #pragma once
+#include "_Core.h"
 #include "utility.h"
 
-#include "generic/Camera.h"
-#include "renderer/Renderer.h"
-#include "generic/GameObject.h"
-
 namespace core {
+
+    class GameObject;
+    class Camera;
 
     class Scene {
     private:

@@ -1,12 +1,10 @@
 #include "_Core.h"
 
 #include "renderer/Renderer.h"
-#include "component/SpriteRenderer.h"
-#include "generic/Application.h"
-#include "event/Input.h"
-#include "event/MouseCodes.h"
-#include "event/GameEvent.h"
 #include "renderer/RenderCommand.h"
+#include "utils/DataPool.h"
+#include "renderer/Shader.h"
+#include "generic/Application.h"
 
 namespace core {
 
@@ -65,6 +63,8 @@ namespace core {
         glm::vec4 triangleVertexData[3];
 
         Renderer::Stats stats;
+
+        Shr<Framebuffer> framebuffer;
     };
 
     static RenderData data;
@@ -148,6 +148,12 @@ namespace core {
         {
             texSlots[i] = i;
         }
+
+        FramebufferSpecification spec;
+        spec.attachment = { FramebufferTexFormat::RGBA8, FramebufferTexFormat::RED_INTEGER, FramebufferTexFormat::DEPTH24STECIL8 };
+        spec.width = Application::GetWindow()->GetWidth();
+        spec.height = Application::GetWindow()->GetHeight();
+        data.framebuffer = Framebuffer::CreateBuffer(spec);
     }
 
 
@@ -168,12 +174,16 @@ namespace core {
         data.camera = camera;
         data.camera.calcCameraVectors();
 
+        data.framebuffer->Bind();
+
         StartBatch();
     }
 
     void Renderer::EndRender()
     {
         Render();
+
+        data.framebuffer->Unbind();
     }
 
     
@@ -390,6 +400,10 @@ namespace core {
         memset(&data.stats, 0, sizeof(Stats));
     }
 
+    Shr<Framebuffer> Renderer::GetFramebuffer()
+    {
+        return data.framebuffer;
+    }
 
 
     /*

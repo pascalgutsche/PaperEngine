@@ -102,7 +102,7 @@ namespace core
 
 	void OpenGLVertexArray::Unbind()
 	{
-		//glBindVertexArray(0);
+		glBindVertexArray(0);
 		if (vertexBuffer)
 			vertexBuffer->Unbind();
 		if (elementBuffer)

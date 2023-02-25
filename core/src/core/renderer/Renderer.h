@@ -41,6 +41,8 @@ namespace core {
         static Stats GetStats();
         static void ClearStats();
 
+        static Shr<Framebuffer> GetFramebuffer();
+
     private:
 
         static void StartBatch();

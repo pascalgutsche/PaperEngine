@@ -423,7 +423,7 @@ namespace core {
 
     void ImGuiLayer::ViewPortPanel(const float dt, bool first)
     {
-        /*
+        
         const char* name = "ViewPort: ";
         std::stringstream stream;
 
@@ -439,9 +439,9 @@ namespace core {
         if (viewportSize != *(glm::vec2*)&viewport_panel_size)
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            Application::GetActiveScene()->GetRenderer()->GetFrameBuffer()->Resize(viewportSize.x, viewportSize.y);
+            Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
         }
-        uint32_t textureID = Application::GetActiveScene()->GetRenderer()->GetFrameBuffer()->GetColorID(0);
+        uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
 
         ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
@@ -457,7 +457,7 @@ namespace core {
 
         ImGui::End();
         ImGui::PopStyleVar();
-        */
+        
     }
 
 }

@@ -10,9 +10,11 @@
 #include "event/ApplicationEvent.h"
 #include "event/KeyEvent.h"
 
-#include "ImGui/ImGuiLayer.h"
+
 
 namespace core {
+
+	class ImGuiLayer;
 
 	class Application
 	{

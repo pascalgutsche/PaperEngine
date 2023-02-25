@@ -6,10 +6,9 @@
 #include "utils/DataPool.h"
 #include "utils/Utils.h"
 #include "renderer/RenderBatch.h"
+#include "renderer/Renderer.h"
 
 #include "imgui/ImGuiLayer.h"
-
-#include "generic/Application.h"
 
 namespace core {
     
