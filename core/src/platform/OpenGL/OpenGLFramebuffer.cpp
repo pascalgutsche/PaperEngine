@@ -175,6 +175,7 @@ namespace core {
 	{
 		specification.width = width;
 		specification.height = height;
+		glViewport(0, 0, specification.width, specification.height);
 		Invalidate();
 	}
 

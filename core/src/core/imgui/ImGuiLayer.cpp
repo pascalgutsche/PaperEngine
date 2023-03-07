@@ -440,6 +440,7 @@ namespace core {
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
             Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+            LOG_CORE_WARN("{0}, {1}", viewportSize.x, viewportSize.y);
         }
         uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
 
