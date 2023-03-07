@@ -16,19 +16,19 @@ struct VertexOutput
     vec4 Color;
     vec2 TexCoord;
     float TilingFactor;
-    int TexID;
-    int CoreID;
 };
-
-flat layout(location = 0) out VertexOutput Output;
+ 
+layout(location = 0) out VertexOutput Output;
+layout(location = 3) out flat int TexID;
+layout(location = 4) out flat int CoreID;
 
 void main()
 {
     Output.Color = aColor;
     Output.TexCoord = aTexCoord;
     Output.TilingFactor = aTilingFactor;
-    Output.TexID = aTexID;
-    Output.CoreID = aCoreID;
+    TexID = aTexID;
+    CoreID = aCoreID;
 
     gl_Position = uProjection * uView * vec4(aPos, 0.0f, 1.0f); // adjust gl_Position with the help of 'u' Factors
 }
@@ -47,21 +47,21 @@ struct VertexOutput
     vec4 Color;
     vec2 TexCoord;
     float TilingFactor;
-    int TexID;
-    int CoreID;
 };
 
-flat layout(location = 0) in VertexOutput Input;
+layout(location = 0) in VertexOutput Input;
+layout(location = 3) in flat int TexID;
+layout(location = 4) in flat int CoreID;
 
 layout(binding = 0) uniform sampler2D uTexture[32];
 
 void main()
 {
-    if (Input.TexID >= 0) {
-        display = texture(uTexture[Input.TexID], Input.TexCoord);
+    if (TexID >= 0) {
+        display = texture(uTexture[TexID], Input.TexCoord * Input.TilingFactor);  
     }
     else {
         display = Input.Color;
     }
-    //objectID = int(Input.CoreID);
+    //objectID = CoreID;
 }
