@@ -13,8 +13,8 @@ namespace core {
         glm::vec2 position;
         glm::vec4 color;
         glm::vec2 texCoords;
-        //float tilingFactor;
-        float texIndex;
+        float tilingFactor;
+        int texIndex;
         int coreID;
     };
 
@@ -23,8 +23,8 @@ namespace core {
         glm::vec2 position;
         glm::vec4 color;
         glm::vec2 texCoords;
-        //float tilingFactor;
-        float texIndex;
+        float tilingFactor;
+        int texIndex;
         int coreID;
     };
 
@@ -79,7 +79,7 @@ namespace core {
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT2, "aTexCoord" },
             { GLSLDataType::FLOAT , "aTilingFactor"},
-            { GLSLDataType::FLOAT , "aTexID" },
+            { GLSLDataType::INT , "aTexID" },
             { GLSLDataType::INT , "aCoreID" }
         };
 
@@ -287,7 +287,7 @@ namespace core {
             data.rectangleVertexBufferPtr->position = transform * data.rectangleVertexData[i];
             data.rectangleVertexBufferPtr->color = color;
             data.rectangleVertexBufferPtr->texCoords = texCoords[i];
-            //data.rectangleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.rectangleVertexBufferPtr->tilingFactor = tilingFactor;
             data.rectangleVertexBufferPtr->texIndex = texIndex;
             data.rectangleVertexBufferPtr->coreID = coreID;
             data.rectangleVertexBufferPtr++;
@@ -336,7 +336,7 @@ namespace core {
             data.rectangleVertexBufferPtr->position = transform * data.rectangleVertexData[i];
             data.rectangleVertexBufferPtr->color = color;
             data.rectangleVertexBufferPtr->texCoords = texCoords[i];
-            //data.rectangleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.rectangleVertexBufferPtr->tilingFactor = tilingFactor;
             data.rectangleVertexBufferPtr->texIndex = texIndex;
             data.rectangleVertexBufferPtr->coreID = coreID;
             data.rectangleVertexBufferPtr++;
@@ -376,7 +376,7 @@ namespace core {
             data.triangleVertexBufferPtr->position = transform * data.triangleVertexData[i];
             data.triangleVertexBufferPtr->color = color;
             data.triangleVertexBufferPtr->texCoords = texCoords[i];
-            //data.triangleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.triangleVertexBufferPtr->tilingFactor = tilingFactor;
             data.triangleVertexBufferPtr->texIndex = texIndex;
             data.triangleVertexBufferPtr->coreID = coreID;
             data.triangleVertexBufferPtr++;

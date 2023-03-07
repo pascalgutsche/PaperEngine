@@ -16,7 +16,7 @@ void BackgroundLayer::OnAttach()
     background2->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background3->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background4->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f), SpriteRenderer::RECTANGLE));
-    background5->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), SpriteRenderer::TRIANGLE));
+    background5->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background6->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background7->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), SpriteRenderer::RECTANGLE));
     background8->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), SpriteRenderer::RECTANGLE));
