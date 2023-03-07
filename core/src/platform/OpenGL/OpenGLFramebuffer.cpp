@@ -183,7 +183,7 @@ namespace core {
 		CORE_ASSERT(attachmentIndex < colorAttachmentsID.size(), "");
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
 		int pixelData;
-		glReadPixels(pos.x, pos.y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+		glReadPixels(pos.x, pos.y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &pixelData);
 		return pixelData;
 	}
 
@@ -193,7 +193,15 @@ namespace core {
 
 		auto& spec = colorAttachmentSpec[attachmentIndex];
 
-		glClearTexImage(colorAttachmentsID[attachmentIndex], 0, FBTexFormatToGL(spec.texFormat), GL_INT, &value);
+		glClearTexImage(colorAttachmentsID[attachmentIndex], 0, FBTexFormatToGL(spec.texFormat), GL_UNSIGNED_INT, &value);
+	}
+
+	void OpenGLFramebuffer::ProjectToScreen(uint32_t destWidth, uint32_t destHeight)
+	{
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, fboID);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBlitFramebuffer(0, 0, specification.width, specification.height, 0, 0, destWidth, destHeight,
+		GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	}
 
 	void OpenGLFramebuffer::Bind() {

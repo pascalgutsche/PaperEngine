@@ -38,7 +38,7 @@ void main()
 #version 460 core
 
 layout(location = 0) out vec4 display;
-//layout(location = 1) out int objectID;
+layout(location = 1) out int objectID;
 
 
 
@@ -63,5 +63,5 @@ void main()
     else {
         display = Input.Color;
     }
-    //objectID = CoreID;
+    objectID = CoreID;
 }

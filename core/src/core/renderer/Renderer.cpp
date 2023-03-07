@@ -174,7 +174,8 @@ namespace core {
         data.camera = camera;
         data.camera.calcCameraVectors();
 
-        //data.framebuffer->Bind();
+        data.framebuffer->Bind();
+        data.framebuffer->ClearAttachment(1, 0);
 
         StartBatch();
     }
@@ -183,7 +184,18 @@ namespace core {
     {
         Render();
 
-        //data.framebuffer->Unbind();
+        data.framebuffer->Unbind();
+
+        //framebuffer to screen projection when no imgui
+        if (!Application::GetImGuiEnabled())
+        {
+            if (data.framebuffer->GetSpecification().width != Application::GetWindow()->GetWidth() || data.framebuffer->GetSpecification().height != Application::GetWindow()->GetHeight())
+            {
+				data.framebuffer->Resize(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
+            }
+            data.framebuffer->ProjectToScreen(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
+        }
+        
     }
 
     

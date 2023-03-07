@@ -1,6 +1,8 @@
 #include "_Core.h"
 
 #include "generic/Application.h"
+
+#include "event/Input.h"
 #include "event/KeyCodes.h"
 #include "renderer/RenderCommand.h"
 #include "renderer/Renderer.h"
@@ -44,6 +46,10 @@ namespace core {
 
 	void Application::onEvent(Event& event)
 	{
+		if (event.IsInCategory(EventCategoryGame))
+		{
+			LOG_CORE_CRITICAL(event);
+		}
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
@@ -161,14 +167,14 @@ namespace core {
 					currentScene->OnUpdate();
 
 					imguilayer->end();
-					
-					frames_rendered++;
 				}
 			}
 			else if (warn) {
 				LOG_CORE_ERROR("No Scene exists. Make sure to call Application::changeScene() in the 'init' function of your Application class");
 				warn = false;
 			}
+
+			Input::ProcessInput();
 
 			window->Update();
 

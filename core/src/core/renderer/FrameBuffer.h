@@ -60,6 +60,9 @@ namespace core {
 		virtual int ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos) = 0;
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
+
+		virtual void ProjectToScreen(uint32_t destWidth, uint32_t destHeight) = 0;
+
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
