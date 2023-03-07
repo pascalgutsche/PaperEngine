@@ -38,6 +38,7 @@ void ForegroundLayer::update(const float dt)
 	{
 		con = true;
 	}
+	game_objects[0]->transform.rotation -= 150 * dt;
 }
 
 void ForegroundLayer::imgui(const float dt)

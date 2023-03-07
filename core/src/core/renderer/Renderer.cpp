@@ -93,9 +93,9 @@ namespace core {
         data.triangleVertexArray = VertexArray::CreateArray();
         data.triangleVertexBuffer = VertexBuffer::CreateBuffer(edgeGeometryLayout, data.MAX_VERTICES * sizeof(TriangleVertex));
         data.triangleVertexArray->SetVertexBuffer(data.triangleVertexBuffer);
-
+        
         data.rectangleVertexBufferBase = new RectangleVertex[data.MAX_VERTICES];
-
+        
         data.triangleVertexBufferBase = new TriangleVertex[data.MAX_VERTICES];
 
         uint32_t* rectangleElements = new uint32_t[data.MAX_ELEMENTS];
@@ -127,7 +127,7 @@ namespace core {
             triangleElements[i + 0] = offsetTriangle + 0;
             triangleElements[i + 1] = offsetTriangle + 1;
             triangleElements[i + 2] = offsetTriangle + 2;
-
+        
             offsetTriangle += 3;
         }
         
@@ -174,7 +174,7 @@ namespace core {
         data.camera = camera;
         data.camera.calcCameraVectors();
 
-        data.framebuffer->Bind();
+        //data.framebuffer->Bind();
 
         StartBatch();
     }
@@ -183,7 +183,7 @@ namespace core {
     {
         Render();
 
-        data.framebuffer->Unbind();
+        //data.framebuffer->Unbind();
     }
 
     
@@ -235,17 +235,17 @@ namespace core {
             const uint32_t dataSize = (uint32_t)((uint8_t*)data.triangleVertexBufferPtr - (uint8_t*)data.triangleVertexBufferBase);
             data.triangleVertexBuffer->AddData(data.triangleVertexBufferBase, dataSize);
             data.stats.dataSize += dataSize;
-
+        
             //bind textures
             for (uint32_t i = 0; i < data.triangleTextureSlotIndex; i++)
                 data.triangleTextureSlots[i]->Bind(i);
-
+        
             data.edgeGeometryShader->Bind();
             data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
             RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
             data.stats.drawCalls++;
-
+        
             //unbind textures
             for (uint32_t i = 0; i < data.triangleTextureSlotIndex; i++)
                 data.triangleTextureSlots[i]->Unbind();
@@ -273,7 +273,7 @@ namespace core {
     void Renderer::DrawRectangle(glm::mat4 transform, glm::vec4 color, core_id coreID)
     {
         const uint32_t rectanleVertexCount = 4;
-        const float texIndex = -1.0f;
+        const int texIndex = -1;
         const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
         const float tilingFactor = 1.0f;
 
@@ -365,12 +365,12 @@ namespace core {
         const float texIndex = -1.0f;
         const glm::vec2 texCoords[3] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f } };
         const float tilingFactor = 1.0f;
-    
+        
         if (data.triangleElementCount >= data.MAX_ELEMENTS)
         {
             NextBatch();
         }
-    
+        
         for (int i = 0; i < triangleVertexCount; i++)
         {
             data.triangleVertexBufferPtr->position = transform * data.triangleVertexData[i];
@@ -380,12 +380,12 @@ namespace core {
             data.triangleVertexBufferPtr->texIndex = texIndex;
             data.triangleVertexBufferPtr->coreID = coreID;
             data.triangleVertexBufferPtr++;
-
+        
             data.stats.vertexCount++;
         }
-    
+        
         data.triangleElementCount += 3;
-
+        
         data.stats.elementCount += 3;
         data.stats.objectCount++;
     }
