@@ -3,10 +3,9 @@
 
 #include "imgui/ImGuiLayer.h"
 
-#include "event/Input.h"
 #include "generic/Application.h"
 #include "renderer/Renderer.h"
-#include "renderer/RenderBatch.h"
+#include "renderer/FrameBuffer.h"
 
 #include <GLFW/glfw3.h>
 
@@ -458,6 +457,36 @@ namespace core {
         ImGui::End();
         ImGui::PopStyleVar();
         
+    }
+
+    void ImGuiLayer::ScreenPanel()
+    {
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+        window_flags |= ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_MenuBar;
+        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+        ImGuiViewport& viewport = *ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport.Pos);
+        ImGui::SetNextWindowSize(viewport.Size);
+        ImGui::SetNextWindowViewport(viewport.ID);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+        ImGui::Begin(" ", nullptr, window_flags);
+        ImGui::PopStyleVar(3);
+
+        ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
+        if (viewportSize != *(glm::vec2*)&viewport_panel_size)
+        {
+            viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
+            Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+        }
+        uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
+
+        ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::End();
     }
 
 }

@@ -162,6 +162,7 @@ namespace core {
         if (IDMap.find(id) != IDMap.end()) {
             return IDMap.at(id);
         }
+        CORE_ASSERT(false, "invalid ID");
         return nullptr;
     }
 

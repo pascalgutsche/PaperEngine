@@ -5,6 +5,7 @@
 #include "utils/DataPool.h"
 #include "renderer/Shader.h"
 #include "generic/Application.h"
+#include "imgui/ImGuiLayer.h"
 
 namespace core {
 
@@ -183,18 +184,9 @@ namespace core {
     void Renderer::EndRender()
     {
         Render();
-
+        Application::GetImGuiLayer().ScreenPanel();
         data.framebuffer->Unbind();
 
-        //framebuffer to screen projection when no imgui
-        if (!Application::GetImGuiEnabled())
-        {
-            if (data.framebuffer->GetSpecification().width != Application::GetWindow()->GetWidth() || data.framebuffer->GetSpecification().height != Application::GetWindow()->GetHeight())
-            {
-				data.framebuffer->Resize(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
-            }
-            data.framebuffer->ProjectToScreen(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
-        }
         
     }
 

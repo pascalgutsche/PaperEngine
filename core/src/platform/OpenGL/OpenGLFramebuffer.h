@@ -20,8 +20,6 @@ namespace core
 
 		void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
-		void ProjectToScreen(uint32_t destWidth, uint32_t destHeight) override;
-
 		void Bind() override;
 		void Unbind() override;
 

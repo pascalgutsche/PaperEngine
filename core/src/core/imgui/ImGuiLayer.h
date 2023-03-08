@@ -53,6 +53,8 @@ namespace core {
         void begin(const float dt);
         void end();
 
+        void ScreenPanel();
+
         void DockPanel(std::string name, ImGuiID dock_id);
         void AddVariable(std::string name, void* variable);
 
