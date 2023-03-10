@@ -184,7 +184,7 @@ namespace core {
     void Renderer::EndRender()
     {
         Render();
-        Application::GetImGuiLayer().ScreenPanel();
+        //Application::GetImGuiLayer().ScreenPanel();
         data.framebuffer->Unbind();
 
         
