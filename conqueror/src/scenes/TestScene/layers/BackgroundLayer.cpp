@@ -1,5 +1,7 @@
 #include "BackgroundLayer.h"
 
+#include "event/KeyEvent.h"
+
 void BackgroundLayer::OnAttach()
 {
     background1 = new GameObject("name", Transform());
@@ -52,4 +54,16 @@ void BackgroundLayer::imgui(const float dt)
 
 void BackgroundLayer::OnEvent(Event& event)
 {
+    EventDispatcher dispatcher(event);
+    dispatcher.dispatch<KeyPressedEvent>([this](KeyPressedEvent& e)
+    {
+        if (e.getKeyCode() == KEY_C)
+        {
+            background1->Delete();
+            return true;
+        }
+        return false;
+    });
 }
+
+
