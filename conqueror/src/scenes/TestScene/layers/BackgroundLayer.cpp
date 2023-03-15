@@ -62,6 +62,12 @@ void BackgroundLayer::OnEvent(Event& event)
             background1->Delete();
             return true;
         }
+        if (e.getKeyCode() == KEY_M)
+        {
+            GameObject* gm = new GameObject("Background", Transform(glm::vec2(0.0f, 1.0f), glm::vec2(5.0f, 1.0f)));
+            gm->AddComponent(new SpriteRenderer(glm::vec4(0.7f, 0.3f, 0.2f, 1.0f)));
+            AddGameObjectToLayer(gm);
+        }
         return false;
     });
 }
