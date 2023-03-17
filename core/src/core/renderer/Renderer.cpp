@@ -151,7 +151,7 @@ namespace core {
         }
 
         FramebufferSpecification spec;
-        spec.attachment = { FramebufferTexFormat::RGBA8, FramebufferTexFormat::RED_INTEGER, FramebufferTexFormat::DEPTH24STECIL8 };
+        spec.attachment = { FramebufferTexFormat::RGBA8, FramebufferTexFormat::RED_INTEGER, FramebufferTexFormat::Depth };
         spec.width = Application::GetWindow()->GetWidth();
         spec.height = Application::GetWindow()->GetHeight();
         data.framebuffer = Framebuffer::CreateBuffer(spec);
@@ -175,8 +175,15 @@ namespace core {
         data.camera = camera;
         data.camera.calcCameraVectors();
 
+        RenderCommand::Clear();
+
         data.framebuffer->Bind();
-        data.framebuffer->ClearAttachment(1, 0);
+
+        if (!Application::GetImGuiEnabled())
+            data.framebuffer->Resize(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
+
+        data.framebuffer->SetViewPort();
+        data.framebuffer->ClearAttachment(1, 0); 
 
         StartBatch();
     }
@@ -184,7 +191,8 @@ namespace core {
     void Renderer::EndRender()
     {
         Render();
-        //Application::GetImGuiLayer().ScreenPanel();
+        if (!Application::GetImGuiEnabled())
+            data.framebuffer->ProjectToScreen(1, Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
         data.framebuffer->Unbind();
 
         

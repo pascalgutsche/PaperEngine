@@ -440,7 +440,8 @@ namespace core {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
             Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
         }
-        uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
+        Renderer::GetFramebuffer()->Bind();
+    	uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
 
         ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
@@ -483,7 +484,7 @@ namespace core {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
             Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
         }
-        uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
+        uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(1);
 
         ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::End();

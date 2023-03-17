@@ -48,7 +48,7 @@ namespace core {
 	{
 		if (event.IsInCategory(EventCategoryGame))
 		{
-			LOG_CORE_CRITICAL(event);
+			LOG_CORE_DEBUG(event);
 		}
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
@@ -134,8 +134,6 @@ namespace core {
 			if (currentScene != nullptr) {
 				// request color
 				RenderCommand::ClearColor(currentScene->GetBackcolor());
-				// set color
-				RenderCommand::Clear();
 
 				if (dt >= 0) {
 					if (queuedScene != nullptr) {

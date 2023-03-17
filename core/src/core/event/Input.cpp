@@ -52,7 +52,9 @@ namespace core
         }
 
         if (pos.x >= 0 && pos.y >= 0) {
+            Renderer::GetFramebuffer()->Bind();
             mouseHoverID[0] = Renderer::GetFramebuffer()->ReadPixel(1, pos);
+            Renderer::GetFramebuffer()->Unbind();
         }
 
         if (Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
