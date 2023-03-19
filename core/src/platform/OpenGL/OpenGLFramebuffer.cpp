@@ -176,6 +176,7 @@ namespace core {
 		specification.width = width;
 		specification.height = height;
 		Invalidate();
+		Bind();
 	}
 
 	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos)

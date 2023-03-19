@@ -134,6 +134,7 @@ namespace core {
 			if (currentScene != nullptr) {
 				// request color
 				RenderCommand::ClearColor(currentScene->GetBackcolor());
+				
 
 				if (dt >= 0) {
 					if (queuedScene != nullptr) {
@@ -152,17 +153,23 @@ namespace core {
 
 					imguilayer->begin(dt);
 
-					if (imgui_enabled) {
-
-						for (Layer* layer : layer_stack) {
-							layer->imgui(dt);
-						}
-					}
-
 					for (Layer* layer : layer_stack)
 						layer->update(dt);
 
 					currentScene->OnUpdate();
+
+					Input::ProcessInput();
+					
+					if (imgui_enabled) {
+					
+						for (Layer* layer : layer_stack) {
+							layer->imgui(dt);
+						}
+					}
+					else
+					{
+						imguilayer->ScreenPanel();
+					}
 
 					imguilayer->end();
 				}
@@ -172,7 +179,7 @@ namespace core {
 				warn = false;
 			}
 
-			Input::ProcessInput();
+			
 
 			window->Update();
 

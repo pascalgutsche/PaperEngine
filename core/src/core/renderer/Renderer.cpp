@@ -176,11 +176,12 @@ namespace core {
         data.camera.calcCameraVectors();
 
         RenderCommand::Clear();
-
         data.framebuffer->Bind();
+        RenderCommand::Clear();
 
-        if (!Application::GetImGuiEnabled())
-            data.framebuffer->Resize(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
+
+        //if (!Application::GetImGuiEnabled())
+        //    data.framebuffer->Resize(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
 
         data.framebuffer->SetViewPort();
         data.framebuffer->ClearAttachment(1, 0); 
@@ -191,8 +192,9 @@ namespace core {
     void Renderer::EndRender()
     {
         Render();
-        if (!Application::GetImGuiEnabled())
-            data.framebuffer->ProjectToScreen(1, Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
+        //if (!Application::GetImGuiEnabled())
+        //    Application::GetImGuiLayer().ScreenPanel();
+        //    //data.framebuffer->ProjectToScreen(1, Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
         data.framebuffer->Unbind();
 
         
