@@ -179,7 +179,7 @@ namespace core {
 				warn = false;
 			}
 
-			
+			imguiEnabledBefore = imgui_enabled;
 
 			window->Update();
 

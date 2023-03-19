@@ -51,12 +51,11 @@ namespace core
             pos = Application::GetImGuiLayer().GetMousePosViewportRelative();
         }
 
-        if (pos.x >= 0 && pos.y >= 0) {
+        if (pos.x >= 0 && pos.y >= 0 && !Application::GetImGuiSwitched()) {
             Renderer::GetFramebuffer()->Bind();
             mouseHoverID[0] = Renderer::GetFramebuffer()->ReadPixel(1, pos);
             Renderer::GetFramebuffer()->Unbind();
         }
-
         if (Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             mouseClickedID[0] = mouseHoverID[0];
             if (mouseClickedID[0] != mouseClickedID[1] && mouseClickedID[0] != 0 && !pressed)

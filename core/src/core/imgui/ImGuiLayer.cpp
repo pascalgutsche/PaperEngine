@@ -434,18 +434,20 @@ namespace core {
 
         auto viewportOffset = ImGui::GetCursorPos();
 
+    	Renderer::GetFramebuffer()->Bind();
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
-        if (viewportSize != *(glm::vec2*)&viewport_panel_size)
+        if (viewportSize != *(glm::vec2*)&viewport_panel_size || Application::GetImGuiSwitched())
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            //Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
-            //Renderer::GetFramebuffer()->SetViewPort();
+            Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+            Renderer::GetFramebuffer()->SetViewPort();
         }
-        Renderer::GetFramebuffer()->Bind();
-    	uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
-        
-        ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-        Renderer::GetFramebuffer()->Unbind();
+        else 
+        {
+            uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
+            ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        }
+    	Renderer::GetFramebuffer()->Unbind();
 
         auto windowSize = ImGui::GetWindowSize();
         ImVec2 minBound = ImGui::GetWindowPos();
@@ -480,18 +482,21 @@ namespace core {
         ImGui::Begin(" ", nullptr, window_flags);
         ImGui::PopStyleVar(3);
 
-        Renderer::GetFramebuffer()->Bind();
-        uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
-        
-        ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-        Renderer::GetFramebuffer()->Unbind();
-
+    	Renderer::GetFramebuffer()->Bind();
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
-        if (viewportSize != *(glm::vec2*)&viewport_panel_size)
+        if (viewportSize != *(glm::vec2*)&viewport_panel_size || Application::GetImGuiSwitched())
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            //Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+            Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+            Renderer::GetFramebuffer()->SetViewPort();
         }
+        else
+        {
+            uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
+
+            ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        }
+    	Renderer::GetFramebuffer()->Unbind();
 
         ImGui::End();
     }
