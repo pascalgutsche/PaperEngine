@@ -40,7 +40,7 @@ namespace core {
                 break;
             case Geometry::TRIANGLE:
                 if (texture)
-                    Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetObjectID());
+                    Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, texture, 1.0f, color, gameObject->GetObjectID());
                 else
                     Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetObjectID());
                 break;

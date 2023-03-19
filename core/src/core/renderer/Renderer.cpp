@@ -286,7 +286,7 @@ namespace core {
 
     void Renderer::DrawRectangle(glm::mat4 transform, glm::vec4 color, core_id coreID)
     {
-        const uint32_t rectanleVertexCount = 4;
+        const uint32_t rectangleVertexCount = 4;
         const int texIndex = -1;
         const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
         const float tilingFactor = 1.0f;
@@ -296,7 +296,7 @@ namespace core {
             NextBatch();
         }
 
-        for (int i = 0; i < rectanleVertexCount; i++)
+        for (int i = 0; i < rectangleVertexCount; i++)
         {
             data.rectangleVertexBufferPtr->position = transform * data.rectangleVertexData[i];
             data.rectangleVertexBufferPtr->color = color;
@@ -317,7 +317,7 @@ namespace core {
 
     void Renderer::DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID)
     {
-        const uint32_t rectanleVertexCount = 4;
+        const uint32_t rectangleVertexCount = 4;
         constexpr glm::vec2 texCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
         if (data.rectangleElementCount >= data.MAX_ELEMENTS)
@@ -345,7 +345,7 @@ namespace core {
             data.rectangleTextureSlotIndex++;
         }
 
-        for (int i = 0; i < rectanleVertexCount; i++)
+        for (int i = 0; i < rectangleVertexCount; i++)
         {
             data.rectangleVertexBufferPtr->position = transform * data.rectangleVertexData[i];
             data.rectangleVertexBufferPtr->color = color;
@@ -372,7 +372,17 @@ namespace core {
     
         DrawTriangle(transform, color, coreID);
     }
-    
+
+    void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture,
+	    float tilingFactor, glm::vec4 color, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+
+        DrawTriangle(transform, texture, tilingFactor, color, coreID);
+    }
+
     void Renderer::DrawTriangle(glm::mat4 transform, glm::vec4 color, core_id coreID)
     {
         const uint32_t triangleVertexCount = 3;
@@ -400,6 +410,56 @@ namespace core {
         
         data.triangleElementCount += 3;
         
+        data.stats.elementCount += 3;
+        data.stats.objectCount++;
+    }
+
+    void Renderer::DrawTriangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color,
+        core_id coreID)
+    {
+        const uint32_t triangleVertexCount = 3;
+        constexpr glm::vec2 texCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 0.5f, 1.0f } };
+
+        if (data.triangleElementCount >= data.MAX_ELEMENTS)
+        {
+            NextBatch();
+        }
+
+        int texIndex = -1;
+        for (uint32_t i = 0; i < data.triangleTextureSlotIndex; i++)
+        {
+            if (*data.triangleTextureSlots[i] == *texture)
+            {
+                texIndex = i;
+                break;
+            }
+        }
+
+        if (texIndex == -1)
+        {
+            if (data.triangleTextureSlotIndex >= data.MAX_TEXTURE_SLOTS)
+                NextBatch();
+
+            texIndex = data.triangleTextureSlotIndex;
+            data.triangleTextureSlots[data.triangleTextureSlotIndex] = texture;
+            data.triangleTextureSlotIndex++;
+        }
+
+        for (int i = 0; i < triangleVertexCount; i++)
+        {
+            data.triangleVertexBufferPtr->position = transform * data.triangleVertexData[i];
+            data.triangleVertexBufferPtr->color = color;
+            data.triangleVertexBufferPtr->texCoords = texCoords[i];
+            data.triangleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.triangleVertexBufferPtr->texIndex = texIndex;
+            data.triangleVertexBufferPtr->coreID = coreID;
+            data.triangleVertexBufferPtr++;
+
+            data.stats.vertexCount++;
+        }
+
+        data.triangleElementCount += 3;
+
         data.stats.elementCount += 3;
         data.stats.objectCount++;
     }
