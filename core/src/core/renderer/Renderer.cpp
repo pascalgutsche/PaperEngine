@@ -16,6 +16,7 @@ namespace core {
         glm::vec2 texCoords;
         float tilingFactor;
         int texIndex;
+        int projectionMode;
         int coreID;
     };
 
@@ -26,6 +27,7 @@ namespace core {
         glm::vec2 texCoords;
         float tilingFactor;
         int texIndex;
+        int projectionMode;
         int coreID;
     };
 
@@ -81,6 +83,7 @@ namespace core {
             { GLSLDataType::FLOAT2, "aTexCoord" },
             { GLSLDataType::FLOAT , "aTilingFactor"},
             { GLSLDataType::INT , "aTexID" },
+			{ GLSLDataType::INT , "aProjectionMode" },
             { GLSLDataType::INT , "aCoreID" }
         };
 
@@ -157,8 +160,6 @@ namespace core {
         data.framebuffer = Framebuffer::CreateBuffer(spec);
     }
 
-
-
     void Renderer::Shutdown()
     {
         delete[] data.rectangleVertexBufferBase;
@@ -179,10 +180,6 @@ namespace core {
         data.framebuffer->Bind();
         RenderCommand::Clear();
 
-
-        //if (!Application::GetImGuiEnabled())
-        //    data.framebuffer->Resize(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
-
         data.framebuffer->SetViewPort();
         data.framebuffer->ClearAttachment(1, 0); 
 
@@ -192,15 +189,8 @@ namespace core {
     void Renderer::EndRender()
     {
         Render();
-        //if (!Application::GetImGuiEnabled())
-        //    Application::GetImGuiLayer().ScreenPanel();
-        //    //data.framebuffer->ProjectToScreen(1, Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
         data.framebuffer->Unbind();
-
-        
     }
-
-    
 
     void Renderer::StartBatch()
     {
@@ -233,7 +223,8 @@ namespace core {
                 data.rectangleTextureSlots[i]->Bind(i);
 
             data.edgeGeometryShader->Bind();
-            data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
+            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera.getProjectionMatrix());
+            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.getOrthographicMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
             RenderCommand::DrawElements(data.rectangleVertexArray, data.rectangleElementCount);
@@ -257,7 +248,8 @@ namespace core {
             data.edgeGeometryShader->Bind();
             data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
-            RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
+            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.getOrthographicMatrix());
+        	RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
             data.stats.drawCalls++;
         
             //unbind textures
