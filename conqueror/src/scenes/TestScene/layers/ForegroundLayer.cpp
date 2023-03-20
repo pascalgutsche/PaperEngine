@@ -12,9 +12,9 @@ void ForegroundLayer::OnAttach()
 	character2->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("placeholder_texture_256x256.png"), SpriteRenderer::TRIANGLE));
 	object1->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("antimarx.png"), SpriteRenderer::RECTANGLE));
 	
-	this->AddGameObjectToLayer(character1);
-	this->AddGameObjectToLayer(character2);
-	this->AddGameObjectToLayer(object1);
+	//this->AddGameObjectToLayer(character1);
+	//this->AddGameObjectToLayer(character2);
+	//this->AddGameObjectToLayer(object1);
 }
 
 void ForegroundLayer::OnDetach()
@@ -29,16 +29,16 @@ void ForegroundLayer::OnDetach()
 void ForegroundLayer::Update(const float dt)
 {
 	static bool con = true;
-	if (Input::IsKeyPressed(KEY_Y) && con)
+	if (Input::IsKeyPressed(KEY_Y) && con && false)
 	{
 		con = false;
 		character2->Stop();
 	}
-	if (Input::IsKeyPressed(KEY_T) && !con)
+	if (Input::IsKeyPressed(KEY_T) && !con && false)
 	{
 		con = true;
 	}
-	gameObjects[0]->transform.rotation -= 150 * dt;
+	//gameObjects[0]->transform.rotation -= 150 * dt;
 }
 
 void ForegroundLayer::Imgui(const float dt)

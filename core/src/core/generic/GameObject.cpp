@@ -156,19 +156,14 @@ namespace core {
     void GameObject::Delete()
     {
         this->deleted = true;
-        transform.scale.x = 0.0f;
-        transform.scale.y = 0.0f;
-        if (auto* renderer = GetComponent<SpriteRenderer>()) renderer->update(Application::GetDT());
-        layer->GetGameObjects()->erase(std::find(layer->GetGameObjects()->begin(), layer->GetGameObjects()->end(), this));
+        layer->GetGameObjects().erase(std::find(layer->GetGameObjects().begin(), layer->GetGameObjects().end(), this));
 		for (size_t i = 0; i < components.size(); i++)
 		{
-			if (GetComponent<SpriteRenderer>() != components[i])
-			{
-                if (running)
-					components[i]->stop();
-                delete components[i];
-                components.erase(i + components.begin());
-			}
+	        if (running)
+				components[i]->OnStop();
+            delete components[i];
+            components.erase(i + components.begin());
+			
  		}
         delete this;
     }

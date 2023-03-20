@@ -51,7 +51,7 @@ namespace core
 		else {
 			gameObjects.push_back(gameObject);
 		}
-		game_object->SetLayer(this);
+		gameObject->SetLayer(this);
 	}
 
 }

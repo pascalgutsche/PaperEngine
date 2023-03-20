@@ -39,7 +39,7 @@ namespace core
 		void SetOverlayStatus(bool overlay) { this->overlay = overlay; }
 
 		bool GetOverlayStatus() { return overlay; }
-		std::vector<GameObject*> GetGameObjects() const { return gameObjects; }
+		std::vector<GameObject*>& GetGameObjects() { return gameObjects; }
 		std::string GetName() { return name; }
 	};
 }
