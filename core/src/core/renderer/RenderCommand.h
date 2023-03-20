@@ -32,6 +32,11 @@ namespace core {
 			rendererAPI->DrawElements(vertexArray, elementCount);
 		}
 
+		inline static void DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount)
+		{
+			rendererAPI->DrawLines(vertexArray, vertexCount);
+		}
+
 		inline static void SetViewPort(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 		{
 			rendererAPI->SetViewPort(x, y, width, height);

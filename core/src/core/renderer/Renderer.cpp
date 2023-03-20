@@ -29,6 +29,13 @@ namespace core {
         int coreID;
     };
 
+    struct LineVertex
+    {
+        glm::vec2 position;
+        glm::vec4 color;
+        int coreID;
+    };
+
     struct RenderData
     {
         static constexpr uint32_t MAX_VERTICES = 40000;
@@ -36,8 +43,14 @@ namespace core {
         static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
 
         Shr<Shader> edgeGeometryShader;
+
+        Shr<Shader> lineGeometryShader;
+
         Shr<VertexArray> rectangleVertexArray;
         Shr<VertexBuffer> rectangleVertexBuffer;
+
+        Shr<VertexArray> lineVertexArray;
+        Shr<VertexBuffer> lineVertexBuffer;
 
         Shr<VertexArray> triangleVertexArray;
         Shr<VertexBuffer> triangleVertexBuffer;
@@ -50,7 +63,9 @@ namespace core {
         TriangleVertex* triangleVertexBufferBase = nullptr;
         TriangleVertex* triangleVertexBufferPtr = nullptr;
 
-
+        uint32_t lineElementCount = 0;
+        LineVertex* lineVertexBufferBase = nullptr;
+        LineVertex* lineVertexBufferPtr = nullptr;
 
         std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
         uint32_t rectangleTextureSlotIndex = 0;
@@ -84,8 +99,17 @@ namespace core {
             { GLSLDataType::INT , "aCoreID" }
         };
 
+        BufferLayout LineGeometryLayout = {
+            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT4, "aColor" },
+            { GLSLDataType::INT , "aCoreID" }
+        };
+
         data.edgeGeometryShader = DataPool::GetShader("EdgeGeometryShader");
         data.edgeGeometryShader->Compile();
+
+        data.lineGeometryShader = DataPool::GetShader("LineGeometryShader");
+        data.lineGeometryShader->Compile();
 
         data.rectangleVertexArray = VertexArray::CreateArray();
         data.rectangleVertexBuffer = VertexBuffer::CreateBuffer(edgeGeometryLayout, data.MAX_VERTICES * sizeof(RectangleVertex));
@@ -94,10 +118,16 @@ namespace core {
         data.triangleVertexArray = VertexArray::CreateArray();
         data.triangleVertexBuffer = VertexBuffer::CreateBuffer(edgeGeometryLayout, data.MAX_VERTICES * sizeof(TriangleVertex));
         data.triangleVertexArray->SetVertexBuffer(data.triangleVertexBuffer);
-        
+
+        data.lineVertexArray = VertexArray::CreateArray();
+        data.lineVertexBuffer = VertexBuffer::CreateBuffer(LineGeometryLayout, data.MAX_VERTICES * sizeof(LineVertex));
+        data.lineVertexArray->SetVertexBuffer(data.lineVertexBuffer);
+
         data.rectangleVertexBufferBase = new RectangleVertex[data.MAX_VERTICES];
         
         data.triangleVertexBufferBase = new TriangleVertex[data.MAX_VERTICES];
+
+        data.lineVertexBufferBase = new LineVertex[data.MAX_VERTICES];
 
         uint32_t* rectangleElements = new uint32_t[data.MAX_ELEMENTS];
 
@@ -163,7 +193,8 @@ namespace core {
     {
         delete[] data.rectangleVertexBufferBase;
         delete[] data.triangleVertexBufferBase;
-    }
+        delete[] data.lineVertexBufferBase;
+     }
 
     void Renderer::ResizeWindow(uint32_t width, uint32_t height)
     {
@@ -200,8 +231,6 @@ namespace core {
         
     }
 
-    
-
     void Renderer::StartBatch()
     {
         data.rectangleElementCount = 0;
@@ -211,6 +240,9 @@ namespace core {
         data.triangleElementCount = 0;
         data.triangleVertexBufferPtr = data.triangleVertexBufferBase;
         data.triangleTextureSlotIndex = 0;
+
+        data.lineElementCount = 0;
+        data.lineVertexBufferPtr = data.lineVertexBufferBase;
     }
 
     void Renderer::NextBatch()
@@ -263,6 +295,20 @@ namespace core {
             //unbind textures
             for (uint32_t i = 0; i < data.triangleTextureSlotIndex; i++)
                 data.triangleTextureSlots[i]->Unbind();
+        }
+
+        if (data.lineElementCount)
+        {
+            uint32_t dataSize = (uint32_t)((uint8_t*)data.lineVertexBufferPtr - (uint8_t*)data.lineVertexBufferBase);
+            data.lineVertexBuffer->AddData(data.lineVertexBufferBase, dataSize);
+            
+            data.lineGeometryShader->Bind();
+            data.lineGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
+            data.lineGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
+            
+            data.stats.drawCalls++;
+
+            RenderCommand::DrawLines(data.lineVertexArray, data.lineElementCount);
         }
     }
 
@@ -463,6 +509,36 @@ namespace core {
         data.stats.elementCount += 3;
         data.stats.objectCount++;
     }
+
+    void Renderer::DrawLine(glm::vec2 p0, glm::vec2 p1, float rotation, glm::vec4 color, core_id coreID)
+    {
+        const uint32_t lineVertexCount = 2;
+
+        if (data.lineElementCount >= data.MAX_ELEMENTS)
+        {
+            NextBatch();
+        }
+
+        data.lineVertexBufferPtr->position = p0;
+        data.lineVertexBufferPtr->color = color;
+        data.lineVertexBufferPtr->coreID = coreID;
+        data.lineVertexBufferPtr++;
+
+        data.stats.vertexCount++;
+        
+        data.lineVertexBufferPtr->position = p1;
+        data.lineVertexBufferPtr->color = color;
+        data.lineVertexBufferPtr->coreID = coreID;
+        data.lineVertexBufferPtr++;
+
+        data.stats.vertexCount++;
+
+        data.lineElementCount += 2;
+
+        data.stats.elementCount += 2;
+        data.stats.objectCount++;
+    }
+
 
     Renderer::Stats Renderer::GetStats()
     {

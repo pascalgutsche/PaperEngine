@@ -25,7 +25,7 @@ namespace core {
         static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, core_id coreID = -1);
         static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), core_id coreID = -1);
 
-
+        static void DrawLine(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, core_id coreID = -1);
 
 
     	//static void DrawCircle();
@@ -55,6 +55,8 @@ namespace core {
 
         static void DrawTriangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
         static void DrawTriangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID);
+    
+        static void DrawLine(glm::mat4 transform, glm::vec4 color, core_id coreID);
     };
 
 }
