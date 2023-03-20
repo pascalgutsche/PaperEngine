@@ -19,29 +19,29 @@ void ForegroundLayer::OnAttach()
 
 void ForegroundLayer::OnDetach()
 {
-	for (auto i : game_objects)
+	for (auto i : gameObjects)
 	{
 		delete i;
 	}
-	game_objects.clear();
+	gameObjects.clear();
 }
 
-void ForegroundLayer::update(const float dt)
+void ForegroundLayer::Update(const float dt)
 {
 	static bool con = true;
 	if (Input::IsKeyPressed(KEY_Y) && con)
 	{
 		con = false;
-		character2->stop();
+		character2->Stop();
 	}
 	if (Input::IsKeyPressed(KEY_T) && !con)
 	{
 		con = true;
 	}
-	game_objects[0]->transform.rotation -= 150 * dt;
+	gameObjects[0]->transform.rotation -= 150 * dt;
 }
 
-void ForegroundLayer::imgui(const float dt)
+void ForegroundLayer::Imgui(const float dt)
 {
 }
 

@@ -173,7 +173,7 @@ namespace core {
     void Renderer::BeginRender(const Camera& camera)
     {
         data.camera = camera;
-        data.camera.calcCameraVectors();
+        data.camera.CalcCameraVectors();
 
         RenderCommand::Clear();
         data.framebuffer->Bind();
@@ -222,9 +222,9 @@ namespace core {
                 data.rectangleTextureSlots[i]->Bind(i);
 
             data.edgeGeometryShader->Bind();
-            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera.getProjectionMatrix());
-            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.getOrthographicMatrix());
-            data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
+            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
+            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
+            data.edgeGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
             RenderCommand::DrawElements(data.rectangleVertexArray, data.rectangleElementCount);
             data.stats.drawCalls++;
@@ -245,9 +245,9 @@ namespace core {
                 data.triangleTextureSlots[i]->Bind(i);
 
             data.edgeGeometryShader->Bind();
-            data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
-            data.edgeGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
-            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.getOrthographicMatrix());
+            data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.GetProjectionMatrix());
+            data.edgeGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
+            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
         	RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
             data.stats.drawCalls++;

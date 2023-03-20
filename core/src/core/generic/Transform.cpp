@@ -8,7 +8,7 @@ namespace core {
     Transform::Transform()
     {
         // default transform constructor sets empty values
-        init(glm::vec2(), glm::vec2(1.0f, 1.0f), 0.0f);
+        Init(glm::vec2(), glm::vec2(1.0f, 1.0f), 0.0f);
     }
 
     Transform::~Transform()
@@ -16,12 +16,12 @@ namespace core {
 
     }
 
-    Transform* Transform::copy()
+    Transform* Transform::Copy()
     {
         return new Transform(glm::vec2(this->position), glm::vec2(this->scale));
     }
 
-    void Transform::copy(Transform& transform)
+    void Transform::Copy(Transform& transform)
     {
         transform.position = this->position;
         transform.scale = this->scale;
@@ -29,20 +29,20 @@ namespace core {
 
     Transform::Transform(glm::vec2 position)
     {
-        init(position, glm::vec2(1.0f, 1.0f), 0.0f);
+        Init(position, glm::vec2(1.0f, 1.0f), 0.0f);
     }
 
     Transform::Transform(glm::vec2 position, glm::vec2 scale)
     {
-        init(position, scale, 0.0f);
+        Init(position, scale, 0.0f);
     }
 
     Transform::Transform(glm::vec2 position, glm::vec2 scale, float rotation)
     {
-        init(position, scale, rotation);
+        Init(position, scale, rotation);
     }
 
-    void Transform::init(glm::vec2 position, glm::vec2 scale, float rotation)
+    void Transform::Init(glm::vec2 position, glm::vec2 scale, float rotation)
     {
         this->position = position;
         this->scale = scale;
@@ -61,7 +61,7 @@ namespace core {
         }
     }
 
-    bool Transform::equals(Transform& transform) {
+    bool Transform::Equals(Transform& transform) {
         return this->position.x == transform.position.x && this->position.y == transform.position.y
             && this->scale.x == transform.scale.x && this->scale.y == transform.scale.y;
     }

@@ -53,8 +53,8 @@ namespace core {
 
 		void OnEvent(Event& event);
 
-		static void AddLayer(Layer* layer, bool add_to_renderer = true);
-		static void AddOverLay(Layer* layer, bool add_to_renderer = true);
+		static void AddLayer(Layer* layer);
+		static void AddOverLay(Layer* layer);
 		static void RemoveLayer(Layer* layer);
 		static void RemoveOverLay(Layer* layer);
 

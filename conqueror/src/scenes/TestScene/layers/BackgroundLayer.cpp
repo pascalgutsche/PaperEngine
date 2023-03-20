@@ -34,19 +34,19 @@ void BackgroundLayer::OnAttach()
 
 void BackgroundLayer::OnDetach()
 {
-    for (auto i : game_objects)
+    for (auto i : gameObjects)
     {
         delete i;
     }
-    game_objects.clear();
+    gameObjects.clear();
 }
 
-void BackgroundLayer::update(const float dt)
+void BackgroundLayer::Update(const float dt)
 {
-    game_objects[0]->transform.rotation += 100 * dt;
+    gameObjects[0]->transform.rotation += 100 * dt;
 }
 
-void BackgroundLayer::imgui(const float dt)
+void BackgroundLayer::Imgui(const float dt)
 {
 }
 

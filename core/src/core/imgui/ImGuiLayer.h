@@ -22,7 +22,7 @@ namespace core {
         ImGuiID dock_id_right = 0;
         ImGuiID dock_id_right2 = 0;
         ImGuiID dock_id_left_bottom = 0;
-        std::unordered_map<std::string, ImGuiID> dock_panel_queue;
+        std::unordered_map<std::string, ImGuiID> dockPanelQueue;
 
         void ApplicationPanel(const float dt, bool first);
         void CustomPanel(const float dt, bool first);
@@ -35,9 +35,9 @@ namespace core {
 
         glm::ivec2 mousePosViewportRelative;
 
-        GameObject* selected_gameobject = nullptr;
+        GameObject* selectedGameobject = nullptr;
 
-        std::unordered_map<std::string, void*> variable_pool;
+        std::unordered_map<std::string, void*> variablePool;
 
 
     public:
@@ -46,12 +46,12 @@ namespace core {
 
         void OnAttach() override;
         void OnDetach() override;
-        void update(const float dt) override;
-        void imgui(const float dt) override;
+        void Update(const float dt) override;
+        void Imgui(const float dt) override;
         void OnEvent(Event& e) override { }
 
-        void begin(const float dt);
-        void end();
+        void Begin(const float dt);
+        void End();
 
         void ScreenPanel();
 

@@ -35,7 +35,7 @@ namespace core {
 
     GameObject::~GameObject()
     {
-        deleteComponents();
+        DeleteComponents();
     }
 
 
@@ -62,7 +62,7 @@ namespace core {
         transform.Update();
     }
 
-    void GameObject::start()
+    void GameObject::Start()
 	{
         // start all components
         running = true;
@@ -71,7 +71,7 @@ namespace core {
         }
     }
 
-    void GameObject::stop()
+    void GameObject::Stop()
     {
         running = false;
         for (auto component : components) 
@@ -80,7 +80,7 @@ namespace core {
         }
     }
 
-    void GameObject::deleteComponents()
+    void GameObject::DeleteComponents()
 	{
         // delete all components
         for (auto comp : components)
@@ -135,7 +135,7 @@ namespace core {
     }
 
 
-    void GameObject::event(Event& event)
+    void GameObject::OnEvent(Event& event)
     {
 	    for (auto* component : components)
 	    {
@@ -144,7 +144,7 @@ namespace core {
     }
 
 
-	void GameObject::imgui(float dt) {
+	void GameObject::Imgui(float dt) {
 		ImGui::Text("Transform:");
 		ImGui::SliderFloat(std::string("X:").c_str(), &this->transform.position.x, -10.0f, 10.0f, 0);
 		ImGui::SliderFloat(std::string("Y:").c_str(), &this->transform.position.y, -10.0f, 10.0f, 0);

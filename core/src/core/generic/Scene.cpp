@@ -20,8 +20,8 @@ namespace core {
     void Scene::InitGeneral() {
         camera = new Camera();
 
-        loadResources();
-        init();
+        LoadResources();
+        Init();
         Start();
     }
 

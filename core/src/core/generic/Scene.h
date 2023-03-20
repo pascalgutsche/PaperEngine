@@ -32,9 +32,9 @@ namespace core {
         virtual void Update() = 0;
         virtual void OnEvent(Event& e) = 0;
     private:
-        virtual void imgui(float dt) {};
-        virtual void init() = 0;
-        virtual void loadResources() = 0;
+        virtual void Imgui(float dt) {};
+        virtual void Init() = 0;
+        virtual void LoadResources() = 0;
     };
 
 }

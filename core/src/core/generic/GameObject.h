@@ -51,12 +51,12 @@ namespace core {
         bool AddComponent(Component* component);
 
         void Update();
-        void start();
-        void stop();
-        void imgui(float dt);
-        void event(Event& event);
+        void Start();
+        void Stop();
+        void Imgui(float dt);
+        void OnEvent(Event& event);
 
-        void deleteComponents();
+        void DeleteComponents();
 
         GameObject* AddTag(std::string tag);
         GameObject* AddTag(std::initializer_list<std::string> tags);

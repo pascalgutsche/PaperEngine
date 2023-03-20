@@ -75,17 +75,12 @@ namespace core
             mouseClickedID[1] = 0;
             if (mouseHoverID[0] != mouseHoverID[1])
             {
-
                 if (mouseHoverID[1] != 0) {
                     Application::QueueEvents(new GameObjectHoverEndEvent(GameObject::GetGameObjectByID(mouseHoverID[1])));
                 }
                 if (mouseHoverID[0] != 0) {
                     Application::QueueEvents(new GameObjectHoverBeginEvent(GameObject::GetGameObjectByID(mouseHoverID[0])));
                 }
-
-            }
-            else if (mouseHoverID[0] != mouseHoverID[1] && mouseHoverID[0] == 0)
-            {
             }
             mouseHoverID[1] = mouseHoverID[0];
         }

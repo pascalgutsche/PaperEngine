@@ -15,14 +15,14 @@ TestScene::~TestScene() {
     Application::RemoveOverLay(sound_layer);
 }
 
-void TestScene::loadResources() {
+void TestScene::LoadResources() {
     backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
     background_layer = new BackgroundLayer();
     foreground_layer = new ForegroundLayer();
     sound_layer = new SoundLayer();
 }
 
-void TestScene::init() {
+void TestScene::Init() {
     Application::AddLayer(background_layer);
     Application::AddLayer(foreground_layer);
     Application::AddOverLay(sound_layer);
@@ -65,7 +65,7 @@ void TestScene::Update() {
     }
 }
 
-void TestScene::imgui(float dt) {
+void TestScene::Imgui(float dt) {
 	
 }
 

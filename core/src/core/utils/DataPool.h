@@ -18,7 +18,7 @@ namespace core {
 
     class DataPool {
     private:
-        static Map data_pool;
+        static Map dataPool;
 
     public:
         // get current shader with the specific string (name)

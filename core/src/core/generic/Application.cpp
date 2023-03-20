@@ -15,7 +15,7 @@ namespace core {
 	Application* Application::instance;
 
 	Application::Application() {
-		Log::init();
+		Log::Init();
 		CORE_ASSERT(!instance, "application is already instanced!");
 		instance = this;
 
@@ -55,7 +55,7 @@ namespace core {
 		{
 			if (event.handled)
 				break;
-			(*--it)->event(event);
+			(*--it)->LayerEvent(event);
 		}
 		if (!event.handled)
 		{
@@ -108,7 +108,7 @@ namespace core {
 	{
 		Init();
 
-		AddOverLay(imguiLayer, false);
+		AddOverLay(imguiLayer);
 
 
 		//set start scene
@@ -149,10 +149,10 @@ namespace core {
 						queuedScene = nullptr;
 					}
 
-					imguiLayer->begin(dt);
+					imguiLayer->Begin(dt);
 
 					for (Layer* layer : layerStack)
-						layer->update(dt);
+						layer->Update(dt);
 
 					currentScene->OnUpdate();
 
@@ -161,7 +161,7 @@ namespace core {
 					if (imguiEnabled) {
 					
 						for (Layer* layer : layerStack) {
-							layer->imgui(dt);
+							layer->Imgui(dt);
 						}
 					}
 					else
@@ -169,7 +169,7 @@ namespace core {
 						imguiLayer->ScreenPanel();
 					}
 
-					imguiLayer->end();
+					imguiLayer->End();
 				}
 			}
 			else if (warn) {
@@ -194,27 +194,27 @@ namespace core {
 		GetInstance()->queuedScene = new_scene;
 	}
 
-	void Application::AddLayer(Layer* layer, bool add_to_renderer)
+	void Application::AddLayer(Layer* layer)
 	{
-		GetInstance()->layerStack.addLayer(layer);
-		layer->attach(add_to_renderer);
+		GetInstance()->layerStack.AddLayer(layer);
+		layer->Attach();
 	}
 
-	void Application::AddOverLay(Layer* layer, bool add_to_renderer)
+	void Application::AddOverLay(Layer* layer)
 	{
-		GetInstance()->layerStack.addOverlay(layer);
-		layer->attach(add_to_renderer);
+		GetInstance()->layerStack.AddOverlay(layer);
+		layer->Attach();
 	}
 
 	void Application::RemoveLayer(Layer* layer)
 	{
-		layer->detach();
-		GetInstance()->layerStack.removeLayer(layer);
+		layer->Detach();
+		GetInstance()->layerStack.RemoveLayer(layer);
 	}
 
 	void Application::RemoveOverLay(Layer* layer)
 	{
-		layer->detach();
-		GetInstance()->layerStack.removeOverlay(layer);
+		layer->Detach();
+		GetInstance()->layerStack.RemoveOverlay(layer);
 	}
 }
