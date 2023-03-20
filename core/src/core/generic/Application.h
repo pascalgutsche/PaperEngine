@@ -28,9 +28,10 @@ namespace core {
 		float dt;
 		long int frames_rendered = 0;
 		bool game_running = true;
+		bool resizing = false;
 
 		//IMGUI
-		bool imgui_enabled = true; int imgui_enabled_queue = 0;
+		bool imgui_enabled = false; int imgui_enabled_queue = 0;
 		bool imguiEnabledBefore = imgui_enabled;
 
 		bool onWindowClose(WindowCloseEvent& e);
@@ -68,6 +69,7 @@ namespace core {
 		static bool GetImGuiEnabled() { return GetInstance()->imgui_enabled; }
 		static bool GetImGuiSwitched() { return GetInstance()->imguiEnabledBefore != GetInstance()->imgui_enabled; }
 		static float GetDT() { return GetInstance()->dt; }
+		static bool IsResizing() { return GetInstance()->resizing; }
 		static void SetEventCallback(const EventCallbackFunction& callbackFunction) { GetInstance()->window->SetEventCallback(callbackFunction); }
 
 		static Shr<Window> GetWindow() { return GetInstance()->window; }

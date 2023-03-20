@@ -27,9 +27,13 @@ namespace core
         Quit();
     }
 
-    void GLFWWindow::Update()
+    void GLFWWindow::PollEvents()
     {
         glfwPollEvents();
+    }
+
+    void GLFWWindow::SwapBuffers()
+    {
         context->SwapBuffer();
     }
 

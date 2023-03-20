@@ -51,7 +51,7 @@ namespace core
             pos = Application::GetImGuiLayer().GetMousePosViewportRelative();
         }
 
-        if (pos.x >= 0 && pos.y >= 0 && !Application::GetImGuiSwitched()) {
+        if (pos.x >= 0 && pos.y >= 0 && !Application::GetImGuiSwitched() && !Application::IsResizing()) {
             Renderer::GetFramebuffer()->Bind();
             mouseHoverID[0] = Renderer::GetFramebuffer()->ReadPixel(1, pos);
             Renderer::GetFramebuffer()->Unbind();

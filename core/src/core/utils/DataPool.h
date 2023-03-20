@@ -31,6 +31,6 @@ namespace core {
         
     };
 
-    enum class ProjectionMode { SCREEN, PERSPECTIVE, ORTHOGRAPHIC };
-
+    enum class ProjectionMode { PERSPECTIVE, ORTHOGRAPHIC, SCREEN };
+    int ProjectionModeToInt(const ProjectionMode& mode);
 }

@@ -57,6 +57,20 @@ namespace core {
         return texture;
     }
 
+    int ProjectionModeToInt(const ProjectionMode& mode)
+    {
+	    switch (mode)
+	    {
+	    case ProjectionMode::PERSPECTIVE:
+            return 0;
+	    case ProjectionMode::ORTHOGRAPHIC:
+            return 1;
+	    case ProjectionMode::SCREEN:
+            return 2;
+	    }
+        return -1;
+    }
+
     // basically save our characters we need for rendering into the CharacterPool map
     // each character and it's mandatory values for rendering (advance,... (struct variables)) are
     // saved into a map, which can then be used later on

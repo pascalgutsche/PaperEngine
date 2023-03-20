@@ -15,10 +15,10 @@ namespace core {
 	Application* Application::instance;
 
 	Application::Application() {
+		Log::init();
 		CORE_ASSERT(!instance, "application is already instanced!");
 		instance = this;
 
-		Log::init();
 		Core::Init();
 
 		window = Window::Create();
@@ -46,10 +46,6 @@ namespace core {
 
 	void Application::onEvent(Event& event)
 	{
-		if (event.IsInCategory(EventCategoryGame))
-		{
-			LOG_CORE_DEBUG(event);
-		}
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
@@ -75,6 +71,7 @@ namespace core {
 
 	bool Application::onWindowResize(WindowResizeEvent& e)
 	{
+		resizing = true;
 		Renderer::ResizeWindow(e.getWidth(), e.getHeight());
 		return false;
 	}
@@ -128,6 +125,7 @@ namespace core {
 
 		while (game_running)
 		{
+			window->PollEvents();
 			ProcessQueues();
 
 			//MouseListener::resetValues();
@@ -179,9 +177,10 @@ namespace core {
 				warn = false;
 			}
 
-			imguiEnabledBefore = imgui_enabled;
+			window->SwapBuffers();
 
-			window->Update();
+			imguiEnabledBefore = imgui_enabled;
+			resizing = false;
 
 			dt = window->GetTime() - begin_time;
 			begin_time = window->GetTime();
