@@ -1,24 +1,26 @@
+#include "_Game.h"
+
 #define INCLUDE_MAIN
-#include "Engine.h"
+#include "EntryPoint.h"
 
 #include "scenes/TestScene/TestScene.h"
 
-class Conqueror : public core::Application {
+class Conqueror : public Application {
 public:
 	Conqueror() {
 		
 	}
 	
-	~Conqueror() {
+	~Conqueror() override {
 		
 	}
 
-	void init() override {
+	void Init() override {
 		Application::ChangeScene(new TestScene());
 	}
 
 };
 
-core::Application* core::createApplication() {
+Application* core::CreateApplication() {
 	return new Conqueror();
 }

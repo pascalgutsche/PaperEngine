@@ -1,3 +1,4 @@
+#include "_Game.h"
 #include "TestScene.h"
 #include "layers/SoundLayer.h"
 
@@ -14,41 +15,36 @@ TestScene::~TestScene() {
     Application::RemoveOverLay(sound_layer);
 }
 
-void TestScene::loadResources() {
-    backcolor = glm::vec4(0.8f, 0.2f, 0.3f, 1.0f);
+void TestScene::LoadResources() {
+    backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
     background_layer = new BackgroundLayer();
     foreground_layer = new ForegroundLayer();
     sound_layer = new SoundLayer();
 }
 
-void TestScene::init() {
+void TestScene::Init() {
     Application::AddLayer(background_layer);
     Application::AddLayer(foreground_layer);
     Application::AddOverLay(sound_layer);
-
-    //gameObject5->setZIndex(100);
-
-    //this->activeGameObject = gameObject3;
-    
 }
 int selectedItem = 0;
 
-void TestScene::update(float dt) {
-
+void TestScene::Update() {
+    float dt = Application::GetDT();
     if (Input::IsKeyPressed(KEY_S)) {
-        camera->position.y -= 2.0f * dt;
+        camera->position.y -= 5.0f * dt;
     }
 
     if (Input::IsKeyPressed(KEY_W)) {
-        camera->position.y += 2.0f * dt;
+        camera->position.y += 5.0f * dt;
     }
 
     if (Input::IsKeyPressed(KEY_D)) {
-        camera->position.x += 2.0f * dt;
+        camera->position.x += 5.0f * dt;
     }
 
     if (Input::IsKeyPressed(KEY_A)) {
-        camera->position.x -= 2.0f * dt;
+        camera->position.x -= 5.0f * dt;
     }
 
     if (Input::IsKeyPressed(KEY_LEFT)) {
@@ -67,22 +63,20 @@ void TestScene::update(float dt) {
     if (Input::IsKeyPressed(KEY_U)) {
         Application::ChangeScene(new TestScene());
     }
-
-
-    this->renderer->render(dt);
 }
 
-void TestScene::imgui(float dt) {
+void TestScene::Imgui(float dt) {
 	
 }
 
 bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
 {
-    if (this->getCamera()->position.z > 1)
-        this->getCamera()->position.z += 10.0f * core::Application::GetDT() * e.getYOffset();
-    else if (e.getYOffset() > 0)
-        this->getCamera()->position.z += 10.0f * core::Application::GetDT() * e.getYOffset();
-    this->getCamera()->fov += 1.0f * core::Application::GetDT() * e.getXOffset();
+    if (this->GetCamera()->position.z > 0.2f && e.GetYOffset() != 0)
+        this->GetCamera()->position.z += 10.0 * core::Application::GetDT() * e.GetYOffset();
+    if (this->GetCamera()->position.z < 0.2f) {
+        this->GetCamera()->position.z = 0.2f;
+    }
+        
     return true;
 }
 

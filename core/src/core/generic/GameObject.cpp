@@ -20,7 +20,7 @@ namespace core {
 
 	void GameObject::StopComponentIndex(uint32_t index)
 	{
-        components[index]->stop();
+        components[index]->OnStop();
 	}
 
 	void GameObject::DeleteComponentIndex(uint32_t index)
@@ -63,39 +63,40 @@ namespace core {
         return true;
     }
 
-    void GameObject::update(float dt)
+    void GameObject::Update()
 	{
         // update gameObject, in order to display moving changes
         for (auto component : components) {
-            component->update(dt);
+            component->OnUpdate();
         }
+        transform.Update();
     }
 
-    void GameObject::start()
+    void GameObject::Start()
 	{
         // start all components
         running = true;
         for (auto component : components) {
-            component->start();
+            component->OnStart();
         }
     }
 
-    void GameObject::stop()
+    void GameObject::Stop()
     {
         running = false;
         for (auto component : components) 
         {
-            component->stop();
+            component->OnStop();
         }
     }
 
-    void GameObject::deleteComponents()
+    void GameObject::DeleteComponents()
 	{
         // delete all components
         for (auto comp : components)
         {
             if (running) 
-				comp->stop();
+				comp->OnStop();
             delete comp;
             comp = nullptr;
         }
@@ -144,11 +145,11 @@ namespace core {
     }
 
 
-    void GameObject::event(Event& event)
+    void GameObject::OnEvent(Event& event)
     {
 	    for (auto* component : components)
 	    {
-            component->event(event);
+            component->OnEvent(event);
 	    }
     }
 
@@ -173,15 +174,15 @@ namespace core {
     }
 
 
-    void GameObject::imgui(float dt) {
-		ImGui::Text("Generic stuff:");
+	void GameObject::Imgui(float dt) {
+		ImGui::Text("Transform:");
 		ImGui::SliderFloat(std::string("X:").c_str(), &this->transform.position.x, -10.0f, 10.0f, 0);
 		ImGui::SliderFloat(std::string("Y:").c_str(), &this->transform.position.y, -10.0f, 10.0f, 0);
 		ImGui::SliderFloat(std::string("Width:").c_str(), &this->transform.scale.x, 0.0f, 10.0f, 0);
 		ImGui::SliderFloat(std::string("Height:").c_str(), &this->transform.scale.y, 0.0f, 10.0f, 0);
 
 		for (auto component : components) {
-		    component->imgui(dt);
+		    component->OnImgui(dt);
 		}
     }
 
@@ -191,6 +192,7 @@ namespace core {
         if (IDMap.find(id) != IDMap.end()) {
             return IDMap.at(id);
         }
+        CORE_ASSERT(false, "invalid ID");
         return nullptr;
     }
 
