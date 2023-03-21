@@ -36,11 +36,6 @@ void BackgroundLayer::OnAttach()
 
 void BackgroundLayer::OnDetach()
 {
-    for (auto i : gameObjects)
-    {
-        delete i;
-    }
-    gameObjects.clear();
 }
 
 void BackgroundLayer::Update(const float dt)
@@ -59,7 +54,7 @@ void BackgroundLayer::OnEvent(Event& event)
     {
         if (e.getKeyCode() == KEY_C)
         {
-            gameObjects[0]->Delete();
+            delete gameObjects[0];
             return true;
         }
         if (e.getKeyCode() == KEY_M)
@@ -67,6 +62,10 @@ void BackgroundLayer::OnEvent(Event& event)
             GameObject* gm = new GameObject("Background", Transform(glm::vec2(0.0f, 1.0f), glm::vec2(5.0f, 1.0f)));
             gm->AddComponent(new SpriteRenderer(glm::vec4(0.7f, 0.3f, 0.2f, 1.0f), SpriteRenderer::RECTANGLE));
             AddGameObjectToLayer(gm);
+        }
+        if (e.getKeyCode() == KEY_I)
+        {
+            this->Detach();
         }
         return false;
     });
