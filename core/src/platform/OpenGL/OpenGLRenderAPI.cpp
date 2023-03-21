@@ -65,9 +65,10 @@ namespace core
 		vertexArray->Unbind();
 	}
 	
-	void OpenGLRenderAPI::DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount)
+	void OpenGLRenderAPI::DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount, float thickness)
 	{
 		vertexArray->Bind();
+		SetLineWidth(thickness);
 		glDrawArrays(GL_LINES, 0, vertexCount);
 	}
 	

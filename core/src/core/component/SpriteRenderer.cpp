@@ -13,12 +13,16 @@
 namespace core {
     
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry)
-    { Init(color, nullptr, geometry); }
+    { Init(color, nullptr, geometry, 0); }
+
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry, float thickness)
+    { Init(color, nullptr, geometry, thickness); }
 
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
-    { Init(color, texture, geometry); }
+    { Init(color, texture, geometry, 0); }
 
-    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
+
+    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry, float thickness)
     {
         this->color = color;
         this->texture = texture;
@@ -27,6 +31,7 @@ namespace core {
         this->texCoords[2] = { 1.0f, 1.0f };
         this->texCoords[3] = { 0.0f, 1.0f };
         this->geometry = geometry;
+        this->lineThickness = thickness;
     }
 
     void SpriteRenderer::OnUpdate() {
@@ -48,7 +53,7 @@ namespace core {
                 break;
 
             case Geometry::LINE:
-                Renderer::DrawLine(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetObjectID());
+                Renderer::DrawLine(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, lineThickness, gameObject->GetObjectID());
                 break;
         }
     }

@@ -75,6 +75,8 @@ namespace core {
 
         Camera camera;
 
+        float lineWidth = 1.0f;
+
         glm::vec4 rectangleVertexData[4];
         glm::vec4 triangleVertexData[3];
 
@@ -308,7 +310,8 @@ namespace core {
             
             data.stats.drawCalls++;
 
-            RenderCommand::DrawLines(data.lineVertexArray, data.lineElementCount);
+            RenderCommand::SetLineThickness(data.lineWidth);
+            RenderCommand::DrawLines(data.lineVertexArray, data.lineElementCount, data.lineWidth);
         }
     }
 
@@ -510,14 +513,9 @@ namespace core {
         data.stats.objectCount++;
     }
 
-    void Renderer::DrawLine(glm::vec2 p0, glm::vec2 p1, float rotation, glm::vec4 color, core_id coreID)
+    void Renderer::DrawLine(glm::vec2 p0, glm::vec2 p1, float rotation, glm::vec4 color, float thickness, core_id coreID)
     {
         const uint32_t lineVertexCount = 2;
-
-        if (data.lineElementCount >= data.MAX_ELEMENTS)
-        {
-            NextBatch();
-        }
 
         data.lineVertexBufferPtr->position = p0;
         data.lineVertexBufferPtr->color = color;
@@ -537,6 +535,9 @@ namespace core {
 
         data.stats.elementCount += 2;
         data.stats.objectCount++;
+
+        data.lineWidth = thickness;
+        NextBatch();
     }
 
 
@@ -554,7 +555,6 @@ namespace core {
     {
         return data.framebuffer;
     }
-
 
     /*
     Renderer* Renderer::instance;
