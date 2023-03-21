@@ -5,7 +5,7 @@
 
 void BackgroundLayer::OnAttach()
 {
-    background1 = new GameObject("background1", Transform(glm::vec2(2.0f, 1.0f), glm::vec2(1.0f, 1.0f)), ProjectionMode::SCREEN);
+    background1 = new GameObject("background1", Transform(glm::vec2(-0.3f, 0.0f), glm::vec2(0.5f, 0.3f)), ProjectionMode::SCREEN);
     background2 = new GameObject("background2", Transform(glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 1.0f)));
     background3 = new GameObject("background3", Transform(glm::vec2(-2.0f, 1.0f), glm::vec2(1.0f, 1.0f)));
     background4 = new GameObject("background4", Transform(glm::vec2(2.0f, -1.0f), glm::vec2(3.7f, 4.0f)), ProjectionMode::ORTHOGRAPHIC);
@@ -25,13 +25,13 @@ void BackgroundLayer::OnAttach()
 
 
     this->AddGameObjectToLayer(background1);
-    //this->AddGameObjectToLayer(background2);
-    //this->AddGameObjectToLayer(background3);
-    //this->AddGameObjectToLayer(background4);
-    //this->AddGameObjectToLayer(background5);
-    //this->AddGameObjectToLayer(background6);
-    //this->AddGameObjectToLayer(background7);
-    //this->AddGameObjectToLayer(background8);
+    this->AddGameObjectToLayer(background2);
+    this->AddGameObjectToLayer(background3);
+    this->AddGameObjectToLayer(background4);
+    this->AddGameObjectToLayer(background5);
+    this->AddGameObjectToLayer(background6);
+    this->AddGameObjectToLayer(background7);
+    this->AddGameObjectToLayer(background8);
 }
 
 void BackgroundLayer::OnDetach()
@@ -45,7 +45,7 @@ void BackgroundLayer::OnDetach()
 
 void BackgroundLayer::Update(const float dt)
 {
-    //gameObjects[0]->transform.rotation += 100 * dt;
+    gameObjects[0]->transform.rotation += 100 * dt;
 }
 
 void BackgroundLayer::Imgui(const float dt)
@@ -59,10 +59,10 @@ void BackgroundLayer::OnEvent(Event& event)
     {
         if (e.getKeyCode() == KEY_C)
         {
-            background1->Delete();
+            gameObjects[0]->Delete();
             return true;
         }
-        if (e.getKeyCode() == KEY_M && false)
+        if (e.getKeyCode() == KEY_M)
         {
             GameObject* gm = new GameObject("Background", Transform(glm::vec2(0.0f, 1.0f), glm::vec2(5.0f, 1.0f)));
             gm->AddComponent(new SpriteRenderer(glm::vec4(0.7f, 0.3f, 0.2f, 1.0f), SpriteRenderer::RECTANGLE));

@@ -32,20 +32,21 @@ void main()
     TexID = aTexID;
     CoreID = aCoreID;
 
-    switch (aProjectionMode)
-    {
-        case 0:
-            gl_Position = uPerspective * uView * vec4(aPos, 0.0f, 1.0f);
+    vec4 position;
+    switch(aProjectionMode) {
+        case 0: 
+            position = uPerspective * uView * vec4(aPos, 0.0f, 1.0f);
             break;
         case 1:
-            gl_Position = uOrthographic * uView * vec4(aPos, 0.0f, 1.0f);
+            position = uOrthographic * uView * vec4(aPos, 0.0f, 1.0f);
             break;
-        case 2: 
-            gl_Position = vec4(aPos, 0.0f, 1.0f);
-            break;
+        case 2:
+            position = vec4(aPos, 0.0f, 1.0f);
         default:
-            break;
+            break;   
     }
+    gl_Position = position;
+
 }
 
 
