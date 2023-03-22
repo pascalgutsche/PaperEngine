@@ -82,7 +82,9 @@ namespace core {
 	{
         // update gameObject, in order to display moving changes
         for (auto component : components) {
-            component->OnUpdate();
+            if (component && !deleted) {
+                component->OnUpdate();
+            }
         }
         transform.Update();
     }

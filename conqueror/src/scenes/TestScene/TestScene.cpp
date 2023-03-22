@@ -10,9 +10,9 @@ TestScene::TestScene() {
 }
 
 TestScene::~TestScene() {
-    Application::RemoveLayer(background_layer);
-    Application::RemoveLayer(foreground_layer);
-    Application::RemoveOverLay(sound_layer);
+    RemoveLayer(background_layer);
+    RemoveLayer(foreground_layer);
+    RemoveOverlay(sound_layer);
 }
 
 void TestScene::LoadResources() {
@@ -23,9 +23,9 @@ void TestScene::LoadResources() {
 }
 
 void TestScene::Init() {
-    Application::AddLayer(background_layer);
-    Application::AddLayer(foreground_layer);
-    Application::AddOverLay(sound_layer);
+    AddLayer(background_layer);
+    AddLayer(foreground_layer);
+    AddOverlay(sound_layer);
 }
 int selectedItem = 0;
 

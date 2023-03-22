@@ -11,10 +11,6 @@ namespace core {
     class Component;
     class Layer;
 
-    struct GOSpec {
-        
-    };
-
     class GameObject {
     private:
         std::string id;
