@@ -14,13 +14,12 @@ namespace core {
 	        NONE,
             RECTANGLE,
             TRIANGLE,
-            CIRCLE,
             LINE
         };
         SpriteRenderer(glm::vec4 color, Geometry geometry);
         SpriteRenderer(glm::vec4 color, Geometry geometry, float thickness);
         SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry);
-          
+        
 
         ~SpriteRenderer() override { }
 

@@ -27,10 +27,7 @@ namespace core {
 
         static void DrawLine(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, float thickness, core_id coreID = -1);
 
-
-    	//static void DrawCircle();
-        //static void DrawLine();
-        //static void DrawGlyphs();
+        static void DrawCircle(glm::mat4 transform, glm::vec4 color, float rotation, float thickness, float fade, core_id coreID = -1);
 
         struct Stats
         {
@@ -39,6 +36,7 @@ namespace core {
             uint32_t dataSize = 0;
             uint32_t vertexCount = 0;
             uint32_t elementCount = 0;
+            uint32_t quadCount = 0;
         };
         static Stats GetStats();
         static void ClearStats();
@@ -56,8 +54,6 @@ namespace core {
         static void DrawTriangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
         static void DrawTriangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID);
     
-        static void DrawLine(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
-
     };
 
 }
