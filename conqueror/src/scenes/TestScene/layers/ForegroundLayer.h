@@ -6,7 +6,8 @@ private:
 	GameObject* character1;
 	GameObject* character2;
 	GameObject* object1;
-
+	GameObject* lineObject1;
+	GameObject* lineObject2;
 public:
 	ForegroundLayer() = default;
 	virtual ~ForegroundLayer() = default;
