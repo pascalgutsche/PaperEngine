@@ -15,7 +15,6 @@ namespace core {
             RECTANGLE,
             TRIANGLE,
             CIRCLE,
-            LINE
         };
         SpriteRenderer(glm::vec4 color, Geometry geometry);
         SpriteRenderer(glm::vec4 color, Geometry geometry, float thickness);

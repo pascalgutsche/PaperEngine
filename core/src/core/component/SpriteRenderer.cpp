@@ -51,10 +51,6 @@ namespace core {
                 break;
             case Geometry::CIRCLE: 
                 break;
-
-            case Geometry::LINE:
-                Renderer::DrawLine(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, lineThickness, gameObject->GetObjectID());
-                break;
         }
     }
 
