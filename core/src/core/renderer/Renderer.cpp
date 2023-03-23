@@ -34,6 +34,7 @@ namespace core {
     {
         glm::vec2 position;
         glm::vec4 color;
+        int projectionMode;
         int coreID;
     };
 
@@ -106,6 +107,7 @@ namespace core {
         BufferLayout LineGeometryLayout = {
             { GLSLDataType::FLOAT2, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
+			{ GLSLDataType::INT , "aProjectionMode" },
             { GLSLDataType::INT , "aCoreID" }
         };
 
@@ -263,6 +265,7 @@ namespace core {
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
             RenderCommand::DrawElements(data.rectangleVertexArray, data.rectangleElementCount);
+            data.edgeGeometryShader->Unbind();
             data.stats.drawCalls++;
 
             //unbind textures
@@ -281,11 +284,12 @@ namespace core {
                 data.triangleTextureSlots[i]->Bind(i);
 
             data.edgeGeometryShader->Bind();
-            data.edgeGeometryShader->UploadMat4f("uProjection", data.camera.GetProjectionMatrix());
+            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
             data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
         	RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
+            data.edgeGeometryShader->Unbind();
             data.stats.drawCalls++;
         
             //unbind textures
@@ -299,13 +303,14 @@ namespace core {
             data.lineVertexBuffer->AddData(data.lineVertexBufferBase, dataSize);
             
             data.lineGeometryShader->Bind();
-            data.lineGeometryShader->UploadMat4f("uProjection", data.camera.getProjectionMatrix());
-            data.lineGeometryShader->UploadMat4f("uView", data.camera.getViewMatrix());
-            
-            data.stats.drawCalls++;
+            data.lineGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
+            data.lineGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
+            data.lineGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
 
             RenderCommand::SetLineThickness(data.lineWidth);
             RenderCommand::DrawLines(data.lineVertexArray, data.lineElementCount, data.lineWidth);
+            data.lineGeometryShader->Unbind();
+            data.stats.drawCalls++;
         }
     }
 
@@ -509,12 +514,13 @@ namespace core {
         data.stats.objectCount++;
     }
 
-    void Renderer::DrawLine(glm::vec2 p0, glm::vec2 p1, float rotation, glm::vec4 color, float thickness, core_id coreID)
+    void Renderer::DrawLine(glm::vec2 p0, glm::vec2 p1, glm::vec4 color, float thickness, ProjectionMode mode, core_id coreID)
     {
         const uint32_t lineVertexCount = 2;
 
         data.lineVertexBufferPtr->position = p0;
         data.lineVertexBufferPtr->color = color;
+        data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
         data.lineVertexBufferPtr->coreID = coreID;
         data.lineVertexBufferPtr++;
 
@@ -522,6 +528,7 @@ namespace core {
         
         data.lineVertexBufferPtr->position = p1;
         data.lineVertexBufferPtr->color = color;
+        data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
         data.lineVertexBufferPtr->coreID = coreID;
         data.lineVertexBufferPtr++;
 
@@ -529,7 +536,7 @@ namespace core {
 
         data.lineElementCount += 2;
 
-        data.stats.elementCount += 2;
+        data.stats.elementCount += 1;
         data.stats.objectCount++;
 
         data.lineWidth = thickness;

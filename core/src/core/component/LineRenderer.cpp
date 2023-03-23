@@ -20,7 +20,7 @@ namespace core
 
 	void LineRenderer::OnUpdate()
 	{
-		Renderer::DrawLine(positionA, positionB, gameObject->transform.rotation, color, thickness, gameObject->GetObjectID());
+		Renderer::DrawLine(positionA, positionB, color, thickness, gameObject->GetProjectionMode(), gameObject->GetObjectID());
 	}
 
 	void LineRenderer::OnImgui(float dt)

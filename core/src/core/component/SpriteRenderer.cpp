@@ -12,16 +12,13 @@
 namespace core {
     
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry)
-    { Init(color, nullptr, geometry, 0); }
-
-    SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry, float thickness)
-    { Init(color, nullptr, geometry, thickness); }
+    { Init(color, nullptr, geometry); }
 
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
-    { Init(color, texture, geometry, 0); }
+    { Init(color, texture, geometry); }
 
 
-    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry, float thickness)
+    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
     {
         this->color = color;
         this->texture = texture;
@@ -30,7 +27,6 @@ namespace core {
         this->texCoords[2] = { 1.0f, 1.0f };
         this->texCoords[3] = { 0.0f, 1.0f };
         this->geometry = geometry;
-        this->lineThickness = thickness;
     }
 
     void SpriteRenderer::OnUpdate() {
