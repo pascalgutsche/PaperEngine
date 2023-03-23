@@ -10,22 +10,22 @@ TestScene::TestScene() {
 }
 
 TestScene::~TestScene() {
-    Application::RemoveLayer(background_layer);
-    Application::RemoveLayer(foreground_layer);
-    Application::RemoveOverLay(sound_layer);
+    RemoveLayer(background_layer);
+    RemoveLayer(foreground_layer);
+    RemoveOverlay(sound_layer);
 }
 
-void TestScene::loadResources() {
+void TestScene::LoadResources() {
     backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
     background_layer = new BackgroundLayer();
     foreground_layer = new ForegroundLayer();
     sound_layer = new SoundLayer();
 }
 
-void TestScene::init() {
-    Application::AddLayer(background_layer);
-    Application::AddLayer(foreground_layer);
-    Application::AddOverLay(sound_layer);
+void TestScene::Init() {
+    AddLayer(background_layer);
+    AddLayer(foreground_layer);
+    AddOverlay(sound_layer);
 }
 int selectedItem = 0;
 
@@ -65,7 +65,7 @@ void TestScene::Update() {
     }
 }
 
-void TestScene::imgui(float dt) {
+void TestScene::Imgui(float dt) {
 	
 }
 

@@ -15,28 +15,28 @@ namespace core {
 	Application* Application::instance;
 
 	Application::Application() {
+		Log::Init();
 		CORE_ASSERT(!instance, "application is already instanced!");
 		instance = this;
 
-		Log::init();
 		Core::Init();
 
 		window = Window::Create();
-		SetEventCallback(BIND_EVENT_FN(Application::onEvent));
+		SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
 
 		
 
-		imguilayer = new ImGuiLayer();
+		imguiLayer = new ImGuiLayer();
 	}
 
 	Application::~Application()
 	{
-		exit();
+		Exit();
 	}
 
-	void Application::init() { }
+	void Application::Init() { }
 
 	void Application::QueueEvents(Event* event)
 	{
@@ -44,22 +44,18 @@ namespace core {
 	}
 
 
-	void Application::onEvent(Event& event)
+	void Application::OnEvent(Event& event)
 	{
-		if (event.IsInCategory(EventCategoryGame))
-		{
-			LOG_CORE_DEBUG(event);
-		}
 		EventDispatcher dispatcher(event);
-		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
-		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
-		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::onKeyPressed));
+		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::OnKeyPressed));
 
-		for (auto it = layer_stack.end(); it != layer_stack.begin(); )
+		for (auto it = layerStack.end(); it != layerStack.begin(); )
 		{
 			if (event.handled)
 				break;
-			(*--it)->event(event);
+			(*--it)->LayerEvent(event);
 		}
 		if (!event.handled)
 		{
@@ -67,25 +63,26 @@ namespace core {
 		}
 	}
 
-	bool Application::onWindowClose(WindowCloseEvent& e)
+	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		game_running = false;
+		gameRunning = false;
 		return true;
 	}
 
-	bool Application::onWindowResize(WindowResizeEvent& e)
+	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
+		resizing = true;
 		Renderer::ResizeWindow(e.getWidth(), e.getHeight());
 		return false;
 	}
 
 
-	bool Application::onKeyPressed(KeyPressedEvent& e)
+	bool Application::OnKeyPressed(KeyPressedEvent& e)
 	{
 		if (!e.getRepeated() && e.getKeyCode() == KEY_P)
 		{
-			if (imgui_enabled_queue == 0 && imgui_enabled) imgui_enabled_queue = 1;
-			else imgui_enabled_queue = 2;
+			if (imguiEnabledQueue == 0 && imguiEnabled) imguiEnabledQueue = 1;
+			else imguiEnabledQueue = 2;
 			return true;
 		}
 		return false;
@@ -93,25 +90,25 @@ namespace core {
 
 	void Application::ProcessQueues()
 	{
-		if (imgui_enabled_queue > 0)
+		if (imguiEnabledQueue > 0)
 		{
-			imgui_enabled = imgui_enabled_queue - 1;
-			imgui_enabled_queue = 0;
+			imguiEnabled = imguiEnabledQueue - 1;
+			imguiEnabledQueue = 0;
 		}
 
 		for (Event* event : eventQueue)
 		{
-			onEvent(*event);
+			OnEvent(*event);
 			delete event;
 		}
 		eventQueue.clear();
 	}
 
-	void Application::run() 
+	void Application::Run() 
 	{
-		init();
+		Init();
 
-		AddOverLay(imguilayer, false);
+		AddOverlay(imguiLayer);
 
 
 		//set start scene
@@ -126,8 +123,9 @@ namespace core {
 		dt = 0.0167f;
 		bool warn = true;
 
-		while (game_running)
+		while (gameRunning)
 		{
+			window->PollEvents();
 			ProcessQueues();
 
 			//MouseListener::resetValues();
@@ -151,27 +149,30 @@ namespace core {
 						queuedScene = nullptr;
 					}
 
-					imguilayer->begin(dt);
+					imguiLayer->Begin(dt);
 
-					for (Layer* layer : layer_stack)
-						layer->update(dt);
+					for (Layer* layer : layerStack)
+					{
+						if (layer->IsAttached())
+							layer->Update(dt);
+					}
 
 					currentScene->OnUpdate();
 
 					Input::ProcessInput();
 					
-					if (imgui_enabled) {
+					if (imguiEnabled) {
 					
-						for (Layer* layer : layer_stack) {
-							layer->imgui(dt);
+						for (Layer* layer : layerStack) {
+							layer->Imgui(dt);
 						}
 					}
 					else
 					{
-						imguilayer->ScreenPanel();
+						imguiLayer->ScreenPanel();
 					}
 
-					imguilayer->end();
+					imguiLayer->End();
 				}
 			}
 			else if (warn) {
@@ -179,9 +180,10 @@ namespace core {
 				warn = false;
 			}
 
-			imguiEnabledBefore = imgui_enabled;
+			window->SwapBuffers();
 
-			window->Update();
+			imguiEnabledBefore = imguiEnabled;
+			resizing = false;
 
 			dt = window->GetTime() - begin_time;
 			begin_time = window->GetTime();
@@ -195,27 +197,27 @@ namespace core {
 		GetInstance()->queuedScene = new_scene;
 	}
 
-	void Application::AddLayer(Layer* layer, bool add_to_renderer)
+	void Application::AddLayer(Layer* layer)
 	{
-		GetInstance()->layer_stack.addLayer(layer);
-		layer->attach(add_to_renderer);
+		GetInstance()->layerStack.AddLayer(layer);
+		layer->Attach();
 	}
 
-	void Application::AddOverLay(Layer* layer, bool add_to_renderer)
+	void Application::AddOverlay(Layer* layer)
 	{
-		GetInstance()->layer_stack.addOverlay(layer);
-		layer->attach(add_to_renderer);
+		GetInstance()->layerStack.AddOverlay(layer);
+		layer->Attach();
 	}
 
 	void Application::RemoveLayer(Layer* layer)
 	{
-		layer->detach();
-		GetInstance()->layer_stack.removeLayer(layer);
+		layer->Detach();
+		GetInstance()->layerStack.RemoveLayer(layer);
 	}
 
-	void Application::RemoveOverLay(Layer* layer)
+	void Application::RemoveOverlay(Layer* layer)
 	{
-		layer->detach();
-		GetInstance()->layer_stack.removeOverlay(layer);
+		layer->Detach();
+		GetInstance()->layerStack.RemoveOverlay(layer);
 	}
 }

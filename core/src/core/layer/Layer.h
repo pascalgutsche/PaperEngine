@@ -4,6 +4,7 @@
 
 #include "event/Event.h"
 #include "generic/GameObject.h"
+#include "generic/Scene.h"
 
 namespace core
 {
@@ -11,35 +12,47 @@ namespace core
 	class Layer
 	{
 	protected:
+		Scene* scene;
 		std::string name;
 		bool overlay = false;
 		bool attached = false;
 
-		std::vector<GameObject*> game_objects;
+		std::vector<GameObject*> gameObjects;
 
 	public:
 		Layer(const std::string& name = "Layer")
 			: name(name) { }
 
-		virtual ~Layer() = default;
+		virtual ~Layer();
 
-		void attach(bool add_to_renderer);
-		void detach();
+		void Attach();
+		void Detach();
 
 		virtual void OnAttach() = 0;
 		virtual void OnDetach() = 0;
-		virtual void update(const float dt) = 0;
-		virtual void imgui(const float dt) { };
+		virtual void Update(const float dt) = 0;
+		virtual void Imgui(const float dt) { };
 		virtual void OnEvent(Event& event) = 0;
 
-		void event(Event& event);
+		void LayerEvent(Event& event);
+		bool IsAttached() const { return attached; }
+
+		void SetScene(Scene* scene) { this->scene = scene; }
+
+		template <class T>
+		T* GetScene()
+		{
+			T* tmpScene = dynamic_cast<T>(scene);
+			CORE_ASSERT(tmpScene, "this scene doesnt own this layer")
+				return tmpScene;
+		}
 
 		void AddGameObjectToLayer(GameObject* game_object);
 
-		void setOverlayStatus(bool overlay) { this->overlay = overlay; }
+		void SetOverlayStatus(bool overlay) { this->overlay = overlay; }
 
-		bool getOverlayStatus() { return overlay; }
-		std::vector<GameObject*> GetGameObjects() const { return game_objects; }
+		bool GetOverlayStatus() { return overlay; }
+		std::vector<GameObject*>& GetGameObjects() { return gameObjects; }
 		std::string GetName() { return name; }
 	};
 }

@@ -9,17 +9,15 @@
 namespace core {
 
     class Component;
-    class SpriteRenderer;
-
-    struct GOSpec {
-        
-    };
+    class Layer;
 
     class GameObject {
     private:
         std::string id;
         std::vector<Component*> components;
         int zIndex;
+        Layer* layer;
+        bool deleted = false;
 
         std::string name = "GameObject";
         std::initializer_list<std::string> tags;
@@ -33,6 +31,9 @@ namespace core {
 
         void StopComponentIndex(uint32_t index);
         void DeleteComponentIndex(uint32_t index);
+
+        friend class Layer;
+        void SetLayer(Layer* layer);
 
         static std::unordered_map<core_id, GameObject*> IDMap;
     public:
@@ -51,12 +52,12 @@ namespace core {
         bool AddComponent(Component* component);
 
         void Update();
-        void start();
-        void stop();
-        void imgui(float dt);
-        void event(Event& event);
+        void Start();
+        void Stop();
+        void Imgui(float dt);
+        void OnEvent(Event& event);
 
-        void deleteComponents();
+        void DeleteComponents();
 
         GameObject* AddTag(std::string tag);
         GameObject* AddTag(std::initializer_list<std::string> tags);

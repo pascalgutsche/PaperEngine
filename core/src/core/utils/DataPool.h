@@ -18,7 +18,7 @@ namespace core {
 
     class DataPool {
     private:
-        static Map data_pool;
+        static Map dataPool;
 
     public:
         // get current shader with the specific string (name)
@@ -31,6 +31,6 @@ namespace core {
         
     };
 
-    enum class ProjectionMode { SCREEN, PERSPECTIVE, ORTHOGRAPHIC };
-
+    enum class ProjectionMode { PERSPECTIVE, ORTHOGRAPHIC, SCREEN };
+    int ProjectionModeToInt(const ProjectionMode& mode);
 }

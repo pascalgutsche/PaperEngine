@@ -51,7 +51,7 @@ namespace core
             pos = Application::GetImGuiLayer().GetMousePosViewportRelative();
         }
 
-        if (pos.x >= 0 && pos.y >= 0 && !Application::GetImGuiSwitched()) {
+        if (pos.x >= 0 && pos.y >= 0 && !Application::GetImGuiSwitched() && !Application::IsResizing()) {
             Renderer::GetFramebuffer()->Bind();
             mouseHoverID[0] = Renderer::GetFramebuffer()->ReadPixel(1, pos);
             Renderer::GetFramebuffer()->Unbind();
@@ -75,17 +75,12 @@ namespace core
             mouseClickedID[1] = 0;
             if (mouseHoverID[0] != mouseHoverID[1])
             {
-
                 if (mouseHoverID[1] != 0) {
                     Application::QueueEvents(new GameObjectHoverEndEvent(GameObject::GetGameObjectByID(mouseHoverID[1])));
                 }
                 if (mouseHoverID[0] != 0) {
                     Application::QueueEvents(new GameObjectHoverBeginEvent(GameObject::GetGameObjectByID(mouseHoverID[0])));
                 }
-
-            }
-            else if (mouseHoverID[0] != mouseHoverID[1] && mouseHoverID[0] == 0)
-            {
             }
             mouseHoverID[1] = mouseHoverID[0];
         }

@@ -18,10 +18,10 @@ namespace core
 		LayerStack();
 		~LayerStack();
 
-		void addLayer(Layer* layer);
-		void addOverlay(Layer* layer);
-		void removeLayer(Layer* layer);
-		void removeOverlay(Layer* layer);
+		void AddLayer(Layer* layer);
+		void AddOverlay(Layer* layer);
+		void RemoveLayer(Layer* layer);
+		void RemoveOverlay(Layer* layer);
 
 		stack::iterator begin()						 { return layers.begin();  }
 		stack::iterator end()						 { return layers.end();    }

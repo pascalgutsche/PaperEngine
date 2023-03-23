@@ -7,18 +7,15 @@ private:
 	GameObject* character2;
 	GameObject* object1;
 	GameObject* lineObject1;
-	GameObject* lineObject2;
-
 	GameObject* circleObject;
-
 public:
 	ForegroundLayer() = default;
 	virtual ~ForegroundLayer() = default;
 
 	void OnAttach() override;
 	void OnDetach() override;
-	void update(const float dt) override;
-	void imgui(const float dt) override;
+	void Update(const float dt) override;
+	void Imgui(const float dt) override;
 	void OnEvent(Event& event) override;
 
 };

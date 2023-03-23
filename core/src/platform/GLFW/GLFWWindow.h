@@ -16,7 +16,8 @@ namespace core
         GLFWWindow(const WindowProps& window_props);
         ~GLFWWindow() override;
 
-        void Update() override;
+        void PollEvents() override;
+        void SwapBuffers() override;
 
         unsigned int GetWidth() const override { return windowData.width; }
         unsigned int GetHeight() const override { return windowData.height; }

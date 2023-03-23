@@ -17,13 +17,13 @@ namespace core {
         Transform(glm::vec2 position, glm::vec2 scale);
         Transform(glm::vec2 position, glm::vec2 scale, float rotation);
 
-        void init(glm::vec2 position, glm::vec2 scale, float rotation);
+        void Init(glm::vec2 position, glm::vec2 scale, float rotation);
 
 
-        Transform* copy();
+        Transform* Copy();
         // copy new values to transform
-        void copy(Transform& transform);
-        bool equals(Transform& transform);
+        void Copy(Transform& transform);
+        bool Equals(Transform& transform);
 
     private:
         void Update();

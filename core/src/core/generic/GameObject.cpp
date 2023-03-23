@@ -1,9 +1,14 @@
 #include "_Core.h"
 
 #include "generic/GameObject.h"
+
+#include "Application.h"
 #include "generic/Component.h"
 #include "generic/Transform.h"
 #include "utils/DataPool.h"
+#include "layer/Layer.h"
+
+#include "component/SpriteRenderer.h"
 
 #include "imgui/ImGuiLayer.h"
 #include "utils/Core.h"
@@ -23,7 +28,12 @@ namespace core {
         delete components[index];
 	}
 
-    GameObject::GameObject(std::string name, Transform& transform, ProjectionMode mode)
+	void GameObject::SetLayer(Layer* layer)
+	{
+        this->layer = layer;
+	}
+
+	GameObject::GameObject(std::string name, Transform& transform, ProjectionMode mode)
         : name(name), transform(transform), mode(mode)
     {
         this->zIndex = 0;
@@ -35,7 +45,22 @@ namespace core {
 
     GameObject::~GameObject()
     {
-        deleteComponents();
+        this->deleted = true;
+        std::vector<GameObject*>::iterator it = std::find(layer->GetGameObjects().begin(), layer->GetGameObjects().end(), this);
+        if (it != layer->GetGameObjects().end())
+        {
+            layer->GetGameObjects().erase(it);
+        }
+        const int componentSize = components.size();
+        for (int i = 0; i < componentSize; i++)
+        {
+            if (components.size() <= 0) break;
+
+            if (running)
+                components[0]->OnStop();
+            delete components[0];
+            components.erase(components.begin());
+        }
     }
 
 
@@ -57,12 +82,14 @@ namespace core {
 	{
         // update gameObject, in order to display moving changes
         for (auto component : components) {
-            component->OnUpdate();
+            if (component && !deleted) {
+                component->OnUpdate();
+            }
         }
         transform.Update();
     }
 
-    void GameObject::start()
+    void GameObject::Start()
 	{
         // start all components
         running = true;
@@ -71,7 +98,7 @@ namespace core {
         }
     }
 
-    void GameObject::stop()
+    void GameObject::Stop()
     {
         running = false;
         for (auto component : components) 
@@ -80,7 +107,7 @@ namespace core {
         }
     }
 
-    void GameObject::deleteComponents()
+    void GameObject::DeleteComponents()
 	{
         // delete all components
         for (auto comp : components)
@@ -135,7 +162,7 @@ namespace core {
     }
 
 
-    void GameObject::event(Event& event)
+    void GameObject::OnEvent(Event& event)
     {
 	    for (auto* component : components)
 	    {
@@ -144,7 +171,7 @@ namespace core {
     }
 
 
-	void GameObject::imgui(float dt) {
+	void GameObject::Imgui(float dt) {
 		ImGui::Text("Transform:");
 		ImGui::SliderFloat(std::string("X:").c_str(), &this->transform.position.x, -10.0f, 10.0f, 0);
 		ImGui::SliderFloat(std::string("Y:").c_str(), &this->transform.position.y, -10.0f, 10.0f, 0);

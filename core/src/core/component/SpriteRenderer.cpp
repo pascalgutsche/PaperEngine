@@ -5,7 +5,6 @@
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "utils/Utils.h"
-#include "renderer/RenderBatch.h"
 #include "renderer/Renderer.h"
 
 #include "imgui/ImGuiLayer.h"
@@ -13,16 +12,13 @@
 namespace core {
     
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry)
-    { Init(color, nullptr, geometry, 0); }
-
-    SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry, float thickness)
-    { Init(color, nullptr, geometry, thickness); }
+    { Init(color, nullptr, geometry); }
 
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
-    { Init(color, texture, geometry, 0); }
+    { Init(color, texture, geometry); }
 
 
-    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry, float thickness)
+    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
     {
         this->color = color;
         this->texture = texture;
@@ -31,7 +27,6 @@ namespace core {
         this->texCoords[2] = { 1.0f, 1.0f };
         this->texCoords[3] = { 0.0f, 1.0f };
         this->geometry = geometry;
-        this->lineThickness = thickness;
     }
 
     void SpriteRenderer::OnUpdate() {
@@ -39,19 +34,17 @@ namespace core {
         {
             case Geometry::RECTANGLE:
                 if (texture)
-                    Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, texture, 1.0f, color, gameObject->GetObjectID());
+                    Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, texture, 1.0f, color, gameObject->GetProjectionMode(), gameObject->GetObjectID());
                 else
-					Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetObjectID());
+					Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetProjectionMode(), gameObject->GetObjectID());
                 break;
             case Geometry::TRIANGLE:
                 if (texture)
-                    Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, texture, 1.0f, color, gameObject->GetObjectID());
+                    Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, texture, 1.0f, color, gameObject->GetProjectionMode(), gameObject->GetObjectID());
                 else
-                    Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetObjectID());
+                    Renderer::DrawTriangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, gameObject->GetProjectionMode(), gameObject->GetObjectID());
                 break;
-
-            case Geometry::LINE:
-                Renderer::DrawLine(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, lineThickness, gameObject->GetObjectID());
+            case Geometry::CIRCLE: 
                 break;
         }
     }
@@ -102,7 +95,7 @@ namespace core {
                 std::shared_ptr<Texture> texture = DataPool::GetTexture(texturePaths[i]);
 
                 const int IMGSIZE_HEIGHT = 100;
-                Utils::Size ratio = Utils::calculateAspectRatioFit(texture->GetWidth(), texture->GetHeight(), texture->GetWidth() + IMGSIZE_HEIGHT, IMGSIZE_HEIGHT);
+                Utils::Size ratio = Utils::CalculateAspectRatioFit(texture->GetWidth(), texture->GetHeight(), texture->GetWidth() + IMGSIZE_HEIGHT, IMGSIZE_HEIGHT);
 
                 ImGui::PushID(i);
                 if (ImGui::ImageButton((void*)texture->GetID(), ImVec2(ratio.width, ratio.height), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f), 2, ImColor(0, 0, 0, 1))) {

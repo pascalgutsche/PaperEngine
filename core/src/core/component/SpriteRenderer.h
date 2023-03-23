@@ -7,23 +7,23 @@
 
 namespace core {
 
+    enum class Geometry
+    {
+        NONE,
+        RECTANGLE,
+        TRIANGLE,
+        CIRCLE
+    };
+
     class SpriteRenderer : public Component {
     public:
-        enum Geometry
-        {
-	        NONE,
-            RECTANGLE,
-            TRIANGLE,
-            LINE
-        };
         SpriteRenderer(glm::vec4 color, Geometry geometry);
-        SpriteRenderer(glm::vec4 color, Geometry geometry, float thickness);
         SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry);
         
 
         ~SpriteRenderer() override { }
 
-        void Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry, float thickness);
+        void Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry);
 
         void OnStart() override { }
         void OnStop() override { }
@@ -50,7 +50,6 @@ namespace core {
         Shr<Texture> texture;
         glm::vec2 texCoords[4];
         Geometry geometry;
-        float lineThickness;
     };
 
 }

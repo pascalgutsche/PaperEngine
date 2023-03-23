@@ -1,12 +1,12 @@
 #pragma once
 #include "utility.h"
 
-#include "renderer/FrameBuffer.h"
 #include "generic/Camera.h"
-#include "Texture.h"
+#include "renderer/FrameBuffer.h"
+#include "renderer/Texture.h"
+#include "utils/DataPool.h"
 
 namespace core {
-
     class Renderer {
     public:
         static void Init();
@@ -19,13 +19,15 @@ namespace core {
 
         static void Render();
 
-        static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, core_id coreID = -1);
-        static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), core_id coreID = -1);
+        static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID = -1);
+        static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), 
+            ProjectionMode mode = ProjectionMode::PERSPECTIVE, core_id coreID = -1);
 
-        static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, core_id coreID = -1);
-        static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), core_id coreID = -1);
+        static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID = -1);
+        static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), 
+            ProjectionMode mode = ProjectionMode::PERSPECTIVE, core_id coreID = -1);
 
-        static void DrawLine(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, float thickness, core_id coreID = -1);
+        static void DrawLine(glm::vec2 position, glm::vec2 size, glm::vec4 color, float thickness, ProjectionMode mode, core_id coreID = -1);
 
         static void DrawCircle(glm::mat4 transform, glm::vec4 color, float rotation, float thickness, float fade, core_id coreID = -1);
 
@@ -48,12 +50,12 @@ namespace core {
         static void StartBatch();
         static void NextBatch();
 
-        static void DrawRectangle(glm::mat4 transform, glm::vec4 color, core_id coreID);
-        static void DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID);
+        static void DrawRectangle(glm::mat4 transform, glm::vec4 color, ProjectionMode mode, core_id coreID);
+        static void DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID);
 
-        static void DrawTriangle(glm::mat4 transform, glm::vec4 color, core_id coreID = -1);
-        static void DrawTriangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, core_id coreID);
-    
+        static void DrawTriangle(glm::mat4 transform, glm::vec4 color, ProjectionMode mode, core_id coreID);
+        static void DrawTriangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID);
+
     };
 
 }
