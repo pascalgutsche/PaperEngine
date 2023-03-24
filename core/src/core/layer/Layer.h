@@ -17,7 +17,7 @@ namespace core
 
 
 	protected:
-		Scene* scene;
+		Scene* scene = nullptr;
 		std::string name;
 		bool overlay = false;
 		bool attached = false;
@@ -41,6 +41,8 @@ namespace core
 
 		void LayerEvent(Event& event);
 		bool IsAttached() const { return attached; }
+
+		bool GetZIndex() const { return zIndex; }
 
 		void SetScene(Scene* scene) { this->scene = scene; }
 
