@@ -2,6 +2,7 @@
 #include "ForegroundLayer.h"
 
 #include "component/CircleRenderer.h"
+#include "component/SpriteSheet.h"
 
 
 void ForegroundLayer::OnAttach()
@@ -11,6 +12,8 @@ void ForegroundLayer::OnAttach()
 	object1 = new GameObject("object1", Transform(glm::vec2(-3, 3), glm::vec2(2.0f, 2.0f)));
 
 	circleObject = new GameObject("circle", Transform(glm::vec2(5.6345f, 0.6f), glm::vec2(3.0f, 6.0f)));
+
+	spriteObject1 = new GameObject("spritePain", Transform(glm::vec2(0.436f, 3.32432f), glm::vec2(5.0, 5.0f)));
 
 	// nobody cares about the transform for lines
 	// TODO: annoy pascal that his code sucks
@@ -22,7 +25,9 @@ void ForegroundLayer::OnAttach()
 	character2->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("placeholder_texture_256x256.png"), Geometry::TRIANGLE));
 	object1->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("antimarx.png"), Geometry::RECTANGLE));
 	lineObject1->AddComponent(new LineRenderer(glm::vec2(0.5f, 0.5f), glm::vec2(-0.5f, -0.5f), glm::vec4(1.0f, 1.0f, 0.324f, 1.0f), 5.0f));
-
+	spriteObject1->AddComponent(new SpriteSheet(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("sheet.png"), 30.0f, 47.0f, glm::vec2(1, 1)));
+	
+	this->AddGameObjectToLayer(spriteObject1);
 	this->AddGameObjectToLayer(character1);
 	this->AddGameObjectToLayer(character2);
 	this->AddGameObjectToLayer(object1);

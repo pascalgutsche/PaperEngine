@@ -391,6 +391,16 @@ namespace core {
         DrawRectangle(transform, texture, tilingFactor, color, mode, coreID);
     }
 
+    // sprite sheet entry function
+    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec2 texCoordSprite[4], Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+
+        DrawRectangle(transform, texture, tilingFactor, texCoordSprite, color, mode, coreID);
+    }
+
     void Renderer::DrawRectangle(glm::mat4 transform, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         const uint32_t rectangleVertexCount = 4;
@@ -458,6 +468,57 @@ namespace core {
             data.rectangleVertexBufferPtr->position = transform * data.rectangleVertexData[i];
             data.rectangleVertexBufferPtr->color = color;
             data.rectangleVertexBufferPtr->texCoords = texCoords[i];
+            data.rectangleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.rectangleVertexBufferPtr->texIndex = texIndex;
+            data.rectangleVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.rectangleVertexBufferPtr->coreID = coreID;
+            data.rectangleVertexBufferPtr++;
+
+            data.stats.vertexCount++;
+        }
+
+        data.rectangleElementCount += 6;
+
+        data.stats.elementCount += 6;
+        data.stats.objectCount++;
+    }
+    
+    // mandatory for sprite sheets
+
+    void Renderer::DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec2 texCoordSprite[4], glm::vec4 color, ProjectionMode mode, core_id coreID)
+    {
+        const uint32_t rectangleVertexCount = 4;
+
+        if (data.rectangleElementCount >= data.MAX_ELEMENTS)
+        {
+            NextBatch();
+        }
+
+        int texIndex = -1;
+        for (uint32_t i = 0; i < data.rectangleTextureSlotIndex; i++)
+        {
+            if (*data.rectangleTextureSlots[i] == *texture)
+            {
+                texIndex = i;
+                break;
+            }
+        }
+
+        if (texIndex == -1)
+        {
+            if (data.rectangleTextureSlotIndex >= data.MAX_TEXTURE_SLOTS)
+                NextBatch();
+
+            texIndex = data.rectangleTextureSlotIndex;
+            data.rectangleTextureSlots[data.rectangleTextureSlotIndex] = texture;
+            data.rectangleTextureSlotIndex++;
+        }
+
+        for (int i = 0; i < rectangleVertexCount; i++)
+        {
+            data.rectangleVertexBufferPtr->position = transform * data.rectangleVertexData[i];
+            data.rectangleVertexBufferPtr->color = color;
+            data.rectangleVertexBufferPtr->texCoords = texCoordSprite[i];
             data.rectangleVertexBufferPtr->tilingFactor = tilingFactor;
             data.rectangleVertexBufferPtr->texIndex = texIndex;
             data.rectangleVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
