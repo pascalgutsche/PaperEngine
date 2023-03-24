@@ -23,8 +23,8 @@ void TestScene::LoadResources() {
 }
 
 void TestScene::Init() {
-    AddLayer(background_layer);
     AddLayer(foreground_layer);
+    AddLayer(background_layer);
     AddOverlay(sound_layer);
 }
 int selectedItem = 0;

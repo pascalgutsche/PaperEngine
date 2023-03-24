@@ -55,10 +55,10 @@ namespace core {
 
         static Shr<Framebuffer> GetFramebuffer();
 
+        static void NextBatch();
     private:
 
         static void StartBatch();
-        static void NextBatch();
 
         static void DrawRectangle(glm::mat4 transform, glm::vec4 color, ProjectionMode mode, core_id coreID);
         static void DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID);

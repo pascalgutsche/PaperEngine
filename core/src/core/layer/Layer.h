@@ -11,11 +11,6 @@ namespace core
 
 	class Layer
 	{
-		friend class LayerStack;
-	private:
-		float zIndex = 0.0f;
-
-
 	protected:
 		Scene* scene = nullptr;
 		std::string name;
@@ -41,8 +36,6 @@ namespace core
 
 		void LayerEvent(Event& event);
 		bool IsAttached() const { return attached; }
-
-		bool GetZIndex() const { return zIndex; }
 
 		void SetScene(Scene* scene) { this->scene = scene; }
 

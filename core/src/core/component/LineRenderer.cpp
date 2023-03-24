@@ -21,7 +21,7 @@ namespace core
 
 	void LineRenderer::OnUpdate()
 	{
-		Renderer::DrawLine(glm::vec3(positionA, gameObject->GetLayer()->GetZIndex()), glm::vec3(positionB, gameObject->GetLayer()->GetZIndex()), color, thickness, gameObject->GetProjectionMode(), gameObject->GetObjectID());
+		Renderer::DrawLine(positionA, positionB, color, thickness, gameObject->GetProjectionMode(), gameObject->GetObjectID());
 	}
 
 	void LineRenderer::OnImgui(float dt)

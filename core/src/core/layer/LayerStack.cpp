@@ -21,13 +21,11 @@ namespace core
 	void LayerStack::AddLayer(Layer* layer)
 	{
 		layers.emplace(layers.begin() + insertLayerIndex, layer);
-		layer->zIndex = (float)insertLayerIndex / 1000.0f;
 		insertLayerIndex++;
 	}
 
 	void LayerStack::AddOverlay(Layer* layer)
 	{
-		layer->zIndex = (float)layers.size() / 1000.0f;
 		layers.emplace_back(layer);
 		layer->SetOverlayStatus(true);
 	}
