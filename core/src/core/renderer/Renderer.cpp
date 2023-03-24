@@ -316,12 +316,12 @@ namespace core {
 
     void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
-        DrawTriangle(glm::vec3(position, 0.0f), size, rotation, color, mode, coreID);
+        DrawRectangle(glm::vec3(position, 0.0f), size, rotation, color, mode, coreID);
     }
 
     void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
-        DrawTriangle(glm::vec3(position, 0.0f), size, rotation, texture, tilingFactor, color, mode, coreID);
+        DrawRectangle(glm::vec3(position, 0.0f), size, rotation, texture, tilingFactor, color, mode, coreID);
     }
 
     void Renderer::DrawRectangle(glm::vec3 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID)
