@@ -1,6 +1,6 @@
 #type vertex
 #version 460 core
-layout(location = 0) in vec2 aPos; // the position variable has attribute position 0
+layout(location = 0) in vec3 aPos; // the position variable has attribute position 0
 layout(location = 1) in vec4 aColor; //the color of the vector
 layout(location = 2) in int aProjectionMode;
 layout(location = 3) in int aCoreID;
@@ -26,13 +26,13 @@ void main()
     vec4 position;
     switch (aProjectionMode) {
         case 0:
-            position = uPerspective * uView * vec4(aPos, 0.0f, 1.0f);
+            position = uPerspective * uView * vec4(aPos, 1.0f);
             break;
         case 1:
-            position = uOrthographic * uView * vec4(aPos, 0.0f, 1.0f);
+            position = uOrthographic * uView * vec4(aPos, 1.0f);
             break;
         case 2:
-            position = vec4(aPos, 0.0f, 1.0f);
+            position = vec4(aPos, 1.0f);
         default:
             break;
     }

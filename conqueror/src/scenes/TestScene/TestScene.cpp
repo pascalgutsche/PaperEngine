@@ -47,19 +47,6 @@ void TestScene::Update() {
         camera->position.x -= 5.0f * dt;
     }
 
-    if (Input::IsKeyPressed(KEY_LEFT)) {
-        activeGameObject->transform.scale.x += 2.0f * dt;
-    }
-    if (Input::IsKeyPressed(KEY_RIGHT)) {
-        activeGameObject->transform.scale.x -= 2.0f * dt;
-    }
-    if (Input::IsKeyPressed(KEY_UP)) {
-        activeGameObject->transform.scale.y += 2.0f * dt;
-    }
-    if (Input::IsKeyPressed(KEY_DOWN)) {
-        activeGameObject->transform.scale.y -= 2.0f * dt;
-    }
-
     if (Input::IsKeyPressed(KEY_U)) {
         Application::ChangeScene(new TestScene());
     }

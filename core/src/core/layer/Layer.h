@@ -11,6 +11,11 @@ namespace core
 
 	class Layer
 	{
+		friend class LayerStack;
+	private:
+		float zIndex = 0.0f;
+
+
 	protected:
 		Scene* scene;
 		std::string name;

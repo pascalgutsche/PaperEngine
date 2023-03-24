@@ -10,7 +10,7 @@ namespace core {
 
     struct RectangleVertex
     {
-        glm::vec2 position;
+        glm::vec3 position;
         glm::vec4 color;
         glm::vec2 texCoords;
         float tilingFactor;
@@ -21,7 +21,7 @@ namespace core {
 
     struct TriangleVertex
     {
-        glm::vec2 position;
+        glm::vec3 position;
         glm::vec4 color;
         glm::vec2 texCoords;
         float tilingFactor;
@@ -32,7 +32,7 @@ namespace core {
 
     struct LineVertex
     {
-        glm::vec2 position;
+        glm::vec3 position;
         glm::vec4 color;
         int projectionMode;
         int coreID;
@@ -95,7 +95,7 @@ namespace core {
         RenderCommand::Init();
 
         BufferLayout edgeGeometryLayout = {
-            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT3, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT2, "aTexCoord" },
             { GLSLDataType::FLOAT , "aTilingFactor"},
@@ -105,7 +105,7 @@ namespace core {
         };
 
         BufferLayout LineGeometryLayout = {
-            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT3, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
 			{ GLSLDataType::INT , "aProjectionMode" },
             { GLSLDataType::INT , "aCoreID" }
@@ -316,16 +316,26 @@ namespace core {
 
     void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+        DrawTriangle(glm::vec3(position, 0.0f), size, rotation, color, mode, coreID);
+    }
+
+    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    {
+        DrawTriangle(glm::vec3(position, 0.0f), size, rotation, texture, tilingFactor, color, mode, coreID);
+    }
+
+    void Renderer::DrawRectangle(glm::vec3 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), {0.0f, 0.0f, 1.0f})
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
         DrawRectangle(transform, color, mode, coreID);
     }
 
-    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawRectangle(glm::vec3 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
             * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
@@ -416,16 +426,26 @@ namespace core {
 
     void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+        DrawTriangle(glm::vec3(position, 0.0f), size, rotation, color, mode, coreID);
+    }
+
+    void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    {
+        DrawTriangle(glm::vec3(position, 0.0f), size, rotation, texture, tilingFactor, color, mode, coreID);
+    }
+
+    void Renderer::DrawTriangle(glm::vec3 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
             * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
     
         DrawTriangle(transform, color, mode, coreID);
     }
 
-    void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawTriangle(glm::vec3 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
             * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
@@ -515,6 +535,12 @@ namespace core {
     }
 
     void Renderer::DrawLine(glm::vec2 p0, glm::vec2 p1, glm::vec4 color, float thickness, ProjectionMode mode, core_id coreID)
+    {
+        DrawLine(glm::vec3(p0, 0.0f), glm::vec3(p1, 0.0f), color, thickness, mode, coreID);
+    }
+
+
+    void Renderer::DrawLine(glm::vec3 p0, glm::vec3 p1, glm::vec4 color, float thickness, ProjectionMode mode, core_id coreID)
     {
         const uint32_t lineVertexCount = 2;
 
