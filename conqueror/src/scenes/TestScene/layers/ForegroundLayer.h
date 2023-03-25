@@ -17,7 +17,6 @@ public:
 	void OnDetach() override;
 	void Update(const float dt) override;
 	void Imgui(const float dt) override;
-	void OnEvent(Event& event) override;
-
+	void OnEvent(Event& e) override;
 };
 

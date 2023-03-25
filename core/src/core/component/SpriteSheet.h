@@ -10,8 +10,9 @@ namespace core
 	{
     public:
         SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, glm::vec2 selectedSprite);
+        SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite);
 
-        void Init(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, glm::vec2 selectedSprite);
+        void Init(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite);
 
         void OnStart() override { }
         void OnStop() override { }
@@ -25,17 +26,19 @@ namespace core
 
         void ChangeSprite(glm::vec2 pos);
 
-        void ChangeHelper();
-
-        void UseSprite(int index);
+        void ChangeCoords();
 
     private:
         glm::vec4 color;
         Shr<Texture> texture;
 
         glm::vec2 texCoords[4];
+
         float spriteWidth;
         float spriteHeight;
+
+        float paddingWidth;
+        float paddingHeight;
 
         float textureWidth;
         float textureHeight;
