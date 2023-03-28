@@ -18,6 +18,7 @@ IncludeDir["IMGUI"] = "lib/core/IMGUI_DOCKING"
 IncludeDir["IMPLOT"] = "lib/core/IMPLOT"
 IncludeDir["SPDLOG"] = "lib/SPDLOG/include"
 IncludeDir["MINIAUDIO"] = "lib/MINIAUDIO"
+IncludeDir["MSDF"] = "lib/core/msdf-atlas-gen"
 
 group "dependencies"
 include "lib/core/GLFW"
@@ -64,7 +65,8 @@ project "core"
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.IMPLOT}",
 		"%{IncludeDir.SPDLOG}",
-		"%{IncludeDir.MINIAUDIO}"
+		"%{IncludeDir.MINIAUDIO}",		
+		"%{IncludeDir.MSDF}"
 	}
 
 	links 
@@ -146,7 +148,8 @@ project "conqueror"
 		"%{IncludeDir.MINIAUDIO}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.IMGUI}",
-		"%{IncludeDir.IMPLOT}"
+		"%{IncludeDir.IMPLOT}",
+		"%{IncludeDir.MSDF}"
 	}
 
 	links
