@@ -3,7 +3,7 @@
 #include <vector>
 
 #undef INFINITE
-#include "msdf-atlas-gen/msdf-atlas-gen.h"
+#include "msdf-atlas-gen.h"
 
 namespace core
 {

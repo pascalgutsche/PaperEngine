@@ -6,6 +6,8 @@
 #include "renderer/Shader.h"
 #include "generic/Application.h"
 
+#include "MSDFData.h"
+
 namespace core {
 
     struct RectangleVertex
@@ -38,6 +40,15 @@ namespace core {
         int coreID;
     };
 
+    struct TextVertex
+    {
+        glm::vec3 Position;
+        glm::vec4 Color;
+        glm::vec2 TexCoord;
+
+        int coreID;
+    };
+
     struct CircleVertex
     {
         glm::vec2 WorldPosition;
@@ -59,6 +70,7 @@ namespace core {
         Shr<Shader> edgeGeometryShader;
         Shr<Shader> lineGeometryShader;
         Shr<Shader> circleGeometryShader;
+        Shr<Shader> lineShader;
 
         Shr<VertexArray> rectangleVertexArray;
         Shr<VertexBuffer> rectangleVertexBuffer;
@@ -71,7 +83,7 @@ namespace core {
 
         Shr<VertexArray> circleVertexArray;
         Shr<VertexBuffer> circleVertexBuffer;
-        
+
         uint32_t rectangleElementCount = 0;
         RectangleVertex* rectangleVertexBufferBase = nullptr;
         RectangleVertex* rectangleVertexBufferPtr = nullptr;
@@ -88,10 +100,10 @@ namespace core {
         CircleVertex* circleVertexBufferBase = nullptr;
         CircleVertex* circleVertexBufferPtr = nullptr;
 
-        std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
+        std::array<Shr<Texture2D>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
         uint32_t rectangleTextureSlotIndex = 0;
 
-        std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> triangleTextureSlots;
+        std::array<Shr<Texture2D>, MAX_TEXTURE_SLOTS> triangleTextureSlots;
         uint32_t triangleTextureSlotIndex = 0;
 
         Camera camera;
@@ -108,6 +120,16 @@ namespace core {
         glm::vec4 QuadVertexPositions[4];
 
         uint32_t circleIndexCount = 0;
+
+        Shr<VertexArray> textVertexArray;
+        Shr<VertexBuffer> textVertexBuffer;
+        Shr<Shader> textShader;
+
+        uint32_t textIndexCount = 0;
+        TextVertex* textVertexBufferBase = nullptr;
+        TextVertex* textVertexBufferPtr = nullptr;
+
+        Shr<Texture2D> fontAtlasTexture;
     };
 
     static RenderData data;
@@ -123,14 +145,14 @@ namespace core {
             { GLSLDataType::FLOAT2, "aTexCoord" },
             { GLSLDataType::FLOAT , "aTilingFactor"},
             { GLSLDataType::INT , "aTexID" },
-			{ GLSLDataType::INT , "aProjectionMode" },
+            { GLSLDataType::INT , "aProjectionMode" },
             { GLSLDataType::INT , "aCoreID" }
         };
 
         BufferLayout LineGeometryLayout = {
             { GLSLDataType::FLOAT2, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
-			{ GLSLDataType::INT , "aProjectionMode" },
+            { GLSLDataType::INT , "aProjectionMode" },
             { GLSLDataType::INT , "aCoreID" }
         };
 
@@ -140,11 +162,25 @@ namespace core {
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT,  "aThickness" },
             { GLSLDataType::FLOAT,  "aFade" },
-            { GLSLDataType::INT,    "aCoreID" }
+            { GLSLDataType::INT, "aCoreID" }
         };
 
-        data.edgeGeometryShader = DataPool::GetShader("EdgeGeometryShader");
-        data.edgeGeometryShader->Compile();
+        // text
+        BufferLayout textGeometryLayout = {
+            { GLSLDataType::FLOAT3, "aPosition" },
+            { GLSLDataType::FLOAT4, "aColor" },
+            { GLSLDataType::FLOAT2,  "aTexCoord" },
+
+            { GLSLDataType::INT, "aCoreID" }
+        };
+
+        data.textShader = DataPool::GetShader("TextShader");
+        data.textShader->Compile();
+
+        data.textVertexArray = VertexArray::CreateArray();
+        data.textVertexBuffer = VertexBuffer::CreateBuffer(textGeometryLayout, data.MAX_VERTICES * sizeof(TextVertex));
+        data.textVertexArray->SetVertexBuffer(data.textVertexBuffer);
+
 
         data.lineGeometryShader = DataPool::GetShader("LineGeometryShader");
         data.lineGeometryShader->Compile();
@@ -155,7 +191,7 @@ namespace core {
         data.rectangleVertexArray = VertexArray::CreateArray();
         data.rectangleVertexBuffer = VertexBuffer::CreateBuffer(edgeGeometryLayout, data.MAX_VERTICES * sizeof(RectangleVertex));
         data.rectangleVertexArray->SetVertexBuffer(data.rectangleVertexBuffer);
-        
+
         data.triangleVertexArray = VertexArray::CreateArray();
         data.triangleVertexBuffer = VertexBuffer::CreateBuffer(edgeGeometryLayout, data.MAX_VERTICES * sizeof(TriangleVertex));
         data.triangleVertexArray->SetVertexBuffer(data.triangleVertexBuffer);
@@ -169,12 +205,14 @@ namespace core {
         data.lineVertexArray->SetVertexBuffer(data.lineVertexBuffer);
 
         data.rectangleVertexBufferBase = new RectangleVertex[data.MAX_VERTICES];
-        
+
         data.triangleVertexBufferBase = new TriangleVertex[data.MAX_VERTICES];
 
         data.circleVertexBufferBase = new CircleVertex[data.MAX_VERTICES];
 
         data.lineVertexBufferBase = new LineVertex[data.MAX_VERTICES];
+
+        data.textVertexBufferBase = new TextVertex[data.MAX_VERTICES];
 
         uint32_t* rectangleElements = new uint32_t[data.MAX_ELEMENTS];
 
@@ -198,29 +236,29 @@ namespace core {
         delete[] rectangleElements;
 
         uint32_t* triangleElements = new uint32_t[data.MAX_ELEMENTS];
-        
+
         int offsetTriangle = 0;
         for (int i = 0; i < data.MAX_ELEMENTS; i += 3)
         {
             triangleElements[i + 0] = offsetTriangle + 0;
             triangleElements[i + 1] = offsetTriangle + 1;
             triangleElements[i + 2] = offsetTriangle + 2;
-        
+
             offsetTriangle += 3;
         }
-        
+
         Shr<ElementBuffer> triangleElementbuffer = ElementBuffer::CreateBuffer(triangleElements, data.MAX_ELEMENTS);
         data.triangleVertexArray->SetElementBuffer(triangleElementbuffer);
         delete[] triangleElements;
 
         data.rectangleVertexData[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
-        data.rectangleVertexData[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
-        data.rectangleVertexData[2] = glm::vec4( 0.5f,  0.5f, 0.0f, 1.0f);
-        data.rectangleVertexData[3] = glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
+        data.rectangleVertexData[1] = glm::vec4(0.5f, -0.5f, 0.0f, 1.0f);
+        data.rectangleVertexData[2] = glm::vec4(0.5f, 0.5f, 0.0f, 1.0f);
+        data.rectangleVertexData[3] = glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f);
 
         data.triangleVertexData[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
-        data.triangleVertexData[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
-        data.triangleVertexData[2] = glm::vec4( 0.0f,  0.5f, 0.0f, 1.0f);
+        data.triangleVertexData[1] = glm::vec4(0.5f, -0.5f, 0.0f, 1.0f);
+        data.triangleVertexData[2] = glm::vec4(0.0f, 0.5f, 0.0f, 1.0f);
 
         for (uint32_t i = 0; i < data.MAX_TEXTURE_SLOTS; i++)
         {
@@ -239,12 +277,105 @@ namespace core {
         data.QuadVertexPositions[3] = { -0.5f, 0.5f, 0.0f, 1.0f };
     }
 
+    void Renderer::DrawString(std::string string, Shr<Font> font, glm::mat4 transform, glm::vec4 color)
+    {
+        const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
+        const auto& metrics = fontGeometry.getMetrics();
+        Shr<Texture2D> fontAtlas = font->GetAtlasTexture();
+
+        data.fontAtlasTexture = fontAtlas;
+
+        double x = 0.0;
+        double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY);
+        double y = 0.0;
+        float lineHeightOffset = 0.0f;
+
+        for (size_t i = 0; i < string.size(); i++)
+        {
+            char character = string[i];
+            if (character == '\r')
+                continue;
+
+            if (character == '\n')
+            {
+                x = 0;
+                y -= fsScale * metrics.lineHeight + lineHeightOffset;
+                continue;
+            }
+            auto glyph = fontGeometry.getGlyph(character);
+            if (!glyph)
+                glyph = fontGeometry.getGlyph('?');
+            if (!glyph)
+                return;
+
+            if (character == '\t')
+                glyph = fontGeometry.getGlyph(' ');
+
+            double al, ab, ar, at;
+            glyph->getQuadAtlasBounds(al, ab, ar, at);
+            glm::vec2 texCoordMin((float)al, (float)ab);
+            glm::vec2 texCoordMax((float)ar, (float)at);
+
+            double pl, pb, pr, pt;
+            glyph->getQuadPlaneBounds(pl, pb, pr, pt);
+            glm::vec2 quadMin((float)pl, (float)pb);
+            glm::vec2 quadMax((float)pr, (float)pt);
+
+            quadMin *= fsScale, quadMax *= fsScale;
+            quadMin += glm::vec2(x, y);
+            quadMax += glm::vec2(x, y);
+
+            float texelWidth = 1.0f / fontAtlas->GetWidth();
+            float texelHeight = 1.0f / fontAtlas->GetHeight();
+            texCoordMin *= glm::vec2(texelWidth, texelHeight);
+            texCoordMax *= glm::vec2(texelWidth, texelHeight);
+
+            // render here
+            data.textVertexBufferPtr->Position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
+            data.textVertexBufferPtr->Color = color;
+            data.textVertexBufferPtr->TexCoord = texCoordMin;
+            data.textVertexBufferPtr->coreID = 0; // TODO
+            data.textVertexBufferPtr++;
+
+            data.textVertexBufferPtr->Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
+            data.textVertexBufferPtr->Color = color;
+            data.textVertexBufferPtr->TexCoord = { texCoordMin.x, texCoordMax.y };
+            data.textVertexBufferPtr->coreID = 0; // TODO
+            data.textVertexBufferPtr++;
+
+            data.textVertexBufferPtr->Position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
+            data.textVertexBufferPtr->Color = color;
+            data.textVertexBufferPtr->TexCoord = texCoordMax;
+            data.textVertexBufferPtr->coreID = 0; // TODO
+            data.textVertexBufferPtr++;
+
+            data.textVertexBufferPtr->Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
+            data.textVertexBufferPtr->Color = color;
+            data.textVertexBufferPtr->TexCoord = { texCoordMax.x, texCoordMin.y };
+            data.textVertexBufferPtr->coreID = 0; // TODO
+            data.textVertexBufferPtr++;
+
+            data.textIndexCount += 6;
+            data.stats.quadCount++;
+
+            if (i < string.size() - 1)
+            {
+                double advance = glyph->getAdvance();
+                char nextCharacter = string[i + 1];
+                fontGeometry.getAdvance(advance, character, nextCharacter);
+
+                float kerningOffset = 0.0f;
+                x += fsScale * advance + kerningOffset;
+            }
+        }
+    }
+
     void Renderer::Shutdown()
     {
         delete[] data.rectangleVertexBufferBase;
         delete[] data.triangleVertexBufferBase;
         delete[] data.lineVertexBufferBase;
-     }
+    }
 
     void Renderer::ResizeWindow(uint32_t width, uint32_t height)
     {
@@ -261,7 +392,7 @@ namespace core {
         RenderCommand::Clear();
 
         data.framebuffer->SetViewPort();
-        data.framebuffer->ClearAttachment(1, 0); 
+        data.framebuffer->ClearAttachment(1, 0);
 
         StartBatch();
     }
@@ -287,6 +418,9 @@ namespace core {
 
         data.circleElementCount = 0;
         data.circleVertexBufferPtr = data.circleVertexBufferBase;
+
+        data.textIndexCount = 0;
+        data.textVertexBufferPtr = data.textVertexBufferBase;
     }
 
     void Renderer::NextBatch()
@@ -298,8 +432,8 @@ namespace core {
 
     void Renderer::Render()
     {
-	    if (data.rectangleElementCount)
-	    {
+        if (data.rectangleElementCount)
+        {
             const uint32_t dataSize = (uint32_t)((uint8_t*)data.rectangleVertexBufferPtr - (uint8_t*)data.rectangleVertexBufferBase);
             data.rectangleVertexBuffer->AddData(data.rectangleVertexBufferBase, dataSize);
             data.stats.dataSize += dataSize;
@@ -320,14 +454,14 @@ namespace core {
             //unbind textures
             for (uint32_t i = 0; i < data.rectangleTextureSlotIndex; i++)
                 data.rectangleTextureSlots[i]->Unbind();
-	    }
+        }
 
         if (data.triangleElementCount)
         {
             const uint32_t dataSize = (uint32_t)((uint8_t*)data.triangleVertexBufferPtr - (uint8_t*)data.triangleVertexBufferBase);
             data.triangleVertexBuffer->AddData(data.triangleVertexBufferBase, dataSize);
             data.stats.dataSize += dataSize;
-        
+
             //bind textures
             for (uint32_t i = 0; i < data.triangleTextureSlotIndex; i++)
                 data.triangleTextureSlots[i]->Bind(i);
@@ -337,10 +471,10 @@ namespace core {
             data.edgeGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
             data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
-        	RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
+            RenderCommand::DrawElements(data.triangleVertexArray, data.triangleElementCount);
             data.edgeGeometryShader->Unbind();
             data.stats.drawCalls++;
-        
+
             //unbind textures
             for (uint32_t i = 0; i < data.triangleTextureSlotIndex; i++)
                 data.triangleTextureSlots[i]->Unbind();
@@ -360,7 +494,7 @@ namespace core {
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)data.lineVertexBufferPtr - (uint8_t*)data.lineVertexBufferBase);
             data.lineVertexBuffer->AddData(data.lineVertexBufferBase, dataSize);
-            
+
             data.lineGeometryShader->Bind();
             data.lineGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
             data.lineGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
@@ -371,18 +505,31 @@ namespace core {
             data.lineGeometryShader->Unbind();
             data.stats.drawCalls++;
         }
+
+        if (data.textIndexCount)
+        {
+            uint32_t dataSize = (uint32_t)((uint8_t*)data.textVertexBufferPtr - (uint8_t*)data.textVertexBufferBase);
+            data.textVertexBuffer->AddData(data.textVertexBufferBase, dataSize);
+
+            auto buf = data.textVertexBufferBase;
+            data.fontAtlasTexture->Bind(0);
+
+            data.textShader->Bind();
+            RenderCommand::DrawIndexed(data.textVertexArray, data.textIndexCount);
+            data.stats.drawCalls++;
+        }
     }
 
     void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), {0.0f, 0.0f, 1.0f})
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
         DrawRectangle(transform, color, mode, coreID);
     }
 
-    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture2D>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
             * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
@@ -392,7 +539,7 @@ namespace core {
     }
 
     // sprite sheet entry function
-    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec2 texCoordSprite[4], Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec2 texCoordSprite[4], Shr<Texture2D>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
             * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
@@ -433,7 +580,7 @@ namespace core {
         data.stats.objectCount++;
     }
 
-    void Renderer::DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawRectangle(glm::mat4 transform, Shr<Texture2D>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         const uint32_t rectangleVertexCount = 4;
         constexpr glm::vec2 texCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
@@ -446,11 +593,11 @@ namespace core {
         int texIndex = -1;
         for (uint32_t i = 0; i < data.rectangleTextureSlotIndex; i++)
         {
-	        if (*data.rectangleTextureSlots[i] == *texture)
-	        {
+            if (*data.rectangleTextureSlots[i] == *texture)
+            {
                 texIndex = i;
                 break;
-	        }
+            }
         }
 
         if (texIndex == -1)
@@ -482,10 +629,10 @@ namespace core {
         data.stats.elementCount += 6;
         data.stats.objectCount++;
     }
-    
+
     // mandatory for sprite sheets
 
-    void Renderer::DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec2 texCoordSprite[4], glm::vec4 color, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawRectangle(glm::mat4 transform, Shr<Texture2D>& texture, float tilingFactor, glm::vec2 texCoordSprite[4], glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         const uint32_t rectangleVertexCount = 4;
 
@@ -539,11 +686,11 @@ namespace core {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
             * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
-    
+
         DrawTriangle(transform, color, mode, coreID);
     }
 
-    void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture2D>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
             * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
@@ -558,12 +705,12 @@ namespace core {
         const float texIndex = -1.0f;
         const glm::vec2 texCoords[3] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f } };
         const float tilingFactor = 1.0f;
-        
+
         if (data.triangleElementCount >= data.MAX_ELEMENTS)
         {
             NextBatch();
         }
-        
+
         for (int i = 0; i < triangleVertexCount; i++)
         {
             data.triangleVertexBufferPtr->position = transform * data.triangleVertexData[i];
@@ -574,17 +721,17 @@ namespace core {
             data.triangleVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
             data.triangleVertexBufferPtr->coreID = coreID;
             data.triangleVertexBufferPtr++;
-        
+
             data.stats.vertexCount++;
         }
-        
+
         data.triangleElementCount += 3;
-        
+
         data.stats.elementCount += 3;
         data.stats.objectCount++;
     }
 
-    void Renderer::DrawTriangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawTriangle(glm::mat4 transform, Shr<Texture2D>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         const uint32_t triangleVertexCount = 3;
         constexpr glm::vec2 texCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 0.5f, 1.0f } };
@@ -645,7 +792,7 @@ namespace core {
         data.lineVertexBufferPtr++;
 
         data.stats.vertexCount++;
-        
+
         data.lineVertexBufferPtr->position = p1;
         data.lineVertexBufferPtr->color = color;
         data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);

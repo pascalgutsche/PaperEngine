@@ -1,19 +1,19 @@
 #include "_Core.h"
 
+#include "renderer/Font.h"
+
 #undef INFINITE
 #include "msdf-atlas-gen.h"
 #include "FontGeometry.h"
 #include "GlyphGeometry.h"
-
-#include "renderer/Font.h"
 
 #include "MSDFData.h"
 
 namespace core
 {
 	template<typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
-	
-	static Shr<Texture> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
+
+	static Shr<Texture2D> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
 		const msdf_atlas::FontGeometry& fontGeometry, uint32_t width, uint32_t height)
 	{
 		msdf_atlas::GeneratorAttributes attributes;
@@ -34,7 +34,7 @@ namespace core
 
 		spec.GenerateMips = false;
 
-		Shr<Texture> texture = Texture2D::Create(spec);
+		Shr<Texture2D> texture = Texture2D::CreateTexture(spec);
 		texture->SetData((void*)bitmap.pixels, bitmap.width * bitmap.height * 3);
 
 		return texture;
@@ -137,7 +137,7 @@ namespace core
 	{
 		static Shr<Font> DefaultFont;
 		if (!DefaultFont)
-			DefaultFont = MakeShr<Font>("assets/fonts/opensans/OpenSans-Regular.ttf");
+			DefaultFont = MakeShr<Font>("assets/fonts/mononoki.ttf");
 
 		return DefaultFont;
 	}

@@ -9,10 +9,10 @@ namespace core
 	class SpriteSheet : public Component
 	{
     public:
-        SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, glm::vec2 selectedSprite);
-        SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite);
+        SpriteSheet(glm::vec4 color, Shr<Texture2D> texture, float spriteWidth, float spriteHeight, glm::vec2 selectedSprite);
+        SpriteSheet(glm::vec4 color, Shr<Texture2D> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite);
 
-        void Init(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite);
+        void Init(glm::vec4 color, Shr<Texture2D> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite);
 
         void OnStart() override { }
         void OnStop() override { }
@@ -30,7 +30,7 @@ namespace core
 
     private:
         glm::vec4 color;
-        Shr<Texture> texture;
+        Shr<Texture2D> texture;
 
         glm::vec2 texCoords[4];
 

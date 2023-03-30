@@ -3,7 +3,7 @@
 #include "_Core.h"
 #include "utility.h"
 
-#include "renderer/Texture.h"
+#include "renderer/Texture2D.h"
 
 #include <filesystem>
 
@@ -18,13 +18,13 @@ namespace core
 		~Font();
 
 		const MSDFData* GetMSDFData() const { return data; };
-		Shr<Texture> GetAtlasTexture() const { return atlasTexture; };
+		Shr<Texture2D> GetAtlasTexture() const { return atlasTexture; };
 
-		Shr<Font> GetDefault();
+		static Shr<Font> GetDefault();
 
 	private:
 		MSDFData* data;
-		Shr<Texture> atlasTexture;
+		Shr<Texture2D> atlasTexture;
 	};
 
 };
