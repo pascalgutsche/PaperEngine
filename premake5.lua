@@ -25,6 +25,7 @@ include "lib/core/GLFW"
 include "lib/core/GLAD"
 include "lib/core/IMGUI_DOCKING"
 include "lib/core/IMPLOT"
+include "lib/core/msdf-atlas-gen"
 group ""
 
 project "core"
@@ -75,7 +76,8 @@ project "core"
 		"GLAD",
 		"IMGUI",
 		"IMPLOT",
-		"opengl32.lib"
+		"opengl32.lib",
+		"msdf-atlas-gen"
 	}
 
 	disablewarnings 

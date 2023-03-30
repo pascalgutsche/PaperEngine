@@ -6,10 +6,9 @@ namespace core {
 
     class Texture {
     private:
-        
 
     public:
-    	virtual void Bind(unsigned int slot) = 0;
+        virtual void Bind(unsigned int slot) = 0;
         virtual void Unbind() = 0;
 
         virtual uint32_t GetID() const = 0;
@@ -25,4 +24,4 @@ namespace core {
         static Shr<Texture> CreateTexture(std::string filePath, std::string name);
     };
 
-}
+};
