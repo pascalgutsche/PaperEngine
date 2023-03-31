@@ -9,6 +9,8 @@ private:
 	GameObject* lineObject1;
 	GameObject* circleObject;
 	GameObject* spriteObject1;
+
+	GameObject* font;
 public:
 	ForegroundLayer() = default;
 	virtual ~ForegroundLayer() = default;

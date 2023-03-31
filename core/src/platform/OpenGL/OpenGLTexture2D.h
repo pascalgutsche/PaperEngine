@@ -4,19 +4,23 @@
 
 #include "renderer/Texture2D.h"
 
-#include "GLAD/glad.h"
+#include "glad/glad.h"
 
 namespace core
 {
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
-		OpenGLTexture2D(std::string filePath, std::string name);
-		OpenGLTexture2D(TextureSpecification specification);
-		~OpenGLTexture2D() override;
+		OpenGLTexture(std::string filePath, std::string name);
+		OpenGLTexture(TextureSpecification specification);
+		~OpenGLTexture() override;
 
 		void Bind(unsigned slot) override;
 		void Unbind() override;
+
+		void SetData(void* data, uint32_t size) override;
+
+		bool IsLoaded() override;
 
 		uint32_t GetID() const override;
 		int GetWidth() override;
@@ -34,6 +38,10 @@ namespace core
 
 	private:
 		TextureSpecification specification;
+
+		GLenum internalFormat;
+		GLenum dataFormat;
+
 		std::string filePath;
 		std::string name;
 

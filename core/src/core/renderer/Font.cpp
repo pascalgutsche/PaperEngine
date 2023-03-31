@@ -13,7 +13,7 @@ namespace core
 {
 	template<typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
 	
-	static Shr<Texture2D> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
+	static Shr<Texture> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
 		const msdf_atlas::FontGeometry& fontGeometry, uint32_t width, uint32_t height)
 	{
 		msdf_atlas::GeneratorAttributes attributes;
@@ -34,7 +34,7 @@ namespace core
 
 		spec.GenerateMips = false;
 
-		Shr<Texture2D> texture = Texture2D::CreateTexture(spec);
+		Shr<Texture> texture = Texture::CreateTexture(spec);
 		texture->SetData((void*)bitmap.pixels, bitmap.width * bitmap.height * 3);
 
 		return texture;
@@ -45,12 +45,10 @@ namespace core
 		delete data;
 	}
 
-	Font::Font(const std::filesystem::path& filepath)
-		: data(new MSDFData())
+	Font::Font(std::string fileString)
+		: data(new MSDFData()), fontPath(fileString)
 	{
 		msdfgen::FreetypeHandle* ft = msdfgen::initializeFreetype();
-
-		std::string fileString = filepath.string();
 
 		msdfgen::FontHandle* font = msdfgen::loadFont(ft, fileString.c_str());
 		if (!font)
@@ -92,10 +90,7 @@ namespace core
 		atlasPacker.setPadding(0);
 		atlasPacker.setScale(emSize);
 		int remaining = atlasPacker.pack(data->Glyphs.data(), (int)data->Glyphs.size());
-		if (!remaining)
-		{
-			LOG_CORE_ERROR("remaining is 0");
-		}
+		CORE_ASSERT("erreur", remaining == 0);
 		int width, height;
 		atlasPacker.getDimensions(width, height);
 		emSize = atlasPacker.getScale();
@@ -133,11 +128,19 @@ namespace core
 	}
 
 
-	Shr<Font> Font::GetDefault()
+	Shr<Font> Font::GetFont(std::string fontPath)
 	{
 		static Shr<Font> DefaultFont;
+
 		if (!DefaultFont)
-			DefaultFont = MakeShr<Font>("assets/fonts/mononoki.ttf");
+		{
+			DefaultFont = MakeShr<Font>(fontPath);
+		}
+
+		if (DefaultFont->fontPath != fontPath)
+		{
+			DefaultFont = MakeShr<Font>(fontPath);
+		}
 
 		return DefaultFont;
 	}

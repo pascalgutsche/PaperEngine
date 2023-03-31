@@ -17,7 +17,8 @@ namespace core
 		case ImageFormat::RGB8:  return GL_RGB;
 		case ImageFormat::RGBA8: return GL_RGBA;
 		}
-		LOG_CORE_CRITICAL("COULD NOT CONVERT IMAGE TO INTERNAL GL FORMAT ALERT ALERT");
+
+		CORE_ASSERT("",  false);
 		return 0;
 	}
 
@@ -28,12 +29,11 @@ namespace core
 		case ImageFormat::RGB8:  return GL_RGB8;
 		case ImageFormat::RGBA8: return GL_RGBA8;
 		}
-		LOG_CORE_CRITICAL("COULD NOT CONVERT IMAGE TO INTERNAL GL FORMAT ALERT ALERT");
+
+		CORE_ASSERT("", false);
 		return 0;
 	}
-
-
-	OpenGLTexture2D::OpenGLTexture2D(std::string filePath, std::string name)
+	OpenGLTexture::OpenGLTexture(std::string filePath, std::string name)
 	{
 		this->filePath = filePath;
 		this->name = name;
@@ -61,7 +61,31 @@ namespace core
 		glTextureParameteri(texID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 
-	OpenGLTexture2D::~OpenGLTexture2D()
+	OpenGLTexture::OpenGLTexture(TextureSpecification specification)
+		: specification(specification), width(specification.Width), height(specification.Height)
+	{
+
+		internalFormat = ImageFormatToGLInternalFormat(specification.Format);
+		dataFormat = ImageFormatToGLDataFormat(specification.Format);
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &texID);
+		glTextureStorage2D(texID, 1, internalFormat, width, height);
+
+		glTextureParameteri(texID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(texID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTextureParameteri(texID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(texID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+
+	void OpenGLTexture::SetData(void* data, uint32_t size)
+	{
+		uint32_t bpp = dataFormat == GL_RGBA ? 4 : 3;
+		CORE_ASSERT(size == width * height * bpp, "Data must be entire texture!");
+		glTextureSubImage2D(texID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
+	}
+
+	OpenGLTexture::~OpenGLTexture()
 	{
 		glDeleteTextures(1, &texID);
 	}
@@ -77,7 +101,12 @@ namespace core
 		LOG_CORE_WARN("You should not go over 32 texture slots, as the OpenGL specification does not allow more");
 	}
 
-	void OpenGLTexture2D::Unbind()
+	bool OpenGLTexture::IsLoaded()
+	{
+		return false;
+	}
+
+	void OpenGLTexture::Unbind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
