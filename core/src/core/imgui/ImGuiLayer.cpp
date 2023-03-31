@@ -334,7 +334,7 @@ namespace core {
             if (ImGui::TreeNode("Textures in use"))
             {
                 /*
-	            for (Shr<Texture> texture : Renderer::GetTexturesInUse())
+	            for (Shr<Texture2D> texture : Renderer::GetTexturesInUse())
 	            {
                     
 	            	ImGui::Selectable(texture->GetName().c_str(), false);

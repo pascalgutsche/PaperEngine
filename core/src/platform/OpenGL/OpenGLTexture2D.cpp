@@ -1,7 +1,7 @@
 #include "_Core.h"
-#include "OpenGLTexture.h"
+#include "OpenGLTexture2D.h"
 
-#include "renderer/Texture.h"
+#include "renderer/Texture2D.h"
 
 #include <glad/glad.h>
 #include <STB_IMAGE/stb_image.h>
@@ -9,7 +9,31 @@
 
 namespace core
 {
-	OpenGLTexture::OpenGLTexture(std::string filePath, std::string name)
+
+	static GLenum ImageFormatToGLDataFormat(ImageFormat format)
+	{
+		switch (format)
+		{
+		case ImageFormat::RGB8:  return GL_RGB;
+		case ImageFormat::RGBA8: return GL_RGBA;
+		}
+		LOG_CORE_CRITICAL("COULD NOT CONVERT IMAGE TO INTERNAL GL FORMAT ALERT ALERT");
+		return 0;
+	}
+
+	static GLenum ImageFormatToGLInternalFormat(ImageFormat format)
+	{
+		switch (format)
+		{
+		case ImageFormat::RGB8:  return GL_RGB8;
+		case ImageFormat::RGBA8: return GL_RGBA8;
+		}
+		LOG_CORE_CRITICAL("COULD NOT CONVERT IMAGE TO INTERNAL GL FORMAT ALERT ALERT");
+		return 0;
+	}
+
+
+	OpenGLTexture2D::OpenGLTexture2D(std::string filePath, std::string name)
 	{
 		this->filePath = filePath;
 		this->name = name;
@@ -21,12 +45,28 @@ namespace core
 		}
 	}
 
-	OpenGLTexture::~OpenGLTexture()
+	OpenGLTexture2D::OpenGLTexture2D(TextureSpecification specification)
+		: specification(specification), width(specification.Width), height(specification.Height)
+	{
+		internalFormat = ImageFormatToGLInternalFormat(specification.Format);
+		dataFormat = ImageFormatToGLDataFormat(specification.Format);
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &texID);
+		glTextureStorage2D(texID, 1, internalFormat, width, height);
+
+		glTextureParameteri(texID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(texID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTextureParameteri(texID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(texID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+
+	OpenGLTexture2D::~OpenGLTexture2D()
 	{
 		glDeleteTextures(1, &texID);
 	}
 
-	void OpenGLTexture::Bind(unsigned slot)
+	void OpenGLTexture2D::Bind(unsigned slot)
 	{
 		if (slot < 32)
 		{
@@ -37,42 +77,50 @@ namespace core
 		LOG_CORE_WARN("You should not go over 32 texture slots, as the OpenGL specification does not allow more");
 	}
 
-	void OpenGLTexture::Unbind()
+	void OpenGLTexture2D::Unbind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	uint32_t OpenGLTexture::GetID() const
+	uint32_t OpenGLTexture2D::GetID() const
 	{
 		return this->texID;
 	}
 
-	int OpenGLTexture::GetWidth()
+	int OpenGLTexture2D::GetWidth()
 	{
 		return this->width;
 	}
 
-	int OpenGLTexture::GetHeight()
+	int OpenGLTexture2D::GetHeight()
 	{
 		return this->height;
 	}
 
-	bool OpenGLTexture::operator==(const Texture& other) const
+	void OpenGLTexture2D::SetData(void* data, uint32_t size)
+	{
+		uint32_t bpp = dataFormat == GL_RGBA ? 4 : 3;
+		CORE_ASSERT(size == width * height * bpp, "data must be entire texture!");
+		glTextureSubImage2D(texID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
+	}
+
+
+	bool OpenGLTexture2D::operator==(const Texture& other) const
 	{
 		return texID == other.GetID();
 	}
 
-	std::string OpenGLTexture::GetFilePath()
+	std::string OpenGLTexture2D::GetFilePath()
 	{
 		return this->filePath;
 	}
 
-	std::string OpenGLTexture::GetName()
+	std::string OpenGLTexture2D::GetName()
 	{
 		return this->name;
 	}
 
-	bool OpenGLTexture::Init(std::string path)
+	bool OpenGLTexture2D::Init(std::string path)
 	{
 		glGenTextures(1, &texID);
 		// use texture (everything that is called from now will be set to the current texture)
