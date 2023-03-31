@@ -14,16 +14,17 @@ namespace core
 	class Font
 	{
 	public:
-		Font(const std::filesystem::path& font);
+		Font(std::string fileString);
 		~Font();
 
 		MSDFData* GetMSDFData() const { return data; };
 		Shr<Texture> GetAtlasTexture() const { return atlasTexture; };
 
-		static Shr<Font> GetDefault();
+		static Shr<Font> GetFont(std::string fontPath);
 
 	private:
 		MSDFData* data;
+		std::string fontPath;
 		Shr<Texture> atlasTexture;
 	};
 

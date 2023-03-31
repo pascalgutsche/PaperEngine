@@ -45,12 +45,10 @@ namespace core
 		delete data;
 	}
 
-	Font::Font(const std::filesystem::path& filepath)
-		: data(new MSDFData())
+	Font::Font(std::string fileString)
+		: data(new MSDFData()), fontPath(fileString)
 	{
 		msdfgen::FreetypeHandle* ft = msdfgen::initializeFreetype();
-
-		std::string fileString = filepath.string();
 
 		msdfgen::FontHandle* font = msdfgen::loadFont(ft, fileString.c_str());
 		if (!font)
@@ -130,11 +128,19 @@ namespace core
 	}
 
 
-	Shr<Font> Font::GetDefault()
+	Shr<Font> Font::GetFont(std::string fontPath)
 	{
 		static Shr<Font> DefaultFont;
+
 		if (!DefaultFont)
-			DefaultFont = MakeShr<Font>("assets/fonts/mononoki.ttf");
+		{
+			DefaultFont = MakeShr<Font>(fontPath);
+		}
+
+		if (DefaultFont->fontPath != fontPath)
+		{
+			DefaultFont = MakeShr<Font>(fontPath);
+		}
 
 		return DefaultFont;
 	}

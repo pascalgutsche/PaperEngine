@@ -58,8 +58,6 @@ namespace core
 	}
 	void SpriteSheet::OnUpdate()
 	{
-		Renderer::DrawString("NIGGGGGGGGGGGGGGGGGER", Font::GetDefault(), glm::mat4(1), ProjectionMode::PERSPECTIVE, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 3);
-
 		Renderer::DrawRectangle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, texCoords, texture, 1.0f, color, gameObject->GetProjectionMode(), gameObject->GetObjectID());
 	}
 

@@ -702,6 +702,16 @@ namespace core {
         DrawTriangle(transform, color, mode, coreID);
     }
 
+
+    void Renderer::DrawString(glm::vec2 position, glm::vec2 size, glm::vec4 color, std::string string, Shr<Font> font, ProjectionMode mode, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), { 0.0f, 0.0f, 1.0f })
+            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+
+        DrawString(string, font, transform, mode, color, coreID);
+    }
+
     void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
