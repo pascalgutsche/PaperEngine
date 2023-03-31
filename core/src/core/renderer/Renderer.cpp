@@ -50,6 +50,15 @@ namespace core {
         int coreID;
     };
 
+    struct TextVertex
+    {
+        glm::vec2 position;
+        glm::vec4 color;
+        glm::vec2 texCoord;
+
+        int coreID;
+    };
+
     struct RenderData
     {
         static constexpr uint32_t MAX_VERTICES = 40000;
@@ -59,6 +68,7 @@ namespace core {
         Shr<Shader> edgeGeometryShader;
         Shr<Shader> lineGeometryShader;
         Shr<Shader> circleGeometryShader;
+        Shr<Shader> textShader;
 
         Shr<VertexArray> rectangleVertexArray;
         Shr<VertexBuffer> rectangleVertexBuffer;
@@ -71,6 +81,9 @@ namespace core {
 
         Shr<VertexArray> circleVertexArray;
         Shr<VertexBuffer> circleVertexBuffer;
+
+        Shr<VertexArray> textVertexArray;
+        Shr<VertexBuffer> textVertexBuffer;
         
         uint32_t rectangleElementCount = 0;
         RectangleVertex* rectangleVertexBufferBase = nullptr;
@@ -87,6 +100,10 @@ namespace core {
         uint32_t circleElementCount = 0;
         CircleVertex* circleVertexBufferBase = nullptr;
         CircleVertex* circleVertexBufferPtr = nullptr;
+
+        uint32_t textVertexCount = 0;
+        TextVertex* textVertexBufferBase = nullptr;
+        TextVertex* textVertexBufferPtr = nullptr;
 
         std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
         uint32_t rectangleTextureSlotIndex = 0;
@@ -108,6 +125,10 @@ namespace core {
         glm::vec4 QuadVertexPositions[4];
 
         uint32_t circleIndexCount = 0;
+
+        Shr<Texture> fontAtlasTexture;
+
+        uint32_t textIndexCount = 0;
     };
 
     static RenderData data;
@@ -143,6 +164,14 @@ namespace core {
             { GLSLDataType::INT,    "aCoreID" }
         };
 
+        BufferLayout textLayout
+        {
+            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT2, "aColor" },
+            { GLSLDataType::FLOAT2, "aTexCoord" },
+            { GLSLDataType::INT,    "aCoreID" }
+        };
+
         data.edgeGeometryShader = DataPool::GetShader("EdgeGeometryShader");
         data.edgeGeometryShader->Compile();
 
@@ -151,6 +180,9 @@ namespace core {
 
         data.circleGeometryShader = DataPool::GetShader("CircleGeometryShader");
         data.circleGeometryShader->Compile();
+
+        data.textShader = DataPool::GetShader("TextShader");
+        data.textShader->Compile();
 
         data.rectangleVertexArray = VertexArray::CreateArray();
         data.rectangleVertexBuffer = VertexBuffer::CreateBuffer(edgeGeometryLayout, data.MAX_VERTICES * sizeof(RectangleVertex));
@@ -168,6 +200,10 @@ namespace core {
         data.lineVertexBuffer = VertexBuffer::CreateBuffer(LineGeometryLayout, data.MAX_VERTICES * sizeof(LineVertex));
         data.lineVertexArray->SetVertexBuffer(data.lineVertexBuffer);
 
+        data.textVertexArray = VertexArray::CreateArray();
+        data.textVertexBuffer = VertexBuffer::CreateBuffer(textLayout, data.MAX_VERTICES * sizeof(TextVertex));
+        data.textVertexArray->SetVertexBuffer(data.textVertexBuffer);
+
         data.rectangleVertexBufferBase = new RectangleVertex[data.MAX_VERTICES];
         
         data.triangleVertexBufferBase = new TriangleVertex[data.MAX_VERTICES];
@@ -175,6 +211,8 @@ namespace core {
         data.circleVertexBufferBase = new CircleVertex[data.MAX_VERTICES];
 
         data.lineVertexBufferBase = new LineVertex[data.MAX_VERTICES];
+
+        data.textVertexBufferBase = new TextVertex[data.MAX_VERTICES];
 
         uint32_t* rectangleElements = new uint32_t[data.MAX_ELEMENTS];
 
@@ -287,6 +325,9 @@ namespace core {
 
         data.circleElementCount = 0;
         data.circleVertexBufferPtr = data.circleVertexBufferBase;
+
+        data.textIndexCount = 0;
+        data.textVertexBufferPtr = data.textVertexBufferBase;
     }
 
     void Renderer::NextBatch()
@@ -294,7 +335,6 @@ namespace core {
         Render();
         StartBatch();
     }
-
 
     void Renderer::Render()
     {
@@ -369,6 +409,19 @@ namespace core {
             RenderCommand::SetLineThickness(data.lineWidth);
             RenderCommand::DrawLines(data.lineVertexArray, data.lineElementCount, data.lineWidth);
             data.lineGeometryShader->Unbind();
+            data.stats.drawCalls++;
+        }
+
+        if (data.textIndexCount)
+        {
+            uint32_t dataSize = (uint32_t)((uint8_t*)data.textVertexBufferPtr - (uint8_t*)data.textVertexBufferBase);
+            data.textVertexBuffer->AddData(data.textVertexBufferBase, dataSize);
+
+            auto buf = data.textVertexBufferBase;
+            data.fontAtlasTexture->Bind(0);
+
+            data.textShader->Bind();
+            RenderCommand::DrawIndexed(data.textVertexArray, data.textIndexCount);
             data.stats.drawCalls++;
         }
     }
@@ -483,6 +536,100 @@ namespace core {
         data.stats.objectCount++;
     }
     
+
+    void Renderer::DrawString(std::string string, Shr<Font> font, glm::mat4 transform, glm::vec4 color)
+    {
+        const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
+        const auto& metrics = fontGeometry.getMetrics();
+        Shr<Texture> fontAtlas = font->GetAtlasTexture();
+
+        data.fontAtlasTexture = fontAtlas;
+
+        double x = 0.0;
+        double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY);
+        double y = 0.0;
+        float lineHeightOffset = 0.0f;
+
+        for (size_t i = 0; i < string.size(); i++)
+        {
+            char character = string[i];
+            if (character == '\r')
+                continue;
+
+            if (character == '\n')
+            {
+                x = 0;
+                y -= fsScale * metrics.lineHeight + lineHeightOffset;
+                continue;
+            }
+            auto glyph = fontGeometry.getGlyph(character);
+            if (!glyph)
+                glyph = fontGeometry.getGlyph('?');
+            if (!glyph)
+                return;
+
+            if (character == '\t')
+                glyph = fontGeometry.getGlyph(' ');
+
+            double al, ab, ar, at;
+            glyph->getQuadAtlasBounds(al, ab, ar, at);
+            glm::vec2 texCoordMin((float)al, (float)ab);
+            glm::vec2 texCoordMax((float)ar, (float)at);
+
+            double pl, pb, pr, pt;
+            glyph->getQuadPlaneBounds(pl, pb, pr, pt);
+            glm::vec2 quadMin((float)pl, (float)pb);
+            glm::vec2 quadMax((float)pr, (float)pt);
+
+            quadMin *= fsScale, quadMax *= fsScale;
+            quadMin += glm::vec2(x, y);
+            quadMax += glm::vec2(x, y);
+
+            float texelWidth = 1.0f / fontAtlas->GetWidth();
+            float texelHeight = 1.0f / fontAtlas->GetHeight();
+            texCoordMin *= glm::vec2(texelWidth, texelHeight);
+            texCoordMax *= glm::vec2(texelWidth, texelHeight);
+
+            // render here
+            data.textVertexBufferPtr->position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
+            data.textVertexBufferPtr->color = color;
+            data.textVertexBufferPtr->texCoord = texCoordMin;
+            data.textVertexBufferPtr->coreID = 42; // TODO
+            data.textVertexBufferPtr++;
+        
+            data.textVertexBufferPtr->position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
+            data.textVertexBufferPtr->color = color;
+            data.textVertexBufferPtr->texCoord = { texCoordMin.x, texCoordMax.y };
+            data.textVertexBufferPtr->coreID = 42; // TODO
+            data.textVertexBufferPtr++;
+        
+            data.textVertexBufferPtr->position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
+            data.textVertexBufferPtr->color = color;
+            data.textVertexBufferPtr->texCoord = texCoordMax;
+            data.textVertexBufferPtr->coreID = 42; // TODO
+            data.textVertexBufferPtr++;
+
+            data.textVertexBufferPtr->position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
+            data.textVertexBufferPtr->color = color;
+            data.textVertexBufferPtr->texCoord = { texCoordMax.x, texCoordMin.y };
+            data.textVertexBufferPtr->coreID = 42; // TODO
+            data.textVertexBufferPtr++;
+
+            data.textIndexCount += 6;
+            data.stats.quadCount++;
+
+            if (i < string.size() - 1)
+            {
+                double advance = glyph->getAdvance();
+                char nextCharacter = string[i + 1];
+                fontGeometry.getAdvance(advance, character, nextCharacter);
+
+                float kerningOffset = 0.0f;
+                x += fsScale * advance + kerningOffset;
+            }
+        }
+    }
+
     // mandatory for sprite sheets
 
     void Renderer::DrawRectangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec2 texCoordSprite[4], glm::vec4 color, ProjectionMode mode, core_id coreID)

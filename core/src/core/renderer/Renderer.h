@@ -6,6 +6,8 @@
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 
+#include "renderer/Font.h"
+
 namespace core {
     class Renderer {
     public:
@@ -33,6 +35,8 @@ namespace core {
         static void DrawLine(glm::vec2 position, glm::vec2 size, glm::vec4 color, float thickness, ProjectionMode mode, core_id coreID = -1);
 
         static void DrawCircle(glm::mat4 transform, glm::vec4 color, float rotation, float thickness, float fade, core_id coreID = -1);
+
+        static void DrawString(std::string string, Shr<Font> font, glm::mat4 transform, glm::vec4 color);
 
         struct Stats
         {

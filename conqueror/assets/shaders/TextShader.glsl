@@ -1,83 +1,77 @@
 #type vertex
-#version 460 core
-layout(location = 0) in vec2 aPos; // the position variable has attribute position 0
-layout(location = 1) in vec4 aColor; //the color of the vector
-layout(location = 2) in vec2 aTexCoord; //the coords of the texture
-layout(location = 3) in float aTilingFactor;
-layout(location = 4) in int aTexID; //The slot of the texture
-layout(location = 5) in int aProjectionMode;
-layout(location = 6) in int aCoreID;
+#version 450 core
 
-// camera variables
-uniform mat4 uPerspective;
-uniform mat4 uOrthographic;
-uniform mat4 uView;
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec4 aColor;
+layout(location = 2) in vec2 aTexCoord;
+layout(location = 3) in int coreID;
+
+layout(std140, binding = 0) uniform Camera
+{
+	mat4 u_ViewProjection;
+};
 
 struct VertexOutput
 {
-    vec4 Color;
-    vec2 TexCoord;
-    float TilingFactor;
+	vec4 Color;
+	vec2 TexCoord;
 };
- 
-layout(location = 0) out VertexOutput Output;
-layout(location = 3) out flat int TexID;
-layout(location = 4) out flat int CoreID;
+
+layout (location = 0) out VertexOutput Output;
+layout (location = 2) out flat int v_EntityID;
 
 void main()
 {
-    Output.Color = aColor;
-    Output.TexCoord = aTexCoord;
-    Output.TilingFactor = aTilingFactor;
-    TexID = aTexID;
-    CoreID = aCoreID;
+	Output.Color = aColor;
+	Output.TexCoord = aTexCoord;
+	v_EntityID = coreID;
 
-    vec4 position;
-    switch(aProjectionMode) {
-        case 0: 
-            position = uPerspective * uView * vec4(aPos, 0.0f, 1.0f);
-            break;
-        case 1:
-            position = uOrthographic * uView * vec4(aPos, 0.0f, 1.0f);
-            break;
-        case 2:
-            position = vec4(aPos, 0.0f, 1.0f);
-        default:
-            break;   
-    }
-    gl_Position = position;
-
+	gl_Position = u_ViewProjection * vec4(aPos, 1.0);
 }
 
-
 #type fragment
-#version 460 core
+#version 450 core
 
-layout(location = 0) out vec4 display;
-layout(location = 1) out int objectID;
-
-
+layout(location = 0) out vec4 o_Color;
+layout(location = 1) out int o_EntityID;
 
 struct VertexOutput
 {
-    vec4 Color;
-    vec2 TexCoord;
-    float TilingFactor;
+	vec4 Color;
+	vec2 TexCoord;
 };
 
-layout(location = 0) in VertexOutput Input;
-layout(location = 3) in flat int TexID;
-layout(location = 4) in flat int CoreID;
+layout (location = 0) in VertexOutput Input;
+layout (location = 2) in flat int v_EntityID;
 
-layout(binding = 0) uniform sampler2D uTexture[32];
+layout (binding = 0) uniform sampler2D u_FontAtlas;
+
+float screenPxRange() {
+	const float pxRange = 2.0; // set to distance field's pixel range
+    vec2 unitRange = vec2(pxRange)/vec2(textureSize(u_FontAtlas, 0));
+    vec2 screenTexSize = vec2(1.0)/fwidth(Input.TexCoord);
+    return max(0.5*dot(unitRange, screenTexSize), 1.0);
+}
+
+float median(float r, float g, float b) {
+    return max(min(r, g), min(max(r, g), b));
+}
 
 void main()
 {
-    if (TexID >= 0) {
-        display = texture(uTexture[TexID], Input.TexCoord * Input.TilingFactor);  
-    }
-    else {
-        display = Input.Color;
-    }
-    objectID = CoreID;
+	vec4 texColor = Input.Color * texture(u_FontAtlas, Input.TexCoord);
+
+	vec3 msd = texture(u_FontAtlas, Input.TexCoord).rgb;
+    float sd = median(msd.r, msd.g, msd.b);
+    float screenPxDistance = screenPxRange()*(sd - 0.5);
+    float opacity = clamp(screenPxDistance + 0.5, 0.0, 1.0);
+	if (opacity == 0.0)
+		discard;
+
+	vec4 bgColor = vec4(0.0);
+    o_Color = mix(bgColor, Input.Color, opacity);
+	if (o_Color.a == 0.0)
+		discard;
+
+	o_EntityID = v_EntityID;
 }
