@@ -36,7 +36,7 @@ namespace core {
 
         static void DrawCircle(glm::mat4 transform, glm::vec4 color, float rotation, float thickness, float fade, core_id coreID = -1);
 
-        static void DrawString(std::string string, Shr<Font> font, glm::mat4 transform, glm::vec4 color);
+        static void DrawString(std::string string, Shr<Font> font, glm::mat4 transform, ProjectionMode mode, glm::vec4 color, core_id coreID = -1);
 
         struct Stats
         {

@@ -1,15 +1,16 @@
 #type vertex
 #version 450 core
 
-layout(location = 0) in vec3 aPos;
+layout(location = 0) in vec2 aPos;
 layout(location = 1) in vec4 aColor;
 layout(location = 2) in vec2 aTexCoord;
-layout(location = 3) in int coreID;
+layout(location = 3) in int aProjectionMode;
+layout(location = 4) in int aCoreID;
 
-layout(std140, binding = 0) uniform Camera
-{
-	mat4 u_ViewProjection;
-};
+// camera variables
+uniform mat4 uPerspective;
+uniform mat4 uOrthographic;
+uniform mat4 uView;
 
 struct VertexOutput
 {
@@ -18,22 +19,35 @@ struct VertexOutput
 };
 
 layout (location = 0) out VertexOutput Output;
-layout (location = 2) out flat int v_EntityID;
+layout (location = 2) out flat int coreID;
 
 void main()
 {
 	Output.Color = aColor;
 	Output.TexCoord = aTexCoord;
-	v_EntityID = coreID;
+	coreID = aCoreID;
 
-	gl_Position = u_ViewProjection * vec4(aPos, 1.0);
+    vec4 position;
+    switch(aProjectionMode) {
+        case 0: 
+            position = uPerspective * uView * vec4(aPos, 0.0f, 1.0f);
+            break;
+        case 1:
+            position = uOrthographic * uView * vec4(aPos, 0.0f, 1.0f);
+            break;
+        case 2:
+            position = vec4(aPos, 0.0f, 1.0f);
+        default:
+            break;   
+    }
+	gl_Position = position;
 }
 
 #type fragment
 #version 450 core
 
 layout(location = 0) out vec4 o_Color;
-layout(location = 1) out int o_EntityID;
+layout(location = 1) out int oCoreID;
 
 struct VertexOutput
 {
@@ -42,7 +56,7 @@ struct VertexOutput
 };
 
 layout (location = 0) in VertexOutput Input;
-layout (location = 2) in flat int v_EntityID;
+layout (location = 2) in flat int coreID;
 
 layout (binding = 0) uniform sampler2D u_FontAtlas;
 
@@ -73,5 +87,5 @@ void main()
 	if (o_Color.a == 0.0)
 		discard;
 
-	o_EntityID = v_EntityID;
+	oCoreID = coreID;
 }

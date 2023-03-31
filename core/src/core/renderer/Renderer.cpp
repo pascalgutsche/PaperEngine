@@ -56,6 +56,7 @@ namespace core {
         glm::vec4 color;
         glm::vec2 texCoord;
 
+        int projectionMode;
         int coreID;
     };
 
@@ -167,8 +168,10 @@ namespace core {
         BufferLayout textLayout
         {
             { GLSLDataType::FLOAT2, "aPos" },
-            { GLSLDataType::FLOAT2, "aColor" },
+            { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT2, "aTexCoord" },
+
+            { GLSLDataType::INT ,   "aProjectionMode" },
             { GLSLDataType::INT,    "aCoreID" }
         };
 
@@ -421,6 +424,11 @@ namespace core {
             data.fontAtlasTexture->Bind(0);
 
             data.textShader->Bind();
+
+            data.textShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
+            data.textShader->UploadMat4f("uView", data.camera.GetViewMatrix());
+            data.textShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
+
             RenderCommand::DrawIndexed(data.textVertexArray, data.textIndexCount);
             data.stats.drawCalls++;
         }
@@ -537,7 +545,7 @@ namespace core {
     }
     
 
-    void Renderer::DrawString(std::string string, Shr<Font> font, glm::mat4 transform, glm::vec4 color)
+    void Renderer::DrawString(std::string string, Shr<Font> font, glm::mat4 transform, ProjectionMode mode, glm::vec4 color, core_id coreID)
     {
         const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
         const auto& metrics = fontGeometry.getMetrics();
@@ -594,25 +602,29 @@ namespace core {
             data.textVertexBufferPtr->position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
             data.textVertexBufferPtr->color = color;
             data.textVertexBufferPtr->texCoord = texCoordMin;
-            data.textVertexBufferPtr->coreID = 42; // TODO
+            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.textVertexBufferPtr->coreID = coreID; // TODO
             data.textVertexBufferPtr++;
         
             data.textVertexBufferPtr->position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
             data.textVertexBufferPtr->color = color;
             data.textVertexBufferPtr->texCoord = { texCoordMin.x, texCoordMax.y };
-            data.textVertexBufferPtr->coreID = 42; // TODO
+            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.textVertexBufferPtr->coreID = coreID; // TODO
             data.textVertexBufferPtr++;
         
             data.textVertexBufferPtr->position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
             data.textVertexBufferPtr->color = color;
             data.textVertexBufferPtr->texCoord = texCoordMax;
-            data.textVertexBufferPtr->coreID = 42; // TODO
+            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.textVertexBufferPtr->coreID = coreID; // TODO
             data.textVertexBufferPtr++;
 
             data.textVertexBufferPtr->position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
             data.textVertexBufferPtr->color = color;
             data.textVertexBufferPtr->texCoord = { texCoordMax.x, texCoordMin.y };
-            data.textVertexBufferPtr->coreID = 42; // TODO
+            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.textVertexBufferPtr->coreID = coreID; // TODO
             data.textVertexBufferPtr++;
 
             data.textIndexCount += 6;
