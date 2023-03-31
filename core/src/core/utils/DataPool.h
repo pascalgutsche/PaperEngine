@@ -3,7 +3,7 @@
 #include "utility.h"
 
 #include "renderer/Shader.h"
-#include "renderer/Texture2D.h"
+#include "renderer/Texture.h"
 
 namespace core {
 
@@ -24,7 +24,7 @@ namespace core {
         // get current shader with the specific string (name)
         static std::shared_ptr<Shader> GetShader(std::string shaderName);
         // search for a texture with the specific string (name)
-        static std::shared_ptr<Texture2D> GetTexture(std::string textureName);
+        static std::shared_ptr<Texture> GetTexture(std::string textureName);
         
 
         //static void prepareCharacters();

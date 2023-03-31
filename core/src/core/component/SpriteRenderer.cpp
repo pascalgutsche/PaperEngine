@@ -2,7 +2,7 @@
 
 #include "component/SpriteRenderer.h"
 #include "generic/GameObject.h"
-#include "renderer/Texture2D.h"
+#include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "utils/Utils.h"
 #include "renderer/Renderer.h"
@@ -14,11 +14,11 @@ namespace core {
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry)
     { Init(color, nullptr, geometry); }
 
-    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture2D> texture, Geometry geometry)
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
     { Init(color, texture, geometry); }
 
 
-    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture2D> texture, Geometry geometry)
+    void SpriteRenderer::Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry)
     {
         this->color = color;
         this->texture = texture;
@@ -71,7 +71,7 @@ namespace core {
             ImGui::TreePop();
         }
         ImGui::BeginDisabled();
-        if (ImGui::TreeNode("Texture2D:"))
+        if (ImGui::TreeNode("Texture:"))
         {
             timeUntilRefresh -= dt;
             if (timeUntilRefresh <= 0.0f) {
@@ -92,7 +92,7 @@ namespace core {
             ImVec2 windowSize = ImGui::GetWindowSize();
             float windowX2 = windowPos.x + windowSize.x;
             for (int i = 0; i < texturePaths.size(); i++) {
-                std::shared_ptr<Texture2D> texture = DataPool::GetTexture(texturePaths[i]);
+                std::shared_ptr<Texture> texture = DataPool::GetTexture(texturePaths[i]);
 
                 const int IMGSIZE_HEIGHT = 100;
                 Utils::Size ratio = Utils::CalculateAspectRatioFit(texture->GetWidth(), texture->GetHeight(), texture->GetWidth() + IMGSIZE_HEIGHT, IMGSIZE_HEIGHT);
@@ -120,7 +120,7 @@ namespace core {
 
 
 
-    //void SpriteRenderer::UpdateTexture(Shr<Texture2D> texture)
+    //void SpriteRenderer::UpdateTexture(Shr<Texture> texture)
     //{
     //    this->sprite->SetTexture(texture);
     //    renderData->textures.clear();

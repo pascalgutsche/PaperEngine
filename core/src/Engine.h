@@ -24,7 +24,7 @@
 #include "layer/Layer.h"
 #include "layer/LayerStack.h"
 
-#include "core/renderer/Texture2D.h"
+#include "core/renderer/Texture.h"
 
 
 #include "core/utils/Log.h"

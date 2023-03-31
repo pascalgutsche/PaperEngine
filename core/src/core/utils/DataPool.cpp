@@ -1,7 +1,7 @@
 #include "_Core.h"
 
 #include "utils/DataPool.h"
-#include "renderer/Texture2D.h"
+#include "renderer/Texture.h"
 
 namespace core {
 
@@ -34,7 +34,7 @@ namespace core {
         return shader;
     }
 
-    std::shared_ptr<Texture2D> DataPool::GetTexture(std::string textureName) {
+    std::shared_ptr<Texture> DataPool::GetTexture(std::string textureName) {
         // set default path
         std::string path = "assets/textures/" + textureName;
 
@@ -42,16 +42,16 @@ namespace core {
 
         Map::iterator it = dataPool.find(texture_id);
 
-        std::shared_ptr<Texture2D> texture;
+        std::shared_ptr<Texture> texture;
 
         if (it == dataPool.end())
         {
-            texture = Texture2D::CreateTexture(path, textureName);
+            texture = Texture::CreateTexture(path, textureName);
             dataPool.emplace(texture_id, texture);
         }
         else
         {
-            texture = std::static_pointer_cast<Texture2D>(it->second);
+            texture = std::static_pointer_cast<Texture>(it->second);
         }
 
         return texture;

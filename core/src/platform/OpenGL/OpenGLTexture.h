@@ -2,13 +2,13 @@
 #include "_Core.h"
 #include "utility.h"
 
-#include "renderer/Texture2D.h"
+#include "renderer/Texture.h"
 
 #include "glad/glad.h"
 
 namespace core
 {
-	class OpenGLTexture2D : public Texture2D
+	class OpenGLTexture : public Texture
 	{
 	public:
 		OpenGLTexture(std::string filePath, std::string name);
@@ -26,14 +26,9 @@ namespace core
 		int GetWidth() override;
 		int GetHeight() override;
 
-		void SetData(void* data, uint32_t size) override;
-
-		bool IsLoaded() const override { return isLoaded; };
-
 		bool operator==(const Texture& other) const override;
 
 		std::string GetFilePath() override;
-
 		std::string GetName() override;
 
 	private:
@@ -51,12 +46,7 @@ namespace core
 		int height;
 		int channels;
 
-		bool isLoaded = false;
-
 		uint32_t texID;
-
-		GLenum dataFormat;
-		GLenum internalFormat;
 
 		bool Init(std::string path);
 	};

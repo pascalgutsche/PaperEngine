@@ -2,7 +2,7 @@
 
 #include "component/CircleRenderer.h"
 #include "generic/GameObject.h"
-#include "renderer/Texture2D.h"
+#include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "utils/Utils.h"
 #include "renderer/RenderCommand.h"

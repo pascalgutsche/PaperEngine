@@ -18,12 +18,12 @@ namespace core {
     class SpriteRenderer : public Component {
     public:
         SpriteRenderer(glm::vec4 color, Geometry geometry);
-        SpriteRenderer(glm::vec4 color, Shr<Texture2D> texture, Geometry geometry);
+        SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry);
         
 
         ~SpriteRenderer() override { }
 
-        void Init(glm::vec4 color, Shr<Texture2D> texture, Geometry geometry);
+        void Init(glm::vec4 color, Shr<Texture> texture, Geometry geometry);
 
         void OnStart() override { }
         void OnStop() override { }
@@ -32,7 +32,7 @@ namespace core {
         void OnEvent(Event& event) override { }
 
         void SetColor(glm::vec4 color) { this->color = color; }
-        void SetTexture(Shr<Texture2D> texture) { this->texture = texture; }
+        void SetTexture(Shr<Texture> texture) { this->texture = texture; }
         void SetTexCoords(glm::vec2 texCoords[4])
         {
             for (int i = 0; i < 4; i++)
@@ -42,12 +42,12 @@ namespace core {
         }
 
         glm::vec4 GetColor() const { return this->color; }
-        Shr<Texture2D> GetTexture() { return this->texture; }
+        Shr<Texture> GetTexture() { return this->texture; }
         glm::vec2* GetTexCoords() { return this->texCoords; }
 
     private:
         glm::vec4 color;
-        Shr<Texture2D> texture;
+        Shr<Texture> texture;
         glm::vec2 texCoords[4];
         Geometry geometry;
     };
