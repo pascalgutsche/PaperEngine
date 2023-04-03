@@ -23,6 +23,9 @@ void BackgroundLayer::OnAttach()
     background7->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), Geometry::RECTANGLE));
     background8->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), Geometry::RECTANGLE));
 
+    background1->AddTag({"a", "b", "c" });
+    background2->AddTag({"a"});
+    background3->AddTag({"c"});
 
     this->AddGameObjectToLayer(background1);
     this->AddGameObjectToLayer(background2);
@@ -54,7 +57,22 @@ void BackgroundLayer::OnEvent(Event& event)
     {
         if (e.getKeyCode() == KEY_C)
         {
-            delete gameObjects[0];
+            auto vectora = GetGameObjectsByTag("a");
+            auto vectorb = GetGameObjectsByTag("b");
+            auto vectorc = GetGameObjectsByTag("c");
+
+            for (auto go : vectora)
+            {
+                LOG_DEBUG("A: {0}", go->GetName());
+            }
+            for (auto go : vectorb)
+            {
+                LOG_DEBUG("B: {0}", go->GetName());
+            }
+            for (auto go : vectorc)
+            {
+                LOG_DEBUG("C: {0}", go->GetName());
+            }
             return true;
         }
         if (e.getKeyCode() == KEY_M)
