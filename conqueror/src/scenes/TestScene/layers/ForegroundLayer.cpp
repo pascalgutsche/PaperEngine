@@ -1,36 +1,43 @@
 #include "_Game.h"
 #include "ForegroundLayer.h"
 
+#include "component/CircleRenderer.h"
+#include "component/SpriteSheet.h"
+#include "component/FontRenderer.h"
 
 void ForegroundLayer::OnAttach()
 {
-	character1 = new GameObject("character1", Transform(glm::vec2(3.0f, 3.0f), glm::vec2(2.0f, 2.0f)));
-	character2 = new GameObject("character2", Transform(glm::vec2(0.0f, 3.0f), glm::vec2(2.0f, -1.0f), 115.0f));
-	object1 = new GameObject("object1", Transform(glm::vec2(-3, 3), glm::vec2(2.0f, 2.0f)));
+	font = new GameObject("fontBomb", Transform(glm::vec2(0.24f, 4.34f), glm::vec2(1.5, 3.0f), 0.0f));
+	spriteObject1 = new GameObject("spritePain", Transform(glm::vec2(0.436f, 3.32432f), glm::vec2(1.5, 3.0f), 0.0f));
 
 	// nobody cares about the transform for lines
 	// TODO: annoy pascal that his code sucks
 	// ps: mine isn't any better
 	lineObject1 = new GameObject("lineObject1", Transform(), ProjectionMode::ORTHOGRAPHIC);
 
-	character1->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("james_webb.png"), Geometry::RECTANGLE));
-	character2->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("placeholder_texture_256x256.png"), Geometry::TRIANGLE));
-	object1->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("antimarx.png"), Geometry::RECTANGLE));
-	lineObject1->AddComponent(new LineRenderer(glm::vec2(0.5f, 0.5f), glm::vec2(-0.5f, -0.5f), glm::vec4(1.0f, 1.0f, 0.324f, 1.0f), 5.0f));
+	lineObject1->AddComponent(new LineRenderer(glm::vec2(0.5f, 0.5f), glm::vec2(-0.5f, -0.5f), glm::vec4(1.0f, 1.0f, 0.324f, 1.0f), 1.0f));
+	spriteObject1->AddComponent(new SpriteSheet(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("sheet.png"), 32.0f, 45.0f, 2.0f, 4.0f, glm::vec2(0, 0)));
+	
+	font->AddComponent(new FontRenderer(glm::vec2(1.0f, 1.0f), glm::vec2(4.0f, 3.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "gerni gerni", ProjectionMode::PERSPECTIVE));
 
-	this->AddGameObjectToLayer(character1);
-	this->AddGameObjectToLayer(character2);
-	this->AddGameObjectToLayer(object1);
+	this->AddGameObjectToLayer(spriteObject1);
 	this->AddGameObjectToLayer(lineObject1);
+
+	this->AddGameObjectToLayer(font);
 }
 
 void ForegroundLayer::OnDetach()
 {
+
 }
 
 void ForegroundLayer::Update(const float dt)
 {
 	static bool con = true;
+
+	static float x = 0;
+	static int tex = 0;
+
 	if (Input::IsKeyPressed(KEY_Y) && con && false)
 	{
 		con = false;
@@ -40,7 +47,17 @@ void ForegroundLayer::Update(const float dt)
 	{
 		con = true;
 	}
-	gameObjects[0]->transform.rotation -= 150 * dt;
+
+	x += dt / 8;
+
+	tex = (int)(x * 100);
+
+	if (tex % 8 == 0)
+	{
+		x = 0.01f;
+	}
+
+	spriteObject1->GetComponent<SpriteSheet>()->ChangeSprite(glm::vec2(tex, 0));
 }
 
 void ForegroundLayer::Imgui(const float dt)
@@ -49,4 +66,5 @@ void ForegroundLayer::Imgui(const float dt)
 
 void ForegroundLayer::OnEvent(Event& event)
 {
+	
 }
