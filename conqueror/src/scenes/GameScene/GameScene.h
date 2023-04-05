@@ -1,17 +1,15 @@
 #pragma once
 #include "Engine.h"
-#include "layers/SoundLayer.h"
-#include "layers/ForegroundLayer.h"
+#include "layers/BackgroundLayer.h"
 
 
-class TestScene : public Scene
+class GameScene : public Scene
 {
 private:
-	ForegroundLayer* foreground_layer;
-	SoundLayer* sound_layer;
+	BackgroundLayer* background_layer;
 public:
-	TestScene();
-	virtual ~TestScene() override;
+	GameScene();
+	virtual ~GameScene() override;
 
 	void LoadResources() override;
 	void Init() override;
@@ -20,7 +18,7 @@ public:
 	void OnEvent(Event& e) override
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(TestScene::OnMouseScroll));
+		dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(GameScene::OnMouseScroll));
 	};
 
 	bool OnMouseScroll(MouseScrolledEvent& e);

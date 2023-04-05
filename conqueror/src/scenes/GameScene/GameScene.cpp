@@ -1,33 +1,28 @@
 #include "_Game.h"
-#include "TestScene.h"
-#include "layers/SoundLayer.h"
+#include "GameScene.h"
 
-#include "scenes/GameScene/GameScene.h"
-
+#include "scenes/TestScene/TestScene.h"
 
 using namespace core;
 
-TestScene::TestScene() {
+GameScene::GameScene() {
 
 }
 
-TestScene::~TestScene() {
-    RemoveLayer(foreground_layer);
-    RemoveOverlay(sound_layer);
+GameScene::~GameScene() {
+    RemoveLayer(background_layer);
 }
 
-void TestScene::LoadResources() {
+void GameScene::LoadResources() {
     backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
-    foreground_layer = new ForegroundLayer();
-    sound_layer = new SoundLayer();
+    background_layer = new BackgroundLayer();
 }
 
-void TestScene::Init() {
-    AddLayer(foreground_layer);
-    AddOverlay(sound_layer);
+void GameScene::Init() {
+    AddLayer(background_layer);
 }
 
-void TestScene::Update() {
+void GameScene::Update() {
     float dt = Application::GetDT();
     if (Input::IsKeyPressed(KEY_S)) {
         camera->position.y -= 5.0f * dt;
@@ -46,15 +41,15 @@ void TestScene::Update() {
     }
 
     if (Input::IsKeyPressed(KEY_U)) {
-        Application::ChangeScene(new GameScene());
+        Application::ChangeScene(new TestScene());
     }
 }
 
-void TestScene::Imgui(float dt) {
+void GameScene::Imgui(float dt) {
 	
 }
 
-bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
+bool GameScene::OnMouseScroll(MouseScrolledEvent& e)
 {
     if (this->GetCamera()->position.z > 0.2f && e.GetYOffset() != 0)
         this->GetCamera()->position.z += 10.0 * core::Application::GetDT() * e.GetYOffset();
