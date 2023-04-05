@@ -102,7 +102,7 @@ namespace core {
         CircleVertex* circleVertexBufferBase = nullptr;
         CircleVertex* circleVertexBufferPtr = nullptr;
 
-        uint32_t textVertexCount = 0;
+        uint32_t textElementCount = 0;
         TextVertex* textVertexBufferBase = nullptr;
         TextVertex* textVertexBufferPtr = nullptr;
 
@@ -129,7 +129,6 @@ namespace core {
 
         Shr<Texture> fontAtlasTexture;
 
-        uint32_t textIndexCount = 0;
     };
 
     static RenderData data;
@@ -329,7 +328,7 @@ namespace core {
         data.circleElementCount = 0;
         data.circleVertexBufferPtr = data.circleVertexBufferBase;
 
-        data.textIndexCount = 0;
+        data.textElementCount = 0;
         data.textVertexBufferPtr = data.textVertexBufferBase;
     }
 
@@ -393,6 +392,8 @@ namespace core {
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)data.circleVertexBufferPtr - (uint8_t*)data.circleVertexBufferBase);
             data.circleVertexBuffer->AddData(data.circleVertexBufferBase, dataSize);
+            data.stats.dataSize += dataSize;
+
 
             data.circleGeometryShader->Bind();
             RenderCommand::DrawIndexed(data.circleVertexArray, data.circleIndexCount);
@@ -403,6 +404,8 @@ namespace core {
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)data.lineVertexBufferPtr - (uint8_t*)data.lineVertexBufferBase);
             data.lineVertexBuffer->AddData(data.lineVertexBufferBase, dataSize);
+            data.stats.dataSize += dataSize;
+
             
             data.lineGeometryShader->Bind();
             data.lineGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
@@ -415,10 +418,12 @@ namespace core {
             data.stats.drawCalls++;
         }
 
-        if (data.textIndexCount)
+        if (data.textElementCount)
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)data.textVertexBufferPtr - (uint8_t*)data.textVertexBufferBase);
             data.textVertexBuffer->AddData(data.textVertexBufferBase, dataSize);
+            data.stats.dataSize += dataSize;
+
 
             auto buf = data.textVertexBufferBase;
             data.fontAtlasTexture->Bind(0);
@@ -429,7 +434,7 @@ namespace core {
             data.textShader->UploadMat4f("uView", data.camera.GetViewMatrix());
             data.textShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
 
-            RenderCommand::DrawIndexed(data.textVertexArray, data.textIndexCount);
+            RenderCommand::DrawIndexed(data.textVertexArray, data.textElementCount);
             data.stats.drawCalls++;
         }
     }
@@ -605,13 +610,15 @@ namespace core {
             data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
             data.textVertexBufferPtr->coreID = coreID; // TODO
             data.textVertexBufferPtr++;
-        
+            data.stats.vertexCount++;
+
             data.textVertexBufferPtr->position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
             data.textVertexBufferPtr->color = color;
             data.textVertexBufferPtr->texCoord = { texCoordMin.x, texCoordMax.y };
             data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
             data.textVertexBufferPtr->coreID = coreID; // TODO
             data.textVertexBufferPtr++;
+            data.stats.vertexCount++;
         
             data.textVertexBufferPtr->position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
             data.textVertexBufferPtr->color = color;
@@ -619,6 +626,7 @@ namespace core {
             data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
             data.textVertexBufferPtr->coreID = coreID; // TODO
             data.textVertexBufferPtr++;
+            data.stats.vertexCount++;
 
             data.textVertexBufferPtr->position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
             data.textVertexBufferPtr->color = color;
@@ -626,9 +634,12 @@ namespace core {
             data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
             data.textVertexBufferPtr->coreID = coreID; // TODO
             data.textVertexBufferPtr++;
+            data.stats.vertexCount++;
 
-            data.textIndexCount += 6;
-            data.stats.quadCount++;
+            data.textElementCount += 6;
+
+            data.stats.elementCount += 6;
+            data.stats.objectCount++;
 
             if (i < string.size() - 1)
             {
