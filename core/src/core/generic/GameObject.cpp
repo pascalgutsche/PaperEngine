@@ -43,6 +43,7 @@ namespace core {
 
     GameObject::~GameObject()
     {
+        DataPool::AddToDelete(objectID);
         this->deleted = true;
         if (layer) {
             std::vector<GameObject*>::iterator it = std::find(layer->GetGameObjects().begin(), layer->GetGameObjects().end(), this);
@@ -80,16 +81,15 @@ namespace core {
 
     void GameObject::Update()
 	{
+        core_id id = objectID;
         // update gameObject, in order to display moving changes
         for (auto component : components) {
-        	if (component && !deleted) {
+            if (component) {
                 component->OnUpdate();
             }
+            if (DataPool::IsDeleted(id)) return;
         }
-        if (this && !deleted)
-        {
-			transform.Update();
-        }
+		transform.Update();
     }
 
     void GameObject::Start()

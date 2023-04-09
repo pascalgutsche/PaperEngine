@@ -2,9 +2,12 @@
 
 #include "layer/Layer.h"
 #include "event/Event.h"
+#include "renderer/Renderer.h"
+#include "ui/UIObject.h"
 
 namespace core
 {
+
 	Layer::~Layer()
 	{
 		const int layerSize = gameObjects.size();
@@ -94,4 +97,32 @@ namespace core
 		}
 		return gos;
 	}
+
+	void Layer::AddUIObject(UIObject* object, ProjectionMode mode)
+	{
+		object->globalPos = object->transform.position;
+		object->mode = mode;
+		objectsToRender.push_back(object);
+	}
+
+	void Layer::RenderUI()
+	{
+		for (UIObject* object : objectsToRender) {
+			RenderObject(object);
+		}
+		objectsToRender.clear();
+	}
+
+	void Layer::RenderObject(UIObject* object)
+	{
+		object->CalculateGlobalCoords();
+		object->Render();
+		for (UIObject* child : object->GetChildObjects())
+		{
+			if (child != object)
+				RenderObject(child);
+		}
+	}
+
+	
 }

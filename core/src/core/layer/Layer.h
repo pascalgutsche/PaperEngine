@@ -8,17 +8,9 @@
 
 namespace core
 {
-
+	class UIObject;
 	class Layer
 	{
-	protected:
-		Scene* scene = nullptr;
-		std::string name;
-		bool overlay = false;
-		bool attached = false;
-
-		std::vector<GameObject*> gameObjects;
-
 	public:
 		Layer(const std::string& name = "Layer")
 			: name(name) { }
@@ -55,8 +47,25 @@ namespace core
 
 		void SetOverlayStatus(bool overlay) { this->overlay = overlay; }
 
-		bool GetOverlayStatus() { return overlay; }
+		bool GetOverlayStatus() const { return overlay; }
 		std::vector<GameObject*>& GetGameObjects() { return gameObjects; }
 		std::string GetName() { return name; }
+
+		//UI
+		friend class Scene;
+		void AddUIObject(UIObject* object, ProjectionMode mode);
+	protected:
+		Scene* scene = nullptr;
+		std::string name;
+		bool overlay = false;
+		bool attached = false;
+
+		std::vector<GameObject*> gameObjects;
+
+	private:
+		std::vector<UIObject*> objectsToRender;
+
+		void RenderUI();
+		void RenderObject(UIObject* object);
 	};
 }

@@ -40,7 +40,7 @@ namespace core {
         GameObject(std::string name, Transform& transform = Transform(), ProjectionMode mode = ProjectionMode::PERSPECTIVE);
 
 
-        ~GameObject();
+        virtual ~GameObject();
 
         template<typename T>
         T* GetComponent();

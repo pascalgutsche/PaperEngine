@@ -2,6 +2,7 @@
 
 #define INCLUDE_MAIN
 #include "EntryPoint.h"
+#include "scenes/GameScene/GameScene.h"
 
 #include "scenes/TestScene/TestScene.h"
 
@@ -16,7 +17,7 @@ public:
 	}
 
 	void Init() override {
-		Application::ChangeScene(new TestScene());
+		Application::ChangeScene(new GameScene());
 	}
 
 };

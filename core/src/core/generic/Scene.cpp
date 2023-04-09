@@ -34,6 +34,8 @@ namespace core {
                 gameObject->Update();
             }
             Renderer::NextBatch();
+            layer->RenderUI();
+            Renderer::NextBatch();
         }
 
         Renderer::EndRender();

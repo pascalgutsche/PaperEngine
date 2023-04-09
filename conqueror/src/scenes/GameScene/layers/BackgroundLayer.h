@@ -6,6 +6,8 @@ class BackgroundLayer : public Layer
 private:
 	GameObject* background1;
 	GameObject* background2;
+
+	Panel* panel;
 public:
 	BackgroundLayer()
 		: Layer("Background") { }

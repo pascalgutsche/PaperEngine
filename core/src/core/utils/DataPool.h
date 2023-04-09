@@ -20,15 +20,15 @@ namespace core {
     private:
         static Map dataPool;
 
+        static std::vector<core_id> deletedIDs;
     public:
         // get current shader with the specific string (name)
         static std::shared_ptr<Shader> GetShader(std::string shaderName);
         // search for a texture with the specific string (name)
         static std::shared_ptr<Texture> GetTexture(std::string textureName);
-        
 
-        //static void prepareCharacters();
-        
+        static bool IsDeleted(core_id id);
+        static void AddToDelete(core_id id);
     };
 
     enum class ProjectionMode { PERSPECTIVE, ORTHOGRAPHIC, SCREEN };

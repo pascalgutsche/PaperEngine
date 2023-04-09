@@ -6,13 +6,15 @@
 void BackgroundLayer::OnAttach()
 {
     background1 = new GameObject("background1", Transform(glm::vec2(-0.3f, 0.0f), glm::vec2(0.5f, 0.3f)), ProjectionMode::SCREEN);
-    background2 = new GameObject("background2", Transform(glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 1.0f)));
+    background2 = new GameObject("background2", Transform(glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f)));
 
     background1->AddComponent(new SpriteRenderer(glm::vec4(0.5f, 1.0f, 0.5f, 1.0f), Geometry::RECTANGLE));
     background2->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), Geometry::RECTANGLE));
 
     this->AddGameObjectToLayer(background1);
     this->AddGameObjectToLayer(background2);
+
+    panel = new Panel(glm::vec4(1.0f, 0.2f, 1.0f, 0.2f), Transform(glm::vec2(2.0f, 1.0f), glm::vec2(3.0f, 2.0f), 15.0f), Type::Rectangle);
 }
 
 void BackgroundLayer::OnDetach()
@@ -22,6 +24,7 @@ void BackgroundLayer::OnDetach()
 void BackgroundLayer::Update(const float dt)
 {
     gameObjects[0]->transform.rotation += 100 * dt;
+    AddUIObject(panel, ProjectionMode::PERSPECTIVE);
 }
 
 void BackgroundLayer::Imgui(const float dt)

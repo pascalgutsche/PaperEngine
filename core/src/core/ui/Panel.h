@@ -1,9 +1,21 @@
 #pragma once
 #include "_Core.h"
 
-class Panel
+#include "UIObject.h"
+
+namespace core
 {
-public:
-	void 
-};
+	class Panel : public UIObject
+	{
+	public:
+		Panel(glm::vec4 color, const Transform& transform, Type type);
+		~Panel() override;
+
+		void Render() override;
+
+	private:
+		glm::vec4 color;
+		Type type;
+	};
+}
 
