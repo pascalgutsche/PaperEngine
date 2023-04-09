@@ -8,10 +8,10 @@
 namespace core {
 
     CircleRenderer::CircleRenderer(glm::vec4 color, float thickness, float fade)
-	    : texture(nullptr), color(color), thickness(thickness), fade(fade) { }
+	    : color(color), texture(nullptr), thickness(thickness), fade(fade) { }
 
-    CircleRenderer::CircleRenderer(Shr<Texture> texture, glm::vec4 color, float thickness, float fade)
-        : texture(texture), color(color), thickness(thickness), fade(fade) { }
+    CircleRenderer::CircleRenderer(glm::vec4 color, Shr<Texture> texture, float thickness, float fade)
+        : color(color), texture(texture), thickness(thickness), fade(fade) { }
 
     void CircleRenderer::OnUpdate() 
     {

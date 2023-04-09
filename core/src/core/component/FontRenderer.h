@@ -6,23 +6,19 @@ namespace core
 	class FontRenderer : public Component
 	{
 	public:
-		FontRenderer(glm::vec4 color, std::string fontPath, std::string text);
-		FontRenderer(glm::vec4 color, std::string text);
-
-		void Init(glm::vec4 color, std::string fontPath, std::string text);
+		FontRenderer(glm::vec4 color, std::string text, std::string fontPath = "assets/fonts/mononoki.ttf");
 
 		void ChangeText(std::string text);
 
 		void OnStart() override { }
 		void OnStop() override { }
 		void OnUpdate() override;
-		void OnImgui(float dt) override;
 		void OnEvent(Event& event) override { }
 
 	private:
 		glm::vec4 color;
-		std::string fontPath;
 		std::string text;
+		std::string fontPath;
 
 	};
 };
