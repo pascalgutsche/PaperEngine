@@ -2,11 +2,14 @@
 #version 460 core
 layout(location = 0) in vec2 aWorldPosition; // the position variable has attribute position 0
 layout(location = 1) in vec2 aLocalPosition; //the color of the vector
-layout(location = 2) in vec4 aColor;
-layout(location = 3) in float aThickness;
-layout(location = 4) in float aFade;
-layout(location = 5) in int aProjectionMode;
-layout(location = 6) in int aCoreID;
+layout(location = 2) in vec2 aTexCoord;
+layout(location = 3) in float aTilingFactor;
+layout(location = 4) in int aTexID;
+layout(location = 5) in vec4 aColor;
+layout(location = 6) in float aThickness;
+layout(location = 7) in float aFade;
+layout(location = 8) in int aProjectionMode;
+layout(location = 9) in int aCoreID;
 
 // camera variables
 uniform mat4 uPerspective;
@@ -16,13 +19,16 @@ uniform mat4 uView;
 struct VertexOutput
 {
     vec2 LocalPosition;
+    vec2 TexCoord;
+    float TilingFactor;
     vec4 Color;
     float Thickness;
     float Fade;
 };
  
 layout(location = 0) out VertexOutput Output;
-layout(location = 4) out flat int CoreID;
+layout(location = 6) out flat int TexID;
+layout(location = 7) out flat int CoreID;
 
 void main()
 {
@@ -30,6 +36,7 @@ void main()
     Output.Color = aColor;
     Output.Thickness = aThickness;
     Output.Fade = aFade;
+    TexID = aTexID;
     CoreID = aCoreID;
 
     vec4 position;
@@ -59,14 +66,18 @@ layout(location = 1) out int objectID;
 struct VertexOutput
 {
     vec2 LocalPosition;
+    vec2 TexCoord;
+    float TilingFactor;
     vec4 Color;
     float Thickness;
     float Fade;
 };
 
 layout(location = 0) in VertexOutput Input;
-layout(location = 4) in flat int CoreID;
+layout(location = 6) in flat int TexID;
+layout(location = 7) in flat int CoreID;
 
+layout(binding = 0) uniform sampler2D uTexture[32];
 
 void main()
 {
@@ -79,7 +90,11 @@ void main()
         discard;
     
     // Set output color
-    display = Input.Color;
+    if (TexID >= 0)
+        display = texture(uTexture[TexID], Input.TexCoord * Input.TilingFactor);
+    else
+        display = Input.Color;
+
     display.a *= circle;
     
     objectID = CoreID;

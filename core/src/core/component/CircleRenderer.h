@@ -6,8 +6,8 @@ namespace core
 {
     class CircleRenderer : public Component {
     public:
-
         CircleRenderer(glm::vec4 color, float thickness, float fade);
+        CircleRenderer(Shr<Texture> texture, glm::vec4 color, float thickness, float fade);
 
         ~CircleRenderer() override { }
 
@@ -19,6 +19,8 @@ namespace core
         void SetColor(glm::vec4 color) { this->color = color; }
 
     private:
+        Shr<Texture> texture;
+
         glm::vec4 color;
         float thickness;
         float fade;

@@ -42,8 +42,12 @@ namespace core {
     {
         glm::vec2 worldPos;
         glm::vec2 localPos;
-        glm::vec4 color;
 
+        glm::vec2 texCoords;
+        float tilingFactor;
+        int texIndex;
+
+        glm::vec4 color;
         float thickness;
         float fade;
 
@@ -113,6 +117,9 @@ namespace core {
         std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> triangleTextureSlots;
         uint32_t triangleTextureSlotIndex = 0;
 
+        std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> circleTextureSlots;
+        uint32_t circleTextureSlotIndex = 0;
+
         Camera camera;
 
         float lineWidth = 1.0f;
@@ -156,9 +163,15 @@ namespace core {
         BufferLayout circleGeometryLayout = {
             { GLSLDataType::FLOAT2, "aWorldPos" },
             { GLSLDataType::FLOAT2, "aLocalPos" },
+
+			{ GLSLDataType::FLOAT2, "aTexCoord" },
+			{ GLSLDataType::FLOAT , "aTilingFactor"},
+            { GLSLDataType::INT , "aTexID" },
+
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT,  "aThickness" },
             { GLSLDataType::FLOAT,  "aFade" },
+
 			{ GLSLDataType::INT , "aProjectionMode" },
             { GLSLDataType::INT,    "aCoreID" }
         };
@@ -323,6 +336,7 @@ namespace core {
 
         data.circleElementCount = 0;
         data.circleVertexBufferPtr = data.circleVertexBufferBase;
+        data.circleTextureSlotIndex = 0;
 
         data.textElementCount = 0;
         data.textVertexBufferPtr = data.textVertexBufferBase;
@@ -391,14 +405,21 @@ namespace core {
             data.stats.dataSize += dataSize;
 
 
+            //bind textures
+            for (uint32_t i = 0; i < data.circleTextureSlotIndex; i++)
+                data.circleTextureSlots[i]->Bind(i);
+
             data.circleGeometryShader->Bind();
             data.circleGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
             data.circleGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
             data.circleGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
-
+            data.circleGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
             RenderCommand::DrawIndexed(data.circleVertexArray, data.circleElementCount);
             data.circleGeometryShader->Unbind();
             data.stats.drawCalls++;
+
+            for (uint32_t i = 0; i < data.circleTextureSlotIndex; i++)
+                data.circleTextureSlots[i]->Unbind();
         }
 
         if (data.lineElementCount)
@@ -709,8 +730,6 @@ namespace core {
 
     void Renderer::DrawLine(glm::vec2 p0, glm::vec2 p1, glm::vec4 color, float thickness, ProjectionMode mode, core_id coreID)
     {
-        const uint32_t lineVertexCount = 2;
-
         data.lineVertexBufferPtr->position = p0;
         data.lineVertexBufferPtr->color = color;
         data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
@@ -746,9 +765,22 @@ namespace core {
         DrawCircle(transform, color, thickness, fade, mode, coreID);
     }
 
+    void Renderer::DrawCircle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, float thickness,
+        float fade, ProjectionMode mode, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+
+        DrawCircle(transform, texture, tilingFactor, color, thickness, fade, mode, coreID);
+    }
+
     void Renderer::DrawCircle(glm::mat4 transform, glm::vec4 color, float thickness, float fade, ProjectionMode mode, core_id coreID)
     {
         const uint32_t circleVertexCount = 4;
+        const float texIndex = -1.0f;
+        const glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        const float tilingFactor = 1.0f;
 
         if (data.circleElementCount >= data.MAX_ELEMENTS)
         {
@@ -759,6 +791,61 @@ namespace core {
         {
             data.circleVertexBufferPtr->worldPos = transform * data.rectangleVertexData[i];
             data.circleVertexBufferPtr->localPos = data.rectangleVertexData[i] * glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 1.0f)); // just multiplying x and y by 2
+            data.circleVertexBufferPtr->texCoords = texCoords[i];
+            data.circleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.circleVertexBufferPtr->texIndex = texIndex;
+        	data.circleVertexBufferPtr->color = color;
+            data.circleVertexBufferPtr->thickness = thickness;
+            data.circleVertexBufferPtr->fade = fade;
+            data.circleVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.circleVertexBufferPtr->coreID = coreID;
+            data.circleVertexBufferPtr++;
+            data.stats.vertexCount++;
+        }
+
+        data.circleElementCount += 6;
+
+        data.stats.elementCount += 6;
+        data.stats.objectCount++;
+    }
+
+    void Renderer::DrawCircle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, float thickness, float fade, ProjectionMode mode, core_id coreID)
+    {
+        const uint32_t circleVertexCount = 4;
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+
+        if (data.circleElementCount >= data.MAX_ELEMENTS)
+        {
+            NextBatch();
+        }
+
+        int texIndex = -1;
+        for (uint32_t i = 0; i < data.circleTextureSlotIndex; i++)
+        {
+            if (*data.circleTextureSlots[i] == *texture)
+            {
+                texIndex = i;
+                break;
+            }
+        }
+
+        if (texIndex == -1)
+        {
+            if (data.circleTextureSlotIndex >= data.MAX_TEXTURE_SLOTS)
+                NextBatch();
+
+            texIndex = data.circleTextureSlotIndex;
+            data.circleTextureSlots[data.circleTextureSlotIndex] = texture;
+            data.circleTextureSlotIndex++;
+        }
+
+        for (int i = 0; i < circleVertexCount; i++)
+        {
+            data.circleVertexBufferPtr->worldPos = transform * data.rectangleVertexData[i];
+            data.circleVertexBufferPtr->localPos = data.rectangleVertexData[i] * glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 1.0f)); // just multiplying x and y by 2
+            data.circleVertexBufferPtr->texCoords = texCoords[i];
+            data.circleVertexBufferPtr->tilingFactor = tilingFactor;
+            data.circleVertexBufferPtr->texIndex = texIndex;
             data.circleVertexBufferPtr->color = color;
             data.circleVertexBufferPtr->thickness = thickness;
             data.circleVertexBufferPtr->fade = fade;
@@ -815,7 +902,7 @@ namespace core {
                 return;
 
             if (character == '\t')
-                glyph = fontGeometry.getGlyph(' ');
+                glyph = fontGeometry.getGlyph('   ');
 
             double al, ab, ar, at;
             glyph->getQuadAtlasBounds(al, ab, ar, at);
