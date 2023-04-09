@@ -6,10 +6,10 @@ namespace core
 	class FontRenderer : public Component
 	{
 	public:
-		FontRenderer(glm::vec4 color, std::string fontPath, std::string text, ProjectionMode mode);
-		FontRenderer(glm::vec4 color, std::string text, ProjectionMode mode);
+		FontRenderer(glm::vec4 color, std::string fontPath, std::string text);
+		FontRenderer(glm::vec4 color, std::string text);
 
-		void Init(glm::vec4 color, std::string fontPath, std::string text, ProjectionMode mode);
+		void Init(glm::vec4 color, std::string fontPath, std::string text);
 
 		void ChangeText(std::string text);
 
@@ -20,13 +20,10 @@ namespace core
 		void OnEvent(Event& event) override { }
 
 	private:
-		glm::vec2 position;
-		glm::vec2 size;
 		glm::vec4 color;
 		std::string fontPath;
 		std::string text;
 
-		ProjectionMode mode;
 	};
 };
 

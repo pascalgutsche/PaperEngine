@@ -47,6 +47,7 @@ namespace core {
         float thickness;
         float fade;
 
+        int projectionMode;
         int coreID;
     };
 
@@ -123,7 +124,6 @@ namespace core {
 
         Shr<Framebuffer> framebuffer;
 
-        uint32_t circleIndexCount = 0;
 
         Shr<Texture> fontAtlasTexture;
 
@@ -159,6 +159,7 @@ namespace core {
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT,  "aThickness" },
             { GLSLDataType::FLOAT,  "aFade" },
+			{ GLSLDataType::INT , "aProjectionMode" },
             { GLSLDataType::INT,    "aCoreID" }
         };
 
@@ -383,7 +384,7 @@ namespace core {
                 data.triangleTextureSlots[i]->Unbind();
         }
 
-        if (data.circleIndexCount)
+        if (data.circleElementCount)
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)data.circleVertexBufferPtr - (uint8_t*)data.circleVertexBufferBase);
             data.circleVertexBuffer->AddData(data.circleVertexBufferBase, dataSize);
@@ -391,7 +392,12 @@ namespace core {
 
 
             data.circleGeometryShader->Bind();
-            RenderCommand::DrawIndexed(data.circleVertexArray, data.circleIndexCount);
+            data.circleGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
+            data.circleGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
+            data.circleGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
+
+            RenderCommand::DrawIndexed(data.circleVertexArray, data.circleElementCount);
+            data.circleGeometryShader->Unbind();
             data.stats.drawCalls++;
         }
 
@@ -607,14 +613,7 @@ namespace core {
     }
 
 
-    void Renderer::DrawString(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, std::string string, Shr<Font> font, ProjectionMode mode, core_id coreID)
-    {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
-            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
-
-        DrawString(string, font, transform, mode, color, coreID);
-    }
+    
 
     void Renderer::DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID)
     {
@@ -737,22 +736,51 @@ namespace core {
         NextBatch();
     }
 
-    void Renderer::DrawCircle(glm::mat4 transform, glm::vec4 color, float rotation, float thickness, float fade, core_id coreID)
+    void Renderer::DrawCircle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, float thickness,
+	    float fade, ProjectionMode mode, core_id coreID)
     {
-        for (int i = 0; i < 4; i++)
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+
+        DrawCircle(transform, color, thickness, fade, mode, coreID);
+    }
+
+    void Renderer::DrawCircle(glm::mat4 transform, glm::vec4 color, float thickness, float fade, ProjectionMode mode, core_id coreID)
+    {
+        const uint32_t circleVertexCount = 4;
+
+        if (data.circleElementCount >= data.MAX_ELEMENTS)
+        {
+            NextBatch();
+        }
+
+        for (int i = 0; i < circleVertexCount; i++)
         {
             data.circleVertexBufferPtr->WorldPosition = transform * data.rectangleVertexData[i];
-            data.circleVertexBufferPtr->LocalPosition = data.rectangleVertexData[i] * 2.0f;
+            data.circleVertexBufferPtr->LocalPosition = data.rectangleVertexData[i];
             data.circleVertexBufferPtr->color = color;
             data.circleVertexBufferPtr->thickness = thickness;
             data.circleVertexBufferPtr->fade = fade;
+            data.circleVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
             data.circleVertexBufferPtr->coreID = coreID;
             data.circleVertexBufferPtr++;
+            data.stats.vertexCount++;
         }
 
-        data.circleIndexCount += 6;
+        data.circleElementCount += 6;
 
-        data.stats.quadCount++;
+        data.stats.elementCount += 6;
+        data.stats.objectCount++;
+    }
+
+    void Renderer::DrawString(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, std::string string, Shr<Font> font, ProjectionMode mode, core_id coreID)
+    {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+            * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
+
+        DrawString(string, font, transform, mode, color, coreID);
     }
 
     void Renderer::DrawString(std::string string, Shr<Font> font, glm::mat4 transform, ProjectionMode mode, glm::vec4 color, core_id coreID)

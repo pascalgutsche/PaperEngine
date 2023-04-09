@@ -7,23 +7,22 @@
 
 void ForegroundLayer::OnAttach()
 {
-	font = new GameObject("fontBomb", Transform(glm::vec2(0.0f, 0.0f), glm::vec2(0.1f, 0.1f), 0.0f));
+	font = new GameObject("fontBomb", Transform(glm::vec2(0.0f, 0.0f), glm::vec2(2.0f, 0.5f), 45.0f));
 	spriteObject1 = new GameObject("spritePain", Transform(glm::vec2(0.436f, 3.32432f), glm::vec2(1.5, 3.0f), 0.0f));
-
-	// nobody cares about the transform for lines
-	// TODO: annoy pascal that his code sucks
-	// ps: mine isn't any better
 	lineObject1 = new GameObject("lineObject1", Transform(), ProjectionMode::ORTHOGRAPHIC);
+	circleObject = new GameObject("circlePain", Transform(glm::vec2(0.2f, -0.45f), glm::vec2(2.0f, 1.0f), 45.0f));
+
 
 	lineObject1->AddComponent(new LineRenderer(glm::vec2(0.5f, 0.5f), glm::vec2(-0.5f, -0.5f), glm::vec4(1.0f, 1.0f, 0.324f, 1.0f), 1.0f));
 	spriteObject1->AddComponent(new SpriteSheet(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("sheet.png"), 32.0f, 45.0f, 2.0f, 4.0f, glm::vec2(0, 0)));
-	
-	font->AddComponent(new FontRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "gerni gerni", ProjectionMode::SCREEN));
+	font->AddComponent(new FontRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "gerni gerni"));
+	circleObject->AddComponent(new CircleRenderer(glm::vec4(1.0f, 0.0f, 0.5f, 0.3f), 1.0f, 0.0f));
+
 
 	this->AddGameObjectToLayer(spriteObject1);
 	this->AddGameObjectToLayer(lineObject1);
-
 	this->AddGameObjectToLayer(font);
+	this->AddGameObjectToLayer(circleObject);
 }
 
 void ForegroundLayer::OnDetach()
