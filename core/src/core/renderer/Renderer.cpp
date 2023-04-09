@@ -123,8 +123,6 @@ namespace core {
 
         Shr<Framebuffer> framebuffer;
 
-        glm::vec4 QuadVertexPositions[4];
-
         uint32_t circleIndexCount = 0;
 
         Shr<Texture> fontAtlasTexture;
@@ -206,15 +204,7 @@ namespace core {
         data.textVertexBuffer = VertexBuffer::CreateBuffer(textLayout, data.MAX_VERTICES * sizeof(TextVertex));
         data.textVertexArray->SetVertexBuffer(data.textVertexBuffer);
 
-        data.rectangleVertexBufferBase = new RectangleVertex[data.MAX_VERTICES];
         
-        data.triangleVertexBufferBase = new TriangleVertex[data.MAX_VERTICES];
-
-        data.circleVertexBufferBase = new CircleVertex[data.MAX_VERTICES];
-
-        data.lineVertexBufferBase = new LineVertex[data.MAX_VERTICES];
-
-        data.textVertexBufferBase = new TextVertex[data.MAX_VERTICES];
 
         uint32_t* rectangleElements = new uint32_t[data.MAX_ELEMENTS];
 
@@ -253,6 +243,9 @@ namespace core {
         data.triangleVertexArray->SetElementBuffer(triangleElementbuffer);
         delete[] triangleElements;
 
+        data.textVertexArray->SetElementBuffer(rectangleElementbuffer);
+        data.circleVertexArray->SetElementBuffer(rectangleElementbuffer);
+
         data.rectangleVertexData[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
         data.rectangleVertexData[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
         data.rectangleVertexData[2] = glm::vec4( 0.5f,  0.5f, 0.0f, 1.0f);
@@ -261,6 +254,12 @@ namespace core {
         data.triangleVertexData[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
         data.triangleVertexData[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
         data.triangleVertexData[2] = glm::vec4( 0.0f,  0.5f, 0.0f, 1.0f);
+
+        data.rectangleVertexBufferBase = new RectangleVertex[data.MAX_VERTICES];
+        data.triangleVertexBufferBase = new TriangleVertex[data.MAX_VERTICES];
+        data.circleVertexBufferBase = new CircleVertex[data.MAX_VERTICES];
+        data.lineVertexBufferBase = new LineVertex[data.MAX_VERTICES];
+        data.textVertexBufferBase = new TextVertex[data.MAX_VERTICES];
 
         for (uint32_t i = 0; i < data.MAX_TEXTURE_SLOTS; i++)
         {
@@ -272,11 +271,6 @@ namespace core {
         spec.width = Application::GetWindow()->GetWidth();
         spec.height = Application::GetWindow()->GetHeight();
         data.framebuffer = Framebuffer::CreateBuffer(spec);
-
-        data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-        data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
-        data.QuadVertexPositions[2] = { 0.5f, 0.5f, 0.0f, 1.0f };
-        data.QuadVertexPositions[3] = { -0.5f, 0.5f, 0.0f, 1.0f };
     }
 
     void Renderer::Shutdown()
@@ -284,6 +278,7 @@ namespace core {
         delete[] data.rectangleVertexBufferBase;
         delete[] data.triangleVertexBufferBase;
         delete[] data.lineVertexBufferBase;
+        delete[] data.textVertexBufferBase;
      }
 
     void Renderer::ResizeWindow(uint32_t width, uint32_t height)
@@ -425,12 +420,11 @@ namespace core {
             data.stats.dataSize += dataSize;
 
 
-            auto buf = data.textVertexBufferBase;
             data.fontAtlasTexture->Bind(0);
 
             data.textShader->Bind();
 
-            data.textShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
+        	data.textShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
             data.textShader->UploadMat4f("uView", data.camera.GetViewMatrix());
             data.textShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
 
@@ -550,108 +544,7 @@ namespace core {
     }
     
 
-    void Renderer::DrawString(std::string string, Shr<Font> font, glm::mat4 transform, ProjectionMode mode, glm::vec4 color, core_id coreID)
-    {
-        const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
-        const auto& metrics = fontGeometry.getMetrics();
-        Shr<Texture> fontAtlas = font->GetAtlasTexture();
-
-        data.fontAtlasTexture = fontAtlas;
-
-        double x = 0.0;
-        double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY);
-        double y = 0.0;
-        float lineHeightOffset = 0.0f;
-
-        for (size_t i = 0; i < string.size(); i++)
-        {
-            char character = string[i];
-            if (character == '\r')
-                continue;
-
-            if (character == '\n')
-            {
-                x = 0;
-                y -= fsScale * metrics.lineHeight + lineHeightOffset;
-                continue;
-            }
-            auto glyph = fontGeometry.getGlyph(character);
-            if (!glyph)
-                glyph = fontGeometry.getGlyph('?');
-            if (!glyph)
-                return;
-
-            if (character == '\t')
-                glyph = fontGeometry.getGlyph(' ');
-
-            double al, ab, ar, at;
-            glyph->getQuadAtlasBounds(al, ab, ar, at);
-            glm::vec2 texCoordMin((float)al, (float)ab);
-            glm::vec2 texCoordMax((float)ar, (float)at);
-
-            double pl, pb, pr, pt;
-            glyph->getQuadPlaneBounds(pl, pb, pr, pt);
-            glm::vec2 quadMin((float)pl, (float)pb);
-            glm::vec2 quadMax((float)pr, (float)pt);
-
-            quadMin *= fsScale, quadMax *= fsScale;
-            quadMin += glm::vec2(x, y);
-            quadMax += glm::vec2(x, y);
-
-            float texelWidth = 1.0f / fontAtlas->GetWidth();
-            float texelHeight = 1.0f / fontAtlas->GetHeight();
-            texCoordMin *= glm::vec2(texelWidth, texelHeight);
-            texCoordMax *= glm::vec2(texelWidth, texelHeight);
-
-            // render here
-            data.textVertexBufferPtr->position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
-            data.textVertexBufferPtr->color = color;
-            data.textVertexBufferPtr->texCoord = texCoordMin;
-            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
-            data.textVertexBufferPtr->coreID = coreID; // TODO
-            data.textVertexBufferPtr++;
-            data.stats.vertexCount++;
-
-            data.textVertexBufferPtr->position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
-            data.textVertexBufferPtr->color = color;
-            data.textVertexBufferPtr->texCoord = { texCoordMin.x, texCoordMax.y };
-            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
-            data.textVertexBufferPtr->coreID = coreID; // TODO
-            data.textVertexBufferPtr++;
-            data.stats.vertexCount++;
-        
-            data.textVertexBufferPtr->position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
-            data.textVertexBufferPtr->color = color;
-            data.textVertexBufferPtr->texCoord = texCoordMax;
-            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
-            data.textVertexBufferPtr->coreID = coreID; // TODO
-            data.textVertexBufferPtr++;
-            data.stats.vertexCount++;
-
-            data.textVertexBufferPtr->position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
-            data.textVertexBufferPtr->color = color;
-            data.textVertexBufferPtr->texCoord = { texCoordMax.x, texCoordMin.y };
-            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
-            data.textVertexBufferPtr->coreID = coreID; // TODO
-            data.textVertexBufferPtr++;
-            data.stats.vertexCount++;
-
-            data.textElementCount += 6;
-
-            data.stats.elementCount += 6;
-            data.stats.objectCount++;
-
-            if (i < string.size() - 1)
-            {
-                double advance = glyph->getAdvance();
-                char nextCharacter = string[i + 1];
-                fontGeometry.getAdvance(advance, character, nextCharacter);
-
-                float kerningOffset = 0.0f;
-                x += fsScale * advance + kerningOffset;
-            }
-        }
-    }
+    
 
     // mandatory for sprite sheets
 
@@ -714,10 +607,10 @@ namespace core {
     }
 
 
-    void Renderer::DrawString(glm::vec2 position, glm::vec2 size, glm::vec4 color, std::string string, Shr<Font> font, ProjectionMode mode, core_id coreID)
+    void Renderer::DrawString(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, std::string string, Shr<Font> font, ProjectionMode mode, core_id coreID)
     {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f))
-            * glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), { 0.0f, 0.0f, 1.0f })
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
             * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0f));
 
         DrawString(string, font, transform, mode, color, coreID);
@@ -848,8 +741,8 @@ namespace core {
     {
         for (int i = 0; i < 4; i++)
         {
-            data.circleVertexBufferPtr->WorldPosition = transform * data.QuadVertexPositions[i];
-            data.circleVertexBufferPtr->LocalPosition = data.QuadVertexPositions[i] * 2.0f;
+            data.circleVertexBufferPtr->WorldPosition = transform * data.rectangleVertexData[i];
+            data.circleVertexBufferPtr->LocalPosition = data.rectangleVertexData[i] * 2.0f;
             data.circleVertexBufferPtr->color = color;
             data.circleVertexBufferPtr->thickness = thickness;
             data.circleVertexBufferPtr->fade = fade;
@@ -860,6 +753,109 @@ namespace core {
         data.circleIndexCount += 6;
 
         data.stats.quadCount++;
+    }
+
+    void Renderer::DrawString(std::string string, Shr<Font> font, glm::mat4 transform, ProjectionMode mode, glm::vec4 color, core_id coreID)
+    {
+        const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
+        const auto& metrics = fontGeometry.getMetrics();
+        Shr<Texture> fontAtlas = font->GetAtlasTexture();
+
+        data.fontAtlasTexture = fontAtlas;
+
+        double x = 0.0;
+        double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY);
+        double y = 0.0;
+        float lineHeightOffset = 0.0f;
+
+        for (size_t i = 0; i < string.size(); i++)
+        {
+            char character = string[i];
+            if (character == '\r')
+                continue;
+
+            if (character == '\n')
+            {
+                x = 0;
+                y -= fsScale * metrics.lineHeight + lineHeightOffset;
+                continue;
+            }
+            auto glyph = fontGeometry.getGlyph(character);
+            if (!glyph)
+                glyph = fontGeometry.getGlyph('?');
+            if (!glyph)
+                return;
+
+            if (character == '\t')
+                glyph = fontGeometry.getGlyph(' ');
+
+            double al, ab, ar, at;
+            glyph->getQuadAtlasBounds(al, ab, ar, at);
+            glm::vec2 texCoordMin((float)al, (float)ab);
+            glm::vec2 texCoordMax((float)ar, (float)at);
+
+            double pl, pb, pr, pt;
+            glyph->getQuadPlaneBounds(pl, pb, pr, pt);
+            glm::vec2 quadMin((float)pl, (float)pb);
+            glm::vec2 quadMax((float)pr, (float)pt);
+
+            quadMin *= fsScale, quadMax *= fsScale;
+            quadMin += glm::vec2(x, y);
+            quadMax += glm::vec2(x, y);
+
+            float texelWidth = 1.0f / fontAtlas->GetWidth();
+            float texelHeight = 1.0f / fontAtlas->GetHeight();
+            texCoordMin *= glm::vec2(texelWidth, texelHeight);
+            texCoordMax *= glm::vec2(texelWidth, texelHeight);
+
+            // render here
+            data.textVertexBufferPtr->position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
+            data.textVertexBufferPtr->color = color;
+            data.textVertexBufferPtr->texCoord = texCoordMin;
+            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.textVertexBufferPtr->coreID = coreID; // TODO
+            data.textVertexBufferPtr++;
+            data.stats.vertexCount++;
+
+            data.textVertexBufferPtr->position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
+            data.textVertexBufferPtr->color = color;
+            data.textVertexBufferPtr->texCoord = { texCoordMin.x, texCoordMax.y };
+            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.textVertexBufferPtr->coreID = coreID; // TODO
+            data.textVertexBufferPtr++;
+            data.stats.vertexCount++;
+
+            data.textVertexBufferPtr->position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
+            data.textVertexBufferPtr->color = color;
+            data.textVertexBufferPtr->texCoord = texCoordMax;
+            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.textVertexBufferPtr->coreID = coreID; // TODO
+            data.textVertexBufferPtr++;
+            data.stats.vertexCount++;
+
+            data.textVertexBufferPtr->position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
+            data.textVertexBufferPtr->color = color;
+            data.textVertexBufferPtr->texCoord = { texCoordMax.x, texCoordMin.y };
+            data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(mode);
+            data.textVertexBufferPtr->coreID = coreID; // TODO
+            data.textVertexBufferPtr++;
+            data.stats.vertexCount++;
+
+            data.textElementCount += 6;
+
+            data.stats.elementCount += 6;
+            data.stats.objectCount++;
+
+            if (i < string.size() - 1)
+            {
+                double advance = glyph->getAdvance();
+                char nextCharacter = string[i + 1];
+                fontGeometry.getAdvance(advance, character, nextCharacter);
+
+                float kerningOffset = 0.0f;
+                x += fsScale * advance + kerningOffset;
+            }
+        }
     }
 
     Renderer::Stats Renderer::GetStats()

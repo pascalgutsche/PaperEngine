@@ -7,7 +7,7 @@
 
 void ForegroundLayer::OnAttach()
 {
-	font = new GameObject("fontBomb", Transform(glm::vec2(0.24f, 4.34f), glm::vec2(1.5, 3.0f), 0.0f));
+	font = new GameObject("fontBomb", Transform(glm::vec2(0.0f, 0.0f), glm::vec2(0.1f, 0.1f), 0.0f));
 	spriteObject1 = new GameObject("spritePain", Transform(glm::vec2(0.436f, 3.32432f), glm::vec2(1.5, 3.0f), 0.0f));
 
 	// nobody cares about the transform for lines
@@ -18,7 +18,7 @@ void ForegroundLayer::OnAttach()
 	lineObject1->AddComponent(new LineRenderer(glm::vec2(0.5f, 0.5f), glm::vec2(-0.5f, -0.5f), glm::vec4(1.0f, 1.0f, 0.324f, 1.0f), 1.0f));
 	spriteObject1->AddComponent(new SpriteSheet(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("sheet.png"), 32.0f, 45.0f, 2.0f, 4.0f, glm::vec2(0, 0)));
 	
-	font->AddComponent(new FontRenderer(glm::vec2(1.0f, 1.0f), glm::vec2(4.0f, 3.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "gerni gerni", ProjectionMode::PERSPECTIVE));
+	font->AddComponent(new FontRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "gerni gerni", ProjectionMode::SCREEN));
 
 	this->AddGameObjectToLayer(spriteObject1);
 	this->AddGameObjectToLayer(lineObject1);

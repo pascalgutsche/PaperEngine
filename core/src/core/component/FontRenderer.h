@@ -6,10 +6,10 @@ namespace core
 	class FontRenderer : public Component
 	{
 	public:
-		FontRenderer(glm::vec2 position, glm::vec2 size, glm::vec4 color, std::string fontPath, std::string text, ProjectionMode mode);
-		FontRenderer(glm::vec2 position, glm::vec2 size, glm::vec4 color, std::string text, ProjectionMode mode);
+		FontRenderer(glm::vec4 color, std::string fontPath, std::string text, ProjectionMode mode);
+		FontRenderer(glm::vec4 color, std::string text, ProjectionMode mode);
 
-		void Init(glm::vec2 position, glm::vec2 size, glm::vec4 color, std::string fontPath, std::string text, ProjectionMode mode);
+		void Init(glm::vec4 color, std::string fontPath, std::string text, ProjectionMode mode);
 
 		void ChangeText(std::string text);
 
