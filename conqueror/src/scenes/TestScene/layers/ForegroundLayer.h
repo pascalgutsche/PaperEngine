@@ -8,6 +8,7 @@ private:
 	GameObject* object1;
 	GameObject* lineObject1;
 	GameObject* circleObject;
+	GameObject* circleObject2;
 	GameObject* spriteObject1;
 
 	GameObject* font;
