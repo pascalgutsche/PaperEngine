@@ -40,8 +40,8 @@ namespace core {
 
     struct CircleVertex
     {
-        glm::vec2 WorldPosition;
-        glm::vec2 LocalPosition;
+        glm::vec2 worldPos;
+        glm::vec2 localPos;
         glm::vec4 color;
 
         float thickness;
@@ -146,7 +146,7 @@ namespace core {
             { GLSLDataType::INT , "aCoreID" }
         };
 
-        BufferLayout LineGeometryLayout = {
+        BufferLayout lineGeometryLayout = {
             { GLSLDataType::FLOAT2, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
 			{ GLSLDataType::INT , "aProjectionMode" },
@@ -195,10 +195,10 @@ namespace core {
 
         data.circleVertexArray = VertexArray::CreateArray();
         data.circleVertexBuffer = VertexBuffer::CreateBuffer(circleGeometryLayout, data.MAX_VERTICES * sizeof(CircleVertex));
-        data.circleGeometryShader->Compile();
+        data.circleVertexArray->SetVertexBuffer(data.circleVertexBuffer);
 
         data.lineVertexArray = VertexArray::CreateArray();
-        data.lineVertexBuffer = VertexBuffer::CreateBuffer(LineGeometryLayout, data.MAX_VERTICES * sizeof(LineVertex));
+        data.lineVertexBuffer = VertexBuffer::CreateBuffer(lineGeometryLayout, data.MAX_VERTICES * sizeof(LineVertex));
         data.lineVertexArray->SetVertexBuffer(data.lineVertexBuffer);
 
         data.textVertexArray = VertexArray::CreateArray();
@@ -757,8 +757,8 @@ namespace core {
 
         for (int i = 0; i < circleVertexCount; i++)
         {
-            data.circleVertexBufferPtr->WorldPosition = transform * data.rectangleVertexData[i];
-            data.circleVertexBufferPtr->LocalPosition = data.rectangleVertexData[i];
+            data.circleVertexBufferPtr->worldPos = transform * data.rectangleVertexData[i];
+            data.circleVertexBufferPtr->localPos = data.rectangleVertexData[i] * glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 1.0f)); // just multiplying x and y by 2
             data.circleVertexBufferPtr->color = color;
             data.circleVertexBufferPtr->thickness = thickness;
             data.circleVertexBufferPtr->fade = fade;

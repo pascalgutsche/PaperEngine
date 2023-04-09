@@ -21,21 +21,21 @@ namespace core {
 
         static void Render();
 
-        static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID = -1);
+        static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID = 0);
         static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), 
-            ProjectionMode mode = ProjectionMode::PERSPECTIVE, core_id coreID = -1);
+            ProjectionMode mode = ProjectionMode::PERSPECTIVE, core_id coreID = 0);
         static void DrawRectangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec2 texCoordSprite[4], Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f),
-            ProjectionMode mode = ProjectionMode::PERSPECTIVE, core_id coreID = -1);
+            ProjectionMode mode = ProjectionMode::PERSPECTIVE, core_id coreID = 0);
 
-        static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID = -1);
+        static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, ProjectionMode mode, core_id coreID = 0);
         static void DrawTriangle(glm::vec2 position, glm::vec2 size, float rotation, Shr<Texture>& texture, float tilingFactor = 1.0f, glm::vec4 color = glm::vec4(1.0f), 
-            ProjectionMode mode = ProjectionMode::PERSPECTIVE, core_id coreID = -1);
+            ProjectionMode mode = ProjectionMode::PERSPECTIVE, core_id coreID = 0);
 
-        static void DrawLine(glm::vec2 p0, glm::vec2 p1, glm::vec4 color, float thickness, ProjectionMode mode, core_id coreID = -1);
+        static void DrawLine(glm::vec2 p0, glm::vec2 p1, glm::vec4 color, float thickness, ProjectionMode mode, core_id coreID = 0);
 
-        static void DrawCircle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, float thickness, float fade, ProjectionMode mode, core_id coreID = -1);
+        static void DrawCircle(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, float thickness, float fade, ProjectionMode mode, core_id coreID = 0);
 
-        static void DrawString(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, std::string string, Shr<Font> font, ProjectionMode mode, core_id coreID = -1);
+        static void DrawString(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, std::string string, Shr<Font> font, ProjectionMode mode, core_id coreID = 0);
 
         struct Stats
         {
@@ -63,9 +63,9 @@ namespace core {
         static void DrawTriangle(glm::mat4 transform, glm::vec4 color, ProjectionMode mode, core_id coreID);
         static void DrawTriangle(glm::mat4 transform, Shr<Texture>& texture, float tilingFactor, glm::vec4 color, ProjectionMode mode, core_id coreID);
 
-        static void DrawCircle(glm::mat4 transform, glm::vec4 color, float thickness, float fade, ProjectionMode mode, core_id coreID = -1);
+        static void DrawCircle(glm::mat4 transform, glm::vec4 color, float thickness, float fade, ProjectionMode mode, core_id coreID);
 
-        static void DrawString(std::string string, Shr<Font> font, glm::mat4 transform, ProjectionMode mode, glm::vec4 color, core_id coreID = -1);
+        static void DrawString(std::string string, Shr<Font> font, glm::mat4 transform, ProjectionMode mode, glm::vec4 color, core_id coreID);
     };
 
 }

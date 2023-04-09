@@ -70,14 +70,17 @@ layout(location = 4) in flat int CoreID;
 
 void main()
 {
-    //float distance = 1.0 - length(Input.LocalPosition);
-    //vec3 color = vec3(smoothstep(0.0, Input.Fade, distance));
-    //color *= vec3(smoothstep(Input.Thickness + Input.Fade, Input.Thickness, distance));
-    //
-    //display = Input.Color;
-    //display.rgb *= color;
-
-    display = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+    // Calculate distance and fill circle with white
+    float distance = 1.0 - length(Input.LocalPosition);
+    float circle = smoothstep(0.0, Input.Fade, distance);
+    circle *= smoothstep(Input.Thickness + Input.Fade, Input.Thickness, distance);
+    
+    if (circle == 0.0)
+        discard;
+    
+    // Set output color
+    display = Input.Color;
+    display.a *= circle;
     
     objectID = CoreID;
 }

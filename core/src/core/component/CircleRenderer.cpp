@@ -16,6 +16,6 @@ namespace core {
 
     void CircleRenderer::OnUpdate() 
     {
-        Renderer::DrawCircle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, thickness, fade, gameObject->GetProjectionMode());
+        Renderer::DrawCircle(gameObject->transform.position, gameObject->transform.scale, gameObject->transform.rotation, color, thickness, fade, gameObject->GetProjectionMode(), gameObject->GetObjectID());
     }
 }
