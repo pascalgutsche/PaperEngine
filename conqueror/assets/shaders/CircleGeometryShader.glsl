@@ -33,6 +33,8 @@ layout(location = 7) out flat int CoreID;
 void main()
 {
     Output.LocalPosition = aLocalPosition;
+    Output.TexCoord = aTexCoord;
+    Output.TilingFactor = aTilingFactor;
     Output.Color = aColor;
     Output.Thickness = aThickness;
     Output.Fade = aFade;
@@ -89,11 +91,12 @@ void main()
     if (circle == 0.0)
         discard;
     
-    // Set output color
-    if (TexID >= 0)
-        display = texture(uTexture[TexID], Input.TexCoord * Input.TilingFactor);
-    else
-        display = Input.Color;
+    //Set output color
+    display = Input.Color;
+
+    if (TexID >= 0) {
+        display *= texture(uTexture[TexID], Input.TexCoord * Input.TilingFactor);
+    }
 
     display.a *= circle;
     

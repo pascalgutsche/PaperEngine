@@ -173,7 +173,7 @@ namespace core {
             { GLSLDataType::FLOAT,  "aFade" },
 
 			{ GLSLDataType::INT , "aProjectionMode" },
-            { GLSLDataType::INT,    "aCoreID" }
+            { GLSLDataType::INT, "aCoreID" }
         };
 
         BufferLayout textLayout

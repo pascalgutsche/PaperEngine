@@ -180,6 +180,8 @@ namespace core {
 		ImGui::SliderFloat(std::string("Y:").c_str(), &this->transform.position.y, -10.0f, 10.0f, 0);
 		ImGui::SliderFloat(std::string("Width:").c_str(), &this->transform.scale.x, 0.0f, 10.0f, 0);
 		ImGui::SliderFloat(std::string("Height:").c_str(), &this->transform.scale.y, 0.0f, 10.0f, 0);
+        ImGui::SliderFloat(std::string("Rotation:").c_str(), &this->transform.rotation, -359.9f, 359.9f, 0);
+
 
 		for (auto component : components) {
 		    component->OnImgui(dt);
