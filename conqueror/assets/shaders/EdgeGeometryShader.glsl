@@ -76,10 +76,10 @@ void main()
     vec4 color = Input.Color;
     if (TexID >= 0)
         color *= texture(uTexture[TexID], Input.TexCoord * Input.TilingFactor);
-
+    
     if (color.a == 0.0)
         discard;
-
+    
     display = color;
     objectID = CoreID;
 }

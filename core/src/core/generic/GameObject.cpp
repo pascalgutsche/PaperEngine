@@ -9,6 +9,8 @@
 #include "layer/Layer.h"
 
 #include "component/SpriteRenderer.h"
+#include "event/Input.h"
+#include "event/KeyCodes.h"
 
 #include "imgui/ImGuiLayer.h"
 #include "utils/Core.h"
@@ -176,11 +178,17 @@ namespace core {
 
 	void GameObject::Imgui(float dt) {
 		ImGui::Text("Transform:");
-		ImGui::DragFloat(std::string("X:").c_str(), &this->transform.position.x, 0.5f);
-		ImGui::DragFloat(std::string("Y:").c_str(), &this->transform.position.y, 0.5f);
-		ImGui::DragFloat(std::string("Width:").c_str(), &this->transform.scale.x, 0.5f);
-		ImGui::DragFloat(std::string("Height:").c_str(), &this->transform.scale.y, 0.5f);
-        ImGui::DragFloat(std::string("Rotation:").c_str(), &this->transform.rotation, 0.5f);
+        float speed = 0.5f;
+        if (Input::IsKeyPressed(KEY_LEFT_SHIFT) && Input::IsKeyPressed(KEY_LEFT_CONTROL))
+            speed = 0.001f;
+        else if (Input::IsKeyPressed(KEY_LEFT_SHIFT))
+            speed = 0.01f;
+        
+		ImGui::DragFloat(std::string("X:").c_str(), &this->transform.position.x, speed);
+		ImGui::DragFloat(std::string("Y:").c_str(), &this->transform.position.y, speed);
+		ImGui::DragFloat(std::string("Width:").c_str(), &this->transform.scale.x, speed);
+		ImGui::DragFloat(std::string("Height:").c_str(), &this->transform.scale.y, speed);
+        ImGui::DragFloat(std::string("Rotation:").c_str(), &this->transform.rotation, speed);
         
 
 		for (auto component : components) {
@@ -194,7 +202,7 @@ namespace core {
         if (IDMap.find(id) != IDMap.end()) {
             return IDMap.at(id);
         }
-        CORE_ASSERT(false, "invalid ID");
+        //CORE_ASSERT(false, "invalid ID");
         return nullptr;
     }
 

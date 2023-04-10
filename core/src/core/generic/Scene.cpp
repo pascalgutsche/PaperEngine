@@ -27,6 +27,7 @@ namespace core {
         {
             Layer* layer = Application::GetLayerStack()[i];
             if (!layer->IsAttached()) continue;
+
             for (int i = 0; i < layer->GetGameObjects().size(); i++)
             {
                 GameObject* gameObject = layer->GetGameObjects()[i];

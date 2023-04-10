@@ -115,11 +115,11 @@ namespace core
 
 	void Layer::RenderObject(UIObject* object)
 	{
-		object->CalculateGlobalCoords();
 		object->Render();
 		for (UIObject* child : object->GetChildObjects())
 		{
 			if (child != object)
+				child->mode = object->mode;
 				RenderObject(child);
 		}
 	}

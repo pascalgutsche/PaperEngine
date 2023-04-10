@@ -23,6 +23,10 @@ namespace core
 
 		virtual void Render() = 0;
 
+		void AddChildObject(UIObject* uiObject);
+
+		UIObject* GetParentObject() const;
+
 		core_id GetObjectID() const;
 		std::vector<UIObject*>& GetChildObjects();
 		

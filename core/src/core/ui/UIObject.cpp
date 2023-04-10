@@ -16,6 +16,17 @@ namespace core
 		DataPool::AddToDelete(coreID);
 	}
 
+	void UIObject::AddChildObject(UIObject* uiObject)
+	{
+		uiObject->parent = this;
+		childOjects.push_back(uiObject);
+	}
+
+	UIObject* UIObject::GetParentObject() const
+	{
+		return parent;
+	}
+
 	core_id UIObject::GetObjectID() const
 	{
 		return coreID;
@@ -29,6 +40,6 @@ namespace core
 	void UIObject::CalculateGlobalCoords()
 	{
 		if (!parent) return;
-		globalPos = parent->globalPos + transform.position * transform.scale;
+		globalPos = parent->globalPos + transform.position * parent->transform.scale * glm::vec2(0.5f);
 	}
 }
