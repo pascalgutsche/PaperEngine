@@ -5,8 +5,8 @@
 
 namespace core
 {
-	Panel::Panel(glm::vec4 color, const Transform& transform, Type type)
-		: UIObject(transform), color(color), type(type) { }
+	Panel::Panel(glm::vec4 color, const Transform& transform, Type type, std::string name)
+		: UIObject(name, transform), color(color), type(type) { }
 
 	Panel::~Panel()
 	{

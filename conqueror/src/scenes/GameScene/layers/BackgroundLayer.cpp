@@ -17,6 +17,7 @@ void BackgroundLayer::OnAttach()
     panel = new Panel(glm::vec4(1.0f, 0.2f, 1.0f, 0.3f), Transform(glm::vec2(0.0f, 0.0f), glm::vec2(3.0f, 2.0f)), Type::Rectangle);
     Panel* panel1 = new Panel(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), Transform(glm::vec2(1.0f, 1.0f), glm::vec2(2.0f, 2.0f)), Type::Rectangle);
     panel->AddChildObject(panel1);
+    AddUIObject(panel, ProjectionMode::PERSPECTIVE);
 }
 
 void BackgroundLayer::OnDetach()
@@ -26,7 +27,7 @@ void BackgroundLayer::OnDetach()
 void BackgroundLayer::Update(const float dt)
 {
     //gameObjects[0]->transform.rotation += 100 * dt;
-    AddUIObject(panel, ProjectionMode::PERSPECTIVE);
+    
 }
 
 void BackgroundLayer::Imgui(const float dt)
@@ -40,23 +41,6 @@ void BackgroundLayer::OnEvent(Event& event)
     {
         if (e.getKeyCode() == KEY_C)
         {
-            auto vectora = GetGameObjectsByTag("a");
-            auto vectorb = GetGameObjectsByTag("b");
-            auto vectorc = GetGameObjectsByTag("c");
-
-            for (auto go : vectora)
-            {
-                LOG_DEBUG("A: {0}", go->GetName());
-            }
-            for (auto go : vectorb)
-            {
-                LOG_DEBUG("B: {0}", go->GetName());
-            }
-            for (auto go : vectorc)
-            {
-                LOG_DEBUG("C: {0}", go->GetName());
-            }
-            return true;
         }
         if (e.getKeyCode() == KEY_M)
         {

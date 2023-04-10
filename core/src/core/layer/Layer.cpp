@@ -102,15 +102,45 @@ namespace core
 	{
 		object->globalPos = object->transform.position;
 		object->mode = mode;
-		objectsToRender.push_back(object);
+		uiObjects.push_back(object);
+	}
+
+	void Layer::RemoveUIObject()
+	{
+		uiObjects.clear();
+	}
+
+	void Layer::RemoveUIObject(uint32_t index)
+	{
+		if (index >= uiObjects.size())
+		{
+			LOG_CORE_ERROR("Index '{0}' out of range in 'RemoveUIObject' in layer '{1}'", index, this->GetName());
+			return;
+		}
+		uiObjects.erase(uiObjects.begin() + index);
+	}
+
+	void Layer::RemoveUIObject(UIObject* object)
+	{
+		std::vector<UIObject*>::iterator it = std::find(uiObjects.begin(), uiObjects.end(), object);
+		if (it == uiObjects.end())
+		{
+			LOG_CORE_ERROR("UIObject '{0}' not registered in 'RemoveUIObject' in layer '{1}'", (uint8_t)object, this->GetName());
+			return;
+		}
+		uiObjects.erase(it);
+	}
+
+	std::vector<UIObject*>& Layer::GetUIObjects()
+	{
+		return uiObjects;
 	}
 
 	void Layer::RenderUI()
 	{
-		for (UIObject* object : objectsToRender) {
+		for (UIObject* object : uiObjects) {
 			RenderObject(object);
 		}
-		objectsToRender.clear();
 	}
 
 	void Layer::RenderObject(UIObject* object)

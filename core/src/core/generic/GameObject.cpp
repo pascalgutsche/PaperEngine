@@ -18,8 +18,6 @@
 
 namespace core {
 
-	std::unordered_map<core_id, GameObject*> GameObject::IDMap;
-
 	void GameObject::StopComponentIndex(uint32_t index)
 	{
         components[index]->OnStop();
@@ -36,16 +34,11 @@ namespace core {
 	}
 
 	GameObject::GameObject(std::string name, Transform& transform, ProjectionMode mode)
-        : name(name), mode(mode), transform(transform)
-    {
-        objectID = Core::RequestID();
-        IDMap.emplace(objectID, this);
-    }
+        : Object(name, transform), mode(mode) { }
 
 
     GameObject::~GameObject()
     {
-        DataPool::AddToDelete(objectID);
         this->deleted = true;
         if (layer) {
             std::vector<GameObject*>::iterator it = std::find(layer->GetGameObjects().begin(), layer->GetGameObjects().end(), this);
@@ -83,13 +76,13 @@ namespace core {
 
     void GameObject::Update()
 	{
-        core_id id = objectID;
+        core_id id = coreID;
         // update gameObject, in order to display moving changes
         for (auto component : components) {
             if (component) {
                 component->OnUpdate();
             }
-            if (DataPool::IsDeleted(id)) return;
+            if (Core::IsDeleted(id)) return;
         }
 		transform.Update();
     }
@@ -196,15 +189,7 @@ namespace core {
 		}
     }
 
-    GameObject* GameObject::GetGameObjectByID(core_id id)
-    {
-        CORE_ASSERT(id > 0, "invalid ID");
-        if (IDMap.find(id) != IDMap.end()) {
-            return IDMap.at(id);
-        }
-        //CORE_ASSERT(false, "invalid ID");
-        return nullptr;
-    }
+    
 
     
 

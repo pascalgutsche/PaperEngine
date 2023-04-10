@@ -11,6 +11,6 @@ namespace core
 
 	void LineRenderer::OnUpdate()
 	{
-		Renderer::DrawLine(positionA, positionB, color, thickness, gameObject->GetProjectionMode(), gameObject->GetObjectID());
+		Renderer::DrawLine(positionA, positionB, color, thickness, gameObject->GetProjectionMode(), gameObject->GetCoreID());
 	}
 };

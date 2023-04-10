@@ -11,7 +11,6 @@ namespace core {
 
     // declare static maps in order to find a reference
     Map DataPool::dataPool;
-    std::vector<core_id> DataPool::deletedIDs;
 
     std::shared_ptr<Shader> DataPool::GetShader(std::string shaderName) {
         // set default path
@@ -58,15 +57,7 @@ namespace core {
         return texture;
     }
 
-    bool DataPool::IsDeleted(core_id id)
-    {
-        return std::find(deletedIDs.begin(), deletedIDs.end(), id) != deletedIDs.end();
-    }
-
-    void DataPool::AddToDelete(core_id id)
-    {
-        deletedIDs.push_back(id);
-    }
+    
 
     int ProjectionModeToInt(const ProjectionMode& mode)
     {

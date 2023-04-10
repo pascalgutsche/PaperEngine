@@ -54,6 +54,11 @@ namespace core
 		//UI
 		friend class Scene;
 		void AddUIObject(UIObject* object, ProjectionMode mode);
+		void RemoveUIObject();
+		void RemoveUIObject(uint32_t index);
+		void RemoveUIObject(UIObject* object);
+
+		std::vector<UIObject*>& GetUIObjects();
 	protected:
 		Scene* scene = nullptr;
 		std::string name;
@@ -63,7 +68,7 @@ namespace core
 		std::vector<GameObject*> gameObjects;
 
 	private:
-		std::vector<UIObject*> objectsToRender;
+		std::vector<UIObject*> uiObjects;
 
 		void RenderUI();
 		void RenderObject(UIObject* object);

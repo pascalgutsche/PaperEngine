@@ -1,7 +1,8 @@
 #pragma once
 #include "_Core.h"
 
-#include "generic/GameObject.h"
+#include "generic/Object.h"
+#include "utils/DataPool.h"
 
 namespace core
 {
@@ -12,31 +13,27 @@ namespace core
 		Circle
 	};
 
-	class UIObject
+	class UIObject : public Object
 	{
 		friend class Layer;
 	public:
 		
 
-		UIObject(const Transform& transform);
-		virtual ~UIObject();
+		UIObject(std::string name, const Transform& transform);
+		virtual ~UIObject() override;
 
 		virtual void Render() = 0;
 
 		void AddChildObject(UIObject* uiObject);
 
 		UIObject* GetParentObject() const;
-
-		core_id GetObjectID() const;
 		std::vector<UIObject*>& GetChildObjects();
 		
 
-		Transform transform;
 	protected:
 		glm::vec2 globalPos;
 		ProjectionMode mode;
 
-		core_id coreID = 0;
 		UIObject* parent = nullptr;
 		std::vector<UIObject*> childOjects;
 

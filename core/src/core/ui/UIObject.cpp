@@ -5,16 +5,10 @@
 
 namespace core
 {
-	UIObject::UIObject(const Transform& transform)
-		: transform(transform)
-	{
-		coreID = Core::RequestID();
-	}
+	UIObject::UIObject(std::string name, const Transform& transform)
+		: Object(name, transform) { }
 
-	UIObject::~UIObject()
-	{
-		DataPool::AddToDelete(coreID);
-	}
+	UIObject::~UIObject() { }
 
 	void UIObject::AddChildObject(UIObject* uiObject)
 	{
@@ -25,11 +19,6 @@ namespace core
 	UIObject* UIObject::GetParentObject() const
 	{
 		return parent;
-	}
-
-	core_id UIObject::GetObjectID() const
-	{
-		return coreID;
 	}
 
 	std::vector<UIObject*>& UIObject::GetChildObjects()
