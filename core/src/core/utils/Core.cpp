@@ -24,7 +24,7 @@ namespace core
 	void Core::DeleteID(core_id id)
 	{
 		CORE_ASSERT(initialized, "Core not initialized");
-		std::unordered_map<core_id, Object*>::iterator it = std::find(IDinUse.begin(), IDinUse.end(), id);
+		std::unordered_map<core_id, Object*>::iterator it = IDinUse.find(id);
 		if (it == IDinUse.end())
 		{
 			CORE_ASSERT(false, "ID does not exist");

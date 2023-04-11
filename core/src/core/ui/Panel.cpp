@@ -18,11 +18,10 @@ namespace core
 		switch (type)
 		{
 			case Type::Rectangle:
-			Renderer::DrawRectangle(globalPos, transform.scale, transform.rotation, color, mode, coreID);
+				Renderer::DrawRectangle(globalPos, transform.scale, transform.rotation, color, mode, coreID);
 				break;
-			case Type::Triangle: 
-				break;
-			case Type::Circle: 
+			case Type::Triangle:
+				Renderer::DrawTriangle(globalPos, transform.scale, transform.rotation, color, mode, coreID);
 				break;
 		}
 	}

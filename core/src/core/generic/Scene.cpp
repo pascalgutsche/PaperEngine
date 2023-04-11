@@ -36,7 +36,6 @@ namespace core {
             }
             Renderer::NextBatch();
             layer->RenderUI();
-            Renderer::NextBatch();
         }
 
         Renderer::EndRender();

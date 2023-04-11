@@ -15,8 +15,10 @@ void BackgroundLayer::OnAttach()
     //this->AddGameObjectToLayer(background1);
 
     panel = new Panel(glm::vec4(1.0f, 0.2f, 1.0f, 0.3f), Transform(glm::vec2(0.0f, 0.0f), glm::vec2(3.0f, 2.0f)), Type::Rectangle);
-    Panel* panel1 = new Panel(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), Transform(glm::vec2(1.0f, 1.0f), glm::vec2(2.0f, 2.0f)), Type::Rectangle);
+    Panel* panel1 = new Panel(glm::vec4(1.0f, 0.0f, 0.0f, 0.9f), Transform(glm::vec2(1.0f, 1.0f), glm::vec2(2.0f, 2.0f)), Type::Triangle);
     panel->AddChildObject(panel1);
+    //Panel* panel2 = new Panel(glm::vec4(0.0f, 0.9f, 0.5f, 0.7f), Transform(glm::vec2(1.0f, -1.0f), glm::vec2(1.7783465f, 1.3f)), Type::Rectangle);
+    //panel1->AddChildObject(panel2);
     AddUIObject(panel, ProjectionMode::PERSPECTIVE);
 }
 

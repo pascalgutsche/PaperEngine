@@ -146,6 +146,7 @@ namespace core
 	void Layer::RenderObject(UIObject* object)
 	{
 		object->Render();
+		Renderer::NextBatch();
 		for (UIObject* child : object->GetChildObjects())
 		{
 			if (child != object)

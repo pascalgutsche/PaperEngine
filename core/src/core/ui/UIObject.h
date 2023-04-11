@@ -9,8 +9,7 @@ namespace core
 	enum class Type
 	{
 		Rectangle,
-		Triangle,
-		Circle
+		Triangle
 	};
 
 	class UIObject : public Object
