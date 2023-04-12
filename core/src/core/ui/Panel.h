@@ -11,7 +11,7 @@ namespace core
 		Panel(glm::vec4 color, const Transform& transform, Type type, std::string name = "Panel");
 		~Panel() override;
 
-		void Render() override;
+		void Render(core_id idToRender) override;
 
 	private:
 		glm::vec4 color;

@@ -3,6 +3,7 @@
 #include "layer/Layer.h"
 #include "event/Event.h"
 #include "renderer/Renderer.h"
+#include "ui/Button.h"
 #include "ui/UIObject.h"
 
 namespace core
@@ -145,7 +146,8 @@ namespace core
 
 	void Layer::RenderObject(UIObject* object)
 	{
-		object->Render();
+		object->CalculateGlobalCoords();
+		object->RenderObject();
 		Renderer::NextBatch();
 		for (UIObject* child : object->GetChildObjects())
 		{

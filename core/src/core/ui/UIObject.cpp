@@ -10,8 +10,15 @@ namespace core
 
 	UIObject::~UIObject() { }
 
+	void UIObject::RenderObject()
+	{
+		buttonID != 0 ? Render(buttonID) : Render(coreID);
+	}
+
 	void UIObject::AddChildObject(UIObject* uiObject)
 	{
+		if (!uiObject->buttonID)
+			uiObject->buttonID = buttonID;
 		uiObject->parent = this;
 		childOjects.push_back(uiObject);
 	}

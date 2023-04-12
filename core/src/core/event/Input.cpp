@@ -6,6 +6,7 @@
 #include "generic/Application.h"
 #include "imgui/ImGuiLayer.h"
 #include "renderer/Renderer.h"
+#include "ui/Button.h"
 
 #include "GLFW/glfw3.h"
 #include "utils/Core.h"
@@ -64,6 +65,10 @@ namespace core
                 GameObject* gameObject = dynamic_cast<GameObject*>(Core::GetObjectByID(mouseClickedID[0]));
                 if (gameObject)
 					Application::QueueEvents(new GameObjectPressedEvent(gameObject));
+
+                Button* button = dynamic_cast<Button*>(Core::GetObjectByID(mouseClickedID[0]));
+                if (button)
+                    button->buttonEventFunction();
             }
             pressed = true;
             mouseClickedID[1] = mouseClickedID[0];

@@ -12,16 +12,15 @@ namespace core
 	{
 	}
 
-	void Panel::Render()
+	void Panel::Render(core_id idToRender)
 	{
-		CalculateGlobalCoords();
 		switch (type)
 		{
 			case Type::Rectangle:
-				Renderer::DrawRectangle(globalPos, transform.scale, transform.rotation, color, mode, coreID);
+				Renderer::DrawRectangle(globalPos, transform.scale, transform.rotation, color, mode, idToRender);
 				break;
 			case Type::Triangle:
-				Renderer::DrawTriangle(globalPos, transform.scale, transform.rotation, color, mode, coreID);
+				Renderer::DrawTriangle(globalPos, transform.scale, transform.rotation, color, mode, idToRender);
 				break;
 		}
 	}
