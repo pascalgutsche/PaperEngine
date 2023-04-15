@@ -11,8 +11,8 @@ void BackgroundLayer::OnAttach()
     background1->AddComponent(new SpriteRenderer(glm::vec4(0.5f, 1.0f, 0.5f, 0.7f), Geometry::RECTANGLE));
     background2->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 0.0f, 1.0f, 0.3f), Geometry::RECTANGLE));
 
-    //this->AddGameObjectToLayer(background2);
-    //this->AddGameObjectToLayer(background1);
+    this->AddGameObjectToLayer(background2);
+    this->AddGameObjectToLayer(background1);
 
     panel = new Panel(glm::vec4(1.0f, 0.2f, 1.0f, 0.3f), Transform(glm::vec2(0.0f, 0.0f), glm::vec2(3.0f, 2.0f)), Type::Rectangle);
     Panel* panel2 = new Panel(glm::vec4(1.0f, 0.0f, 0.0f, 0.9f), Transform(glm::vec2(0.0f, 0.0f), glm::vec2(2.0f, 2.0f)), Type::Triangle);
@@ -35,7 +35,7 @@ void BackgroundLayer::OnAttach()
     button4->AddChildObject(buttonPanel4);
     Label* panel34 = new Label("bonkkkkkkk",glm::vec4(1.0f, 0.0f, 0.0f, 0.9f), Transform(glm::vec2(0.0f, 0.9f), glm::vec2(0.5f, 0.5f)));
     buttonPanel4->AddChildObject(panel34);
-    AddUIObject(panel4, ProjectionMode::PERSPECTIVE);
+    //AddUIObject(panel4, ProjectionMode::PERSPECTIVE);
 }
 
 void BackgroundLayer::OnDetach()
@@ -54,6 +54,7 @@ void BackgroundLayer::Imgui(const float dt)
 
 void BackgroundLayer::OnEvent(Event& event)
 {
+    LOG_CORE_DEBUG(event);
     EventDispatcher dispatcher(event);
     dispatcher.dispatch<KeyPressedEvent>([this](KeyPressedEvent& e)
     {
