@@ -19,9 +19,12 @@ public:
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(GameScene::OnMouseScroll));
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(GameScene::OnKeyPressed));
 	};
 
 	bool OnMouseScroll(MouseScrolledEvent& e);
+	bool OnKeyPressed(KeyPressedEvent& e);
+
 
 };
 

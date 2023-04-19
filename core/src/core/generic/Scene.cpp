@@ -9,8 +9,8 @@
 
 namespace core {
 
-    void Scene::InitGeneral() {
-        camera = new Camera();
+    void Scene::StartUp() {
+        camera = std::make_shared<Camera>();
 
         LoadResources();
         Init();
@@ -49,7 +49,7 @@ namespace core {
         delete camera;
     }
 
-    Camera* Scene::GetCamera() {
+    Shr<Camera> Scene::GetCamera() {
         // return the current scene camera, useful for scene testing
         return this->camera;
     }

@@ -1,9 +1,7 @@
 #include "_Game.h"
 #include "GameScene.h"
 
-#include "scenes/TestScene/TestScene.h"
-
-using namespace core;
+#include "global.h"
 
 GameScene::GameScene() {
 
@@ -57,6 +55,15 @@ bool GameScene::OnMouseScroll(MouseScrolledEvent& e)
         this->GetCamera()->position.z = 0.2f;
     }
         
+    return true;
+}
+
+bool GameScene::OnKeyPressed(KeyPressedEvent& e)
+{
+    if (e.getKeyCode() == KEY_C)
+    {
+        Application::ChangeScene(testScene);
+    }
     return true;
 }
 

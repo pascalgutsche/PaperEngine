@@ -151,7 +151,7 @@ namespace core {
 						currentScene->Disable();
 
 						// remove the scene
-						delete currentScene;
+						//delete currentScene;
 						// switch and initialize the scene
 						currentScene = queuedScene;
 						currentScene->InitGeneral();

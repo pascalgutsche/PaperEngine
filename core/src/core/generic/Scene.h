@@ -12,7 +12,7 @@ namespace core {
     private:
         bool isRunning = false;
     protected:
-        Camera* camera = nullptr;
+        Shr<Camera> camera = nullptr;
         glm::vec4 backcolor = glm::vec4();
     public:
         std::vector<GameObject*> gameObjects;
@@ -24,9 +24,8 @@ namespace core {
         Camera* GetCamera();
         glm::vec4& GetBackcolor();
 
-        void Start();
-        void Disable();
-        void InitGeneral();
+        
+        void StartUp();
         void OnUpdate();
 
         void AddLayer(Layer* layer);
@@ -34,12 +33,13 @@ namespace core {
         void RemoveLayer(Layer* layer) const;
         void RemoveOverlay(Layer* layer) const;
 
+    private:
+        virtual void Init() = 0;
+        virtual void Start() = 0;
+        virtual void Stop() = 0;
         virtual void Update() = 0;
         virtual void OnEvent(Event& e) = 0;
-    private:
-        virtual void Imgui(float dt) {};
-        virtual void Init() = 0;
-        virtual void LoadResources() = 0;
+        virtual void Imgui(float dt) {}
     };
 
 }

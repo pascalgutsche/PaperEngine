@@ -17,13 +17,10 @@ public:
 	void Init() override;
 	void Update() override;
 	void Imgui(float dt) override;
-	void OnEvent(Event& e) override
-	{
-		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(TestScene::OnMouseScroll));
-	};
+	void OnEvent(Event& e) override;
+	
 
 	bool OnMouseScroll(MouseScrolledEvent& e);
-
+	bool OnKeyPressed(KeyPressedEvent& e);
 };
 

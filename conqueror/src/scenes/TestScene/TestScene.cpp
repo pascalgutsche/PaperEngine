@@ -2,8 +2,7 @@
 #include "TestScene.h"
 #include "layers/SoundLayer.h"
 
-#include "scenes/GameScene/GameScene.h"
-
+#include "global.h"
 
 using namespace core;
 
@@ -54,6 +53,13 @@ void TestScene::Imgui(float dt) {
 	
 }
 
+void TestScene::OnEvent(Event& e)
+{
+    EventDispatcher dispatcher(e);
+    dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(TestScene::OnMouseScroll));
+    dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(TestScene::OnKeyPressed));
+}
+
 bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
 {
     if (this->GetCamera()->position.z > 0.2f && e.GetYOffset() != 0)
@@ -62,6 +68,15 @@ bool TestScene::OnMouseScroll(MouseScrolledEvent& e)
         this->GetCamera()->position.z = 0.2f;
     }
         
+    return true;
+}
+
+bool TestScene::OnKeyPressed(KeyPressedEvent& e)
+{
+    if (e.getKeyCode() == KEY_C)
+    {
+        Application::ChangeScene(gameScene);
+    }
     return true;
 }
 
