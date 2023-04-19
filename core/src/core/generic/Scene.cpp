@@ -1,6 +1,5 @@
 #include "_Core.h"
 
-#include "imgui/ImGuiLayer.h"
 #include "generic/Application.h"
 #include "generic/Scene.h"
 #include "generic/Camera.h"
@@ -9,12 +8,9 @@
 
 namespace core {
 
-    void Scene::StartUp() {
+    Scene::Scene()
+    {
         camera = std::make_shared<Camera>();
-
-        LoadResources();
-        Init();
-        Start();
     }
 
     void Scene::OnUpdate()
@@ -43,10 +39,6 @@ namespace core {
 
     void Scene::Start() {
         isRunning = true;
-    }
-
-    void Scene::Disable() {
-        delete camera;
     }
 
     Shr<Camera> Scene::GetCamera() {

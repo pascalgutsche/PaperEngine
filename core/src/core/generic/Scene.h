@@ -18,10 +18,10 @@ namespace core {
         std::vector<GameObject*> gameObjects;
 
     public:
-        Scene() = default;
+        Scene();
         virtual ~Scene() = default;
 
-        Camera* GetCamera();
+        Shr<Camera> GetCamera();
         glm::vec4& GetBackcolor();
 
         
@@ -34,9 +34,8 @@ namespace core {
         void RemoveOverlay(Layer* layer) const;
 
     private:
-        virtual void Init() = 0;
-        virtual void Start() = 0;
-        virtual void Stop() = 0;
+        virtual void OnStart() = 0;
+        virtual void OnStop() = 0;
         virtual void Update() = 0;
         virtual void OnEvent(Event& e) = 0;
         virtual void Imgui(float dt) {}
