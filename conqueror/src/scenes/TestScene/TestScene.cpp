@@ -7,26 +7,27 @@
 using namespace core;
 
 TestScene::TestScene() {
-
-}
-
-TestScene::~TestScene() {
-    RemoveLayer(foreground_layer);
-    RemoveOverlay(sound_layer);
-}
-
-void TestScene::LoadResources() {
     backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
     foreground_layer = new ForegroundLayer();
     sound_layer = new SoundLayer();
 }
 
-void TestScene::Init() {
+TestScene::~TestScene() {
+
+}
+
+void TestScene::OnStart() {
     AddLayer(foreground_layer);
     AddOverlay(sound_layer);
 }
 
-void TestScene::Update() {
+void TestScene::OnStop()
+{
+    RemoveLayer(foreground_layer);
+    RemoveOverlay(sound_layer);
+}
+
+void TestScene::OnUpdate() {
     float dt = Application::GetDT();
     if (Input::IsKeyPressed(KEY_S)) {
         camera->position.y -= 5.0f * dt;

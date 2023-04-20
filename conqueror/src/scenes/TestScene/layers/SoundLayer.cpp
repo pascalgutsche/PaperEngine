@@ -1,10 +1,15 @@
 #include "_Game.h"
 #include "SoundLayer.h"
 
-void SoundLayer::OnAttach()
+SoundLayer::SoundLayer()
+	: Layer("Sound")
 {
     soundSel.LoadSound("assets/sounds/menu.wav");
     soundTroll.LoadSound("assets/sounds/allahu_akbar.mp3");
+}
+
+void SoundLayer::OnAttach()
+{
 }
 
 void SoundLayer::OnDetach()

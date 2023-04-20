@@ -13,9 +13,9 @@ public:
 	TestScene();
 	virtual ~TestScene() override;
 
-	void LoadResources() override;
-	void Init() override;
-	void Update() override;
+	void OnStart() override;
+	void OnStop() override;
+	void OnUpdate() override;
 	void Imgui(float dt) override;
 	void OnEvent(Event& e) override;
 	

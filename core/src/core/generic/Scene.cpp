@@ -13,9 +13,9 @@ namespace core {
         camera = std::make_shared<Camera>();
     }
 
-    void Scene::OnUpdate()
+    void Scene::Update()
     {
-        Update();
+        OnUpdate();
         Renderer::ClearStats();
         Renderer::BeginRender(*camera);
 
@@ -37,9 +37,18 @@ namespace core {
         Renderer::EndRender();
     }
 
-    void Scene::Start() {
+    void Scene::Start()
+	{
         isRunning = true;
+        OnStart();
     }
+
+    void Scene::Stop()
+    {
+        isRunning = false;
+        OnStop();
+    }
+
 
     Shr<Camera> Scene::GetCamera() {
         // return the current scene camera, useful for scene testing

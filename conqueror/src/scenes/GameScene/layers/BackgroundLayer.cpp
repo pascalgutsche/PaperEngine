@@ -54,7 +54,6 @@ void BackgroundLayer::Imgui(const float dt)
 
 void BackgroundLayer::OnEvent(Event& event)
 {
-    LOG_CORE_DEBUG(event);
     EventDispatcher dispatcher(event);
     dispatcher.dispatch<KeyPressedEvent>([this](KeyPressedEvent& e)
     {

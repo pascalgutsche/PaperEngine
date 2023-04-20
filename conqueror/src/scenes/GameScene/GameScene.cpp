@@ -4,23 +4,25 @@
 #include "global.h"
 
 GameScene::GameScene() {
-
-}
-
-GameScene::~GameScene() {
-    RemoveLayer(background_layer);
-}
-
-void GameScene::LoadResources() {
     backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
     background_layer = new BackgroundLayer();
 }
 
-void GameScene::Init() {
+GameScene::~GameScene() {
+    
+}
+
+void GameScene::OnStart() {
     AddLayer(background_layer);
 }
 
-void GameScene::Update() {
+void GameScene::OnStop()
+{
+	RemoveLayer(background_layer);
+}
+
+
+void GameScene::OnUpdate() {
     float dt = Application::GetDT();
     if (Input::IsKeyPressed(KEY_S)) {
         camera->position.y -= 5.0f * dt;

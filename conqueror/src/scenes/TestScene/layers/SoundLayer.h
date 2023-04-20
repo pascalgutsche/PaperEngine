@@ -9,8 +9,8 @@ private:
 	float volume = 1.0f;
 
 public:
-	SoundLayer()
-		:Layer("Sound") { }
+	SoundLayer();
+		
 	virtual ~SoundLayer() = default;
 
 	void OnAttach() override;
