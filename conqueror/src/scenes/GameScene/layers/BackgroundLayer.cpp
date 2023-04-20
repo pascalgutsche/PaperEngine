@@ -14,28 +14,9 @@ void BackgroundLayer::OnAttach()
     this->AddGameObjectToLayer(background2);
     this->AddGameObjectToLayer(background1);
 
-    panel = new Panel(glm::vec4(1.0f, 0.2f, 1.0f, 0.3f), Transform(glm::vec2(0.0f, 0.0f), glm::vec2(3.0f, 2.0f)), Type::Rectangle);
-    Panel* panel2 = new Panel(glm::vec4(1.0f, 0.0f, 0.0f, 0.9f), Transform(glm::vec2(0.0f, 0.0f), glm::vec2(2.0f, 2.0f)), Type::Triangle);
-    panel->AddChildObject(panel2);
-    Button* button = new Button(glm::vec4(0.0f, 0.5f, 1.0f, 1.0f), Transform(glm::vec2(0.0f), glm::vec2(1.5f)), Type::Rectangle, BIND_BUTTON_EVENT_FN(BackgroundLayer::ButtonPressed));
-    panel2->AddChildObject(button);
-	Panel* buttonPanel = new Panel(glm::vec4(0.3f, 0.7f, 0.9f, 0.9f), Transform(glm::vec2(0.0f, -0.5f), glm::vec2(1.0f, 1.0f)), Type::Rectangle);
-    button->AddChildObject(buttonPanel);
-    Panel* panel3 = new Panel(glm::vec4(1.0f, 0.0f, 0.0f, 0.9f), Transform(glm::vec2(0.0f, 0.9f), glm::vec2(0.5f, 0.5f)), Type::Triangle);
-    buttonPanel->AddChildObject(panel3);
-    AddUIObject(panel, ProjectionMode::PERSPECTIVE);
+    Label* label = new Label("connn", glm::vec4(1), Transform(), DataPool::GetFont("mononoki.ttf"));
+    AddUIObject(label, ProjectionMode::PERSPECTIVE);
 
-
-    panel4 = new Panel(glm::vec4(1.0f, 0.2f, 1.0f, 0.3f), Transform(glm::vec2(6.0f, 0.0f), glm::vec2(3.0f, 2.0f)), Type::Rectangle);
-    Panel* panel24 = new Panel(glm::vec4(1.0f, 0.0f, 0.0f, 0.9f), Transform(glm::vec2(0.0f, 0.0f), glm::vec2(2.0f, 2.0f)), Type::Triangle);
-    panel4->AddChildObject(panel24);
-    Button* button4 = new Button(glm::vec4(0.0f, 0.5f, 1.0f, 1.0f), Transform(glm::vec2(0.0f), glm::vec2(1.5f)), Type::Rectangle, BIND_BUTTON_EVENT_FN(BackgroundLayer::ButtonPressed4));
-    panel24->AddChildObject(button4);
-    Panel* buttonPanel4 = new Panel(glm::vec4(0.3f, 0.7f, 0.9f, 0.9f), Transform(glm::vec2(0.0f, -0.5f), glm::vec2(1.0f, 1.0f)), Type::Rectangle);
-    button4->AddChildObject(buttonPanel4);
-    Label* panel34 = new Label("bonkkkkkkk",glm::vec4(1.0f, 0.0f, 0.0f, 0.9f), Transform(glm::vec2(0.0f, 0.9f), glm::vec2(0.5f, 0.5f)));
-    buttonPanel4->AddChildObject(panel34);
-    //AddUIObject(panel4, ProjectionMode::PERSPECTIVE);
 }
 
 void BackgroundLayer::OnDetach()

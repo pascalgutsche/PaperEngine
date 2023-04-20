@@ -33,7 +33,7 @@ namespace core {
         this->layer = layer;
 	}
 
-	GameObject::GameObject(std::string name, Transform& transform, ProjectionMode mode)
+	GameObject::GameObject(std::string name, const Transform& transform, ProjectionMode mode)
         : Object(name, transform), mode(mode) { }
 
 
