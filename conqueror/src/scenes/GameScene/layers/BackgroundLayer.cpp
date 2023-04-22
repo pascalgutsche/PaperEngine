@@ -5,17 +5,21 @@
 
 void BackgroundLayer::OnAttach()
 {
-    background1 = new GameObject("background1", Transform(glm::vec2(-0.3f, 0.0f), glm::vec2(2.0f, 1.0f)));
+    background1 = new GameObject("background1", Transform());
     background2 = new GameObject("background2", Transform(glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f)));
 
     background1->AddComponent(new SpriteRenderer(glm::vec4(0.5f, 1.0f, 0.5f, 0.7f), Geometry::RECTANGLE));
     background2->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 0.0f, 1.0f, 0.3f), Geometry::RECTANGLE));
 
-    this->AddGameObjectToLayer(background2);
     this->AddGameObjectToLayer(background1);
+    //this->AddGameObjectToLayer(background2);
 
-    Label* label = new Label("connn", glm::vec4(1), Transform(), DataPool::GetFont("mononoki.ttf"));
-    AddUIObject(label, ProjectionMode::PERSPECTIVE);
+    GameObject* text = new GameObject("text");
+    text->AddComponent(new FontRenderer(glm::vec4(1.0f), "Dg"));
+    AddGameObjectToLayer(text);
+
+    //Label* label = new Label("cc", glm::vec4(1), Transform(glm::vec2(0.0f)), DataPool::GetFont("mononoki.ttf"));
+    //AddUIObject(label, ProjectionMode::PERSPECTIVE);
 
 }
 
