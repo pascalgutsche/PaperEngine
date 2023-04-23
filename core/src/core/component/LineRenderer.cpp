@@ -11,6 +11,13 @@ namespace core
 
 	void LineRenderer::OnUpdate()
 	{
-		Renderer::DrawLine(positionA, positionB, color, thickness, gameObject->GetProjectionMode(), gameObject->GetCoreID());
+		LineRenderData data;
+		data.point0 = positionA;
+		data.point1 = positionB;
+		data.color = color;
+		data.thickness = thickness;
+		data.mode = gameObject->GetProjectionMode();
+		data.coreID = gameObject->GetCoreID();
+		Renderer::DrawLine(data);
 	}
 };
