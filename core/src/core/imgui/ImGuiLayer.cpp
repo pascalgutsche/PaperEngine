@@ -331,10 +331,7 @@ namespace core {
             if (ImGui::Selectable("POINT", selected == 1))
                 RenderCommand::SetPolygonModel(Polygon::POINT);
 
-            Renderer::GetFramebuffer()->Bind();
-            uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
-            ImGui::Image((void*)textureID, ImVec2(480, 320), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-            Renderer::GetFramebuffer()->Unbind();
+            
 
             ImGui::BeginDisabled();
             if (ImGui::TreeNode("Textures in use"))
