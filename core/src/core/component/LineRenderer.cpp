@@ -6,8 +6,8 @@
 
 namespace core
 {
-	LineRenderer::LineRenderer(glm::vec2 positionA, glm::vec2 positionB, glm::vec4 color, float thickness)
-		:positionA(positionA), positionB(positionB), color(color), thickness(thickness) { }
+	LineRenderer::LineRenderer(glm::vec2 positionA, glm::vec2 positionB, glm::vec4 color, float thickness, bool registerAlphaPixelsToEvent)
+		:positionA(positionA), positionB(positionB), color(color), thickness(thickness), registerAlphaPixelsToEvent(registerAlphaPixelsToEvent) { }
 
 	void LineRenderer::OnUpdate()
 	{
