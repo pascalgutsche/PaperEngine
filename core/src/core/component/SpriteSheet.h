@@ -3,16 +3,16 @@
 #include "utility.h"
 
 #include "generic/Component.h"
+#include "component/Sprite.h"
 
 namespace core
 {
 	class SpriteSheet : public Component
 	{
-    public:
-        SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent = false);
-        SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent = false);
+	public:
+        SpriteSheet(glm::vec4 color, Shr<Texture> texture, uint32_t spriteWidth, uint32_t spriteHeight, uint32_t paddingWidth, uint32_t paddingHeight, uint32_t selectedSprite, bool registerAlphaPixelsToEvent = false);
 
-        void Init(Shr<Texture> texture, glm::vec2 selectedSprite);
+        void Init(Shr<Texture> texture, uint32_t selectedSprite);
 
         void OnStart() override { }
         void OnStop() override { }
@@ -24,7 +24,7 @@ namespace core
         int GetSpriteRows() { return spriteRows; };
         int GetSpriteColumns() { return spriteColumns; };
 
-        void ChangeSprite(glm::vec2 pos);
+        void ChangeSprite(uint32_t index);
 
 
     private:
@@ -33,17 +33,17 @@ namespace core
 
         glm::vec2 texCoords[4];
 
-        float spriteWidth;
-        float spriteHeight;
+        uint32_t spriteWidth;
+        uint32_t spriteHeight;
 
-        float paddingWidth;
-        float paddingHeight;
+        uint32_t paddingWidth;
+        uint32_t paddingHeight;
 
-        float textureWidth;
-        float textureHeight;
+        uint32_t textureWidth;
+        uint32_t textureHeight;
 
-        int spriteRows;
-        int spriteColumns;
+        uint32_t spriteRows;
+        uint32_t spriteColumns;
 
         glm::vec2 selectedSprite;
 

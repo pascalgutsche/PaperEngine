@@ -3,21 +3,15 @@
 #include "renderer/Renderer.h"
 
 namespace core
-{	
-	SpriteSheet::SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent)
-		: color(color), texture(texture), spriteWidth(spriteWidth), spriteHeight(spriteHeight), selectedSprite(selectedSprite), registerAlphaPixelsToEvent(registerAlphaPixelsToEvent)
-	{
-		Init(texture, selectedSprite);
-	}
-
-	SpriteSheet::SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent)
+{
+	SpriteSheet::SpriteSheet(glm::vec4 color, Shr<Texture> texture, uint32_t spriteWidth, uint32_t spriteHeight, uint32_t paddingWidth, uint32_t paddingHeight, uint32_t selectedSprite, bool registerAlphaPixelsToEvent)
 		: color(color), texture(texture), spriteWidth(spriteWidth), spriteHeight(spriteHeight), 
 		paddingWidth(paddingWidth), paddingHeight(paddingHeight), registerAlphaPixelsToEvent(registerAlphaPixelsToEvent)
 	{
 		Init(texture, selectedSprite);
 	}
 
-	void SpriteSheet::Init(Shr<Texture> texture, glm::vec2 selectedSprite)
+	void SpriteSheet::Init(Shr<Texture> texture, uint32_t selectedSprite)
 	{
 		//this->spriteWidth = spriteWidth - paddingWidth;
 		//this->spriteHeight = spriteHeight - paddingHeight;
@@ -33,7 +27,7 @@ namespace core
 		ChangeCoords();
 	}
 
-	void SpriteSheet::ChangeSprite(glm::vec2 pos)
+	void SpriteSheet::ChangeSprite(uint32_t index)
 	{
 		this->selectedSprite.x = spriteColumns - pos.x;
 		this->selectedSprite.y = spriteRows - pos.y;
