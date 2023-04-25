@@ -8,19 +8,22 @@ namespace core
 	class Sprite
 	{
 	public:
-		Sprite(uint32_t spriteWidth, uint32_t spriteHeight, uint32_t paddingWidth, uint32_t paddingHeight, uint32_t selectedSprite);
+		Sprite(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent = false);
 		~Sprite();
-
-		void SetColor(glm::vec4 color);
-		void SetTexture(Shr<Texture> texture);
-		void SetTexCoords(std::array<glm::vec2, 4> texCoords);
-		void SetTilingFactor();
 
 		glm::vec4 GetColor() const;
 		Shr<Texture> GetTexture() const;
 		std::array<glm::vec2, 4> GetTexCoords() const;
-		float GetTilingFactor() const;
 
+	private:
+		float textureWidth;
+		float textureHeight;
+		
+		glm::vec4 color;
+
+		Shr<Texture> texture;
+		
+		std::array<glm::vec2, 4> texcoords;
 	};
 }
 

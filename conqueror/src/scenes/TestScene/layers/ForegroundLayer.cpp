@@ -19,7 +19,7 @@ void ForegroundLayer::OnAttach()
 	font->AddComponent(new FontRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "gerni gerni"));
 	circleObject->AddComponent(new CircleRenderer(glm::vec4(1.0f, 0.0f, 0.9f, 1.0f), 1.0f, 0.005f));
 	circleObject2->AddComponent(new CircleRenderer(glm::vec4(0.8f, 0.5f, 1.0f, 1.0f), DataPool::GetTexture("error_texture_256x256.png"), 1.0f, 0.005f));
-	character1->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("error_texture_256x256.png"), Geometry::RECTANGLE));
+	//character1->AddComponent(new SpriteRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), DataPool::GetTexture("error_texture_256x256.png"), Geometry::RECTANGLE));
 
 	this->AddGameObjectToLayer(spriteObject1);
 	this->AddGameObjectToLayer(lineObject1);
@@ -60,7 +60,7 @@ void ForegroundLayer::Update(const float dt)
 		x = 0.01f;
 	}
 
-	spriteObject1->GetComponent<SpriteSheet>()->ChangeSprite(glm::vec2(tex, 0));
+	spriteObject1->GetComponent<SpriteSheet>()->ChangeSprite(glm::vec2(tex, 2));
 }
 
 void ForegroundLayer::Imgui(const float dt)
