@@ -2,7 +2,7 @@
 **/.idea/**
 bin/**
 bin-int/**
-Conqueror.sln
+*.sln
 *.vcxproj
 *.filters
 *.user

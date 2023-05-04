@@ -1,6 +1,6 @@
-workspace "Conqueror"
+workspace "[Game]"
 	architecture "x64"
-	startproject "conqueror"
+	startproject "[game]"
 	staticruntime "off"
 
 	configurations
@@ -112,8 +112,8 @@ project "core"
 		optimize "On"
 
 
-project "conqueror"
-	location "conqueror"
+project "[game]"
+	location "[game]"
 	kind "ConsoleApp"
 	language "C++"
 	staticruntime "off"
@@ -122,7 +122,7 @@ project "conqueror"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "_Game.h"
-	pchsource "conqueror/src/_Game.cpp"
+	pchsource "[game]/src/_Game.cpp"
 
 	files
 	{

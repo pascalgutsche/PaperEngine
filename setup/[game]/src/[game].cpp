@@ -21,5 +21,5 @@ public:
 };
 
 Application* core::CreateApplication() {
-	return new[Game]();
+	return new [Game]();
 }

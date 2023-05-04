@@ -5,7 +5,7 @@ if exist ..\premake5.lua (
 	exit
 )
 
-set /p "lname=Enter project name: "
+set /p "lname=Enter project name (all lower case): "
 
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
     SET STR=%lname%
@@ -19,14 +19,17 @@ SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 :: Printing the result by concating both of them.
 set uname=%upper%%restStr%
 
-echo %lname%
-echo %uname%
-
 echo Setting up project!
 
 xcopy /e /k /h /i .\[game]\ ..\%lname%\
-ren ..\%lname%\src\[Game].cpp %uname%.cpp
-::powershell -Command "(Get-Content ..\%lname%\src\%uname%.cpp) -replace '[game]', '%lname%' | Out-File -encoding ASCII ..\%lname%\src\%uname%.cpp"
-::powershell -Command "(Get-Content ..\%lname%\src\%uname%.cpp) -replace '[Game]', '%uname%' | Out-File -encoding ASCII ..\%lname%\src\%uname%.cpp"
+xcopy /e /k /h /i .\premake5.lua* ..\premake5.lua*
 
+ren ..\%lname%\src\[Game].cpp %uname%.cpp
+
+powershell -Command "(Get-Content ..\%lname%\src\%uname%.cpp).replace('[game]', '%lname%') | Set-Content ..\%lname%\src\%uname%.cpp"
+powershell -Command "(Get-Content ..\%lname%\src\%uname%.cpp).replace('[Game]', '%uname%') | Set-Content ..\%lname%\src\%uname%.cpp"
+powershell -Command "(Get-Content ..\premake5.lua).replace('[game]', '%lname%') | Set-Content ..\premake5.lua"
+powershell -Command "(Get-Content ..\premake5.lua).replace('[Game]', '%uname%') | Set-Content ..\premake5.lua"
+
+rmdir /s /q ..\[game]
 PAUSE
