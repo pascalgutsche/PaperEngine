@@ -15,7 +15,7 @@ void ForegroundLayer::OnAttach()
 	character1 = new GameObject("quad", Transform(glm::vec2(0.0f, -0.45f), glm::vec2(2.0f, 2.0f)));
 
 	lineObject1->AddComponent(new LineRenderer(glm::vec2(0.5f, 0.5f), glm::vec2(-0.5f, -0.5f), glm::vec4(1.0f, 1.0f, 0.324f, 1.0f), 1.0f));
-	spriteObject1->AddComponent(new SpriteSheet(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), DataPool::GetTexture("sheet.png"), 32.0f, 45.0f, 2.0f, 4.0f, glm::vec2(0, 0)));
+	spriteObject1->AddComponent(new SpriteSheet(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), DataPool::GetTexture("sheet1.png"), 64.0f, 313.0f, 16.0f, 16.0f, glm::vec2(0, 0)));
 	font->AddComponent(new FontRenderer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), "gerni gerni"));
 	circleObject->AddComponent(new CircleRenderer(glm::vec4(1.0f, 0.0f, 0.9f, 1.0f), 1.0f, 0.005f));
 	circleObject2->AddComponent(new CircleRenderer(glm::vec4(0.8f, 0.5f, 1.0f, 1.0f), DataPool::GetTexture("error_texture_256x256.png"), 1.0f, 0.005f));
@@ -55,12 +55,12 @@ void ForegroundLayer::Update(const float dt)
 
 	tex = (int)(x * 100);
 
-	if (tex % 8 == 0)
+	if (tex % 3 == 0)
 	{
 		x = 0.01f;
 	}
 
-	spriteObject1->GetComponent<SpriteSheet>()->ChangeSprite(glm::vec2(tex, 2));
+	spriteObject1->GetComponent<SpriteSheet>()->ChangeSprite(glm::vec2(tex, 0));
 }
 
 void ForegroundLayer::Imgui(const float dt)
