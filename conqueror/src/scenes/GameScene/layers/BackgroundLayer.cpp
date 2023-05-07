@@ -11,16 +11,21 @@ void BackgroundLayer::OnAttach()
     background1->AddComponent(new SpriteRenderer(glm::vec4(0.5f, 1.0f, 0.5f, 0.7f), Geometry::RECTANGLE));
     background2->AddComponent(new SpriteRenderer(glm::vec4(0.0f, 0.0f, 1.0f, 0.3f), Geometry::RECTANGLE));
 
-    this->AddGameObjectToLayer(background1);
+    //this->AddGameObjectToLayer(background1);
     //this->AddGameObjectToLayer(background2);
 
-    GameObject* text = new GameObject("text");
-    text->AddComponent(new FontRenderer(glm::vec4(1.0f), "Dg"));
-    AddGameObjectToLayer(text);
+    //GameObject* text = new GameObject("text");
+    //text->AddComponent(new FontRenderer(glm::vec4(1.0f), "Dg"));
+    //AddGameObjectToLayer(text);
 
     //Label* label = new Label("cc", glm::vec4(1), Transform(glm::vec2(0.0f)), DataPool::GetFont("mononoki.ttf"));
     //AddUIObject(label, ProjectionMode::PERSPECTIVE);
 
+    Panel* panel = new Panel(glm::vec4(0.5f), Transform(glm::vec2(0.0f), glm::vec2(2.0f, 3.0f)), Type::Triangle);
+    AddUIObject(panel, ProjectionMode::PERSPECTIVE);
+
+    PictureBox* pb = new PictureBox(glm::vec4(1.0f), Transform(glm::vec2(0.0f), glm::vec2(0.5f)), DataPool::GetTexture("james_webb.png"), Type::Triangle);
+    panel->AddChildObject(pb);
 }
 
 void BackgroundLayer::OnDetach()
