@@ -28,11 +28,16 @@ namespace core
         void SetVSync(bool enabled) override;
         bool IsVSync() const override { return windowData.vsync; }
 
-        void* GetNativeWindow() const override { return glfwWindow; }
+        void CursorEnabled(bool enabled) override;
+        bool IsCursorEnabled() const override;
+
+        void* GetNativeWindow() const override;
 
     private:
         GLFWwindow* glfwWindow;
         Shr<Context> context;
+
+        bool cursorEnabled = true;
 
         bool initialized = false;
 

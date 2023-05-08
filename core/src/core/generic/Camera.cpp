@@ -7,9 +7,18 @@ namespace core {
 
     Camera::Camera() {
         // standard position of the camera
-        position = glm::vec3(0.0f, 0.0f, 10.0f);
+        position = glm::vec3(0.0f, 0.0f, 5.0f);
         // standard fov
-        fov = 45.0f;
+        fov = 1.0f;
+
+        pitch = 0.0f;
+        yaw = -90.0f;
+        roll = 0.0f;
+
+        lastX = Application::GetWindow()->GetWidth() / 2;
+        lastY = Application::GetWindow()->GetHeight() / 2;
+
+        front = glm::vec3(0.0f, 0.0f, -1.0f);
     }
 
     Camera::~Camera() {}
@@ -18,9 +27,13 @@ namespace core {
     void Camera::CalcCameraVectors() {
         //set vectors
         // the camera has to look somewhere (just set it to 0 because we are making it absolute)
-
-
         this->target = glm::vec3(this->position.x, this->position.y, 0.0f);
+
+        direction.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+        direction.y = glm::sin(glm::radians(pitch));
+        direction.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+
+        front = glm::normalize(direction);
 
         // this is being used for pointing upwards (y globally, e.g. in the world)
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -31,7 +44,7 @@ namespace core {
         // declare y-axis by the cross-product of z and x
         cameraUp = glm::cross(cameraDirection, cameraRight);
         // make camera depend on position (who could have thought this)
-        cameraViewMatrix = glm::lookAt(position, target, up);
+        cameraViewMatrix = glm::lookAt(position, position + front, up);
     }
 
     glm::mat4 Camera::GetViewMatrix() {
@@ -59,5 +72,36 @@ namespace core {
     glm::mat4 Camera::GetReverseProjectionMatrix() {
         return glm::inverse(Camera::GetProjectionMatrix());
     }
+
+    glm::vec3 Camera::GetFront() const
+    {
+        return front;
+    }
+
+    //TODO: MOVE THIS SOMEWHERE ELSE
+    void Camera::MouseMoved(MouseMovedEvent& event)
+    {   
+        float dX = event.GetX() - lastX;
+        float dY = lastY - event.GetY();
+
+        lastX = event.GetX();
+        lastY = event.GetY();
+
+        if (Application::GetWindow()->IsCursorEnabled()) return;
+
+        const float sens = 0.1f;
+        dX *= sens;
+        dY *= sens;
+
+        yaw += dX;
+
+        if (pitch + dY > 90.0f)
+            pitch = 90.0f;
+        else if (pitch + dY < -90.0f)
+            pitch = -90.0f;
+        else
+			pitch += dY;
+    }
+
 
 }

@@ -17,7 +17,7 @@ namespace core {
     {
         OnUpdate();
         Renderer::ClearStats();
-        Renderer::BeginRender(*camera);
+        Renderer::BeginRender(camera);
 
         for (int i = 0; i < Application::GetLayerStack().GetSize(); i++)
         {

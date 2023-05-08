@@ -17,6 +17,9 @@ public:
 	UILayer* uiLayer;
 
 	bool KeyPressed(KeyPressedEvent& event) const;
+	bool KeyReleased(KeyReleasedEvent& event) const;
 	bool MouseScrolled(MouseScrolledEvent& event) const;
+	bool WindowFocus(WindowFocusEvent& event) const;
+	bool WindowLostFocus(WindowLostFocusEvent& event) const;
 };
 

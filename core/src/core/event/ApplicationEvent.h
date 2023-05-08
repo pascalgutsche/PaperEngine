@@ -40,6 +40,41 @@ namespace core {
 		EVENT_CLASS_TYPE(WindowResize)
 	};
 
+	class WindowFocusEvent final : public Event
+	{
+	public:
+		WindowFocusEvent() = default;
+		
+		std::string ToString() const override
+		{
+			std::stringstream string;
+			string << "WindowFocusEvent";
+			return string.str();
+		}
+
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+			EVENT_CLASS_TYPE(WindowFocus)
+	};
+
+	class WindowLostFocusEvent final : public Event
+	{
+	private:
+		bool focused;
+
+	public:
+		WindowLostFocusEvent() = default;
+
+		std::string ToString() const override
+		{
+			std::stringstream string;
+			string << "WindowLostFocusEvent";
+			return string.str();
+		}
+
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+			EVENT_CLASS_TYPE(WindowLostFocus)
+	};
+
 	class AppTickEvent final : public Event
 	{
 	public:

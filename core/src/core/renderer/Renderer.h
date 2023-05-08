@@ -73,6 +73,7 @@ namespace core {
         bool coreIDToAlphaPixels = false;
     };
 
+
     class Renderer {
     public:
         static void Init();
@@ -80,7 +81,7 @@ namespace core {
 
         static void ResizeWindow(uint32_t width, uint32_t height);
 
-        static void BeginRender(const Camera& camera);
+        static void BeginRender(Shr<Camera> camera);
         static void EndRender();
 
         static void Render();
@@ -110,7 +111,6 @@ namespace core {
 
         static void NextBatch();
     private:
-
         static void StartBatch();
     };
 

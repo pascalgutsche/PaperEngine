@@ -116,7 +116,7 @@ namespace core {
         std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> circleTextureSlots;
         uint32_t circleTextureSlotIndex = 0;
 
-        Camera camera;
+        Shr<Camera> camera;
 
         float lineWidth = 1.0f;
 
@@ -305,10 +305,10 @@ namespace core {
         RenderCommand::SetViewPort(0, 0, width, height);
     }
 
-    void Renderer::BeginRender(const Camera& camera)
+    void Renderer::BeginRender(Shr<Camera> camera)
     {
         data.camera = camera;
-        data.camera.CalcCameraVectors();
+        data.camera->CalcCameraVectors();
 
         RenderCommand::Clear();
         data.framebuffer->Bind();
@@ -368,9 +368,9 @@ namespace core {
             //data.framebuffer->BindAttachmentAsTexture(1, data.MAX_TEXTURE_SLOTS - 1);
 
             data.edgeGeometryShader->Bind();
-            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
-            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
-            data.edgeGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
+            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
+            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera->GetOrthographicMatrix());
+            data.edgeGeometryShader->UploadMat4f("uView", data.camera->GetViewMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS - 1, texSlots);
             //data.edgeGeometryShader->UploadInt("uIDAttachment", data.MAX_TEXTURE_SLOTS - 1);
             //data.edgeGeometryShader->UploadVec2f("screenSize", glm::vec2(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight()));
@@ -396,9 +396,9 @@ namespace core {
             //data.framebuffer->BindAttachmentAsTexture(1, data.MAX_TEXTURE_SLOTS - 1);
 
             data.edgeGeometryShader->Bind();
-            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
-            data.edgeGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
-            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
+            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
+            data.edgeGeometryShader->UploadMat4f("uView", data.camera->GetViewMatrix());
+            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera->GetOrthographicMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
             //data.edgeGeometryShader->UploadInt("uIDAttachment", data.MAX_TEXTURE_SLOTS - 1);
             //data.edgeGeometryShader->UploadVec2f("screenSize", glm::vec2(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight()));
@@ -423,9 +423,9 @@ namespace core {
                 data.circleTextureSlots[i]->Bind(i);
 
             data.circleGeometryShader->Bind();
-            data.circleGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
-            data.circleGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
-            data.circleGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
+            data.circleGeometryShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
+            data.circleGeometryShader->UploadMat4f("uView", data.camera->GetViewMatrix());
+            data.circleGeometryShader->UploadMat4f("uOrthographic", data.camera->GetOrthographicMatrix());
             data.circleGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS, texSlots);
             RenderCommand::DrawIndexed(data.circleVertexArray, data.circleElementCount);
             data.circleGeometryShader->Unbind();
@@ -443,9 +443,9 @@ namespace core {
 
             
             data.lineGeometryShader->Bind();
-            data.lineGeometryShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
-            data.lineGeometryShader->UploadMat4f("uView", data.camera.GetViewMatrix());
-            data.lineGeometryShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
+            data.lineGeometryShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
+            data.lineGeometryShader->UploadMat4f("uView", data.camera->GetViewMatrix());
+            data.lineGeometryShader->UploadMat4f("uOrthographic", data.camera->GetOrthographicMatrix());
 
             RenderCommand::SetLineThickness(data.lineWidth);
             RenderCommand::DrawLines(data.lineVertexArray, data.lineElementCount, data.lineWidth);
@@ -464,9 +464,9 @@ namespace core {
 
             data.textShader->Bind();
 
-        	data.textShader->UploadMat4f("uPerspective", data.camera.GetProjectionMatrix());
-            data.textShader->UploadMat4f("uView", data.camera.GetViewMatrix());
-            data.textShader->UploadMat4f("uOrthographic", data.camera.GetOrthographicMatrix());
+        	data.textShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
+            data.textShader->UploadMat4f("uView", data.camera->GetViewMatrix());
+            data.textShader->UploadMat4f("uOrthographic", data.camera->GetOrthographicMatrix());
 
             RenderCommand::DrawIndexed(data.textVertexArray, data.textElementCount);
             data.stats.drawCalls++;

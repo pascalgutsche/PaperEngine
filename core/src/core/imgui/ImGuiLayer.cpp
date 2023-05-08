@@ -357,7 +357,7 @@ namespace core {
         {
             if (ImGui::Button("Reset Camera"))
             {
-                Application::GetActiveScene()->GetCamera()->fov = 45.0f;
+                Application::GetActiveScene()->GetCamera()->fov = 1.0f;
                 Application::GetActiveScene()->GetCamera()->position = glm::vec3(0.0f, 0.0f, 5.0f);
             }
 

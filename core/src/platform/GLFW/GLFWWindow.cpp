@@ -78,6 +78,23 @@ namespace core
         data.callback(event);
             });
 
+        glfwSetWindowFocusCallback(glfwWindow, [](GLFWwindow* window, int focused)
+            {
+                WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				if (focused)
+				{
+                    WindowFocusEvent event;
+                    data.callback(event);
+				}
+                else
+                {
+                    WindowLostFocusEvent event;
+                    data.callback(event);
+                }
+                
+            });
+
         glfwSetKeyCallback(glfwWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -139,8 +156,8 @@ namespace core
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-        MouseScrolledEvent event((float)xOffset, (float)yOffset);
-        data.callback(event);
+                MouseScrolledEvent event((float)xOffset, (float)yOffset);
+                data.callback(event);
             });
 
         glfwSetCursorPosCallback(glfwWindow, [](GLFWwindow* window, double xPos, double yPos)
@@ -150,6 +167,8 @@ namespace core
         MouseMovedEvent event((float)xPos, (float)yPos);
         data.callback(event);
             });
+
+        
     }
 
     void GLFWWindow::Quit() const
@@ -168,4 +187,22 @@ namespace core
         glfwSwapInterval(enabled);
         windowData.vsync = enabled;
     }
+
+    void GLFWWindow::CursorEnabled(bool enabled)
+    {
+        if (enabled)
+            glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        else
+            glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        cursorEnabled = enabled;
+    }
+
+    bool GLFWWindow::IsCursorEnabled() const
+    {
+        return cursorEnabled;
+    }
+
+    void* GLFWWindow::GetNativeWindow() const
+    { return glfwWindow; }
 }

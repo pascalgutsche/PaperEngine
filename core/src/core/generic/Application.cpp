@@ -51,6 +51,11 @@ namespace core {
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
 		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::OnKeyPressed));
+		dispatcher.dispatch<MouseMovedEvent>([this](MouseMovedEvent& e)
+			{
+				this->GetActiveScene()->GetCamera()->MouseMoved(e);
+				return false;
+			});
 
 		if (!currentScene) return;
 		if (event.IsInCategory(EventCategoryGameObject))
