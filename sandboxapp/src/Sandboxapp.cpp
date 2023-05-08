@@ -3,6 +3,8 @@
 #define INCLUDE_MAIN
 #include "EntryPoint.h"
 
+#include "scenes/SandboxScene/SandboxScene.h"
+
 class Sandboxapp : public Application {
 public:
 	Sandboxapp() {
@@ -15,7 +17,7 @@ public:
 
 	void Init() override {
 		// Uncomment and set the start scene (pointer)
-		//Application::ChangeScene(); 
+		Application::ChangeScene(new SandboxScene()); 
 	}
 
 };

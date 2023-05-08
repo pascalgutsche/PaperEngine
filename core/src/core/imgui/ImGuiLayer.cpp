@@ -353,6 +353,26 @@ namespace core {
             ImGui::TreePop();
         }
 
+        if (ImGui::TreeNode("Camera"))
+        {
+            if (ImGui::Button("Reset Camera"))
+            {
+                Application::GetActiveScene()->GetCamera()->fov = 45.0f;
+                Application::GetActiveScene()->GetCamera()->position = glm::vec3(0.0f, 0.0f, 5.0f);
+            }
+
+            glm::vec3 pos = Application::GetActiveScene()->GetCamera()->position;
+            float arrayPos[]{ pos.x, pos.y, pos.z };
+            ImGui::DragFloat3("XYZ", arrayPos, 0.5f);
+            Application::GetActiveScene()->GetCamera()->position = glm::vec3(arrayPos[0], arrayPos[1], arrayPos[2]);
+
+            float fov = Application::GetActiveScene()->GetCamera()->fov;
+            ImGui::DragFloat("FOV", &fov, 0.5f);
+            Application::GetActiveScene()->GetCamera()->fov = fov;
+
+            ImGui::TreePop();
+        }
+
         ImGui::End();
     }
 

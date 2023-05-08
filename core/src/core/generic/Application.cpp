@@ -52,6 +52,7 @@ namespace core {
 		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
 		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::OnKeyPressed));
 
+		if (!currentScene) return;
 		if (event.IsInCategory(EventCategoryGameObject))
 		{
 			if (const GameObject* gm = (*dynamic_cast<GameObjectEvent*>(&event)).GetGameObject(); gm->onlyLayerReceive)
