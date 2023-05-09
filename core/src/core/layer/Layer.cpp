@@ -23,7 +23,7 @@ namespace core
 	void Layer::Attach()
 	{
 		attached = true;
-		for (GameObject* game_object : gameObjects)
+		for (Entity* game_object : gameObjects)
 		{
 			game_object->Start();
 		}
@@ -33,7 +33,7 @@ namespace core
 	void Layer::Detach()
 	{
 		attached = false;
-		for (GameObject* game_object : gameObjects)
+		for (Entity* game_object : gameObjects)
 		{
 			game_object->Stop();
 		}
@@ -42,7 +42,7 @@ namespace core
 
 	void Layer::LayerEvent(Event& event)
 	{
-		for (GameObject* gm : gameObjects)
+		for (Entity* gm : gameObjects)
 		{
 			if (!gm->IsRunning()) continue;
 			if (!event.handled)
@@ -57,7 +57,7 @@ namespace core
 	}
 
 
-	void Layer::AddGameObjectToLayer(GameObject* gameObject)
+	void Layer::AddEntityToLayer(Entity* gameObject)
 	{
 	if (attached) {
 			gameObjects.push_back(gameObject);
@@ -69,9 +69,9 @@ namespace core
 		gameObject->SetLayer(this);
 	}
 
-	std::vector<GameObject*> Layer::GetGameObjectsByTag(std::initializer_list<std::string> tags)
+	std::vector<Entity*> Layer::GetEntitysByTag(std::initializer_list<std::string> tags)
 	{
-		std::vector<GameObject*> gos;
+		std::vector<Entity*> gos;
 		for (int i = 0; i < gameObjects.size(); i++)
 		{
 			for (std::string tag : tags)
@@ -86,9 +86,9 @@ namespace core
 		return gos;
 	}
 
-	std::vector<GameObject*> Layer::GetGameObjectsByTag(std::string tag)
+	std::vector<Entity*> Layer::GetEntitysByTag(std::string tag)
 	{
-		std::vector<GameObject*> gos;
+		std::vector<Entity*> gos;
 		for (int i = 0; i < gameObjects.size(); i++)
 		{
 			if (gameObjects[i]->HasTag(tag))

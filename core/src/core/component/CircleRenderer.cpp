@@ -1,7 +1,7 @@
 #include "_Core.h"
 
 #include "component/CircleRenderer.h"
-#include "generic/GameObject.h"
+#include "generic/Entity.h"
 #include "renderer/Renderer.h"
 
 

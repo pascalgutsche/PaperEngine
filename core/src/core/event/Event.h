@@ -10,7 +10,7 @@ namespace core {
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
-		GameObjectEvent, GameObjectPressed, GameObjectReleased, GameObjectHoverBegin, GameObjectHoverEnd
+		EntityEvent, EntityPressed, EntityReleased, EntityHoverBegin, EntityHoverEnd
 	};
 
 	enum EventCategory {
@@ -21,7 +21,7 @@ namespace core {
 		EventCategoryMouse			= BIT(3),
 		EventCategoryMouseButton	= BIT(4),
 		EventCategoryGame			= BIT(5),
-		EventCategoryGameObject		= BIT(6)
+		EventCategoryEntity 		= BIT(6)
 	};
 
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticEventType() { return EventType::##type; }\

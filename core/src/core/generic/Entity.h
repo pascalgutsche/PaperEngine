@@ -1,5 +1,6 @@
 #pragma once
 #include "_Core.h"
+
 #include "utility.h"
 
 #include "Object.h"
@@ -10,13 +11,14 @@
 namespace core {
 
     class Component;
+    class RenderComponent;
     class Layer;
 
-    class GameObject : public Object {
+    class Entity : public Object {
     public:
-        GameObject(std::string name, const Transform& transform = Transform(), ProjectionMode mode = ProjectionMode::PERSPECTIVE);
+        Entity(std::string name, const Transform& transform = Transform(), ProjectionMode mode = ProjectionMode::PERSPECTIVE);
 
-        ~GameObject() override;
+        ~Entity() override;
 
         template<typename T>
         T* GetComponent();
@@ -34,8 +36,8 @@ namespace core {
 
         void DeleteComponents();
 
-        GameObject* AddTag(std::string tag);
-        GameObject* AddTag(std::initializer_list<std::string> tags);
+        Entity* AddTag(std::string tag);
+        Entity* AddTag(std::initializer_list<std::string> tags);
         bool RemoveTag(std::string tag);
         bool HasTag(std::string tag);
 
@@ -52,6 +54,7 @@ namespace core {
 
     private:
         std::vector<Component*> components;
+        RenderComponent* renderComponent;
         Layer* layer = nullptr;
         bool deleted = false;
 
@@ -63,28 +66,41 @@ namespace core {
 
         std::vector<std::string> tagList;
 
-        void StopComponentIndex(uint32_t index);
-        void DeleteComponentIndex(uint32_t index);
+        void StopComponentIndex(int32_t index);
+        void DeleteComponentIndex(int32_t index);
 
         friend class Layer;
         void SetLayer(Layer* layer);
 
+        friend class Scene;
+        RenderComponent* GetRenderComponent() const;
     };
 
     template <typename T>
-    T* GameObject::GetComponent()
+    T* Entity::GetComponent()
     {
-        T* derived = nullptr;
+        if (dynamic_cast<T*>(renderComponent) != nullptr)
+        {
+            return dynamic_cast<T*>(renderComponent);
+        }
         for (Component* com : components)
         {
-            derived = dynamic_cast<T*>(com);
-            if (derived != nullptr) break;
+            T* derived = dynamic_cast<T*>(com);
+            if (derived != nullptr) return derived;
         }
-        return derived;
+        return nullptr;
     }
 
     template <typename T>
-    bool GameObject::RemoveComponent() {
+    bool Entity::RemoveComponent() {
+        if (dynamic_cast<T*>(renderComponent) != nullptr)
+        {
+            if (running)
+                StopComponentIndex(-1);
+            DeleteComponentIndex(-1);
+            renderComponent = nullptr;
+            return true;
+        }
         for (int i = 0; i < components.size(); i++)
         {
             if (dynamic_cast<T*>(components[i]) != nullptr) {
@@ -95,6 +111,7 @@ namespace core {
                 return true;
             }
         }
+        
         return false;
     }
 }

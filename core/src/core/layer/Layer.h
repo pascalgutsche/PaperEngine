@@ -3,7 +3,7 @@
 #include "utility.h"
 
 #include "event/Event.h"
-#include "generic/GameObject.h"
+#include "generic/Entity.h"
 #include "generic/Scene.h"
 
 namespace core
@@ -39,16 +39,16 @@ namespace core
 				return tmpScene;
 		}
 
-		void AddGameObjectToLayer(GameObject* game_object);
+		void AddEntityToLayer(Entity* game_object);
 
-		std::vector<GameObject*> GetGameObjectsByTag(std::initializer_list<std::string> tags);
-		std::vector<GameObject*> GetGameObjectsByTag(std::string tag);
+		std::vector<Entity*> GetEntitysByTag(std::initializer_list<std::string> tags);
+		std::vector<Entity*> GetEntitysByTag(std::string tag);
 
 
 		void SetOverlayStatus(bool overlay) { this->overlay = overlay; }
 
 		bool GetOverlayStatus() const { return overlay; }
-		std::vector<GameObject*>& GetGameObjects() { return gameObjects; }
+		std::vector<Entity*>& GetEntitys() { return gameObjects; }
 		std::string GetName() { return name; }
 
 		//UI
@@ -65,7 +65,7 @@ namespace core
 		bool overlay = false;
 		bool attached = false;
 
-		std::vector<GameObject*> gameObjects;
+		std::vector<Entity*> gameObjects;
 
 	private:
 		std::vector<UIObject*> uiObjects;

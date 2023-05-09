@@ -4,13 +4,13 @@
 
 #include "event/Event.h"
 
-#include "generic/GameObject.h"
+#include "generic/Entity.h"
 
 namespace core {
 
     class Component {
     protected:
-        GameObject* gameObject = nullptr;
+        Entity* gameObject = nullptr;
 
     public:
         Component() = default;
@@ -22,9 +22,24 @@ namespace core {
         virtual void OnEvent(Event& event) = 0;
         virtual void OnImgui(float dt) { }
 
-        GameObject* GetGameObject() const { return gameObject; }
+        Entity* GetEntity() const { return gameObject; }
 
-        friend class GameObject;
+        friend class Entity;
+    };
+
+    class RenderComponent : public Component {
+    public:
+        RenderComponent() = default;
+        virtual ~RenderComponent() override = default;
+
+        virtual void OnStart() override = 0;
+        virtual void OnStop() override = 0;
+        virtual void OnUpdate() override = 0;
+        virtual void OnEvent(Event& event) override = 0;
+        virtual void OnImgui(float dt) override { }
+
+
+        friend class Entity;
     };
 
 }

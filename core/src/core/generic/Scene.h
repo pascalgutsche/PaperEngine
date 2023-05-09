@@ -4,14 +4,14 @@
 
 namespace core {
 
-    class GameObject;
+    class Entity;
     class Camera;
     class Layer;
 
     class Scene {
         friend class Application;
     public:
-        std::vector<GameObject*> gameObjects;
+        std::vector<Entity*> gameObjects;
 
         Scene();
         virtual ~Scene() = default;

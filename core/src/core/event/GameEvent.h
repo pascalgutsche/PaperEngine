@@ -3,100 +3,100 @@
 #include "utility.h"
 
 #include "event/Event.h"
-#include "generic/GameObject.h"
+#include "generic/Entity.h"
 
 namespace core
 {
 
-	class GameObjectEvent : public Event
+	class EntityEvent : public Event
 	{
 	public:
-		GameObjectEvent() = default;
-		GameObjectEvent(GameObject* gameObject)
+		EntityEvent() = default;
+		EntityEvent(Entity* gameObject)
 			: gameObject(gameObject) { }
 
-		inline GameObject* GetGameObject() const { return gameObject; }
+		inline Entity* GetEntity() const { return gameObject; }
 
 		inline std::string ToString() const override {
 			std::stringstream string;
-			string << "GameObjectEvent: Name: " << gameObject->GetName() << " | CoreID: " << gameObject->GetCoreID();
+			string << "EntityEvent: Name: " << gameObject->GetName() << " | CoreID: " << gameObject->GetCoreID();
 			return string.str();
 		}
 
-		EVENT_CLASS_CATEGORY(EventCategoryGameObject | EventCategoryGame);
+		EVENT_CLASS_CATEGORY(EventCategoryEntity | EventCategoryGame);
 
-		EVENT_CLASS_TYPE(GameObjectPressed);
+		EVENT_CLASS_TYPE(EntityPressed);
 
 	protected:
-		GameObject* gameObject = nullptr;
+		Entity* gameObject = nullptr;
 	};
 
-	class GameObjectPressedEvent : public GameObjectEvent {
+	class EntityPressedEvent : public EntityEvent {
 	public:
-		GameObjectPressedEvent() = default;
-		GameObjectPressedEvent(GameObject* gm)
-			: GameObjectEvent(gm) { }
+		EntityPressedEvent() = default;
+		EntityPressedEvent(Entity* gm)
+			: EntityEvent(gm) { }
 
 
 		inline std::string ToString() const override {
 			std::stringstream string;
-			string << "GameObjectPressedEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
+			string << "EntityPressedEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
 			return string.str();
 		}
 
-		EVENT_CLASS_CATEGORY(EventCategoryGameObject | EventCategoryGame);
+		EVENT_CLASS_CATEGORY(EventCategoryEntity | EventCategoryGame);
 
-		EVENT_CLASS_TYPE(GameObjectPressed);
+		EVENT_CLASS_TYPE(EntityPressed);
 	};
 
-	class GameObjectReleasedEvent : public GameObjectEvent {
+	class EntityReleasedEvent : public EntityEvent {
 	public:
-		GameObjectReleasedEvent() = default;
-		GameObjectReleasedEvent(GameObject* gm)
-			: GameObjectEvent(gm) { }
+		EntityReleasedEvent() = default;
+		EntityReleasedEvent(Entity* gm)
+			: EntityEvent(gm) { }
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "GameObjectReleasedEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
+			string << "EntityReleasedEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
 			return string.str();
 		}
 
-		EVENT_CLASS_CATEGORY(EventCategoryGameObject | EventCategoryGame);
+		EVENT_CLASS_CATEGORY(EventCategoryEntity | EventCategoryGame);
 
-		EVENT_CLASS_TYPE(GameObjectReleased);
+		EVENT_CLASS_TYPE(EntityReleased);
 	};
 
-	class GameObjectHoverBeginEvent : public GameObjectEvent {
+	class EntityHoverBeginEvent : public EntityEvent {
 	public:
-		GameObjectHoverBeginEvent() = default;
-		GameObjectHoverBeginEvent(GameObject* gm)
-			: GameObjectEvent(gm) { }
+		EntityHoverBeginEvent() = default;
+		EntityHoverBeginEvent(Entity* gm)
+			: EntityEvent(gm) { }
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "GameObjectHoverBeginEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
+			string << "EntityHoverBeginEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
 			return string.str();
 		}
 
-		EVENT_CLASS_CATEGORY(EventCategoryGameObject | EventCategoryGame);
+		EVENT_CLASS_CATEGORY(EventCategoryEntity | EventCategoryGame);
 
-		EVENT_CLASS_TYPE(GameObjectHoverBegin);
+		EVENT_CLASS_TYPE(EntityHoverBegin);
 	};
 
-	class GameObjectHoverEndEvent : public GameObjectEvent {
+	class EntityHoverEndEvent : public EntityEvent {
 	public:
-		GameObjectHoverEndEvent() = default;
-		GameObjectHoverEndEvent(GameObject* gm)
-			: GameObjectEvent(gm) { }
+		EntityHoverEndEvent() = default;
+		EntityHoverEndEvent(Entity* gm)
+			: EntityEvent(gm) { }
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "GameObjectHoverEndEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
+			string << "EntityHoverEndEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
 			return string.str();
 		}
 
-		EVENT_CLASS_CATEGORY(EventCategoryGameObject | EventCategoryGame);
+		EVENT_CLASS_CATEGORY(EventCategoryEntity | EventCategoryGame);
 
-		EVENT_CLASS_TYPE(GameObjectHoverEnd);
+		EVENT_CLASS_TYPE(EntityHoverEnd);
 	};
 }

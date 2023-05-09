@@ -1,6 +1,6 @@
 #include "_Core.h"
 
-#include "generic/GameObject.h"
+#include "generic/Entity.h"
 
 #include "Application.h"
 #include "generic/Component.h"
@@ -18,33 +18,51 @@
 
 namespace core {
 
-	void GameObject::StopComponentIndex(uint32_t index)
+	void Entity::StopComponentIndex(int32_t index)
 	{
+        if (index == -1)
+        {
+            renderComponent->OnStop();
+            return;
+        }
         components[index]->OnStop();
 	}
 
-	void GameObject::DeleteComponentIndex(uint32_t index)
+	void Entity::DeleteComponentIndex(int32_t index)
 	{
+        if (index == -1)
+        {
+            delete renderComponent;
+            return;
+        }
         delete components[index];
 	}
 
-	void GameObject::SetLayer(Layer* layer)
+	void Entity::SetLayer(Layer* layer)
 	{
         this->layer = layer;
 	}
 
-	GameObject::GameObject(std::string name, const Transform& transform, ProjectionMode mode)
-        : Object(name, transform), mode(mode) { }
+	RenderComponent* Entity::GetRenderComponent() const
+	{
+        return renderComponent;
+	}
+
+	Entity::Entity(std::string name, const Transform& transform, ProjectionMode mode)
+        : Object(name, transform), mode(mode)
+	{
+        renderComponent = nullptr;
+    }
 
 
-    GameObject::~GameObject()
+    Entity::~Entity()
     {
         this->deleted = true;
         if (layer) {
-            std::vector<GameObject*>::iterator it = std::find(layer->GetGameObjects().begin(), layer->GetGameObjects().end(), this);
-            if (it != layer->GetGameObjects().end())
+            std::vector<Entity*>::iterator it = std::find(layer->GetEntitys().begin(), layer->GetEntitys().end(), this);
+            if (it != layer->GetEntitys().end())
             {
-                layer->GetGameObjects().erase(it);
+                layer->GetEntitys().erase(it);
             }
         }
         const int componentSize = components.size();
@@ -60,8 +78,15 @@ namespace core {
     }
 
 
-    bool GameObject::AddComponent(Component* component)
+    bool Entity::AddComponent(Component* component)
 	{
+        if (dynamic_cast<RenderComponent*>(component) != nullptr)
+        {
+            if (renderComponent != nullptr) return false;
+            renderComponent = dynamic_cast<RenderComponent*>(component);
+            renderComponent->gameObject = this;
+            return true;
+        }
         for (const auto i : components) 
         {
             if (i == component) 
@@ -74,7 +99,7 @@ namespace core {
         return true;
     }
 
-    void GameObject::Update()
+    void Entity::Update()
 	{
         core_id id = coreID;
         // update gameObject, in order to display moving changes
@@ -87,7 +112,7 @@ namespace core {
 		transform.Update();
     }
 
-    void GameObject::Start()
+    void Entity::Start()
 	{
         // start all components
         running = true;
@@ -96,7 +121,7 @@ namespace core {
         }
     }
 
-    void GameObject::Stop()
+    void Entity::Stop()
     {
         running = false;
         for (auto component : components) 
@@ -105,7 +130,7 @@ namespace core {
         }
     }
 
-    void GameObject::DeleteComponents()
+    void Entity::DeleteComponents()
 	{
         // delete all components
         for (auto comp : components)
@@ -118,19 +143,19 @@ namespace core {
         components.clear();
     }
 
-    GameObject* GameObject::AddTag(std::string tag)
+    Entity* Entity::AddTag(std::string tag)
     {
         std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
         if (std::find(tagList.begin(), tagList.end(), tag) != tagList.end())
         {
-            LOG_CORE_WARN("Adding a tag to a GameObject which it already has: '" + tag + "'");
+            LOG_CORE_WARN("Adding a tag to a Entity which it already has: '" + tag + "'");
             return this;
         }
         tagList.emplace_back(tag);
         return this;
     }
 
-    GameObject* GameObject::AddTag(std::initializer_list<std::string> tags)
+    Entity* Entity::AddTag(std::initializer_list<std::string> tags)
     {
         for (std::string tag : tags) {
             std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
@@ -139,20 +164,20 @@ namespace core {
         return this;
     }
 
-    bool GameObject::RemoveTag(std::string tag)
+    bool Entity::RemoveTag(std::string tag)
     {
         std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
         std::vector<std::string>::iterator it = std::find(tagList.begin(), tagList.end(), tag);
         if (it == tagList.end())
         {
-            LOG_CORE_WARN("Removing a tag from a GameObject which it doesn't have: '" + tag + "'");
+            LOG_CORE_WARN("Removing a tag from a Entity which it doesn't have: '" + tag + "'");
             return false;
         }
         tagList.erase(it);
         return true;
     }
 
-    bool GameObject::HasTag(std::string tag)
+    bool Entity::HasTag(std::string tag)
     {
         std::transform(tag.begin(), tag.end(), tag.begin(), ::toupper);
         std::vector<std::string>::iterator it = std::find(tagList.begin(), tagList.end(), tag);
@@ -160,7 +185,7 @@ namespace core {
     }
 
 
-    void GameObject::OnEvent(Event& event)
+    void Entity::OnEvent(Event& event)
     {
 	    for (auto* component : components)
 	    {
@@ -169,7 +194,7 @@ namespace core {
     }
 
 
-	void GameObject::Imgui(float dt) {
+	void Entity::Imgui(float dt) {
 		ImGui::Text("Transform:");
         float speed = 0.5f;
         if (Input::IsKeyPressed(KEY_LEFT_SHIFT) && Input::IsKeyPressed(KEY_LEFT_CONTROL))

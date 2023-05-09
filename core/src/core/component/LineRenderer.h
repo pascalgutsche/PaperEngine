@@ -4,7 +4,7 @@
 
 namespace core
 {
-	class LineRenderer : public Component
+	class LineRenderer : public RenderComponent
 	{
     public:
         LineRenderer(glm::vec2 pointA, glm::vec2 pointB, glm::vec4 color, float thickness, bool registerAlphaPixelsToEvent = false);

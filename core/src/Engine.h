@@ -18,7 +18,7 @@
 #include "core/generic/Scene.h"
 #include "core/generic/Camera.h"
 #include "core/generic/Transform.h"
-#include "core/generic/GameObject.h"
+#include "core/generic/Entity.h"
 #include "core/generic/Component.h"
 #include "core/generic/Sound.h"
 

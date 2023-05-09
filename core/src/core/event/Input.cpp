@@ -62,9 +62,9 @@ namespace core
             mouseClickedID[0] = mouseHoverID[0];
             if (mouseClickedID[0] != mouseClickedID[1] && mouseClickedID[0] != 0 && !pressed)
             {
-                GameObject* gameObject = dynamic_cast<GameObject*>(Core::GetObjectByID(mouseClickedID[0]));
+                Entity* gameObject = dynamic_cast<Entity*>(Core::GetObjectByID(mouseClickedID[0]));
                 if (gameObject)
-					Application::QueueEvents(new GameObjectPressedEvent(gameObject));
+					Application::QueueEvents(new EntityPressedEvent(gameObject));
 
                 Button* button = dynamic_cast<Button*>(Core::GetObjectByID(mouseClickedID[0]));
                 if (button)
@@ -76,9 +76,9 @@ namespace core
         else {
             pressed = false;
             if (mouseClickedID[1] != 0) {
-                GameObject* gameObject = dynamic_cast<GameObject*>(Core::GetObjectByID(mouseClickedID[1]));
+                Entity* gameObject = dynamic_cast<Entity*>(Core::GetObjectByID(mouseClickedID[1]));
                 if (gameObject)
-					Application::QueueEvents(new GameObjectReleasedEvent(gameObject));
+					Application::QueueEvents(new EntityReleasedEvent(gameObject));
             }
 
 
@@ -86,14 +86,14 @@ namespace core
             if (mouseHoverID[0] != mouseHoverID[1])
             {
                 if (mouseHoverID[1] != 0) {
-                    GameObject* gameObject = dynamic_cast<GameObject*>(Core::GetObjectByID(mouseHoverID[1]));
+                    Entity* gameObject = dynamic_cast<Entity*>(Core::GetObjectByID(mouseHoverID[1]));
                     if (gameObject)
-						Application::QueueEvents(new GameObjectHoverEndEvent(gameObject));
+						Application::QueueEvents(new EntityHoverEndEvent(gameObject));
                 }
                 if (mouseHoverID[0] != 0) {
-                    GameObject* gameObject = dynamic_cast<GameObject*>(Core::GetObjectByID(mouseHoverID[0]));
+                    Entity* gameObject = dynamic_cast<Entity*>(Core::GetObjectByID(mouseHoverID[0]));
                     if (gameObject)
-						Application::QueueEvents(new GameObjectHoverBeginEvent(gameObject));
+						Application::QueueEvents(new EntityHoverBeginEvent(gameObject));
                 }
             }
             mouseHoverID[1] = mouseHoverID[0];

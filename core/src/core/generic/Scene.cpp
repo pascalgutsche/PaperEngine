@@ -2,6 +2,8 @@
 
 #include "generic/Application.h"
 #include "generic/Scene.h"
+
+#include "Component.h"
 #include "generic/Camera.h"
 #include "renderer/Renderer.h"
 
@@ -16,6 +18,8 @@ namespace core {
     void Scene::Update()
     {
         OnUpdate();
+
+        //render anything inside the scene
         Renderer::ClearStats();
         Renderer::BeginRender(camera);
 
@@ -24,11 +28,16 @@ namespace core {
             Layer* layer = Application::GetLayerStack()[i];
             if (!layer->IsAttached()) continue;
 
-            for (int j = 0; j < layer->GetGameObjects().size(); j++)
+            for (int j = 0; j < layer->GetEntitys().size(); j++)
             {
-                GameObject* gameObject = layer->GetGameObjects()[j];
+                Entity* gameObject = layer->GetEntitys()[j];
                 if (!gameObject->IsRunning()) continue;
+
+                //update all non rendercomponents
                 gameObject->Update();
+
+                //update rendercomponent -> only one component that renders
+                gameObject->GetRenderComponent()->OnUpdate();
             }
             Renderer::NextBatch();
             layer->RenderUI();

@@ -7,7 +7,7 @@
 
 namespace core
 {
-    class SpriteSheet : public Component
+    class SpriteSheet : public RenderComponent
     {
     public:
         SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent = false);

@@ -29,7 +29,7 @@ namespace core {
         void Init(glm::vec2 position, glm::vec2 scale, float rotation);
         void Update();
 
-        friend class GameObject;
+        friend class Entity;
     };
 
 }

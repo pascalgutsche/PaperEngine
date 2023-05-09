@@ -58,9 +58,9 @@ namespace core {
 			});
 
 		if (!currentScene) return;
-		if (event.IsInCategory(EventCategoryGameObject))
+		if (event.IsInCategory(EventCategoryEntity))
 		{
-			if (const GameObject* gm = (*dynamic_cast<GameObjectEvent*>(&event)).GetGameObject(); gm->onlyLayerReceive)
+			if (const Entity* gm = (*dynamic_cast<EntityEvent*>(&event)).GetEntity(); gm->onlyLayerReceive)
 			{
 				gm->GetLayer()->OnEvent(event);
 				return;

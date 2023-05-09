@@ -1,7 +1,7 @@
 #include "_Core.h"
 
 #include "component/SpriteRenderer.h"
-#include "generic/GameObject.h"
+#include "generic/Entity.h"
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "utils/Utils.h"

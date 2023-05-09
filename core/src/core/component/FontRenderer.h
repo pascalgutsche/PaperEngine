@@ -3,7 +3,7 @@
 
 namespace core
 {
-	class FontRenderer : public Component
+	class FontRenderer : public RenderComponent
 	{
 	public:
 		FontRenderer(glm::vec4 color, std::string text, std::string fontPath = "mononoki.ttf", bool registerAlphaPixelsToEvent = false);

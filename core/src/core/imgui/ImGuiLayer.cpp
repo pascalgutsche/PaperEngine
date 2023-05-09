@@ -407,7 +407,7 @@ namespace core {
         for (Layer* layer : Application::GetLayerStack()) 
         {
             if (layer == &Application::GetImGuiLayer()) continue;
-            std::vector<GameObject*> gameobjects = layer->GetGameObjects();
+            std::vector<Entity*> gameobjects = layer->GetEntitys();
             std::vector<UIObject*> uiObjects = layer->GetUIObjects();
 
             if (ImGui::TreeNode(layer->GetName().c_str())) 
@@ -422,7 +422,7 @@ namespace core {
                     }
                     ImGui::TreePop();
                 }
-                if (ImGui::TreeNode("GameObjects: "))
+                if (ImGui::TreeNode("Entitys: "))
                 {
                     for (int i = 0; i < gameobjects.size(); i++)
                     {
@@ -449,8 +449,8 @@ namespace core {
             Application::GetImGuiLayer().DockPanel(name, Application::GetImGuiLayer().GetDockspaceLeftBottom());
 
         ImGui::Begin(name);
-        if (dynamic_cast<GameObject*>(selectedObject) != nullptr) {
-            dynamic_cast<GameObject*>(selectedObject)->Imgui(dt);
+        if (dynamic_cast<Entity*>(selectedObject) != nullptr) {
+            dynamic_cast<Entity*>(selectedObject)->Imgui(dt);
         }
         ImGui::End();
     }
