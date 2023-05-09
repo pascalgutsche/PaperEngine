@@ -6,7 +6,7 @@
 namespace core
 {
 	UIObject::UIObject(std::string name, const Transform& transform, glm::vec4 color)
-		: Object(name, transform), color(color), globalPos(glm::vec2(0.0f)), globalScale(glm::vec2(0.0f)) { }
+		: Object(name, transform), color(color), globalPos(glm::vec3(0.0f)), globalScale(glm::vec3(0.0f)) { }
 
 	UIObject::~UIObject() { }
 
@@ -64,7 +64,7 @@ namespace core
 	void UIObject::CalculateGlobalCoords()
 	{
 		if (!parent) return;
-		globalPos = parent->globalPos + transform.position * parent->transform.scale * glm::vec2(0.5f);
+		globalPos = parent->globalPos + transform.position * parent->transform.scale * glm::vec3(0.5f);
 		globalScale = parent->globalScale * transform.scale;
 	}
 }

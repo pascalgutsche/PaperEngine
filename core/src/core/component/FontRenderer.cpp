@@ -1,7 +1,7 @@
 #include "_Core.h"
 #include "FontRenderer.h"
 
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 
 namespace core
 {
@@ -24,6 +24,6 @@ namespace core
 		data.mode = gameObject->GetProjectionMode();
 		data.coreID = gameObject->GetCoreID();
 		data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
-		Renderer::DrawString(data);
+		Renderer2D::DrawString(data);
 	}
 };

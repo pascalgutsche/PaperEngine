@@ -7,29 +7,25 @@ namespace core {
 
     class Transform {
     public:
-        glm::vec2 position;
-        glm::vec2 scale;
+        glm::vec3 position;
+        glm::vec3 scale;
         float rotation;
 
-        Transform();
+        explicit Transform();
+        explicit Transform(glm::vec2 position, glm::vec2 scale = { 1.0f, 1.0f}, float rotation = 0.0f);
+        explicit Transform(glm::vec3 position, glm::vec3 scale = { 1.0f, 1.0f, 1.0f }, float rotation = 0.0f);
         ~Transform();
-        Transform(glm::vec2 position);
-        Transform(glm::vec2 position, glm::vec2 scale);
-        Transform(glm::vec2 position, glm::vec2 scale, float rotation);
-
 
         glm::mat4 GetMatrix() const;
 
-        Transform* Copy();
+        Transform* Copy() const;
         // copy new values to transform
-        void Copy(Transform& transform);
-        bool Equals(Transform& transform);
+        void Copy(Transform& transform) const;
+        bool Equals(const Transform& transform) const;
 
     private:
-        void Init(glm::vec2 position, glm::vec2 scale, float rotation);
-        void Update();
-
         friend class Entity;
+        void Update();
     };
 
 }

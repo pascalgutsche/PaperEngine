@@ -2,7 +2,7 @@
 
 #include "layer/Layer.h"
 #include "event/Event.h"
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 #include "ui/Button.h"
 #include "ui/UIObject.h"
 
@@ -141,7 +141,7 @@ namespace core
 	{
 		object->CalculateGlobalCoords();
 		object->RenderObject();
-		Renderer::NextBatch();
+		Renderer2D::NextBatch();
 		for (UIObject* child : object->GetChildObjects())
 		{
 			if (child != object)

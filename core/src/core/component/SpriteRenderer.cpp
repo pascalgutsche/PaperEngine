@@ -5,7 +5,7 @@
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "utils/Utils.h"
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 
 #include "imgui/ImGuiLayer.h"
 
@@ -29,10 +29,10 @@ namespace core {
         switch (geometry)
         {
             case Geometry::RECTANGLE:
-                    Renderer::DrawRectangle(data);
+                    Renderer2D::DrawRectangle(data);
                 break;
             case Geometry::TRIANGLE:
-                    Renderer::DrawTriangle(data);
+                    Renderer2D::DrawTriangle(data);
                 break;
         }
     }

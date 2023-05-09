@@ -1,7 +1,7 @@
 #include "_Core.h"
 #include "Panel.h"
 
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 
 namespace core
 {
@@ -23,10 +23,10 @@ namespace core
 		switch (type)
 		{
 			case Type::Rectangle:
-				Renderer::DrawRectangle(data);
+				Renderer2D::DrawRectangle(data);
 				break;
 			case Type::Triangle:
-				Renderer::DrawTriangle(data);
+				Renderer2D::DrawTriangle(data);
 				break;
 		}
 	}

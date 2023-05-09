@@ -48,8 +48,8 @@ namespace core {
 
     struct LineRenderData
     {
-        glm::vec2 point0 = glm::vec2(0.0f, 0.0f);
-        glm::vec2 point1 = glm::vec2(1.0f, 0.0f);
+        glm::vec3 point0 = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 point1 = glm::vec3(1.0f, 0.0f, 0.0f);
         glm::vec4 color = DEFAULT_COLOR;
 
         float thickness = 1.0f;
@@ -74,7 +74,7 @@ namespace core {
     };
 
 
-    class Renderer {
+    class Renderer2D {
     public:
         static void Init();
         static void Shutdown();

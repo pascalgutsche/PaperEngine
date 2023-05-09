@@ -1,6 +1,6 @@
 ﻿#type vertex
 #version 460 core
-layout(location = 0) in vec2 aWorldPosition; // the position variable has attribute position 0
+layout(location = 0) in vec3 aWorldPosition; // the position variable has attribute position 0
 layout(location = 1) in vec2 aLocalPosition; //the color of the vector
 layout(location = 2) in vec2 aTexCoord;
 layout(location = 3) in float aTilingFactor;
@@ -48,13 +48,15 @@ void main()
     vec4 position;
     switch (aProjectionMode) {
         case 0:
-            position = uPerspective * uView * vec4(aWorldPosition, 0.0f, 1.0f);
+            position = uPerspective * uView * vec4(aWorldPosition, 1.0f);
             break;
         case 1:
-            position = uOrthographic * uView * vec4(aWorldPosition, 0.0f, 1.0f);
+            position = uOrthographic * uView * vec4(aWorldPosition, 1.0f);
             break;
         case 2:
-            position = vec4(aWorldPosition, 0.0f, 1.0f);
+            position = vec4(aWorldPosition, 1.0f);
+            position.z = 0.0f;
+            break;
         default:
             break;
     }
@@ -84,8 +86,7 @@ layout(location = 6) in flat int TexID;
 layout(location = 7) in flat int CoreID;
 layout(location = 8) in flat int alphaCoreID;
 
-uniform sampler2D uTexture[31];
-//uniform sampler2D uIDAttachment;
+uniform sampler2D uTexture[32];
 
 void main()
 {

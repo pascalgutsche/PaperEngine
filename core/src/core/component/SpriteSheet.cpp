@@ -1,6 +1,6 @@
 #include "_Core.h"
 #include "component/SpriteSheet.h"
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 
 namespace core
 {
@@ -55,7 +55,7 @@ namespace core
 		data.mode = gameObject->GetProjectionMode();
 		data.coreID = gameObject->GetCoreID();
 		data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
-		Renderer::DrawRectangle(data);
+		Renderer2D::DrawRectangle(data);
 	}
 
 	void SpriteSheet::OnImgui(float dt)

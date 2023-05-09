@@ -5,7 +5,7 @@
 
 #include "generic/Application.h"
 #include "renderer/RenderCommand.h"
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 #include "renderer/FrameBuffer.h"
 #include "ui/UIObject.h"
 
@@ -303,19 +303,19 @@ namespace core {
 
         if (ImGui::TreeNode("Render Stats"))
         {
-            stream << "Draw calls: " << Renderer::GetStats().drawCalls;
+            stream << "Draw calls: " << Renderer2D::GetStats().drawCalls;
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Object count: " << Renderer::GetStats().objectCount;
+            stream << "Object count: " << Renderer2D::GetStats().objectCount;
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Data size: " << Renderer::GetStats().dataSize << " Bytes";
+            stream << "Data size: " << Renderer2D::GetStats().dataSize << " Bytes";
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Vertex count: " << Renderer::GetStats().vertexCount;
+            stream << "Vertex count: " << Renderer2D::GetStats().vertexCount;
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
-            stream << "Indices count: " << Renderer::GetStats().elementCount;
+            stream << "Indices count: " << Renderer2D::GetStats().elementCount;
             ImGui::BulletText(stream.str().c_str()); stream.str("");
 
             ImGui::Text("");
@@ -337,7 +337,7 @@ namespace core {
             if (ImGui::TreeNode("Textures in use"))
             {
                 /*
-	            for (Shr<Texture> texture : Renderer::GetTexturesInUse())
+	            for (Shr<Texture> texture : Renderer2D::GetTexturesInUse())
 	            {
                     
 	            	ImGui::Selectable(texture->GetName().c_str(), false);
@@ -469,20 +469,20 @@ namespace core {
 
         auto viewportOffset = ImGui::GetCursorPos();
 
-    	Renderer::GetFramebuffer()->Bind();
+    	Renderer2D::GetFramebuffer()->Bind();
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
         if (viewportSize != *(glm::vec2*)&viewport_panel_size || Application::GetImGuiSwitched())
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
-            Renderer::GetFramebuffer()->SetViewPort();
+            Renderer2D::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+            Renderer2D::GetFramebuffer()->SetViewPort();
         }
         else 
         {
-            uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
+            uint32_t textureID = Renderer2D::GetFramebuffer()->GetColorID(0);
             ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         }
-    	Renderer::GetFramebuffer()->Unbind();
+    	Renderer2D::GetFramebuffer()->Unbind();
 
         auto windowSize = ImGui::GetWindowSize();
         ImVec2 minBound = ImGui::GetWindowPos();
@@ -517,21 +517,21 @@ namespace core {
         ImGui::Begin(" ", nullptr, window_flags);
         ImGui::PopStyleVar(3);
 
-    	Renderer::GetFramebuffer()->Bind();
+    	Renderer2D::GetFramebuffer()->Bind();
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
         if (viewportSize != *(glm::vec2*)&viewport_panel_size || Application::GetImGuiSwitched())
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            Renderer::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
-            Renderer::GetFramebuffer()->SetViewPort();
+            Renderer2D::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+            Renderer2D::GetFramebuffer()->SetViewPort();
         }
         else
         {
-            uint32_t textureID = Renderer::GetFramebuffer()->GetColorID(0);
+            uint32_t textureID = Renderer2D::GetFramebuffer()->GetColorID(0);
 
             ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         }
-    	Renderer::GetFramebuffer()->Unbind();
+    	Renderer2D::GetFramebuffer()->Unbind();
 
         ImGui::End();
     }

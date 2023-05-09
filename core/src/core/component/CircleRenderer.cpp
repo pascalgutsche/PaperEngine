@@ -2,7 +2,7 @@
 
 #include "component/CircleRenderer.h"
 #include "generic/Entity.h"
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 
 
 namespace core {
@@ -24,6 +24,6 @@ namespace core {
         data.mode = gameObject->GetProjectionMode();
         data.coreID = gameObject->GetCoreID();
         data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
-    	Renderer::DrawCircle(data);
+    	Renderer2D::DrawCircle(data);
     }
 }

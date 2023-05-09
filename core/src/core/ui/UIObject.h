@@ -38,8 +38,8 @@ namespace core
 		
 	protected:
 
-		glm::vec2 globalPos;
-		glm::vec2 globalScale;
+		glm::vec3 globalPos;
+		glm::vec3 globalScale;
 		ProjectionMode mode;
 
 		glm::vec4 color;

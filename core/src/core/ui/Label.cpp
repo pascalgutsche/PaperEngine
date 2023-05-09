@@ -1,7 +1,7 @@
 #include "_Core.h"
 #include "Label.h"
 
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 
 
 namespace core
@@ -24,7 +24,7 @@ namespace core
 		data.font = font;
 		data.mode = mode;
 		data.coreID = idToRender;
-		Renderer::DrawString(data);
+		Renderer2D::DrawString(data);
 	}
 
 }

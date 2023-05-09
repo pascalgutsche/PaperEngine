@@ -1,6 +1,6 @@
 ﻿#type vertex
 #version 450 core
-layout(location = 0) in vec2 aPos;
+layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec4 aColor;
 layout(location = 2) in vec2 aTexCoord;
 layout(location = 3) in int aProjectionMode;
@@ -33,17 +33,19 @@ void main()
     
 
     vec4 position;
-    switch(aProjectionMode) {
-        case 0: 
-            position = uPerspective * uView * vec4(aPos, 0.0f, 1.0f);
+    switch (aProjectionMode) {
+        case 0:
+            position = uPerspective * uView * vec4(aPos, 1.0f);
             break;
         case 1:
-            position = uOrthographic * uView * vec4(aPos, 0.0f, 1.0f);
+            position = uOrthographic * uView * vec4(aPos, 1.0f);
             break;
         case 2:
-            position = vec4(aPos, 0.0f, 1.0f);
+            position = vec4(aPos, 1.0f);
+            position.z = 0.0f;
+            break;
         default:
-            break;   
+            break;
     }
 	gl_Position = position;
 }

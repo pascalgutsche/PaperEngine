@@ -6,7 +6,7 @@
 #include "event/KeyCodes.h"
 #include "event/GameEvent.h"
 #include "renderer/RenderCommand.h"
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 #include "imgui/ImGuiLayer.h"
 #include "utils/Core.h"
 
@@ -25,7 +25,7 @@ namespace core {
 		window = Window::Create();
 		SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
-		Renderer::Init();
+		Renderer2D::Init();
 
 		
 
@@ -88,7 +88,7 @@ namespace core {
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
 		resizing = true;
-		Renderer::ResizeWindow(e.getWidth(), e.getHeight());
+		Renderer2D::ResizeWindow(e.getWidth(), e.getHeight());
 		return false;
 	}
 

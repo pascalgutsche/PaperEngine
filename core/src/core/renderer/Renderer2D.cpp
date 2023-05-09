@@ -1,6 +1,6 @@
 #include "_Core.h"
 
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 #include "renderer/RenderCommand.h"
 #include "utils/DataPool.h"
 #include "renderer/Shader.h"
@@ -11,7 +11,7 @@ namespace core {
 
     struct EdgeVertex
     {
-        glm::vec2 position;
+        glm::vec3 position;
         glm::vec4 color;
         glm::vec2 texCoords;
         float tilingFactor;
@@ -24,7 +24,7 @@ namespace core {
 
     struct LineVertex
     {
-        glm::vec2 position;
+        glm::vec3 position;
         glm::vec4 color;
         int projectionMode;
         int coreID;
@@ -33,7 +33,7 @@ namespace core {
 
     struct CircleVertex
     {
-        glm::vec2 worldPos;
+        glm::vec3 worldPos;
         glm::vec2 localPos;
 
         glm::vec2 texCoords;
@@ -51,7 +51,7 @@ namespace core {
 
     struct TextVertex
     {
-        glm::vec2 position;
+        glm::vec3 position;
         glm::vec4 color;
         glm::vec2 texCoord;
 
@@ -123,7 +123,7 @@ namespace core {
         glm::vec4 rectangleVertexData[4];
         glm::vec4 triangleVertexData[3];
 
-        Renderer::Stats stats;
+        Renderer2D::Stats stats;
 
         Shr<Framebuffer> framebuffer;
 
@@ -135,12 +135,12 @@ namespace core {
     static RenderData data;
     static int texSlots[data.MAX_TEXTURE_SLOTS - 1];
 
-    void Renderer::Init()
+    void Renderer2D::Init()
     {
         RenderCommand::Init();
 
         BufferLayout edgeGeometryLayout = {
-            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT3, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
 
             { GLSLDataType::FLOAT2, "aTexCoord" },
@@ -154,7 +154,7 @@ namespace core {
         };
 
         BufferLayout lineGeometryLayout = {
-            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT3, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
 
 			{ GLSLDataType::INT , "aProjectionMode" },
@@ -163,7 +163,7 @@ namespace core {
         };
 
         BufferLayout circleGeometryLayout = {
-            { GLSLDataType::FLOAT2, "aWorldPos" },
+            { GLSLDataType::FLOAT3, "aWorldPos" },
             { GLSLDataType::FLOAT2, "aLocalPos" },
 
 			{ GLSLDataType::FLOAT2, "aTexCoord" },
@@ -181,7 +181,7 @@ namespace core {
 
         BufferLayout textLayout
         {
-            { GLSLDataType::FLOAT2, "aPos" },
+            { GLSLDataType::FLOAT3, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::FLOAT2, "aTexCoord" },
 
@@ -191,16 +191,16 @@ namespace core {
             { GLSLDataType::INT , "aAlphaCoreID" }
         };
 
-        data.edgeGeometryShader = DataPool::GetShader("EdgeGeometryShader");
+        data.edgeGeometryShader = DataPool::GetShader("EdgeGeometryShader_2D");
         data.edgeGeometryShader->Compile();
 
-        data.lineGeometryShader = DataPool::GetShader("LineGeometryShader");
+        data.lineGeometryShader = DataPool::GetShader("LineGeometryShader_2D");
         data.lineGeometryShader->Compile();
 
-        data.circleGeometryShader = DataPool::GetShader("CircleGeometryShader");
+        data.circleGeometryShader = DataPool::GetShader("CircleGeometryShader_2D");
         data.circleGeometryShader->Compile();
 
-        data.textShader = DataPool::GetShader("TextShader");
+        data.textShader = DataPool::GetShader("TextShader_2D");
         data.textShader->Compile();
 
         data.rectangleVertexArray = VertexArray::CreateArray();
@@ -292,7 +292,7 @@ namespace core {
         data.framebuffer = Framebuffer::CreateBuffer(spec);
     }
 
-    void Renderer::Shutdown()
+    void Renderer2D::Shutdown()
     {
         delete[] data.rectangleVertexBufferBase;
         delete[] data.triangleVertexBufferBase;
@@ -300,12 +300,12 @@ namespace core {
         delete[] data.textVertexBufferBase;
      }
 
-    void Renderer::ResizeWindow(uint32_t width, uint32_t height)
+    void Renderer2D::ResizeWindow(uint32_t width, uint32_t height)
     {
         RenderCommand::SetViewPort(0, 0, width, height);
     }
 
-    void Renderer::BeginRender(Shr<Camera> camera)
+    void Renderer2D::BeginRender(Shr<Camera> camera)
     {
         data.camera = camera;
         data.camera->CalcCameraVectors();
@@ -320,13 +320,13 @@ namespace core {
         StartBatch();
     }
 
-    void Renderer::EndRender()
+    void Renderer2D::EndRender()
     {
         Render();
         data.framebuffer->Unbind();
     }
 
-    void Renderer::StartBatch()
+    void Renderer2D::StartBatch()
     {
         data.rectangleElementCount = 0;
         data.rectangleVertexBufferPtr = data.rectangleVertexBufferBase;
@@ -347,13 +347,13 @@ namespace core {
         data.textVertexBufferPtr = data.textVertexBufferBase;
     }
 
-    void Renderer::NextBatch()
+    void Renderer2D::NextBatch()
     {
         Render();
         StartBatch();
     }
 
-    void Renderer::Render()
+    void Renderer2D::Render()
     {
 	    if (data.rectangleElementCount)
 	    {
@@ -474,7 +474,7 @@ namespace core {
         }
     }
 
-    void Renderer::DrawRectangle(const EdgeRenderData& renderData)
+    void Renderer2D::DrawRectangle(const EdgeRenderData& renderData)
     {
         const uint32_t rectangleVertexCount = 4;
 
@@ -529,7 +529,7 @@ namespace core {
         data.stats.objectCount++;
     }
 
-    void Renderer::DrawTriangle(const EdgeRenderData& renderData)
+    void Renderer2D::DrawTriangle(const EdgeRenderData& renderData)
     {
         const uint32_t triangleVertexCount = 3;
 
@@ -585,7 +585,7 @@ namespace core {
     }
 
 
-    void Renderer::DrawLine(const LineRenderData& renderData)
+    void Renderer2D::DrawLine(const LineRenderData& renderData)
     {
         data.lineVertexBufferPtr->position = renderData.point0;
         data.lineVertexBufferPtr->color = renderData.color;
@@ -612,7 +612,7 @@ namespace core {
         NextBatch();
     }
 
-    void Renderer::DrawCircle(const CircleRenderData& renderData)
+    void Renderer2D::DrawCircle(const CircleRenderData& renderData)
     {
         const uint32_t circleVertexCount = 4;
 
@@ -670,7 +670,7 @@ namespace core {
     }
 
 
-    void Renderer::DrawString(const TextRenderData& renderData)
+    void Renderer2D::DrawString(const TextRenderData& renderData)
     {
         std::string string = renderData.string;
         auto& font = renderData.font;
@@ -796,17 +796,17 @@ namespace core {
         data.stats.objectCount += dataSize / 4;
     }
 
-    Renderer::Stats Renderer::GetStats()
+    Renderer2D::Stats Renderer2D::GetStats()
     {
         return data.stats;
     }
 
-    void Renderer::ClearStats()
+    void Renderer2D::ClearStats()
     {
         memset(&data.stats, 0, sizeof(Stats));
     }
 
-    Shr<Framebuffer> Renderer::GetFramebuffer()
+    Shr<Framebuffer> Renderer2D::GetFramebuffer()
     {
         return data.framebuffer;
     }

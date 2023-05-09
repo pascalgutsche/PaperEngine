@@ -7,7 +7,7 @@ namespace core
 	class LineRenderer : public RenderComponent
 	{
     public:
-        LineRenderer(glm::vec2 pointA, glm::vec2 pointB, glm::vec4 color, float thickness, bool registerAlphaPixelsToEvent = false);
+        LineRenderer(glm::vec3 pointA, glm::vec3 pointB, glm::vec4 color, float thickness, bool registerAlphaPixelsToEvent = false);
 
         void OnStart() override { }
         void OnStop() override { }
@@ -15,8 +15,8 @@ namespace core
         void OnEvent(Event& event) override { }
 
     private:
-        glm::vec2 positionA;
-        glm::vec2 positionB;
+        glm::vec3 positionA;
+        glm::vec3 positionB;
         glm::vec4 color;
 
         float thickness;

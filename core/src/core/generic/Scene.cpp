@@ -5,7 +5,7 @@
 
 #include "Component.h"
 #include "generic/Camera.h"
-#include "renderer/Renderer.h"
+#include "renderer/Renderer2D.h"
 
 
 namespace core {
@@ -20,8 +20,8 @@ namespace core {
         OnUpdate();
 
         //render anything inside the scene
-        Renderer::ClearStats();
-        Renderer::BeginRender(camera);
+        Renderer2D::ClearStats();
+        Renderer2D::BeginRender(camera);
 
         for (int i = 0; i < Application::GetLayerStack().GetSize(); i++)
         {
@@ -39,11 +39,11 @@ namespace core {
                 //update rendercomponent -> only one component that renders
                 gameObject->GetRenderComponent()->OnUpdate();
             }
-            Renderer::NextBatch();
+            Renderer2D::NextBatch();
             layer->RenderUI();
         }
 
-        Renderer::EndRender();
+        Renderer2D::EndRender();
     }
 
     void Scene::Start()
