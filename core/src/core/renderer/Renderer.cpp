@@ -371,6 +371,7 @@ namespace core {
             data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera->GetOrthographicMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera->GetViewMatrix());
+            data.edgeGeometryShader->UploadMat4f("uModel", glm::rotate(glm::mat4(1.0f), glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS - 1, texSlots);
             //data.edgeGeometryShader->UploadInt("uIDAttachment", data.MAX_TEXTURE_SLOTS - 1);
             //data.edgeGeometryShader->UploadVec2f("screenSize", glm::vec2(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight()));

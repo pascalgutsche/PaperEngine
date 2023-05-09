@@ -14,6 +14,7 @@ layout(location = 8) in int aAlphaCoreID;
 uniform mat4 uPerspective;
 uniform mat4 uOrthographic;
 uniform mat4 uView;
+uniform mat4 uModel;
 
 struct VertexOutput
 {
@@ -39,7 +40,7 @@ void main()
     vec4 position;
     switch (aProjectionMode) {
         case 0:
-            position = uPerspective * uView * vec4(aPos, 0.0f, 1.0f);
+            position = uPerspective * uView * uModel*  vec4(aPos, 0.0f, 1.0f);
             break;
         case 1:
             position = uOrthographic * uView * vec4(aPos, 0.0f, 1.0f);

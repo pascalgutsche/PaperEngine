@@ -33,6 +33,10 @@ namespace core {
         direction.y = glm::sin(glm::radians(pitch));
         direction.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 
+        directionBruh.x = glm::cos(glm::radians(yaw));
+        directionBruh.y = glm::sin(glm::radians(pitch));
+        directionBruh.z = glm::sin(glm::radians(yaw));
+
         front = glm::normalize(direction);
 
         // this is being used for pointing upwards (y globally, e.g. in the world)
@@ -45,6 +49,8 @@ namespace core {
         cameraUp = glm::cross(cameraDirection, cameraRight);
         // make camera depend on position (who could have thought this)
         cameraViewMatrix = glm::lookAt(position, position + front, up);
+
+        
     }
 
     glm::mat4 Camera::GetViewMatrix() {
@@ -75,7 +81,7 @@ namespace core {
 
     glm::vec3 Camera::GetFront() const
     {
-        return front;
+        return glm::normalize(directionBruh);;
     }
 
     //TODO: MOVE THIS SOMEWHERE ELSE
@@ -95,10 +101,19 @@ namespace core {
 
         yaw += dX;
 
-        if (pitch + dY > 90.0f)
-            pitch = 90.0f;
-        else if (pitch + dY < -90.0f)
-            pitch = -90.0f;
+        while (yaw >= 360)
+        {
+            yaw -= 360;
+        }
+        while (yaw <= -360)
+        {
+            yaw += 360;
+        }
+
+        if (pitch + dY > 89.9f)
+            pitch = 89.9f;
+        else if (pitch + dY < -89.9f)
+            pitch = -89.9f;
         else
 			pitch += dY;
     }

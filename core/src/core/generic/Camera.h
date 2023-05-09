@@ -23,6 +23,7 @@ namespace core {
         glm::vec3 front;
 
         glm::vec3 direction;
+        glm::vec3 directionBruh;
 
         float lastX, lastY;
 
