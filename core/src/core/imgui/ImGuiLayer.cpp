@@ -398,6 +398,7 @@ namespace core {
         {
             if (layer == &Application::GetImGuiLayer()) continue;
             std::vector<Entity*> gameobjects = layer->GetEntitys();
+            std::vector<Entity*> entities = Application::GetActiveScene()->GetEntitys();
             std::vector<UIObject*> uiObjects = layer->GetUIObjects();
 
             if (ImGui::TreeNode(layer->GetName().c_str())) 
@@ -414,10 +415,18 @@ namespace core {
                 }
                 if (ImGui::TreeNode("Entitys: "))
                 {
+                    int b = 0;
                     for (int i = 0; i < gameobjects.size(); i++)
                     {
                         if (ImGui::Selectable((gameobjects[i]->GetName() + std::string(" (ObjectID = " + std::to_string(gameobjects[i]->GetCoreID()) + std::string(")")) + std::string("##" + std::to_string(i))).c_str(), gameobjects[i] == selectedObject)) {
                             selectedObject = gameobjects[i];
+                        }
+                        b = i;
+                    }
+                    for (int i = 0; i < entities.size(); i++)
+                    {
+                        if (ImGui::Selectable((entities[i]->GetName() + std::string(" (ObjectID = " + std::to_string(entities[i]->GetCoreID()) + std::string(")")) + std::string("##" + std::to_string(i + b))).c_str(), entities[i] == selectedObject)) {
+                            selectedObject = entities[i];
                         }
                     }
                     ImGui::TreePop();

@@ -11,7 +11,6 @@ namespace core {
     class Scene {
         friend class Application;
     public:
-        std::vector<Entity*> gameObjects;
 
         Scene();
         virtual ~Scene() = default;
@@ -22,11 +21,14 @@ namespace core {
         void Start();
         void Stop();
 
+        void AddEntityToScene(Entity* entity);
 
         void AddLayer(Layer* layer);
         void AddOverlay(Layer* layer);
         void RemoveLayer(Layer* layer) const;
         void RemoveOverlay(Layer* layer) const;
+
+        std::vector<Entity*>& GetEntitys() { return entities; }
 
     protected:
         Shr<Camera> camera = nullptr;
@@ -39,6 +41,7 @@ namespace core {
         virtual void Imgui(float dt) {}
 
     private:
+        std::vector<Entity*> entities;
         bool isRunning = false;
 
         void Update();

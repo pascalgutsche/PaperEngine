@@ -14,6 +14,9 @@ namespace core {
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Geometry geometry, bool registerAlphaPixelsToEvent)
         : color(color), texture(nullptr), tilingFactor(1.0f), geometry(geometry), registerAlphaPixelsToEvent(registerAlphaPixelsToEvent) { }
 
+    SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry, bool registerAlphaPixelsToEvent)
+        : color(color), texture(texture), tilingFactor(1.0f), geometry(geometry), registerAlphaPixelsToEvent(registerAlphaPixelsToEvent) { }
+
     SpriteRenderer::SpriteRenderer(glm::vec4 color, Shr<Texture> texture, float tilingFactor, Geometry geometry, bool registerAlphaPixelsToEvent)
         : color(color), texture(texture), tilingFactor(tilingFactor), geometry(geometry), registerAlphaPixelsToEvent(registerAlphaPixelsToEvent) { }
 

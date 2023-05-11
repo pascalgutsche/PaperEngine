@@ -28,9 +28,11 @@ namespace core {
         RenderCommand::PrepareFramebuffer();
 
         Renderer3D::BeginRender(camera);
-        EdgeRenderData3D data;
-        data.texture = DataPool::GetTexture("error_texture_256x256.png");
-        Renderer3D::DrawCube(data);
+        for (Entity* entity : entities)
+        {
+            if (!entity->GetRenderComponent()) continue;
+            entity->GetRenderComponent()->OnUpdate();
+        }
         Renderer3D::EndRender();
 
         Renderer2D::BeginRender(camera);
@@ -70,6 +72,18 @@ namespace core {
     {
         isRunning = false;
         OnStop();
+    }
+
+    void Scene::AddEntityToScene(Entity* entity)
+    {
+        if (isRunning) {
+            entities.push_back(entity);
+            entity->Start();
+        }
+        else {
+            entities.push_back(entity);
+        }
+        entity->SetScene(this);
     }
 
 

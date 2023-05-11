@@ -73,7 +73,7 @@ namespace core {
             const glm::vec2 viewportSize = Application::GetImGuiLayer().GetViewportSize();
             aspect = viewportSize.x / viewportSize.y;
         }
-        return glm::perspective(fov, aspect, 0.1f, 1000.0f);
+        return glm::perspective(glm::radians(fov), aspect, 0.1f, 1000.0f);
     }
 
     glm::mat4 Camera::GetOrthographicMatrix()

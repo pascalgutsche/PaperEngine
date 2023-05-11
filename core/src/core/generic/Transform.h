@@ -9,11 +9,11 @@ namespace core {
     public:
         glm::vec3 position;
         glm::vec3 scale;
-        float rotation;
+        glm::vec3 rotation;
 
         explicit Transform();
-        explicit Transform(glm::vec2 position, glm::vec2 scale = { 1.0f, 1.0f}, float rotation = 0.0f);
-        explicit Transform(glm::vec3 position, glm::vec3 scale = { 1.0f, 1.0f, 1.0f }, float rotation = 0.0f);
+        explicit Transform(glm::vec2 position, glm::vec2 scale = { 1.0f, 1.0f }, glm::vec3 rotation = { 0.0f, 0.0f, 0.0f });
+        explicit Transform(glm::vec3 position, glm::vec3 scale = { 1.0f, 1.0f, 1.0f }, glm::vec3 rotation = { 0.0f, 0.0f, 0.0f });
         ~Transform();
 
         glm::mat4 GetMatrix() const;

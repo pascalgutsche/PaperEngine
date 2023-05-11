@@ -59,7 +59,7 @@ namespace core
 
 	void Layer::AddEntityToLayer(Entity* gameObject)
 	{
-	if (attached) {
+		if (attached) {
 			gameObjects.push_back(gameObject);
 			gameObject->Start();
 		}

@@ -18,6 +18,7 @@ namespace core {
     class SpriteRenderer : public RenderComponent {
     public:
         SpriteRenderer(glm::vec4 color, Geometry geometry, bool registerAlphaPixelsToEvent = false);
+        SpriteRenderer(glm::vec4 color, Shr<Texture> texture, Geometry geometry, bool registerAlphaPixelsToEvent = false);
         SpriteRenderer(glm::vec4 color, Shr<Texture> texture, float tilingFactor, Geometry geometry, bool registerAlphaPixelsToEvent = false);
         
 

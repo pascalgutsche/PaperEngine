@@ -21,5 +21,8 @@ public:
 	bool MouseScrolled(MouseScrolledEvent& event) const;
 	bool WindowFocus(WindowFocusEvent& event) const;
 	bool WindowLostFocus(WindowLostFocusEvent& event) const;
+
+private:
+	Entity* cube;
 };
 

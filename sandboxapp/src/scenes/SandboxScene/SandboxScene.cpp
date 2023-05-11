@@ -5,6 +5,9 @@ SandboxScene::SandboxScene()
 {
 	backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 	uiLayer = new UILayer();
+	cube = new Entity("cube", Transform());
+	cube->AddComponent(new CubeRenderer(glm::vec4(1.0f), DataPool::GetTexture("error_textudddre_256x256.png")));
+	AddEntityToScene(cube);
 }
 
 SandboxScene::~SandboxScene()
@@ -15,6 +18,8 @@ SandboxScene::~SandboxScene()
 void SandboxScene::OnStart()
 {
 	AddOverlay(uiLayer);
+
+
 }
 
 void SandboxScene::OnStop()
@@ -103,7 +108,7 @@ bool SandboxScene::MouseScrolled(MouseScrolledEvent& event) const
 
 bool SandboxScene::WindowFocus(WindowFocusEvent& event) const
 {
-	Application::GetWindow()->CursorEnabled(true);
+	Application::GetWindow()->CursorEnabled(false);
 	return true;
 }
 

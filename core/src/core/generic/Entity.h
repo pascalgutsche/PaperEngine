@@ -13,6 +13,7 @@ namespace core {
     class Component;
     class RenderComponent;
     class Layer;
+    class Scene;
 
     class Entity : public Object {
     public:
@@ -56,6 +57,7 @@ namespace core {
         std::vector<Component*> components;
         RenderComponent* renderComponent;
         Layer* layer = nullptr;
+        Scene* scene = nullptr;
         bool deleted = false;
 
         std::initializer_list<std::string> tags;
@@ -74,6 +76,7 @@ namespace core {
 
         friend class Scene;
         RenderComponent* GetRenderComponent() const;
+        void SetScene(Scene* scene);
     };
 
     template <typename T>

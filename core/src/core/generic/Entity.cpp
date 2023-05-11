@@ -48,6 +48,11 @@ namespace core {
         return renderComponent;
 	}
 
+	void Entity::SetScene(Scene* scene)
+	{
+        this->scene = scene;
+	}
+
 	Entity::Entity(std::string name, const Transform& transform, ProjectionMode mode)
         : Object(name, transform), mode(mode)
 	{
@@ -65,6 +70,13 @@ namespace core {
                 layer->GetEntitys().erase(it);
             }
         }
+		if (scene) {
+            std::vector<Entity*>::iterator it = std::find(scene->GetEntitys().begin(), scene->GetEntitys().end(), this);
+            if (it != scene->GetEntitys().end())
+            {
+                scene->GetEntitys().erase(it);
+            }
+        }
         const int componentSize = components.size();
         for (int i = 0; i < componentSize; i++)
         {
@@ -74,6 +86,12 @@ namespace core {
                 components[0]->OnStop();
             delete components[0];
             components.erase(components.begin());
+        }
+        if (renderComponent)
+        {
+            if (running)
+                renderComponent->OnStop();
+            delete renderComponent;
         }
     }
 
@@ -204,9 +222,13 @@ namespace core {
         
 		ImGui::DragFloat(std::string("X:").c_str(), &this->transform.position.x, speed);
 		ImGui::DragFloat(std::string("Y:").c_str(), &this->transform.position.y, speed);
-		ImGui::DragFloat(std::string("Width:").c_str(), &this->transform.scale.x, speed);
-		ImGui::DragFloat(std::string("Height:").c_str(), &this->transform.scale.y, speed);
-        ImGui::DragFloat(std::string("Rotation:").c_str(), &this->transform.rotation, speed);
+		ImGui::DragFloat(std::string("Z:").c_str(), &this->transform.position.z, speed);
+		ImGui::DragFloat(std::string("Scale X:").c_str(), &this->transform.scale.x, speed);
+		ImGui::DragFloat(std::string("Scale Y:").c_str(), &this->transform.scale.y, speed);
+		ImGui::DragFloat(std::string("Scale Z:").c_str(), &this->transform.scale.z, speed);
+        float rot[]{ this->transform.rotation.x, this->transform.rotation.y, this->transform.rotation.z };
+        ImGui::DragFloat3(std::string("Rotation:").c_str(), rot, speed);
+        this->transform.rotation = glm::vec3(rot[0], rot[1], rot[2]);
         
 
 		for (auto component : components) {

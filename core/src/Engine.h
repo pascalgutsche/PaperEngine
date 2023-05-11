@@ -1,8 +1,9 @@
 #pragma once
 
+#include "core/component/CircleRenderer.h"
+#include "core/component/CubeRenderer.h"
 #include "core/component/SpriteRenderer.h"
 #include "core/component/LineRenderer.h"
-#include "core/component/CircleRenderer.h"
 #include "core/component/FontRenderer.h"
 #include "core/component/SpriteSheet.h"
 

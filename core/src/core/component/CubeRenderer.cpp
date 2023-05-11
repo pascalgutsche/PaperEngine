@@ -1,35 +1,26 @@
 ﻿#include "_Core.h"
 #include "CubeRenderer.h"
 
+#include "renderer/Renderer3D.h"
+
 namespace core
 {
-	CubeRenderer::CubeRenderer()
-	{
+	CubeRenderer::CubeRenderer(glm::vec4 color)
+		: color(color), texture(nullptr), tilingFactor(1.0f) { }
 
-	}
+	CubeRenderer::CubeRenderer(glm::vec4 color, Shr<Texture> texture)
+		: color(color), texture(texture), tilingFactor(1.0f) { }
 
-	CubeRenderer::~CubeRenderer()
-	{
-
-	}
-
-	void CubeRenderer::OnStart()
-	{
-
-	}
-
-	void CubeRenderer::OnStop()
-	{
-
-	}
+	CubeRenderer::CubeRenderer(glm::vec4 color, Shr<Texture> texture, float tilingFactor)
+		: color(color), texture(texture), tilingFactor(tilingFactor) { }
 
 	void CubeRenderer::OnUpdate()
 	{
-
-	}
-
-	void CubeRenderer::OnEvent(Event& event)
-	{
-
+		EdgeRenderData3D data;
+		data.transform = gameObject->transform;
+		data.color = color;
+		data.texture = texture;
+		data.tilingFactor = tilingFactor;
+		Renderer3D::DrawCube(data);
 	}
 }

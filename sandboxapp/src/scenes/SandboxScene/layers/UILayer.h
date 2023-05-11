@@ -17,5 +17,6 @@ private:
 	Label* coordLabel;
 	Label* yawLabel;
 	Label* pitchLabel;
+	Label* fovLabel;
 };
 
