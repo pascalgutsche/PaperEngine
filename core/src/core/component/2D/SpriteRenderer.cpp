@@ -1,6 +1,6 @@
 #include "_Core.h"
 
-#include "component/SpriteRenderer.h"
+#include "component/2D/SpriteRenderer.h"
 #include "generic/Entity.h"
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"

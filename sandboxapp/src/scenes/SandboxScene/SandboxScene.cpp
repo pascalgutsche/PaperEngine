@@ -6,8 +6,13 @@ SandboxScene::SandboxScene()
 	backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 	uiLayer = new UILayer();
 	cube = new Entity("cube", Transform());
-	cube->AddComponent(new CubeRenderer(glm::vec4(1.0f), DataPool::GetTexture("error_textudddre_256x256.png")));
+	cube->AddComponent(new CubeRenderer(glm::vec4(1.0f, 0.5f, 0.31f, 1.0f)));
 	AddEntityToScene(cube);
+
+	lightCube = new Entity("lightCube", Transform(glm::vec3(2.0f, 2.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f)));
+	lightCube->AddComponent(new CubeRenderer(glm::vec4(1.0f)));
+	lightCube->AddComponent(new LightComponent());
+	AddEntityToScene(lightCube);
 }
 
 SandboxScene::~SandboxScene()
@@ -93,14 +98,15 @@ bool SandboxScene::KeyReleased(KeyReleasedEvent& event) const
 
 bool SandboxScene::MouseScrolled(MouseScrolledEvent& event) const
 {
-	if (event.GetYOffset() < 0 && camera->fov > -120.0f)
+	if (event.GetYOffset() < 0 && camera->fov > 0.01f)
 	{
-		camera->fov += event.GetYOffset() / 10;
+		camera->fov += event.GetYOffset() / 5;
 		return true;
 	}
+	if (camera->fov < 0.01f) camera->fov = 0.01f;
 	if (event.GetYOffset() > 0 && camera->fov < 120.0f)
 	{
-		camera->fov += event.GetYOffset() / 10;
+		camera->fov += event.GetYOffset() / 5;
 		return true;
 	}
 	return false;

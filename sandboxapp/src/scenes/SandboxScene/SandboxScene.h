@@ -24,5 +24,6 @@ public:
 
 private:
 	Entity* cube;
+	Entity* lightCube;
 };
 

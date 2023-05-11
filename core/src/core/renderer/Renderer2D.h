@@ -73,6 +73,10 @@ namespace core {
         bool coreIDToAlphaPixels = false;
     };
 
+    enum RenderTarget2D
+    {
+        ALL, RECTANGLE, TRIANGLE, CIRCLE, LINE, TEXT
+    };
 
     class Renderer2D {
     public:
@@ -84,7 +88,7 @@ namespace core {
         static void BeginRender(Shr<Camera> camera);
         static void EndRender();
 
-        static void Render();
+        static void Render(RenderTarget2D target);
 
         static void DrawRectangle(const EdgeRenderData& renderData);
 
@@ -107,7 +111,7 @@ namespace core {
         static Stats GetStats();
         static void ClearStats();
 
-        static void NextBatch();
+        static void NextBatch(RenderTarget2D target);
     private:
         static void StartBatch();
     };

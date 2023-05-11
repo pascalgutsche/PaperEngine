@@ -12,7 +12,7 @@ namespace core {
         std::string title;
         unsigned int width, height;
 
-        WindowProps(std::string title = "Conqueror", unsigned int width = 1280, unsigned int height = 720)
+        WindowProps(std::string title = "SandboxApp", unsigned int width = 1280, unsigned int height = 720)
 	        : title(title), width(width), height(height) { }
     };
 

@@ -1,5 +1,5 @@
 #include "_Core.h"
-#include "FontRenderer.h"
+#include "component/2D/FontRenderer.h"
 
 #include "renderer/Renderer2D.h"
 

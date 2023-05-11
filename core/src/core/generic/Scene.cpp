@@ -53,7 +53,7 @@ namespace core {
                 //update rendercomponent -> only one component that renders
                 gameObject->GetRenderComponent()->OnUpdate();
             }
-            Renderer2D::NextBatch();
+            Renderer2D::NextBatch(ALL);
             layer->RenderUI();
         }
 

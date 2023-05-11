@@ -2,6 +2,7 @@
 #include "CubeRenderer.h"
 
 #include "renderer/Renderer3D.h"
+#include "component/LightComponent.h"
 
 namespace core
 {
@@ -19,6 +20,8 @@ namespace core
 		EdgeRenderData3D data;
 		data.transform = gameObject->transform;
 		data.color = color;
+		if (gameObject->GetComponent<LightComponent>())
+			data.isLightSource = true;
 		data.texture = texture;
 		data.tilingFactor = tilingFactor;
 		Renderer3D::DrawCube(data);

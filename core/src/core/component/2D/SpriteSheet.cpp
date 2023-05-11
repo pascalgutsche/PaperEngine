@@ -1,5 +1,5 @@
 #include "_Core.h"
-#include "component/SpriteSheet.h"
+#include "component/2D/SpriteSheet.h"
 #include "renderer/Renderer2D.h"
 
 namespace core

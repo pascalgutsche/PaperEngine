@@ -61,6 +61,8 @@ namespace core {
         int alphaCoreID;
     };
 
+    
+
     struct RenderData2D
     {
         static constexpr uint32_t MAX_VERTICES = 40000;
@@ -312,7 +314,7 @@ namespace core {
 
     void Renderer2D::EndRender()
     {
-        Render();
+        Render(ALL);
         RenderCommand::GetFramebuffer()->Unbind();
     }
 
@@ -337,15 +339,15 @@ namespace core {
         data.textVertexBufferPtr = data.textVertexBufferBase;
     }
 
-    void Renderer2D::NextBatch()
+    void Renderer2D::NextBatch(RenderTarget2D target)
     {
-        Render();
+        Render(target);
         StartBatch();
     }
 
-    void Renderer2D::Render()
+    void Renderer2D::Render(RenderTarget2D target)
     {
-	    if (data.rectangleElementCount)
+	    if (data.rectangleElementCount && (target == RECTANGLE || target == ALL))
 	    {
             const uint32_t dataSize = (uint32_t)((uint8_t*)data.rectangleVertexBufferPtr - (uint8_t*)data.rectangleVertexBufferBase);
             data.rectangleVertexBuffer->AddData(data.rectangleVertexBufferBase, dataSize);
@@ -374,7 +376,7 @@ namespace core {
                 data.rectangleTextureSlots[i]->Unbind();
 	    }
 
-        if (data.triangleElementCount)
+        if (data.triangleElementCount && (target == TRIANGLE || target == ALL))
         {
             const uint32_t dataSize = (uint32_t)((uint8_t*)data.triangleVertexBufferPtr - (uint8_t*)data.triangleVertexBufferBase);
             data.triangleVertexBuffer->AddData(data.triangleVertexBufferBase, dataSize);
@@ -402,7 +404,7 @@ namespace core {
                 data.triangleTextureSlots[i]->Unbind();
         }
 
-        if (data.circleElementCount)
+        if (data.circleElementCount && (target == CIRCLE || target == ALL))
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)data.circleVertexBufferPtr - (uint8_t*)data.circleVertexBufferBase);
             data.circleVertexBuffer->AddData(data.circleVertexBufferBase, dataSize);
@@ -426,7 +428,7 @@ namespace core {
                 data.circleTextureSlots[i]->Unbind();
         }
 
-        if (data.lineElementCount)
+        if (data.lineElementCount && (target == LINE || target == ALL))
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)data.lineVertexBufferPtr - (uint8_t*)data.lineVertexBufferBase);
             data.lineVertexBuffer->AddData(data.lineVertexBufferBase, dataSize);
@@ -444,7 +446,7 @@ namespace core {
             data.stats.drawCalls++;
         }
 
-        if (data.textElementCount)
+        if (data.textElementCount && (target == TEXT || target == ALL))
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)data.textVertexBufferPtr - (uint8_t*)data.textVertexBufferBase);
             data.textVertexBuffer->AddData(data.textVertexBufferBase, dataSize);
@@ -472,7 +474,7 @@ namespace core {
 
         if (data.rectangleElementCount >= data.MAX_ELEMENTS)
         {
-            NextBatch();
+            NextBatch(RECTANGLE);
         }
 
     	int texIndex = -1;
@@ -490,7 +492,7 @@ namespace core {
             if (texIndex == -1)
             {
                 if (data.rectangleTextureSlotIndex >= data.MAX_TEXTURE_SLOTS)
-                    NextBatch();
+                    NextBatch(RECTANGLE);
 
                 texIndex = data.rectangleTextureSlotIndex;
                 data.rectangleTextureSlots[data.rectangleTextureSlotIndex] = renderData.texture;
@@ -527,7 +529,7 @@ namespace core {
 
         if (data.triangleElementCount >= data.MAX_ELEMENTS)
         {
-            NextBatch();
+            NextBatch(TRIANGLE);
         }
 
         int texIndex = -1;
@@ -545,7 +547,7 @@ namespace core {
             if (texIndex == -1)
             {
                 if (data.triangleTextureSlotIndex >= data.MAX_TEXTURE_SLOTS)
-                    NextBatch();
+                    NextBatch(TRIANGLE);
 
                 texIndex = data.triangleTextureSlotIndex;
                 data.triangleTextureSlots[data.triangleTextureSlotIndex] = renderData.texture;
@@ -593,13 +595,13 @@ namespace core {
 
         data.stats.vertexCount++;
 
-        data.lineElementCount += 2;
+        data.lineElementCount += 1;
 
         data.stats.elementCount += 1;
         data.stats.objectCount++;
 
         data.lineWidth = renderData.thickness;
-        NextBatch();
+        NextBatch(LINE);
     }
 
     void Renderer2D::DrawCircle(const CircleRenderData& renderData)
@@ -610,7 +612,7 @@ namespace core {
 
         if (data.circleElementCount >= data.MAX_ELEMENTS)
         {
-            NextBatch();
+            NextBatch(CIRCLE);
         }
 
         int texIndex = -1;
@@ -628,7 +630,7 @@ namespace core {
             if (texIndex == -1)
             {
                 if (data.circleTextureSlotIndex >= data.MAX_TEXTURE_SLOTS)
-                    NextBatch();
+                    NextBatch(CIRCLE);
 
                 texIndex = data.circleTextureSlotIndex;
                 data.circleTextureSlots[data.circleTextureSlotIndex] = renderData.texture;
@@ -662,6 +664,11 @@ namespace core {
 
     void Renderer2D::DrawString(const TextRenderData& renderData)
     {
+        if (data.textElementCount >= data.MAX_ELEMENTS)
+        {
+            NextBatch(TEXT);
+        }
+
         std::string string = renderData.string;
         auto& font = renderData.font;
 

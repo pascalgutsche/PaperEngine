@@ -1,11 +1,12 @@
 #pragma once
 
-#include "core/component/CircleRenderer.h"
+#include "core/component/2D/CircleRenderer.h"
+#include "core/component/2D/SpriteRenderer.h"
+#include "core/component/2D/LineRenderer.h"
+#include "core/component/2D/FontRenderer.h"
+#include "core/component/2D/SpriteSheet.h"
 #include "core/component/CubeRenderer.h"
-#include "core/component/SpriteRenderer.h"
-#include "core/component/LineRenderer.h"
-#include "core/component/FontRenderer.h"
-#include "core/component/SpriteSheet.h"
+#include "core/component/LightComponent.h"
 
 #include "core/event/KeyEvent.h"
 #include "core/event/MouseEvent.h"

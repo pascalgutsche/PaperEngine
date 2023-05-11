@@ -10,7 +10,7 @@ namespace core {
         // standard position of the camera
         position = glm::vec3(0.0f, 0.0f, 5.0f);
         // standard fov
-        fov = 1.0f;
+        fov = 45.0f;
 
         pitch = 0.0f;
         yaw = -90.0f;
@@ -65,7 +65,7 @@ namespace core {
 
     glm::mat4 Camera::GetProjectionMatrix() {
         // get aspect ratio because we need it in order to project the camera correctly
-        float aspect = 0.0f;
+        float aspect;
         if (!Application::GetImGuiEnabled())
 			aspect = (float)Application::GetWindow()->GetWidth() / (float)Application::GetWindow()->GetHeight();
         else

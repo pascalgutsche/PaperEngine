@@ -141,7 +141,7 @@ namespace core
 	{
 		object->CalculateGlobalCoords();
 		object->RenderObject();
-		Renderer2D::NextBatch();
+		Renderer2D::NextBatch(ALL);
 		for (UIObject* child : object->GetChildObjects())
 		{
 			if (child != object)

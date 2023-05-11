@@ -13,6 +13,7 @@ namespace core {
     {
         glm::vec3 position;
         glm::vec4 color;
+        int isLightSource;
         glm::vec2 texCoords;
         float tilingFactor;
         int texIndex;
@@ -55,6 +56,7 @@ namespace core {
         BufferLayout edgeGeometryLayout = {
             { GLSLDataType::FLOAT3, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
+            { GLSLDataType::INT, "aIsLightSource" },
 
             { GLSLDataType::FLOAT2, "aTexCoord" },
             { GLSLDataType::FLOAT , "aTilingFactor"},
@@ -191,16 +193,13 @@ namespace core {
             for (uint32_t i = 0; i < data.cubeTextureSlotIndex; i++)
                 data.cubeTextureSlots[i]->Bind(i);
 
-            //data.framebuffer->BindAttachmentAsTexture(1, data.MAX_TEXTURE_SLOTS - 1);
 
             data.edgeGeometryShader->Bind();
             data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
             data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera->GetOrthographicMatrix());
             data.edgeGeometryShader->UploadMat4f("uView", data.camera->GetViewMatrix());
-            data.edgeGeometryShader->UploadMat4f("uModel", glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS - 1, texSlots);
-            //data.edgeGeometryShader->UploadInt("uIDAttachment", data.MAX_TEXTURE_SLOTS - 1);
-            //data.edgeGeometryShader->UploadVec2f("screenSize", glm::vec2(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight()));
+            data.edgeGeometryShader->UploadVec4f("uLightColor", glm::vec4(1.0f));
             RenderCommand::DrawElements(data.cubeVertexArray, data.cubeElementCount);
             data.edgeGeometryShader->Unbind();
             data.stats.drawCalls++;
@@ -249,6 +248,7 @@ namespace core {
         {
             data.cubeVertexBufferPtr->position = transform * data.cubeVertexData[i];
             data.cubeVertexBufferPtr->color = renderData.color;
+            data.cubeVertexBufferPtr->isLightSource = renderData.isLightSource;
             data.cubeVertexBufferPtr->texCoords = renderData.texCoords[i % 4];
             data.cubeVertexBufferPtr->tilingFactor = renderData.tilingFactor;
             data.cubeVertexBufferPtr->texIndex = texIndex;

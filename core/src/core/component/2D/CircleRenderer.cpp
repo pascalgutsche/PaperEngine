@@ -1,6 +1,6 @@
 #include "_Core.h"
 
-#include "component/CircleRenderer.h"
+#include "component/2D/CircleRenderer.h"
 #include "generic/Entity.h"
 #include "renderer/Renderer2D.h"
 

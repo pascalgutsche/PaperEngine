@@ -1,6 +1,6 @@
 #include "_Core.h"
 #include "utility.h"
-#include "LineRenderer.h"
+#include "component/2D/LineRenderer.h"
 #include "renderer/Renderer2D.h"
 #include "layer/Layer.h"
 

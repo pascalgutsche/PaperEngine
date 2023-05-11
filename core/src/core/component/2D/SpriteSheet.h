@@ -3,7 +3,7 @@
 #include "utility.h"
 
 #include "generic/Component.h"
-#include "component/Sprite.h"
+#include "component/2D/Sprite.h"
 
 namespace core
 {
