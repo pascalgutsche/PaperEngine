@@ -61,7 +61,7 @@ namespace core {
         int alphaCoreID;
     };
 
-    struct RenderData
+    struct RenderData2D
     {
         static constexpr uint32_t MAX_VERTICES = 40000;
         static constexpr uint32_t MAX_ELEMENTS = 60000;
@@ -125,14 +125,11 @@ namespace core {
 
         Renderer2D::Stats stats;
 
-        Shr<Framebuffer> framebuffer;
-
-
         Shr<Texture> fontAtlasTexture;
 
     };
 
-    static RenderData data;
+    static RenderData2D data;
     static int texSlots[data.MAX_TEXTURE_SLOTS - 1];
 
     void Renderer2D::Init()
@@ -285,11 +282,7 @@ namespace core {
             texSlots[i] = i;
         }
 
-        FramebufferSpecification spec;
-        spec.attachment = { FramebufferTexFormat::RGBA8, FramebufferTexFormat::RED_INTEGER, FramebufferTexFormat::Depth };
-        spec.width = Application::GetWindow()->GetWidth();
-        spec.height = Application::GetWindow()->GetHeight();
-        data.framebuffer = Framebuffer::CreateBuffer(spec);
+
     }
 
     void Renderer2D::Shutdown()
@@ -310,12 +303,11 @@ namespace core {
         data.camera = camera;
         data.camera->CalcCameraVectors();
 
-        RenderCommand::Clear();
-        data.framebuffer->Bind();
-        RenderCommand::Clear();
+        Shr<Framebuffer> framebuffer = RenderCommand::GetFramebuffer();
 
-        data.framebuffer->SetViewPort();
-        data.framebuffer->ClearAttachment(1, 0); 
+        framebuffer->Bind();
+
+        framebuffer->SetViewPort();
 
         StartBatch();
     }
@@ -323,7 +315,7 @@ namespace core {
     void Renderer2D::EndRender()
     {
         Render();
-        data.framebuffer->Unbind();
+        RenderCommand::GetFramebuffer()->Unbind();
     }
 
     void Renderer2D::StartBatch()
@@ -804,10 +796,5 @@ namespace core {
     void Renderer2D::ClearStats()
     {
         memset(&data.stats, 0, sizeof(Stats));
-    }
-
-    Shr<Framebuffer> Renderer2D::GetFramebuffer()
-    {
-        return data.framebuffer;
     }
 }

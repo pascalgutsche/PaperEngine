@@ -4,28 +4,26 @@
 
 #include "renderer/VertexArray.h"
 #include "renderer/RenderAPI.h"
+#include "renderer/FrameBuffer.h"
 
 namespace core {
 	class RenderCommand
 	{
 	private:
 		static Shr<RenderAPI> rendererAPI;
+		static Shr<Framebuffer> framebuffer;
 
 	public:
-		inline static void Init()
-		{
-			rendererAPI->Init();
-		}
+		static void Init();
 
 		inline static void ClearColor(glm::vec4& color)
 		{
 			rendererAPI->SetClearColor(color);
 		}
 
-		inline static void Clear()
-		{
-			rendererAPI->Clear();
-		}
+		static void Clear();
+
+		static void ClearFramebuffer();
 
 		inline static void DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount)
 		{
@@ -55,6 +53,11 @@ namespace core {
 		inline static void SetPolygonModel(Polygon pol)
 		{
 			rendererAPI->SetPolygonModel(pol);
+		}
+
+		inline static Shr<Framebuffer> GetFramebuffer()
+		{
+			return framebuffer;
 		}
 	};
 

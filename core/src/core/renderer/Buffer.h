@@ -70,7 +70,7 @@ namespace  core
 			default:;
 			}
 
-			CORE_ASSERT(false, "unknown GLSLDataType");
+			CORE_ASSERT(false, "unknown GLSLDataType")
 			return 0;
 		}
 	};

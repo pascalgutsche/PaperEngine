@@ -7,6 +7,7 @@
 #include "event/GameEvent.h"
 #include "renderer/RenderCommand.h"
 #include "renderer/Renderer2D.h"
+#include "renderer/Renderer3D.h"
 #include "imgui/ImGuiLayer.h"
 #include "utils/Core.h"
 
@@ -26,6 +27,7 @@ namespace core {
 		SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer2D::Init();
+		Renderer3D::Init();
 
 		
 

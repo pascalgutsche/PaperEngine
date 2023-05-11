@@ -469,20 +469,20 @@ namespace core {
 
         auto viewportOffset = ImGui::GetCursorPos();
 
-    	Renderer2D::GetFramebuffer()->Bind();
+    	RenderCommand::GetFramebuffer()->Bind();
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
         if (viewportSize != *(glm::vec2*)&viewport_panel_size || Application::GetImGuiSwitched())
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            Renderer2D::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
-            Renderer2D::GetFramebuffer()->SetViewPort();
+            RenderCommand::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+            RenderCommand::GetFramebuffer()->SetViewPort();
         }
         else 
         {
-            uint32_t textureID = Renderer2D::GetFramebuffer()->GetColorID(0);
+            uint32_t textureID = RenderCommand::GetFramebuffer()->GetColorID(0);
             ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         }
-    	Renderer2D::GetFramebuffer()->Unbind();
+        RenderCommand::GetFramebuffer()->Unbind();
 
         auto windowSize = ImGui::GetWindowSize();
         ImVec2 minBound = ImGui::GetWindowPos();
@@ -517,21 +517,21 @@ namespace core {
         ImGui::Begin(" ", nullptr, window_flags);
         ImGui::PopStyleVar(3);
 
-    	Renderer2D::GetFramebuffer()->Bind();
+    	RenderCommand::GetFramebuffer()->Bind();
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
         if (viewportSize != *(glm::vec2*)&viewport_panel_size || Application::GetImGuiSwitched())
         {
             viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            Renderer2D::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
-            Renderer2D::GetFramebuffer()->SetViewPort();
+            RenderCommand::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
+            RenderCommand::GetFramebuffer()->SetViewPort();
         }
         else
         {
-            uint32_t textureID = Renderer2D::GetFramebuffer()->GetColorID(0);
+            uint32_t textureID = RenderCommand::GetFramebuffer()->GetColorID(0);
 
             ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         }
-    	Renderer2D::GetFramebuffer()->Unbind();
+        RenderCommand::GetFramebuffer()->Unbind();
 
         ImGui::End();
     }

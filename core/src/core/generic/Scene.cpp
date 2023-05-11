@@ -6,6 +6,8 @@
 #include "Component.h"
 #include "generic/Camera.h"
 #include "renderer/Renderer2D.h"
+#include "renderer/Renderer3D.h"
+#include "renderer/RenderCommand.h"
 
 
 namespace core {
@@ -21,6 +23,16 @@ namespace core {
 
         //render anything inside the scene
         Renderer2D::ClearStats();
+        Renderer3D::ClearStats();
+        RenderCommand::Clear();
+        RenderCommand::ClearFramebuffer();
+
+        Renderer3D::BeginRender(camera);
+        EdgeRenderData3D data;
+        data.texture = DataPool::GetTexture("error_texture_256x256.png");
+        Renderer3D::DrawCube(data);
+        Renderer3D::EndRender();
+
         Renderer2D::BeginRender(camera);
 
         for (int i = 0; i < Application::GetLayerStack().GetSize(); i++)
@@ -44,6 +56,8 @@ namespace core {
         }
 
         Renderer2D::EndRender();
+
+
     }
 
     void Scene::Start()

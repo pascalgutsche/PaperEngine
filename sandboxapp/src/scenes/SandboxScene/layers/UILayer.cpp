@@ -42,11 +42,11 @@ void UILayer::OnAttach()
 	pitchLabel = new Label("N/A", glm::vec4(0.9f), Transform(glm::vec2(0.3f, 0.08f), glm::vec2(0.08f, 0.08f)), DataPool::GetFont("mononoki.ttf"));
 	left->AddChildObject(pitchLabel);
 
-	Entity* error = new Entity("error", Transform(glm::vec2(-1.0f, 0.0f)));
+	Entity* error = new Entity("error", Transform(glm::vec2(-3.0f, 0.0f)));
 	error->AddComponent(new SpriteRenderer(glm::vec4(1.0f), DataPool::GetTexture("error_texture_256x256.png"), 1.0f, Geometry::RECTANGLE));
 	AddEntityToLayer(error);
 
-	Entity* placeholder = new Entity("placeholder", Transform(glm::vec2(1.0f, 0.0f)));
+	Entity* placeholder = new Entity("placeholder", Transform(glm::vec2(3.0f, 0.0f)));
 	placeholder->AddComponent(new SpriteRenderer(glm::vec4(1.0f), DataPool::GetTexture("placeholder_texture_256x256.png"), 1.0f, Geometry::RECTANGLE));
 	AddEntityToLayer(placeholder);
 

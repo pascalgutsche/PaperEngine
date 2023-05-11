@@ -23,7 +23,6 @@ struct VertexOutput
 layout(location = 0) out VertexOutput Output;
 layout(location = 3) out flat int TexID;
 layout(location = 4) out flat int CoreID;
-layout(location = 5) out flat int alphaCoreID;
 
 void main()
 {
@@ -32,22 +31,9 @@ void main()
     Output.TilingFactor = aTilingFactor;
     TexID = aTexID;
     CoreID = aCoreID;
-    alphaCoreID = aAlphaCoreID;
 
-    vec4 position;
-    switch (aProjectionMode) {
-        case 0:
-            position = uPerspective * uView * uModel *  vec4(aPos, 0.0f, 1.0f);
-            break;
-        case 1:
-            position = uOrthographic * uView * vec4(aPos, 0.0f, 1.0f);
-            break;
-        case 2:
-            position = vec4(aPos, 0.0f, 1.0f);
-        default:
-            break;
-    }
-    gl_Position = position;
+
+    gl_Position = uPerspective * uView * uModel * vec4(aPos, 1.0f);
 
 }
 
@@ -80,7 +66,7 @@ void main()
     if (TexID >= 0)
         color *= texture(uTexture[TexID], Input.TexCoord * Input.TilingFactor);
 
-    if (color.a == 0.0 && alphaCoreID == 0)
+    if (color.a == 0.0)
         discard;
 
     display = color;

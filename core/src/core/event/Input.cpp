@@ -5,7 +5,7 @@
 #include "event/MouseCodes.h"
 #include "generic/Application.h"
 #include "imgui/ImGuiLayer.h"
-#include "renderer/Renderer2D.h"
+#include "renderer/RenderCommand.h"
 #include "ui/Button.h"
 
 #include "GLFW/glfw3.h"
@@ -54,9 +54,9 @@ namespace core
         }
 
         if (pos.x >= 0 && pos.y >= 0 && !Application::GetImGuiSwitched() && !Application::IsResizing()) {
-            Renderer2D::GetFramebuffer()->Bind();
-            mouseHoverID[0] = Renderer2D::GetFramebuffer()->ReadPixel(1, pos);
-            Renderer2D::GetFramebuffer()->Unbind();
+            RenderCommand::GetFramebuffer()->Bind();
+            mouseHoverID[0] = RenderCommand::GetFramebuffer()->ReadPixel(1, pos);
+            RenderCommand::GetFramebuffer()->Unbind();
         }
         if (Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             mouseClickedID[0] = mouseHoverID[0];

@@ -107,8 +107,6 @@ namespace core {
         static Stats GetStats();
         static void ClearStats();
 
-        static Shr<Framebuffer> GetFramebuffer();
-
         static void NextBatch();
     private:
         static void StartBatch();
