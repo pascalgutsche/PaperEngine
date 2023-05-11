@@ -38,7 +38,7 @@ namespace core
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_LINE_SMOOTH);
 	}
 
@@ -70,6 +70,21 @@ namespace core
 				glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 				break;
 		}
+	}
+
+	void OpenGLRenderAPI::EnableDepthTesting(bool enabled)
+	{
+		if (enabled)
+			glEnable(GL_DEPTH_TEST);
+		else
+			glDisable(GL_DEPTH_TEST);
+
+
+	}
+
+	bool OpenGLRenderAPI::IsDepthTestingEnabled()
+	{
+		return depthTestingEnabled;
 	}
 
 	void OpenGLRenderAPI::DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount)

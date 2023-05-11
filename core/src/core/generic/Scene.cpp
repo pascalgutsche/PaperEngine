@@ -25,7 +25,7 @@ namespace core {
         Renderer2D::ClearStats();
         Renderer3D::ClearStats();
         RenderCommand::Clear();
-        RenderCommand::ClearFramebuffer();
+        RenderCommand::PrepareFramebuffer();
 
         Renderer3D::BeginRender(camera);
         EdgeRenderData3D data;
@@ -78,8 +78,8 @@ namespace core {
         return this->camera;
     }
 
-    glm::vec4& Scene::GetBackcolor() {
-        return this->backcolor;
+    glm::vec4 Scene::GetBackcolor() {
+        return glm::vec4(this->backcolor, 1.0f);
     }
 
     void Scene::AddLayer(Layer* layer)

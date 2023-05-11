@@ -19,9 +19,7 @@ namespace core
 		int ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos) override;
 
 		void ClearAttachment(uint32_t attachmentIndex, int value) override;
-		void ProjectToScreen(uint32_t attachmentIndex, uint32_t width, uint32_t height) override;
 
-		void SetViewPort() override;
 		void Bind() override;
 		void Unbind() override;
 

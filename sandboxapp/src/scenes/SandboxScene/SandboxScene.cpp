@@ -3,7 +3,7 @@
 
 SandboxScene::SandboxScene()
 {
-	backcolor = glm::vec4(0.2f);
+	backcolor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 	uiLayer = new UILayer();
 }
 

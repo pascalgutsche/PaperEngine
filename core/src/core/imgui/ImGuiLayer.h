@@ -33,6 +33,8 @@ namespace core {
         glm::vec2 viewportSize;
         glm::vec2 viewportBounds[2];
 
+        bool viewportFocused = false, viewportHovered = false;
+
         glm::ivec2 mousePosViewportRelative;
 
         Object* selectedObject = nullptr;
@@ -48,7 +50,7 @@ namespace core {
         void OnDetach() override;
         void Update(const float dt) override;
         void Imgui(const float dt) override;
-        void OnEvent(Event& e) override { }
+        void OnEvent(Event& e) override;
 
         void Begin(const float dt);
         void End();
@@ -56,8 +58,8 @@ namespace core {
         void ScreenPanel();
 
         void DockPanel(std::string name, ImGuiID dock_id);
-        void AddVariable(std::string name, void* variable);
 
+        glm::vec2 GetViewportSize() const { return viewportSize; };
         glm::ivec2 GetMousePosViewportRelative() const { return mousePosViewportRelative; }
         bool IsMouseInsideViewport() const { return mousePosViewportRelative.x >= 0 && mousePosViewportRelative.y >= 0 && mousePosViewportRelative.x < viewportSize.x&& mousePosViewportRelative.y < viewportSize.y; }
 

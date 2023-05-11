@@ -23,11 +23,21 @@ namespace core
 		rendererAPI->Clear();
 	}
 
-	void RenderCommand::ClearFramebuffer()
+	void RenderCommand::PrepareFramebuffer()
 	{
 		framebuffer->Bind();
 		Clear();
 		framebuffer->ClearAttachment(1, 0);
 		framebuffer->Unbind();
+	}
+
+	void RenderCommand::EnableDepthTesting(bool enable)
+	{
+		return rendererAPI->EnableDepthTesting(enable);
+	}
+
+	bool RenderCommand::IsDepthTestingEnabled()
+	{
+		return rendererAPI->IsDepthTestingEnabled();
 	}
 }

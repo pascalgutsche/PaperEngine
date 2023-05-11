@@ -17,7 +17,7 @@ namespace core {
         virtual ~Scene() = default;
 
         Shr<Camera> GetCamera();
-        glm::vec4& GetBackcolor();
+        glm::vec4 GetBackcolor();
 
         void Start();
         void Stop();
@@ -30,7 +30,7 @@ namespace core {
 
     protected:
         Shr<Camera> camera = nullptr;
-        glm::vec4 backcolor = {};
+        glm::vec3 backcolor = glm::vec3(1.0f);
 
         virtual void OnStart() = 0;
         virtual void OnStop() = 0;

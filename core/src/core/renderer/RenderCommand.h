@@ -23,7 +23,11 @@ namespace core {
 
 		static void Clear();
 
-		static void ClearFramebuffer();
+		static void PrepareFramebuffer();
+
+		static void EnableDepthTesting(bool enable);
+
+		static bool IsDepthTestingEnabled();
 
 		inline static void DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount)
 		{

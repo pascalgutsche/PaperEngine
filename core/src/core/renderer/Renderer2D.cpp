@@ -295,7 +295,7 @@ namespace core {
 
     void Renderer2D::ResizeWindow(uint32_t width, uint32_t height)
     {
-        RenderCommand::SetViewPort(0, 0, width, height);
+        
     }
 
     void Renderer2D::BeginRender(Shr<Camera> camera)
@@ -303,11 +303,9 @@ namespace core {
         data.camera = camera;
         data.camera->CalcCameraVectors();
 
-        Shr<Framebuffer> framebuffer = RenderCommand::GetFramebuffer();
+        RenderCommand::GetFramebuffer()->Bind();
 
-        framebuffer->Bind();
-
-        framebuffer->SetViewPort();
+        RenderCommand::EnableDepthTesting(false);
 
         StartBatch();
     }

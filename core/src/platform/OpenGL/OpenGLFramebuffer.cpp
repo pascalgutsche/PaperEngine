@@ -176,7 +176,6 @@ namespace core {
 		specification.width = width;
 		specification.height = height;
 		Invalidate();
-		Bind();
 	}
 
 	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, glm::ivec2 pos)
@@ -197,22 +196,9 @@ namespace core {
 		glClearTexImage(colorAttachmentsID[attachmentIndex], 0, FBTexFormatToGL(spec.texFormat), GL_UNSIGNED_INT, &value);
 	}
 
-	void OpenGLFramebuffer::ProjectToScreen(uint32_t attachmentIndex, uint32_t width, uint32_t height)
-	{
-		//glBindFramebuffer(GL_READ_FRAMEBUFFER, fboID);
-		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		//glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
-		//glBlitFramebuffer(0, 0, specification.width, specification.height, 0, 0, width, height,
-		//	GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	}
-
-	void OpenGLFramebuffer::SetViewPort()
-	{
-		glViewport(0, 0, specification.width, specification.height);
-	}
-
 	void OpenGLFramebuffer::Bind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, fboID);
+		glViewport(0, 0, specification.width, specification.height);
 	}
 
 	void OpenGLFramebuffer::Unbind() {

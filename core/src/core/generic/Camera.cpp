@@ -2,6 +2,7 @@
 
 #include "generic/Camera.h"
 #include "generic/Application.h"
+#include "imgui/ImGuiLayer.h"
 
 namespace core {
 
@@ -64,7 +65,14 @@ namespace core {
 
     glm::mat4 Camera::GetProjectionMatrix() {
         // get aspect ratio because we need it in order to project the camera correctly
-        float aspect = (float)Application::GetWindow()->GetWidth() / (float)Application::GetWindow()->GetHeight();
+        float aspect = 0.0f;
+        if (!Application::GetImGuiEnabled())
+			aspect = (float)Application::GetWindow()->GetWidth() / (float)Application::GetWindow()->GetHeight();
+        else
+        {
+            const glm::vec2 viewportSize = Application::GetImGuiLayer().GetViewportSize();
+            aspect = viewportSize.x / viewportSize.y;
+        }
         return glm::perspective(fov, aspect, 0.1f, 1000.0f);
     }
 

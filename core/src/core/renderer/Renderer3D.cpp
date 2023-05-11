@@ -151,13 +151,11 @@ namespace core {
     {
         data.camera = camera;
         data.camera->CalcCameraVectors();
-
-        Shr<Framebuffer> framebuffer = RenderCommand::GetFramebuffer();
-
         
-        framebuffer->Bind();
+        RenderCommand::GetFramebuffer()->Bind();
 
-        framebuffer->SetViewPort();
+        RenderCommand::EnableDepthTesting(true);
+        
 
         StartBatch();
     }

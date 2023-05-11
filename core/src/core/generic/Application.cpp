@@ -90,7 +90,7 @@ namespace core {
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
 		resizing = true;
-		Renderer2D::ResizeWindow(e.getWidth(), e.getHeight());
+		RenderCommand::SetViewPort(0, 0, e.getWidth(), e.getHeight());
 		return false;
 	}
 

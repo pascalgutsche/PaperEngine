@@ -152,21 +152,16 @@ namespace core {
         }
     }
 
-    static void HelpMarker(const char* desc)
-    {
-        ImGui::TextDisabled("(?)");
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-        {
-            ImGui::BeginTooltip();
-            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-            ImGui::TextUnformatted(desc);
-            ImGui::PopTextWrapPos();
-            ImGui::EndTooltip();
-        }
-    }
-
     void ImGuiLayer::Update(const float dt)
     {
+        // Resize
+        if (FramebufferSpecification spec = RenderCommand::GetFramebuffer()->GetSpecification();
+            viewportSize.x > 0.0f && viewportSize.y > 0.0f && // zero sized framebuffer is invalid
+            (spec.width != viewportSize.x || spec.height != viewportSize.y))
+        {
+            RenderCommand::GetFramebuffer()->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+        }
+
         if (Application::GetImGuiEnabled()) {
             mousePosViewportRelative = *(glm::vec2*)&ImGui::GetMousePos();
             mousePosViewportRelative.x -= viewportBounds[0].x;
@@ -179,14 +174,12 @@ namespace core {
         
     }
 
-
-    static bool p_open = true;
-    void ImGuiLayer::Imgui(const float dt)
+	void ImGuiLayer::Imgui(const float dt)
     {
-        ImGuiDockNodeFlags dockflags = ImGuiDockNodeFlags_PassthruCentralNode;//ImGuiDockNodeFlags_None; 
+        ImGuiDockNodeFlags dockflags = ImGuiDockNodeFlags_PassthruCentralNode;
 
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-        window_flags |= ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_MenuBar;
+        window_flags |= ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;
         window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
         window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         ImGuiViewport& viewport = *ImGui::GetMainViewport();
@@ -197,7 +190,7 @@ namespace core {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("docking", &p_open, window_flags);
+        ImGui::Begin("docking", nullptr, window_flags);
         ImGui::PopStyleVar(3);
 
         dockspace_id = ImGui::GetID("dockspace");
@@ -239,7 +232,17 @@ namespace core {
         if (first) first = false;
     }
 
-	void ImGuiLayer::ApplicationPanel(const float dt, bool first)
+    void ImGuiLayer::OnEvent(Event& e)
+    {
+        if (!viewportFocused && Application::GetImGuiEnabled())
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            e.handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+            e.handled |= e.IsInCategory(EventCategoryKeyBoard) & io.WantCaptureKeyboard;
+        }
+    }
+
+    void ImGuiLayer::ApplicationPanel(const float dt, bool first)
     {
         const char* name = "Application: ";
         std::stringstream stream;
@@ -252,7 +255,7 @@ namespace core {
         static float timehelper = -1;
         static float history = 5;
         static int flags = ImPlotAxisFlags_NoTickLabels;
-        static ScrollingBuffer sbuff_dt(300);// , sbuff_fps(300);
+        static ScrollingBuffer sbuff_dt(300);
 
         if (timehelper >= 0.016f || timehelper == -1) {
             timehelper = 0;
@@ -278,14 +281,6 @@ namespace core {
 
 		    stream << "frames per sec: " << 1 / dt;
 		    ImGui::Text(stream.str().c_str()); stream.str("");
-		    //if (ImPlot::BeginPlot("##frames_per_second", ImVec2(-1, 100))) {
-		    //    ImPlot::SetupAxes(NULL, NULL, flags, flags);
-		    //    ImPlot::SetupAxisLimits(ImAxis_X1, time - history, time, ImGuiCond_Always);
-		    //    ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1000);
-		    //    ImPlot::SetNextFillStyle(ImVec4(1.0f, 0.0f, 0.0f, -1.0f), 0.5f);
-		    //    ImPlot::PlotLine("##frames", &sbuff_fps.Data[0].x, &sbuff_fps.Data[0].y, sbuff_fps.Data.size(), 0, sbuff_fps.Offset, 2 * sizeof(float));
-		    //    ImPlot::EndPlot();
-		    //}
 		    
 		    stream << "Frames rendered: " << Application::GetFramesRendered();
 		    ImGui::BulletText(stream.str().c_str()); stream.str("");
@@ -376,11 +371,6 @@ namespace core {
         ImGui::End();
     }
 
-    void ImGuiLayer::AddVariable(std::string name, void* variable) {
-        if (variablePool.find(name) == variablePool.end()) {
-            variablePool.emplace(name, variable);
-        }
-    }
 
     void ImGuiLayer::CustomPanel(const float dt, bool first)
     {
@@ -457,42 +447,29 @@ namespace core {
 
     void ImGuiLayer::ViewPortPanel(const float dt, bool first)
     {
-        
         const char* name = "ViewPort: ";
-        std::stringstream stream;
 
         if (first)
 			Application::GetImGuiLayer().DockPanel(name, Application::GetImGuiLayer().GetDockspaceMain());
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin(name);
+        //RenderCommand::GetFramebuffer()->Bind();
 
-        auto viewportOffset = ImGui::GetCursorPos();
+        auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+        auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+        auto viewportOffset = ImGui::GetWindowPos();
+        viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+        viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
-    	RenderCommand::GetFramebuffer()->Bind();
+        viewportFocused = ImGui::IsWindowFocused();
+        viewportHovered = ImGui::IsWindowHovered();
+
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
-        if (viewportSize != *(glm::vec2*)&viewport_panel_size || Application::GetImGuiSwitched())
-        {
-            viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            RenderCommand::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
-            RenderCommand::GetFramebuffer()->SetViewPort();
-        }
-        else 
-        {
-            uint32_t textureID = RenderCommand::GetFramebuffer()->GetColorID(0);
-            ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-        }
-        RenderCommand::GetFramebuffer()->Unbind();
+    	viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
 
-        auto windowSize = ImGui::GetWindowSize();
-        ImVec2 minBound = ImGui::GetWindowPos();
-        minBound.x += viewportOffset.x;
-        minBound.y += viewportOffset.y;
-        
-        ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
-        
-        viewportBounds[0] = { minBound.x, minBound.y };
-        viewportBounds[1] = { maxBound.x, maxBound.y };
+        uint32_t textureID = RenderCommand::GetFramebuffer()->GetColorID(0);
+        ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
         ImGui::End();
         ImGui::PopStyleVar();
@@ -513,26 +490,19 @@ namespace core {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
+        
         ImGui::Begin(" ", nullptr, window_flags);
         ImGui::PopStyleVar(3);
 
     	RenderCommand::GetFramebuffer()->Bind();
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
-        if (viewportSize != *(glm::vec2*)&viewport_panel_size || Application::GetImGuiSwitched())
-        {
-            viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
-            RenderCommand::GetFramebuffer()->Resize(viewportSize.x, viewportSize.y);
-            RenderCommand::GetFramebuffer()->SetViewPort();
-        }
-        else
-        {
-            uint32_t textureID = RenderCommand::GetFramebuffer()->GetColorID(0);
-
-            ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-        }
+        viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
+        
+        uint32_t textureID = RenderCommand::GetFramebuffer()->GetColorID(0);
+        ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        
         RenderCommand::GetFramebuffer()->Unbind();
-
+        
         ImGui::End();
     }
 
