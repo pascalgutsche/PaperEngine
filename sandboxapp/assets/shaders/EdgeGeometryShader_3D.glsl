@@ -3,10 +3,11 @@
 layout(location = 0) in vec3 aPos; // the position variable has attribute position 0
 layout(location = 1) in vec4 aColor; //the color of the vector
 layout(location = 2) in int aIsLightSource;
-layout(location = 3) in vec2 aTexCoord; //the coords of the texture
-layout(location = 4) in float aTilingFactor;
-layout(location = 5) in int aTexID; //The slot of the texture
-layout(location = 6) in int aCoreID;
+layout(location = 3) in vec3 aNormal;
+layout(location = 4) in vec2 aTexCoord; //the coords of the texture
+layout(location = 5) in float aTilingFactor;
+layout(location = 6) in int aTexID; //The slot of the texture
+layout(location = 7) in int aCoreID;
 
 // camera variables
 uniform mat4 uPerspective;
@@ -17,18 +18,20 @@ struct VertexOutput
 {
     vec4 Color;
     int IsLightSource;
+    vec3 Normal;
     vec2 TexCoord;
     float TilingFactor;
 };
 
 layout(location = 0) out VertexOutput Output;
-layout(location = 4) out flat int TexID;
-layout(location = 5) out flat int CoreID;
+layout(location = 5) out flat int TexID;
+layout(location = 6) out flat int CoreID;
 
 void main()
 {
     Output.Color = aColor;
     Output.IsLightSource = aIsLightSource;
+    Output.Normal = aNormal;
     Output.TexCoord = aTexCoord;
     Output.TilingFactor = aTilingFactor;
     TexID = aTexID;
@@ -50,16 +53,22 @@ struct VertexOutput
 {
     vec4 Color;
     int IsLightSource;
+    vec3 Normal;
     vec2 TexCoord;
     float TilingFactor;
 };
 
 layout(location = 0) in flat VertexOutput Input;
-layout(location = 4) in flat int TexID;
-layout(location = 5) in flat int CoreID;
+layout(location = 5) in flat int TexID;
+layout(location = 6) in flat int CoreID;
 
 uniform sampler2D uTexture[32];
 uniform vec4 uLightColor;
+
+layout(std430, binding = 0) buffer test
+{
+    float con[];
+};
 
 void main()
 {
@@ -77,6 +86,7 @@ void main()
     if (Input.IsLightSource == 1)
         ambient = vec4(1.0f);
 
-    display = ambient * color;
+    con = 1.0f;
+    display = ambient * color * con[0];
     objectID = CoreID;
 }

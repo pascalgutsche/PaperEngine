@@ -8,7 +8,6 @@
 #include "utils/DataPool.h"
 #include "layer/Layer.h"
 
-#include "component/SpriteRenderer.h"
 #include "event/Input.h"
 #include "event/KeyCodes.h"
 

@@ -75,4 +75,38 @@ namespace core
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+
+
+	//
+	// STORAGE BUFFER
+	//
+
+	OpenGLStorageBuffer::OpenGLStorageBuffer(uint32_t binding)
+	{
+		glCreateBuffers(1, &ssboID);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboID);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_STATIC_READ);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding, ssboID);
+	}
+
+	OpenGLStorageBuffer::~OpenGLStorageBuffer()
+	{
+	}
+
+	void OpenGLStorageBuffer::SetData(void* data, uint32_t size)
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboID);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, size, data);
+	}
+
+	void OpenGLStorageBuffer::Bind()
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboID);
+	}
+
+	void OpenGLStorageBuffer::Unbind()
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	}
 }

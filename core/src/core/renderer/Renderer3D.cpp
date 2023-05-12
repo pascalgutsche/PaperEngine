@@ -14,6 +14,7 @@ namespace core {
         glm::vec3 position;
         glm::vec4 color;
         int isLightSource;
+        glm::vec3 normal;
         glm::vec2 texCoords;
         float tilingFactor;
         int texIndex;
@@ -40,7 +41,8 @@ namespace core {
 
         Shr<Camera> camera;
 
-        glm::vec4 cubeVertexData[24];
+        std::array<glm::vec3, 24> cubePositionData;
+        std::array<glm::vec3, 24> cubeNormalData;
 
         Renderer3D::Stats stats;
 
@@ -57,6 +59,7 @@ namespace core {
             { GLSLDataType::FLOAT3, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
             { GLSLDataType::INT, "aIsLightSource" },
+            { GLSLDataType::FLOAT3, "aNormal" },
 
             { GLSLDataType::FLOAT2, "aTexCoord" },
             { GLSLDataType::FLOAT , "aTilingFactor"},
@@ -94,42 +97,79 @@ namespace core {
         data.cubeVertexArray->SetElementBuffer(cubeElementbuffer);
         delete[] cubeElements;
 
+        ///////POSITION
         //back
-        data.cubeVertexData[0] = glm::vec4(-0.5f, -0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[1] = glm::vec4(0.5f, -0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[2] = glm::vec4(0.5f, 0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[3] = glm::vec4(-0.5f, 0.5f, -0.5f, 1.0f);
+        data.cubePositionData[0]  = glm::vec3(-0.5f, -0.5f, -0.5f);
+        data.cubePositionData[1]  = glm::vec3( 0.5f, -0.5f, -0.5f);
+        data.cubePositionData[2]  = glm::vec3( 0.5f,  0.5f, -0.5f);
+        data.cubePositionData[3]  = glm::vec3(-0.5f,  0.5f, -0.5f);
+                                            
+        //front                             
+        data.cubePositionData[4]  = glm::vec3(-0.5f, -0.5f,  0.5f);
+        data.cubePositionData[5]  = glm::vec3( 0.5f, -0.5f,  0.5f);
+        data.cubePositionData[6]  = glm::vec3( 0.5f,  0.5f,  0.5f);
+        data.cubePositionData[7]  = glm::vec3(-0.5f,  0.5f,  0.5f);
+                                            
+        //bottom                            
+    	data.cubePositionData[8]  = glm::vec3(-0.5f, -0.5f, -0.5f);
+        data.cubePositionData[9]  = glm::vec3( 0.5f, -0.5f, -0.5f);
+        data.cubePositionData[10] = glm::vec3( 0.5f, -0.5f,  0.5f);
+        data.cubePositionData[11] = glm::vec3(-0.5f, -0.5f,  0.5f);
+                                            
+        //top                               
+        data.cubePositionData[12] = glm::vec3(-0.5f,  0.5f, -0.5f);
+        data.cubePositionData[13] = glm::vec3( 0.5f,  0.5f, -0.5f);
+        data.cubePositionData[14] = glm::vec3( 0.5f,  0.5f,  0.5f);
+        data.cubePositionData[15] = glm::vec3(-0.5f,  0.5f,  0.5f);
+                                            
+        //left                              
+        data.cubePositionData[16] = glm::vec3(-0.5f, -0.5f,  0.5f);
+        data.cubePositionData[17] = glm::vec3(-0.5f, -0.5f, -0.5f);
+        data.cubePositionData[18] = glm::vec3(-0.5f,  0.5f, -0.5f);
+        data.cubePositionData[19] = glm::vec3(-0.5f,  0.5f,  0.5f);
+                                            
+        //right                             
+        data.cubePositionData[20] = glm::vec3( 0.5f, -0.5f,  0.5f);
+        data.cubePositionData[21] = glm::vec3( 0.5f, -0.5f, -0.5f);
+        data.cubePositionData[22] = glm::vec3( 0.5f,  0.5f, -0.5f);
+        data.cubePositionData[23] = glm::vec3( 0.5f,  0.5f,  0.5f);
 
-        //front
-        data.cubeVertexData[4] = glm::vec4(-0.5f, -0.5f, 0.5f, 1.0f);
-        data.cubeVertexData[5] = glm::vec4(0.5f, -0.5f, 0.5f, 1.0f);
-        data.cubeVertexData[6] = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-        data.cubeVertexData[7] = glm::vec4(-0.5f, 0.5f, 0.5f, 1.0f);
-
+        /////// NORMALS
+        //back
+        data.cubeNormalData[0]  = glm::vec3( 0.0f, 0.0f, -1.0f);
+        data.cubeNormalData[1]  = glm::vec3( 0.0f, 0.0f, -1.0f);
+        data.cubeNormalData[2]  = glm::vec3( 0.0f, 0.0f, -1.0f);
+        data.cubeNormalData[3]  = glm::vec3( 0.0f, 0.0f, -1.0f);
+                                  
+        //front                   
+        data.cubeNormalData[4]  = glm::vec3( 0.0f, 0.0f,  1.0f);
+        data.cubeNormalData[5]  = glm::vec3( 0.0f, 0.0f,  1.0f);
+        data.cubeNormalData[6]  = glm::vec3( 0.0f, 0.0f,  1.0f);
+        data.cubeNormalData[7]  = glm::vec3( 0.0f, 0.0f,  1.0f);
+                                 
         //bottom
-    	data.cubeVertexData[8] = glm::vec4(-0.5f, -0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[9] = glm::vec4(0.5f, -0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[10] = glm::vec4(0.5f, -0.5f, 0.5f, 1.0f);
-        data.cubeVertexData[11] = glm::vec4(-0.5f, -0.5f, 0.5f, 1.0f);
-
-        //top
-        data.cubeVertexData[12] = glm::vec4(-0.5f, 0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[13] = glm::vec4(0.5f, 0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[14] = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-        data.cubeVertexData[15] = glm::vec4(-0.5f, 0.5f, 0.5f, 1.0f);
-
-        //left
-        data.cubeVertexData[16] = glm::vec4(-0.5f, -0.5f, 0.5f, 1.0f);
-        data.cubeVertexData[17] = glm::vec4(-0.5f, -0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[18] = glm::vec4(-0.5f, 0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[19] = glm::vec4(-0.5f, 0.5f, 0.5f, 1.0f);
-
-        //right
-        data.cubeVertexData[20] = glm::vec4(0.5f, -0.5f, 0.5f, 1.0f);
-        data.cubeVertexData[21] = glm::vec4(0.5f, -0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[22] = glm::vec4(0.5f, 0.5f, -0.5f, 1.0f);
-        data.cubeVertexData[23] = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-
+        data.cubeNormalData[8]  = glm::vec3( 0.0f,-1.0f, 0.0f);
+        data.cubeNormalData[9]  = glm::vec3( 0.0f,-1.0f, 0.0f);
+        data.cubeNormalData[10] = glm::vec3( 0.0f,-1.0f, 0.0f);
+        data.cubeNormalData[11] = glm::vec3( 0.0f,-1.0f, 0.0f);
+                               
+        //top                  
+        data.cubeNormalData[12] = glm::vec3( 0.0f, 1.0f, 0.0f);
+        data.cubeNormalData[13] = glm::vec3( 0.0f, 1.0f, 0.0f);
+        data.cubeNormalData[14] = glm::vec3( 0.0f, 1.0f, 0.0f);
+        data.cubeNormalData[15] = glm::vec3( 0.0f, 1.0f, 0.0f);
+                                  
+        //left                    
+        data.cubeNormalData[16] = glm::vec3(-1.0f, 0.0f, 0.0f);
+        data.cubeNormalData[17] = glm::vec3(-1.0f, 0.0f, 0.0f);
+        data.cubeNormalData[18] = glm::vec3(-1.0f, 0.0f, 0.0f);
+        data.cubeNormalData[19] = glm::vec3(-1.0f, 0.0f, 0.0f);
+                                   
+        //right                    
+        data.cubeNormalData[20] = glm::vec3( 1.0f, 0.0f, 0.0f);
+        data.cubeNormalData[21] = glm::vec3( 1.0f, 0.0f, 0.0f);
+        data.cubeNormalData[22] = glm::vec3( 1.0f, 0.0f, 0.0f);
+        data.cubeNormalData[23] = glm::vec3( 1.0f, 0.0f, 0.0f);
 
         data.cubeVertexBufferBase = new EdgeVertex[data.MAX_VERTICES];
 
@@ -193,6 +233,10 @@ namespace core {
             for (uint32_t i = 0; i < data.cubeTextureSlotIndex; i++)
                 data.cubeTextureSlots[i]->Bind(i);
 
+            Shr<StorageBuffer> storageBuffer = StorageBuffer::CreateBuffer(0);
+            float con[]{ 1.0f, 1.0f };
+            storageBuffer->SetData(con, 8);
+            storageBuffer->Bind();
 
             data.edgeGeometryShader->Bind();
             data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
@@ -201,6 +245,8 @@ namespace core {
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS - 1, texSlots);
             data.edgeGeometryShader->UploadVec4f("uLightColor", glm::vec4(1.0f));
             RenderCommand::DrawElements(data.cubeVertexArray, data.cubeElementCount);
+
+            storageBuffer->Unbind();
             data.edgeGeometryShader->Unbind();
             data.stats.drawCalls++;
 
@@ -246,9 +292,10 @@ namespace core {
 
         for (int i = 0; i < cubeVertexCount; i++)
         {
-            data.cubeVertexBufferPtr->position = transform * data.cubeVertexData[i];
+            data.cubeVertexBufferPtr->position = transform * glm::vec4(data.cubePositionData[i], 1.0f);
             data.cubeVertexBufferPtr->color = renderData.color;
             data.cubeVertexBufferPtr->isLightSource = renderData.isLightSource;
+            data.cubeVertexBufferPtr->normal = data.cubeNormalData[i];
             data.cubeVertexBufferPtr->texCoords = renderData.texCoords[i % 4];
             data.cubeVertexBufferPtr->tilingFactor = renderData.tilingFactor;
             data.cubeVertexBufferPtr->texIndex = texIndex;

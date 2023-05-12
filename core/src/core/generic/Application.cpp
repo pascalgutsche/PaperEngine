@@ -16,14 +16,14 @@ namespace core {
 
 	Application* Application::instance;
 
-	Application::Application() {
+	Application::Application(const WindowProps& props) {
 		Log::Init();
 		CORE_ASSERT(!instance, "application is already instanced!");
 		instance = this;
 
 		Core::Init();
 
-		window = Window::Create();
+		window = Window::Create(props);
 		SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer2D::Init();

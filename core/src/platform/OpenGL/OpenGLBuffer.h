@@ -37,4 +37,18 @@ namespace core
 		uint32_t eboID;
     	uint32_t count;
     };
+
+	class OpenGLStorageBuffer : public StorageBuffer
+	{
+	public:
+		void Bind() override;
+		void Unbind() override;
+
+		void SetData(void* data, uint32_t size) override;
+
+		OpenGLStorageBuffer(uint32_t binding);
+		~OpenGLStorageBuffer() override;
+	private:
+		uint32_t ssboID;
+	};
 }

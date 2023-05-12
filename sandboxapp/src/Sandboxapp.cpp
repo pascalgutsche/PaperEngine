@@ -7,9 +7,8 @@
 
 class Sandboxapp : public Application {
 public:
-	Sandboxapp() {
-		
-	}
+	Sandboxapp()
+		: Application(WindowProps("Sandbox", 1920, 1080)) { }
 	
 	~Sandboxapp() override {
 		

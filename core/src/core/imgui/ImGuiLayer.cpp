@@ -171,6 +171,8 @@ namespace core {
             mousePosViewportRelative.y = viewportSize.y - mousePosViewportRelative.y;
 
         }
+
+        
         
     }
 
@@ -230,6 +232,9 @@ namespace core {
         ViewPortPanel(dt, first);
         InspectorPanel(dt, first);
         if (first) first = false;
+
+        if (Application::GetImGuiSwitched() && Application::GetImGuiEnabled())
+            ImGui::SetWindowFocus("ViewPort: ");
     }
 
     void ImGuiLayer::OnEvent(Event& e)
@@ -463,6 +468,8 @@ namespace core {
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin(name);
+
+        
         //RenderCommand::GetFramebuffer()->Bind();
 
         auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
@@ -482,7 +489,9 @@ namespace core {
 
         ImGui::End();
         ImGui::PopStyleVar();
+
         
+
     }
 
     void ImGuiLayer::ScreenPanel()
