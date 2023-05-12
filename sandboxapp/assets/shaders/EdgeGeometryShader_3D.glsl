@@ -10,9 +10,12 @@ layout(location = 6) in int aTexID; //The slot of the texture
 layout(location = 7) in int aCoreID;
 
 // camera variables
-uniform mat4 uPerspective;
-uniform mat4 uOrthographic;
-uniform mat4 uView;
+layout(std140, binding = 0) uniform Camera
+{
+    mat4 uPerspective;
+    mat4 uOrthographic;
+    mat4 uView;
+};
 
 struct VertexOutput
 {
@@ -65,13 +68,24 @@ layout(location = 6) in flat int CoreID;
 uniform sampler2D uTexture[32];
 uniform vec4 uLightColor;
 
-layout(std430, binding = 0) buffer test
+struct Light 
 {
-    float con[];
+    vec3 position;
+};
+
+layout(std430, binding = 1) buffer LightBuffer
+{
+    uint lightsLength;
+    Light lights[];
 };
 
 void main()
 {
+    for (int i = 0; i < lightsLength; ++i)
+    {
+        Light currentLight = lights[i];
+    }
+
     vec4 color = Input.Color;
     if (TexID >= 0)
         color *= texture(uTexture[TexID], Input.TexCoord * Input.TilingFactor);
@@ -86,7 +100,8 @@ void main()
     if (Input.IsLightSource == 1)
         ambient = vec4(1.0f);
 
-    con = 1.0f;
-    display = ambient * color * con[0];
+    display = ambient * color;
     objectID = CoreID;
+
+
 }

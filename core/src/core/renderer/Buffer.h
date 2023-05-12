@@ -142,13 +142,26 @@ namespace  core
 		static Shr<ElementBuffer> CreateBuffer(uint32_t* data, uint32_t count);
 	};
 
-	class StorageBuffer
+	class UniformBuffer
 	{
 	public:
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
 		virtual void SetData(void* data, uint32_t size) = 0;
+
+		virtual ~UniformBuffer() = default;
+
+		static Shr<UniformBuffer> CreateBuffer(uint32_t binding);
+	};
+
+	class StorageBuffer
+	{
+	public:
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
+
+		virtual void SetData(void* data, uint32_t objectCount, uint32_t objectSize) = 0;
 
 		virtual ~StorageBuffer() = default;
 

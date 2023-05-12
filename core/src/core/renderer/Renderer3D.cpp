@@ -39,13 +39,18 @@ namespace core {
         std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> cubeTextureSlots;
         uint32_t cubeTextureSlotIndex = 0;
 
-        Shr<Camera> camera;
-
         std::array<glm::vec3, 24> cubePositionData;
         std::array<glm::vec3, 24> cubeNormalData;
 
         Renderer3D::Stats stats;
 
+        struct Light
+        {
+            glm::vec3 position;
+        };
+
+        Shr<StorageBuffer> storageBuffer;
+        
     };
 
     static RenderData3D data;
@@ -53,8 +58,6 @@ namespace core {
 
     void Renderer3D::Init()
     {
-        RenderCommand::Init();
-
         BufferLayout edgeGeometryLayout = {
             { GLSLDataType::FLOAT3, "aPos" },
             { GLSLDataType::FLOAT4, "aColor" },
@@ -177,6 +180,11 @@ namespace core {
         {
             texSlots[i] = i;
         }
+
+        std::array<RenderData3D::Light, 10> lights;
+        data.storageBuffer = StorageBuffer::CreateBuffer(1);
+
+        data.storageBuffer->SetData(lights.data(), lights.size(), sizeof(RenderData3D::Light));
     }
 
     void Renderer3D::Shutdown()
@@ -189,11 +197,8 @@ namespace core {
         RenderCommand::SetViewPort(0, 0, width, height);
     }
 
-    void Renderer3D::BeginRender(Shr<Camera> camera)
+    void Renderer3D::BeginRender()
     {
-        data.camera = camera;
-        data.camera->CalcCameraVectors();
-        
         RenderCommand::GetFramebuffer()->Bind();
 
         RenderCommand::EnableDepthTesting(true);
@@ -223,6 +228,8 @@ namespace core {
 
     void Renderer3D::Render()
     {
+        const SharedRenderData& sharedData = RenderCommand::sharedData;
+        sharedData.cameraUniformBuffer->Bind();
 	    if (data.cubeElementCount)
 	    {
             const uint32_t dataSize = (uint32_t)((uint8_t*)data.cubeVertexBufferPtr - (uint8_t*)data.cubeVertexBufferBase);
@@ -233,20 +240,14 @@ namespace core {
             for (uint32_t i = 0; i < data.cubeTextureSlotIndex; i++)
                 data.cubeTextureSlots[i]->Bind(i);
 
-            Shr<StorageBuffer> storageBuffer = StorageBuffer::CreateBuffer(0);
-            float con[]{ 1.0f, 1.0f };
-            storageBuffer->SetData(con, 8);
-            storageBuffer->Bind();
+            data.storageBuffer->Bind();
 
             data.edgeGeometryShader->Bind();
-            data.edgeGeometryShader->UploadMat4f("uPerspective", data.camera->GetProjectionMatrix());
-            data.edgeGeometryShader->UploadMat4f("uOrthographic", data.camera->GetOrthographicMatrix());
-            data.edgeGeometryShader->UploadMat4f("uView", data.camera->GetViewMatrix());
             data.edgeGeometryShader->UploadIntArray("uTexture", data.MAX_TEXTURE_SLOTS - 1, texSlots);
             data.edgeGeometryShader->UploadVec4f("uLightColor", glm::vec4(1.0f));
             RenderCommand::DrawElements(data.cubeVertexArray, data.cubeElementCount);
 
-            storageBuffer->Unbind();
+            data.storageBuffer->Unbind();
             data.edgeGeometryShader->Unbind();
             data.stats.drawCalls++;
 

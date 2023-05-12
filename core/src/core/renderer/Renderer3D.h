@@ -35,7 +35,7 @@ namespace core {
 
         static void ResizeWindow(uint32_t width, uint32_t height);
 
-        static void BeginRender(Shr<Camera> camera);
+        static void BeginRender();
         static void EndRender();
 
         static void Render();

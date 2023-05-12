@@ -27,7 +27,9 @@ namespace core {
         RenderCommand::Clear();
         RenderCommand::PrepareFramebuffer();
 
-        Renderer3D::BeginRender(camera);
+        RenderCommand::UploadCamera(camera);
+
+        Renderer3D::BeginRender();
         for (Entity* entity : entities)
         {
             if (!entity->GetRenderComponent()) continue;
@@ -35,7 +37,7 @@ namespace core {
         }
         Renderer3D::EndRender();
 
-        Renderer2D::BeginRender(camera);
+        Renderer2D::BeginRender();
 
         for (int i = 0; i < Application::GetLayerStack().GetSize(); i++)
         {

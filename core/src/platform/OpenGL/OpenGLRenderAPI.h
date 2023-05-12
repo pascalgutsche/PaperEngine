@@ -22,7 +22,6 @@ namespace core
 		
 		void DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount, float thickness) override;
 		void SetLineWidth(float thickness) override;
-		void DrawIndexed(const Shr<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
 
 	private:
 		bool depthTestingEnabled = false;

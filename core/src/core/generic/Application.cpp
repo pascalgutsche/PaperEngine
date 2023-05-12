@@ -26,10 +26,7 @@ namespace core {
 		window = Window::Create(props);
 		SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
-		Renderer2D::Init();
-		Renderer3D::Init();
-
-		
+		RenderCommand::Init();
 
 		imguiLayer = new ImGuiLayer();
 	}

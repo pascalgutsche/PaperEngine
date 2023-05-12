@@ -38,7 +38,7 @@ namespace core
     	uint32_t count;
     };
 
-	class OpenGLStorageBuffer : public StorageBuffer
+	class OpenGLUniformBuffer : public UniformBuffer
 	{
 	public:
 		void Bind() override;
@@ -46,9 +46,31 @@ namespace core
 
 		void SetData(void* data, uint32_t size) override;
 
+		OpenGLUniformBuffer(uint32_t binding);
+		~OpenGLUniformBuffer() override;
+	private:
+		void Invalidate(uint32_t size);
+
+		uint32_t uboID;
+		uint32_t size;
+		uint32_t binding;
+	};
+
+	class OpenGLStorageBuffer : public StorageBuffer
+	{
+	public:
+		void Bind() override;
+		void Unbind() override;
+
+		void SetData(void* data, uint32_t objectCount, uint32_t objectSize) override;
+
 		OpenGLStorageBuffer(uint32_t binding);
 		~OpenGLStorageBuffer() override;
 	private:
+		void Invalidate(uint32_t size);
+
 		uint32_t ssboID;
+		uint32_t size;
+		uint32_t binding;
 	};
 }

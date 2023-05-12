@@ -11,9 +11,12 @@ layout(location = 7) in int aUIID;
 layout(location = 8) in int aAlphaCoreID;
 
 // camera variables
-uniform mat4 uPerspective;
-uniform mat4 uOrthographic;
-uniform mat4 uView;
+layout(std140, binding = 0) uniform Camera
+{
+    mat4 uPerspective;
+    mat4 uOrthographic;
+    mat4 uView;
+};
 
 struct VertexOutput
 {
