@@ -1,0 +1,20 @@
+#pragma once
+#include "Engine.h"
+
+#include "UIObject.h"
+
+namespace engine
+{
+	class Panel : public UIObject
+	{
+	public:
+		Panel(glm::vec4 color, const Transform& transform, Type type, std::string name = "Panel");
+		~Panel() override;
+
+		void Render(core_id idToRender) override;
+
+	private:
+		Type type;
+	};
+}
+

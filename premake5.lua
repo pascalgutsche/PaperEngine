@@ -1,6 +1,6 @@
-workspace "Sandboxapp"
+workspace "PaperEditor"
 	architecture "x64"
-	startproject "sandboxapp"
+	startproject "PaperEditor"
 	staticruntime "off"
 
 	configurations
@@ -29,16 +29,16 @@ include "lib/core/IMPLOT"
 include "lib/core/msdf-atlas-gen"
 group ""
 
-project "core"
-	location "core"
+project "engine"
+	location "engine"
 	kind "StaticLib"
 	language "C++"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "_Core.h"
-	pchsource "core/src/_Core.cpp"
+	pchheader "Engine.h"
+	pchsource "engine/src/Engine.cpp"
 
 	files
 	{
@@ -112,8 +112,8 @@ project "core"
 		optimize "On"
 
 
-project "sandboxapp"
-	location "sandboxapp"
+project "PaperEditor"
+	location "PaperEditor"
 	kind "ConsoleApp"
 	language "C++"
 	staticruntime "off"
@@ -121,8 +121,8 @@ project "sandboxapp"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "_Game.h"
-	pchsource "sandboxapp/src/_Game.cpp"
+	pchheader "Editor.h"
+	pchsource "PaperEditor/src/Editor.cpp"
 
 	files
 	{
@@ -144,10 +144,9 @@ project "sandboxapp"
 		"lib",
 		"%{prj.name}/lib",
 		"%{prj.name}/src",
-		"%{prj.name}/src/core",
-		"core/src",
-		"core/src/core",
-		"core/lib",
+		"engine/src",
+		"engine/src/core",
+		"engine/lib",
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.MINIAUDIO}",
 		"%{IncludeDir.GLFW}",
@@ -159,7 +158,7 @@ project "sandboxapp"
 
 	links
 	{
-		"core"
+		"engine"
 	}
 
 	disablewarnings
