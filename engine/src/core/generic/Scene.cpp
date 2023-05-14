@@ -61,7 +61,7 @@ namespace engine {
         for (Entity* entity : entities)
         {
             if (!entity->GetRenderComponent()) continue;
-            entity->GetRenderComponent()->OnUpdate();
+            entity->GetRenderComponent()->OnRender();
         }
         Renderer3D::EndRender();
 
@@ -76,7 +76,7 @@ namespace engine {
                 if (!entity->IsRunning()) continue;
                 if (entity->GetRenderComponent() == nullptr) continue;
 
-                entity->GetRenderComponent()->OnUpdate();
+                entity->GetRenderComponent()->OnRender();
             }
             Renderer2D::NextBatch(ALL);
             layer->RenderUI();

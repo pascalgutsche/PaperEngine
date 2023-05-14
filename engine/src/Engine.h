@@ -54,7 +54,7 @@
 
 
 //Core
-#include "utils/Log.h"
+#include "core/utils/Log.h"
 
 
 #ifdef CORE_PLATFORM_WINDOWS
