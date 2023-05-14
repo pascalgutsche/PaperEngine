@@ -6,7 +6,7 @@
 
 namespace engine {
 
-    Window::FRAMEWORK Window::framework = Window::GLFW;
+    FRAMEWORK Window::framework = GLFW;
 
     Shr<Window> Window::Create(const WindowProps& windowProps)
     {

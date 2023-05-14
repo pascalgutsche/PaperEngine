@@ -4,6 +4,7 @@
 #include "EntryPoint.h"
 
 #include "scene/EditorScene/EditorScene.h"
+#include "project/ProjectManager.h"
 
 class PaperEditor : public Application {
 public:
@@ -18,7 +19,8 @@ public:
 	}
 
 	void Init() override {
-		Application::ChangeScene(new EditorScene); 
+		ProjectManager::Init();
+		Application::ChangeScene(new EditorScene);
 	}
 
 };

@@ -1,6 +1,8 @@
 #include "Editor.h"
 #include "PELayer.h"
 
+#include "project/ProjectManager.h"
+
 PELayer::PELayer()
 	: viewportSize(glm::vec2()), viewportBounds{glm::vec2(), glm::vec2()}, mousePosViewportRelative(glm::ivec2())
 {
@@ -70,7 +72,7 @@ void PELayer::Imgui(const float dt)
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
     window_flags |= ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;
     window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+    window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_MenuBar;
     ImGuiViewport& viewport = *ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(viewport.Pos);
     ImGui::SetNextWindowSize(viewport.Size);
@@ -110,6 +112,7 @@ void PELayer::Imgui(const float dt)
     dockPanelQueue.clear();
 
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
+    MenuBar();
     ImGui::End();
 
     static bool first = true;
@@ -130,6 +133,46 @@ void PELayer::DockPanel(std::string name, ImGuiID dock_id)
     if (dockPanelQueue.find(name) == dockPanelQueue.end())
     {
         dockPanelQueue.emplace(name, dock_id);
+    }
+}
+
+void PELayer::MenuBar()
+{
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("New Project...", "Ctrl+O"))
+            {
+                //NewProject();
+            }
+
+            if (ImGui::MenuItem("Open Project...", "Ctrl+O"))
+            {
+                ProjectManager::OpenFile("PaperEngine Project(*.peproj)\0 * .peproj\0");
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Save Project", "Ctrl+S"))
+            {
+                //SaveProject();
+            }
+
+            if (ImGui::MenuItem("Save Project As...", "Ctrl+Shift+S"))
+            {
+                //SaveProjectAs();
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Exit"))
+                Application::GetInstance()->Exit();
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
     }
 }
 

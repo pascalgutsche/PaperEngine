@@ -42,6 +42,7 @@ private:
     ImGuiID dock_id_left_bottom = 0;
     std::unordered_map<std::string, ImGuiID> dockPanelQueue;
 
+    void MenuBar();
     void ApplicationPanel(const float dt, bool first);
     void CustomPanel(const float dt, bool first);
     void LayerPanel(const float dt, bool first);
@@ -59,6 +60,7 @@ private:
 
     std::unordered_map<std::string, void*> variablePool;
 
+    
 
 };
 

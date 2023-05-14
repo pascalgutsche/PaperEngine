@@ -5,7 +5,12 @@
 #include "event/Event.h"
 
 namespace engine {
-	
+
+    enum FRAMEWORK
+    {
+        NONE = 0,
+        GLFW
+    };
 
     struct WindowProps
     {
@@ -18,12 +23,6 @@ namespace engine {
 
     class Window {
     public:
-
-        enum FRAMEWORK
-        {
-            NONE = 0,
-            GLFW
-        };
 
         virtual ~Window() = default;
 

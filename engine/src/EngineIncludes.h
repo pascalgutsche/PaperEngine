@@ -41,6 +41,7 @@
 
 #include "core/utils/Log.h"
 #include "core/utils/Utils.h"
+#include "core/utils/FileDialog.h"
 
 #include "utility.h"
 using namespace engine;

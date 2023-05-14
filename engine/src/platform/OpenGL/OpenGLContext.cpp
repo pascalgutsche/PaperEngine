@@ -16,7 +16,7 @@ namespace engine
 		int status = 0;
 		switch (Window::GetFramework())
 		{
-			case Window::GLFW:
+			case GLFW:
 				glfwMakeContextCurrent((GLFWwindow*)window);
 				status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 				CORE_ASSERT(status, "Failed to initialize Glad!");
@@ -39,7 +39,7 @@ namespace engine
 	{
 		switch (Window::GetFramework())
 		{
-			case Window::GLFW:
+			case GLFW:
 				glfwSwapBuffers((GLFWwindow*)window);
 				break;
 
