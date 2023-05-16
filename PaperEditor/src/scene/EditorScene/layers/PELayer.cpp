@@ -57,6 +57,29 @@ void PELayer::Update(const float dt)
 
 void PELayer::OnEvent(Event& event)
 {
+	EventDispatcher dispatcher(event);
+    dispatcher.dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent& e)
+    {
+        if (viewportHovered && e.GetButton() == MOUSE_BUTTON_RIGHT)
+        {
+            cameraControlMode = true;
+            Application::GetWindow()->CursorEnabled(false);
+            ImGui::SetWindowFocus("ViewPort: ");
+            viewportFocused = true;
+        }
+        return false;
+    });
+    dispatcher.dispatch<MouseButtonReleasedEvent>([this](MouseButtonReleasedEvent& e)
+    {
+        if (e.GetButton() == MOUSE_BUTTON_RIGHT)
+        {
+            cameraControlMode = false;
+            Application::GetWindow()->CursorEnabled(true);
+        }
+        return false;
+    });
+    
+
     if (!viewportFocused)
     {
         ImGuiIO& io = ImGui::GetIO();
@@ -95,13 +118,13 @@ void PELayer::Imgui(const float dt)
         ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->GetWidth() + 500, Application::GetWindow()->GetHeight() + 500));
 
         dock_id_main = dockspace_id;
-        dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Right, 0.2f, nullptr, &dock_id_main);
-        dock_id_left = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Left, 0.2f, nullptr, &dock_id_main);
-        dock_id_top = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Up, 0.2f, nullptr, &dock_id_main);
-        dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Down, 0.25f, nullptr, &dock_id_main);
-        dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
+        
+        dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main,       ImGuiDir_Right, 0.2f, nullptr, &dock_id_main);
+        dock_id_left = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Left, 0.2f, nullptr, &dock_id_main);
+        dock_id_top = ImGui::DockBuilderSplitNode(dock_id_main,         ImGuiDir_Up  ,  0.2f, nullptr, &dock_id_main);
+        dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Down, 0.25f, nullptr, &dock_id_main);
+        dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right,     ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
         dock_id_left_bottom = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
-
 
         ImGui::DockBuilderFinish(dockspace_id);
     }
@@ -117,10 +140,10 @@ void PELayer::Imgui(const float dt)
 
     static bool first = true;
     ApplicationPanel(dt, first);
-    CustomPanel(dt, first);
-    LayerPanel(dt, first);
+    AssetManagerPanel(dt, first);
+    //LayerPanel(dt, first);
     ViewPortPanel(dt, first);
-    InspectorPanel(dt, first);
+    //InspectorPanel(dt, first);
 
     if (first) {
         first = false;
@@ -302,16 +325,143 @@ void PELayer::ApplicationPanel(const float dt, bool first)
     ImGui::End();
 }
 
-
-void PELayer::CustomPanel(const float dt, bool first)
+struct DirectoryNode
 {
-    const char* name = "Track Variables: ";
+    std::string FullPath;
+    std::string FileName;
+    std::vector<DirectoryNode> Children;
+    bool IsDirectory;
+    bool HasDirectoryChilds;
+};
+
+void RecursivelyAddDirectoryNodes(DirectoryNode& parentNode, std::filesystem::directory_iterator directoryIterator)
+{
+    for (const std::filesystem::directory_entry& entry : directoryIterator)
+    {
+        DirectoryNode& childNode = parentNode.Children.emplace_back();
+        childNode.FullPath = entry.path().u8string();
+        childNode.FileName = entry.path().filename().u8string();
+        if (childNode.IsDirectory = entry.is_directory(); childNode.IsDirectory)
+            RecursivelyAddDirectoryNodes(childNode, std::filesystem::directory_iterator(entry));
+    }
+
+    auto moveDirectoriesToFront = [](const DirectoryNode& a, const DirectoryNode& b) { return (a.IsDirectory > b.IsDirectory); };
+    std::sort(parentNode.Children.begin(), parentNode.Children.end(), moveDirectoriesToFront);
+}
+
+DirectoryNode CreateDirectryNodeTreeFromPath(const std::filesystem::path& rootPath)
+{
+    DirectoryNode rootNode;
+    rootNode.FullPath = rootPath.u8string();
+    rootNode.FileName = rootPath.filename().u8string();
+    if (rootNode.IsDirectory = std::filesystem::is_directory(rootPath); rootNode.IsDirectory)
+        RecursivelyAddDirectoryNodes(rootNode, std::filesystem::directory_iterator(rootPath));
+
+    return rootNode;
+}
+
+static std::vector<DirectoryNode> showInPanel;
+static bool isAlreadyClicked = false;
+
+void RecursivelyDisplayDirectoryNode(const DirectoryNode& parentNode)
+{
+    ImGui::PushID(&parentNode);
+    if (parentNode.IsDirectory)
+    {
+        bool hasDirectoryAsChild = false;
+        for (auto& node : parentNode.Children)
+        {
+	        if (node.IsDirectory)
+	        {
+                hasDirectoryAsChild = true;
+                break;
+	        }
+        }
+        if (hasDirectoryAsChild)
+        {
+            if (ImGui::TreeNodeEx(parentNode.FileName.c_str())) //ImGuiTreeNodeFlags_SpanFullWidth
+            {
+                for (const DirectoryNode& childNode : parentNode.Children)
+                    RecursivelyDisplayDirectoryNode(childNode);
+                ImGui::TreePop();
+            }
+            if (ImGui::IsItemClicked())
+            {
+                if (!isAlreadyClicked)
+                {
+                    showInPanel.clear();
+                    for (auto& node : parentNode.Children)
+                    {
+                        if (!node.IsDirectory)
+                        {
+                            showInPanel.emplace_back(node);
+                        }
+                    }
+                    isAlreadyClicked = true;
+                }
+            }
+        }
+        else
+        {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+            if (ImGui::Button(parentNode.FileName.c_str()))
+            {
+                showInPanel.clear();
+                for (auto& node : parentNode.Children)
+                {
+                    if (!node.IsDirectory)
+                    {
+                        showInPanel.emplace_back(node);
+                    }
+                }
+            }
+            ImGui::PopStyleColor();
+        }
+    }
+    ImGui::PopID();
+}
+
+static DirectoryNode rootNode = CreateDirectryNodeTreeFromPath(L"assets");
+
+void PELayer::AssetManagerPanel(const float dt, bool first)
+{
+    isAlreadyClicked = false;
+    const char* name = "Asset Manager: ";
     std::stringstream stream;
 
     if (first)
         DockPanel(name, GetDockspaceBottom());
 
+    const ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_Resizable;
+
+
     ImGui::Begin(name);
+
+    if (ImGui::BeginTable("table1", 2, flags))
+    {
+        ImGui::TableSetupColumn("directory", 0, 100);
+        ImGui::TableNextRow(1, ImGui::GetContentRegionAvail().y);
+
+        ImGui::TableSetColumnIndex(0);
+
+        //RecursivelyDisplayDirectoryNode(rootNode);
+
+
+
+    	ImGui::TableSetColumnIndex(1);
+
+        for (auto& node : showInPanel)
+        {
+            Shr<Texture> folderIcon = DataPool::GetTexture("folder_icon.png");
+            ImGui::Image((void*)folderIcon->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::Text(node.FileName.c_str());
+        }
+
+
+        ImGui::EndTable();
+    }
+    
+
     ImGui::End();
 }
 

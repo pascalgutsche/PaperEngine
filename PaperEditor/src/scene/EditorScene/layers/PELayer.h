@@ -16,10 +16,12 @@ public:
 	void Imgui(const float dt) override;
 
     void DockPanel(std::string name, ImGuiID dock_id);
-
+    
     glm::vec2 GetViewportSize() const { return viewportSize; };
     glm::ivec2 GetMousePosViewportRelative() const { return mousePosViewportRelative; }
     bool IsMouseInsideViewport() const { return mousePosViewportRelative.x >= 0 && mousePosViewportRelative.y >= 0 && mousePosViewportRelative.x < viewportSize.x&& mousePosViewportRelative.y < viewportSize.y; }
+    bool IsViewportHovered() const { return viewportHovered; }
+    bool IsCameraControlModeActive() const { return cameraControlMode; }
 
     ImGuiID GetDockspaceMain() const { return dock_id_main; }
     ImGuiID GetDockspaceTop() const { return dock_id_top; }
@@ -44,7 +46,7 @@ private:
 
     void MenuBar();
     void ApplicationPanel(const float dt, bool first);
-    void CustomPanel(const float dt, bool first);
+    void AssetManagerPanel(const float dt, bool first);
     void LayerPanel(const float dt, bool first);
     void InspectorPanel(const float dt, bool first);
     void ViewPortPanel(const float dt, bool first);
@@ -54,13 +56,12 @@ private:
 
     bool viewportFocused = false, viewportHovered = false;
 
+    bool cameraControlMode = false;
+
     glm::ivec2 mousePosViewportRelative;
 
     Object* selectedObject = nullptr;
 
     std::unordered_map<std::string, void*> variablePool;
-
-    
-
 };
 

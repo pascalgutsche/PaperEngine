@@ -7,6 +7,10 @@
 EditorScene::EditorScene()
 {
 	backcolor = glm::vec3(0.2f, 0.2f, 0.2f);
+
+	uiLayer = new UILayer();
+	peLayer = new PELayer();
+
 	Entity* testObject = new Entity("test");
 	testObject->AddComponent(new CubeRenderer(glm::vec4(1.0f, 0.5f, 0.31f, 1.0f)));
 	AddEntityToScene(testObject);
@@ -18,8 +22,8 @@ EditorScene::~EditorScene()
 
 void EditorScene::OnStart()
 {
-	AddLayer(new UILayer());
-	AddLayer(new PELayer());
+	AddLayer(uiLayer);
+	AddLayer(peLayer);
 }
 
 void EditorScene::OnStop()
@@ -27,6 +31,23 @@ void EditorScene::OnStop()
 }
 
 void EditorScene::OnUpdate()
+{
+	ImGui::ShowDemoWindow();
+	if (peLayer->IsCameraControlModeActive())
+	{
+		CameraMovement();
+	}
+}
+
+void EditorScene::OnEvent(Event& e)
+{
+	EventDispatcher dispatcher(e);
+	dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(EditorScene::MouseScrolled));
+	dispatcher.dispatch<WindowFocusEvent>(BIND_EVENT_FN(EditorScene::WindowFocus));
+	dispatcher.dispatch<WindowLostFocusEvent>(BIND_EVENT_FN(EditorScene::WindowLostFocus));
+}
+
+void EditorScene::CameraMovement()
 {
 	const float dt = Application::GetDT();
 	if (Input::IsKeyPressed(KEY_W))
@@ -52,36 +73,15 @@ void EditorScene::OnUpdate()
 		camera->position.z += 5 * dt * camera->GetFront().x;
 
 	}
-	if (Input::IsKeyPressed(KEY_SPACE))
+	if (Input::IsKeyPressed(KEY_E))
 		camera->position.y += 5 * dt;
-	if (Input::IsKeyPressed(KEY_C))
+	if (Input::IsKeyPressed(KEY_Q))
 		camera->position.y -= 5 * dt;
-}
-
-void EditorScene::OnEvent(Event& e)
-{
-	EventDispatcher dispatcher(e);
-	dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorScene::KeyPressed));
-	dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(EditorScene::MouseScrolled));
-	dispatcher.dispatch<WindowFocusEvent>(BIND_EVENT_FN(EditorScene::WindowFocus));
-	dispatcher.dispatch<WindowLostFocusEvent>(BIND_EVENT_FN(EditorScene::WindowLostFocus));
-}
-
-bool EditorScene::KeyPressed(KeyPressedEvent& event) const
-{
-	if (event.getKeyCode() == KEY_LEFT_ALT)
-	{
-		Application::GetWindow()->CursorEnabled(!Application::GetWindow()->IsCursorEnabled());
-	}
-	if (event.getKeyCode() == KEY_ESCAPE)
-	{
-		Application::GetWindow()->CursorEnabled(true);
-	}
-	return false;
 }
 
 bool EditorScene::MouseScrolled(MouseScrolledEvent& event) const
 {
+	if (!peLayer->IsCameraControlModeActive()) return false;
 	if (event.GetYOffset() < 0 && camera->fov > 0.01f)
 	{
 		camera->fov += event.GetYOffset() / 5;
@@ -98,7 +98,7 @@ bool EditorScene::MouseScrolled(MouseScrolledEvent& event) const
 
 bool EditorScene::WindowFocus(WindowFocusEvent& event) const
 {
-	Application::GetWindow()->CursorEnabled(false);
+	Application::GetWindow()->CursorEnabled(true);
 	return true;
 }
 
