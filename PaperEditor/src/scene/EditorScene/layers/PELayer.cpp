@@ -425,8 +425,14 @@ static DirectoryNode rootNode = CreateDirectryNodeTreeFromPath(L"assets");
 
 void PELayer::AssetManagerPanel(const float dt, bool first)
 {
-    isAlreadyClicked = false;
-    const char* name = "Asset Manager: ";
+    static std::filesystem::path relPath = "/";
+    static const std::filesystem::path absPath = "assets";
+    const std::filesystem::path path = absPath.string() + relPath.string();
+    std::filesystem::path itemPath = path;
+
+    const float size = 100.0f;
+
+ 	const char* name = "Asset Manager: ";
     std::stringstream stream;
 
     if (first)
@@ -436,30 +442,68 @@ void PELayer::AssetManagerPanel(const float dt, bool first)
 
 
     ImGui::Begin(name);
+    LOG_DEBUG(ImGui::GetContentRegionAvail().x);
+    int cols = size > ImGui::GetContentRegionAvail().x ? 1 : (int)ImGui::GetContentRegionAvail().x / size;
+    if (cols > 64) cols = 64;
 
-    if (ImGui::BeginTable("table1", 2, flags))
+    float con = 0.8f;
+
+    if (ImGui::BeginTable("dirTable", cols))
     {
-        ImGui::TableSetupColumn("directory", 0, 100);
-        ImGui::TableNextRow(1, ImGui::GetContentRegionAvail().y);
+        ImGui::TableSetupColumn("dirCol");
+        ImGui::TableNextRow();
 
-        ImGui::TableSetColumnIndex(0);
-
-        //RecursivelyDisplayDirectoryNode(rootNode);
-
-
-
-    	ImGui::TableSetColumnIndex(1);
-
-        for (auto& node : showInPanel)
+        int i = 0;
+        for (const auto item : std::filesystem::directory_iterator(path))
         {
-            Shr<Texture> folderIcon = DataPool::GetTexture("folder_icon.png");
-            ImGui::Image((void*)folderIcon->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
-            ImGui::Text(node.FileName.c_str());
+            ImGui::TableSetColumnIndex(i);
+            if (item.is_directory())
+            {
+                if (ImGui::ImageButton((void*)DataPool::GetTexture("folder_icon.png")->GetID(), ImVec2(size * con, size * con), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
+                {
+                    relPath = relPath.string() + item.path().filename().string() + "/";
+                    LOG_DEBUG(relPath);
+                }
+            }
+            else
+            {
+                if (ImGui::ImageButton((void*)DataPool::GetTexture("file_icon.png")->GetID(), ImVec2(size * con, size * con), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
+                {
+                    itemPath = path.string() + item.path().filename().string();
+                    LOG_DEBUG(itemPath);
+                }
+            }
+            i++;
+            if (i >= 9) i = 0;
         }
-
-
         ImGui::EndTable();
     }
+    
+    
+
+    //if (ImGui::BeginTable("table1", 2, flags))
+    //{
+    //    ImGui::TableSetupColumn("directory", 0, 100);
+    //    ImGui::TableNextRow(1, ImGui::GetContentRegionAvail().y);
+    //
+    //    ImGui::TableSetColumnIndex(0);
+    //
+    //    //RecursivelyDisplayDirectoryNode(rootNode);
+    //
+    //
+    //
+    //	ImGui::TableSetColumnIndex(1);
+    //
+    //    for (auto& node : showInPanel)
+    //    {
+    //        Shr<Texture> folderIcon = DataPool::GetTexture("folder_icon.png");
+    //        ImGui::Image((void*)folderIcon->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+    //        ImGui::Text(node.FileName.c_str());
+    //    }
+    //
+    //
+    //    ImGui::EndTable();
+    //}
     
 
     ImGui::End();
