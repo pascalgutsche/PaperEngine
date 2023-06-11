@@ -12,7 +12,7 @@ namespace engine {
 
     Shr<Shader> DataPool::GetShader(std::string shaderName) {
         // set default path
-        std::string path = "assets/shaders/" + shaderName + ".glsl";
+        std::string path = "resources/shaders/" + shaderName + ".glsl";
         std::string shader_id = "shader_" + shaderName;
 
         Map::iterator it = dataPool.find(shader_id);
@@ -34,7 +34,7 @@ namespace engine {
 
     Shr<Texture> DataPool::GetTexture(std::string textureName) {
         // set default path
-        const std::string path = "assets/textures/" + textureName;
+        const std::string path = "resources/textures/" + textureName;
 
         std::string texture_id = "texture_" + textureName;
 
@@ -57,7 +57,7 @@ namespace engine {
 
     Shr<Font> DataPool::GetFont(std::string fontName) {
         // set default path
-        const std::string path = "assets/fonts/" + fontName;
+        const std::string path = "resources/fonts/" + fontName;
 
         std::string fontID = "font_" + fontName;
 

@@ -325,112 +325,52 @@ void PELayer::ApplicationPanel(const float dt, bool first)
     ImGui::End();
 }
 
-struct DirectoryNode
+static bool displayIcon(const std::filesystem::directory_entry& item, const float size)
 {
-    std::string FullPath;
-    std::string FileName;
-    std::vector<DirectoryNode> Children;
-    bool IsDirectory;
-    bool HasDirectoryChilds;
-};
-
-void RecursivelyAddDirectoryNodes(DirectoryNode& parentNode, std::filesystem::directory_iterator directoryIterator)
-{
-    for (const std::filesystem::directory_entry& entry : directoryIterator)
+    if (item.is_directory())
     {
-        DirectoryNode& childNode = parentNode.Children.emplace_back();
-        childNode.FullPath = entry.path().u8string();
-        childNode.FileName = entry.path().filename().u8string();
-        if (childNode.IsDirectory = entry.is_directory(); childNode.IsDirectory)
-            RecursivelyAddDirectoryNodes(childNode, std::filesystem::directory_iterator(entry));
-    }
-
-    auto moveDirectoriesToFront = [](const DirectoryNode& a, const DirectoryNode& b) { return (a.IsDirectory > b.IsDirectory); };
-    std::sort(parentNode.Children.begin(), parentNode.Children.end(), moveDirectoriesToFront);
-}
-
-DirectoryNode CreateDirectryNodeTreeFromPath(const std::filesystem::path& rootPath)
-{
-    DirectoryNode rootNode;
-    rootNode.FullPath = rootPath.u8string();
-    rootNode.FileName = rootPath.filename().u8string();
-    if (rootNode.IsDirectory = std::filesystem::is_directory(rootPath); rootNode.IsDirectory)
-        RecursivelyAddDirectoryNodes(rootNode, std::filesystem::directory_iterator(rootPath));
-
-    return rootNode;
-}
-
-static std::vector<DirectoryNode> showInPanel;
-static bool isAlreadyClicked = false;
-
-void RecursivelyDisplayDirectoryNode(const DirectoryNode& parentNode)
-{
-    ImGui::PushID(&parentNode);
-    if (parentNode.IsDirectory)
-    {
-        bool hasDirectoryAsChild = false;
-        for (auto& node : parentNode.Children)
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+        if (ImGui::ImageButton((void*)DataPool::GetTexture("folder_icon.png")->GetID(), ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0))
         {
-	        if (node.IsDirectory)
-	        {
-                hasDirectoryAsChild = true;
-                break;
-	        }
-        }
-        if (hasDirectoryAsChild)
-        {
-            if (ImGui::TreeNodeEx(parentNode.FileName.c_str())) //ImGuiTreeNodeFlags_SpanFullWidth
-            {
-                for (const DirectoryNode& childNode : parentNode.Children)
-                    RecursivelyDisplayDirectoryNode(childNode);
-                ImGui::TreePop();
-            }
-            if (ImGui::IsItemClicked())
-            {
-                if (!isAlreadyClicked)
-                {
-                    showInPanel.clear();
-                    for (auto& node : parentNode.Children)
-                    {
-                        if (!node.IsDirectory)
-                        {
-                            showInPanel.emplace_back(node);
-                        }
-                    }
-                    isAlreadyClicked = true;
-                }
-            }
-        }
-        else
-        {
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-            if (ImGui::Button(parentNode.FileName.c_str()))
-            {
-                showInPanel.clear();
-                for (auto& node : parentNode.Children)
-                {
-                    if (!node.IsDirectory)
-                    {
-                        showInPanel.emplace_back(node);
-                    }
-                }
-            }
             ImGui::PopStyleColor();
+            return true;
         }
+        ImGui::PopStyleColor();
     }
-    ImGui::PopID();
+    else
+    {
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+        if (ImGui::ImageButton((void*)DataPool::GetTexture("file_icon.png")->GetID(), ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0))
+        {
+            ImGui::PopStyleColor();
+            return true;
+        }
+        ImGui::PopStyleColor();
+    }
+    return false;
 }
 
-static DirectoryNode rootNode = CreateDirectryNodeTreeFromPath(L"assets");
+static void displayText(std::vector<std::string>& filenames)
+{
+    ImGui::TableNextRow();
+    int i = 0;
+    for (std::string name : filenames)
+    {
+        ImGui::TableSetColumnIndex(i);
+        ImGui::TextWrapped(filenames.at(i).c_str());
+        i++;
+    }
+}
 
 void PELayer::AssetManagerPanel(const float dt, bool first)
 {
-    static std::filesystem::path relPath = "/";
-    static const std::filesystem::path absPath = "assets";
-    const std::filesystem::path path = absPath.string() + relPath.string();
-    std::filesystem::path itemPath = path;
+    static float size = 120.0f;
+    static std::filesystem::path path = "assets/";
 
-    const float size = 100.0f;
+    std::filesystem::path itemPath;
+    bool itemClicked = false;
+
+
 
  	const char* name = "Asset Manager: ";
     std::stringstream stream;
@@ -438,73 +378,88 @@ void PELayer::AssetManagerPanel(const float dt, bool first)
     if (first)
         DockPanel(name, GetDockspaceBottom());
 
-    const ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_Resizable;
-
+    const ImGuiTableFlags flags = ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX;
 
     ImGui::Begin(name);
-    LOG_DEBUG(ImGui::GetContentRegionAvail().x);
-    int cols = size > ImGui::GetContentRegionAvail().x ? 1 : (int)ImGui::GetContentRegionAvail().x / size;
+    std::stringstream ss;
+    for (const auto& pathPart : path)
+    {
+        if (pathPart.string().empty()) continue;
+        ss << pathPart.string() << "/";
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.5, 3));
+        if (ImGui::Button(pathPart.filename().string().c_str()))
+        {
+            
+            path = ss.str();
+            ImGui::PopStyleColor();
+            ImGui::PopStyleVar();
+            break;
+        }
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar();
+        ImGui::SameLine();
+        ImGui::Text("/");
+        ImGui::SameLine();
+    }
+    ImGui::Text("");
+
+    int cols = size > (ImGui::GetContentRegionAvail().x) ? 1 : ((int)ImGui::GetContentRegionAvail().x) / size;
     if (cols > 64) cols = 64;
 
-    float con = 0.8f;
-
-    if (ImGui::BeginTable("dirTable", cols))
+    if (ImGui::BeginTable("dirTable", cols, flags, ImVec2(cols*size, 0.0f)))
     {
         ImGui::TableSetupColumn("dirCol");
-        ImGui::TableNextRow();
 
+        ImGui::TableNextRow();
+        std::vector<std::string> filenames;
+
+        while (!exists(path))
+        {
+            path = path.parent_path();
+            if (path == "assets") break;
+        }
         int i = 0;
         for (const auto item : std::filesystem::directory_iterator(path))
         {
+            if (i >= cols)
+            {
+                i = 0;
+
+                displayText(filenames);
+                ImGui::TableNextRow();
+                filenames.clear();
+            }
             ImGui::TableSetColumnIndex(i);
-            if (item.is_directory())
+
+            ImGui::PushID(item.path().filename().string().c_str());
+
+            if (displayIcon(item, size))
             {
-                if (ImGui::ImageButton((void*)DataPool::GetTexture("folder_icon.png")->GetID(), ImVec2(size * con, size * con), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
+                if (item.is_directory())
+					path = item.path();
+                else
                 {
-                    relPath = relPath.string() + item.path().filename().string() + "/";
-                    LOG_DEBUG(relPath);
+                    itemPath = path.string() + "/" + item.path().filename().string();
+                    itemClicked = true;
                 }
             }
-            else
-            {
-                if (ImGui::ImageButton((void*)DataPool::GetTexture("file_icon.png")->GetID(), ImVec2(size * con, size * con), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
-                {
-                    itemPath = path.string() + item.path().filename().string();
-                    LOG_DEBUG(itemPath);
-                }
-            }
+
+            ImGui::PopID();
+
+            filenames.push_back(item.path().filename().string());
+            
             i++;
-            if (i >= 9) i = 0;
         }
+
+        displayText(filenames);
         ImGui::EndTable();
     }
     
-    
-
-    //if (ImGui::BeginTable("table1", 2, flags))
-    //{
-    //    ImGui::TableSetupColumn("directory", 0, 100);
-    //    ImGui::TableNextRow(1, ImGui::GetContentRegionAvail().y);
-    //
-    //    ImGui::TableSetColumnIndex(0);
-    //
-    //    //RecursivelyDisplayDirectoryNode(rootNode);
-    //
-    //
-    //
-    //	ImGui::TableSetColumnIndex(1);
-    //
-    //    for (auto& node : showInPanel)
-    //    {
-    //        Shr<Texture> folderIcon = DataPool::GetTexture("folder_icon.png");
-    //        ImGui::Image((void*)folderIcon->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
-    //        ImGui::Text(node.FileName.c_str());
-    //    }
-    //
-    //
-    //    ImGui::EndTable();
-    //}
-    
+    if (itemClicked)
+    {
+        LOG_TRACE(itemPath);
+    }
 
     ImGui::End();
 }

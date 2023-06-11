@@ -95,7 +95,7 @@ namespace engine {
         //set default range (uft-8)
         fontConfig.GlyphRanges = fontAtlas->GetGlyphRangesDefault();
 
-        fontAtlas->AddFontFromFileTTF("assets/fonts/mononoki.ttf", 18, &fontConfig);
+        fontAtlas->AddFontFromFileTTF("resources/fonts/mononoki.ttf", 18, &fontConfig);
 
         //any new fonts were added to the font pool
         fontConfig.MergeMode = true;
