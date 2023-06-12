@@ -4,7 +4,7 @@ PaperEngine is a game engine that my friend and I developed in C++ for a school 
 
 The engine is designed to be easy to use, flexible, and powerful. It works on Windows only for now, but we're thinking about adding support for other platforms like macOS and Linux. We didn't bother adding a physics renderer yet, but it's on our to-do list.
 
-The Engine is inspired from TheCherno's [TheCherno - Hazel](https://github.com/TheCherno/Hazel "Hazel Engine").
+The Engine is inspired from TheCherno's [Hazel Engine](https://github.com/TheCherno/Hazel "TheCherno - Hazel").
 
 ## How to install?
 
