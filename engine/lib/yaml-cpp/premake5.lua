@@ -9,24 +9,14 @@ project "yaml-cpp"
 	files
 	{
 		"src/**.h",
-		"src/**.hpp",
-		"src/**.c",
 		"src/**.cpp",
-
-		"include/**.h",
-		"include/**.hpp",
-		"include/**.c",
-		"include/**.cpp"
+		
+		"include/**.h"
 	}
 
 	includedirs
 	{
 		"include"
-	}
-
-	defines
-	{
-		"YAML_CPP_STATIC_DEFINE"
 	}
 
 	filter "system:windows"

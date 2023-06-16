@@ -51,6 +51,7 @@ project "engine"
 		"msdf-atlas-gen",
 		"spdlog",
 		"stb_image",
+		"yaml-cpp",
 		"opengl32.lib"
 	}
 

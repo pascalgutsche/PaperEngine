@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/assets/Asset3D.h"
+
 #include "core/component/2D/CircleRenderer.h"
 #include "core/component/2D/SpriteRenderer.h"
 #include "core/component/2D/LineRenderer.h"
@@ -32,6 +34,8 @@
 #include "core/renderer/Texture.h"
 #include "core/renderer/FrameBuffer.h"
 #include "core/renderer/RenderCommand.h"
+
+#include "core/serializer/YAMLSerializer.h"
 
 #include "core/ui/UIObject.h"
 #include "core/ui/Panel.h"
