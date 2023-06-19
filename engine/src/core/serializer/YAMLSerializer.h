@@ -2,6 +2,7 @@
 #include "Engine.h"
 
 #include "assets/Asset3D.h"
+#include "generic/Scene.h"
 
 #include "yaml-cpp/yaml.h"
 
@@ -127,6 +128,8 @@ namespace engine
 		~YAMLSerializer();
 
 		bool AssetSerialize(const std::filesystem::path& filePath, const Asset3D& asset);
+
+		bool SceneSerializer(const Scene& scene);
 	};
 }
 

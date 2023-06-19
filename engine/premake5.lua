@@ -31,7 +31,8 @@ project "engine"
 		"%{IncludeDir.MSDF_ATLAS_GEN}",
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.YAMLCPP}"
+		"%{IncludeDir.YAMLCPP}",
+		"%{IncludeDir.STDUUID}"
 	}
 
 	defines 

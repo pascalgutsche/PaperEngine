@@ -9,125 +9,135 @@
 #include "renderer/Renderer3D.h"
 #include "renderer/RenderCommand.h"
 
+#include "Registry.h"
+
+#include "uuid.h"
+#include "component/2D/SpriteRenderer.h"
 
 namespace engine {
 
-    Scene::Scene()
-    {
-        camera = std::make_shared<Camera>();
-    }
-
-    void Scene::Update()
-    {
-        OnUpdate();
-
-        //update entities
-        for (const auto& layer : Application::GetLayerStack())
-        {
-            if (!layer->IsAttached()) continue;
-            for (const auto& entity : layer->GetEntitys())
-            {
-                if (!entity->IsRunning()) continue;
-                entity->Update();
-
-                if (entity->GetRenderComponent() == nullptr) continue;
-                entity->GetRenderComponent()->OnUpdate();
-            }
-        }
-    }
-
-    void Scene::Start()
+	Scene::Scene()
 	{
-        isRunning = true;
-        OnStart();
-    }
+		camera = std::make_shared<Camera>();
 
-    void Scene::Stop()
-    {
-        isRunning = false;
-        OnStop();
-    }
+		Registry reg;
+		reg.Add(SpriteRenderer(glm::vec4(1.0f), Geometry::NONE));
+	}
 
-    void Scene::Render()
-    {
+	void Scene::Update()
+	{
+		OnUpdate();
 
-        //render anything inside the scene
-        RenderCommand::ClearStats();
-        RenderCommand::Clear();
+		//update entities
+		for (const auto& layer : Application::GetLayerStack())
+		{
+			if (!layer->IsAttached()) continue;
+			for (const auto& entity : layer->GetEntitys())
+			{
+				if (!entity->IsRunning()) continue;
+				entity->Update();
 
-        RenderCommand::UploadCamera(camera);
+				if (entity->GetRenderComponent() == nullptr) continue;
+				entity->GetRenderComponent()->OnUpdate();
+			}
+		}
+	}
 
-        Renderer3D::BeginRender();
-        for (Entity* entity : entities)
-        {
-            if (!entity->GetRenderComponent()) continue;
-            entity->GetRenderComponent()->OnRender();
-        }
-        Renderer3D::EndRender();
+	void Scene::Start()
+	{
+		isRunning = true;
+		OnStart();
+	}
 
-        Renderer2D::BeginRender();
+	void Scene::Stop()
+	{
+		isRunning = false;
+		OnStop();
+	}
 
-        for (const auto& layer : Application::GetLayerStack())
-        {
-            if (!layer->IsAttached()) continue;
+	void Scene::Render()
+	{
 
-            for (const auto& entity : layer->GetEntitys())
-            {
-                if (!entity->IsRunning()) continue;
-                if (entity->GetRenderComponent() == nullptr) continue;
+		//render anything inside the scene
+		RenderCommand::ClearStats();
+		RenderCommand::Clear();
 
-                entity->GetRenderComponent()->OnRender();
-            }
-            Renderer2D::NextBatch(ALL);
-            layer->RenderUI();
-        }
+		RenderCommand::UploadCamera(camera);
 
-        Renderer2D::EndRender();
+		Renderer3D::BeginRender();
+		for (Entity* entity : entities)
+		{
+			if (!entity->GetRenderComponent()) continue;
+			entity->GetRenderComponent()->OnRender();
+		}
+		Renderer3D::EndRender();
+
+		Renderer2D::BeginRender();
+
+		for (const auto& layer : Application::GetLayerStack())
+		{
+			if (!layer->IsAttached()) continue;
+
+			for (const auto& entity : layer->GetEntitys())
+			{
+				if (!entity->IsRunning()) continue;
+				if (entity->GetRenderComponent() == nullptr) continue;
+
+				entity->GetRenderComponent()->OnRender();
+			}
+			Renderer2D::NextBatch(ALL);
+			layer->RenderUI();
+		}
+
+		Renderer2D::EndRender();
+
+		uuids::uuid const id = uuids::uuid_system_generator{}();
+		assert(!id.is_nil());
+		assert(id.version() == uuids::uuid_version::random_number_based);
+		assert(id.variant() == uuids::uuid_variant::rfc);
+	}
+
+	void Scene::AddEntityToScene(Entity* entity)
+	{
+		if (isRunning) {
+			entities.push_back(entity);
+			entity->Start();
+		}
+		else {
+			entities.push_back(entity);
+		}
+		entity->SetScene(this);
+	}
 
 
-    }
+	Shr<Camera> Scene::GetCamera() {
+		// return the current scene camera, useful for scene testing
+		return this->camera;
+	}
 
-    void Scene::AddEntityToScene(Entity* entity)
-    {
-        if (isRunning) {
-            entities.push_back(entity);
-            entity->Start();
-        }
-        else {
-            entities.push_back(entity);
-        }
-        entity->SetScene(this);
-    }
+	glm::vec4 Scene::GetBackcolor() {
+		return glm::vec4(this->backcolor, 1.0f);
+	}
 
+	void Scene::AddLayer(Layer* layer)
+	{
+		layer->SetScene(this);
+		Application::AddLayer(layer);
+	}
 
-    Shr<Camera> Scene::GetCamera() {
-        // return the current scene camera, useful for scene testing
-        return this->camera;
-    }
+	void Scene::AddOverlay(Layer* layer)
+	{
+		layer->SetScene(this);
+		Application::AddOverlay(layer);
+	}
 
-    glm::vec4 Scene::GetBackcolor() {
-        return glm::vec4(this->backcolor, 1.0f);
-    }
+	void Scene::RemoveLayer(Layer* layer) const
+	{
+		Application::RemoveLayer(layer);
+	}
 
-    void Scene::AddLayer(Layer* layer)
-    {
-        layer->SetScene(this);
-        Application::AddLayer(layer);
-    }
-
-    void Scene::AddOverlay(Layer* layer)
-    {
-        layer->SetScene(this);
-        Application::AddOverlay(layer);
-    }
-
-    void Scene::RemoveLayer(Layer* layer) const
-    {
-        Application::RemoveLayer(layer);
-    }
-
-    void Scene::RemoveOverlay(Layer* layer) const
-    {
-        Application::RemoveOverlay(layer);
-    }
+	void Scene::RemoveOverlay(Layer* layer) const
+	{
+		Application::RemoveOverlay(layer);
+	}
 }

@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib, "rpcrt4.lib")
 
 #define _CRT_SECURE_NO_WARNINGS
 #define GLFW_INCLUDE_NONE

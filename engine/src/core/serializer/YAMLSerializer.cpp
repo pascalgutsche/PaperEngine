@@ -35,7 +35,11 @@ namespace engine
 
 		return true;
 	}
-	
+
+	bool YAMLSerializer::SceneSerializer(const Scene& scene)
+	{
+		return false;
+	}
 }
 
 

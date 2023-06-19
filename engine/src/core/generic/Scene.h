@@ -7,6 +7,7 @@ namespace engine {
     class Entity;
     class Camera;
     class Layer;
+    class Event;
 
     class Scene {
         friend class Application;
@@ -19,6 +20,8 @@ namespace engine {
         glm::vec4 GetBackcolor();
 
         void Start();
+
+
         void Stop();
 
         void Render();
@@ -47,6 +50,8 @@ namespace engine {
         bool isRunning = false;
 
         void Update();
+
+
 
     };
 
