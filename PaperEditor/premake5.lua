@@ -32,7 +32,8 @@ project "PaperEditor"
 		"%{IncludeDir.MSDF_ATLAS_GEN}",
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.YAMLCPP}"
+		"%{IncludeDir.YAMLCPP}",
+		"%{IncludeDir.ENTT}"
 	}
 
 	defines 

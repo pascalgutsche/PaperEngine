@@ -13,15 +13,13 @@
 
 #include "uuid.h"
 #include "component/2D/SpriteRenderer.h"
+#include "utils/Core.h"
 
 namespace engine {
 
 	Scene::Scene()
 	{
 		camera = std::make_shared<Camera>();
-
-		Registry reg;
-		reg.Add(SpriteRenderer(glm::vec4(1.0f), Geometry::NONE));
 	}
 
 	void Scene::Update()

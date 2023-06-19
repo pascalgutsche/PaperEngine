@@ -35,6 +35,8 @@ namespace engine {
 
         std::vector<Entity*>& GetEntitys() { return entities; }
 
+        entt::registry& Registry() { return registry; }
+
     protected:
         Shr<Camera> camera = nullptr;
         glm::vec3 backcolor = glm::vec3(1.0f, 0.1f, 0.6f);
@@ -51,8 +53,7 @@ namespace engine {
 
         void Update();
 
-
-
+        entt::registry registry;
     };
 
 }

@@ -17,10 +17,14 @@ namespace engine
 		static void AddToDelete(core_id id);
 
 		static Object* GetObjectByID(core_id id);
+
+		static entt::registry& GetRegistry();
 	private:
 		inline static std::unordered_map<core_id, Object*> IDinUse;
 		inline static std::vector<core_id> deletedIDs;
 		inline static core_id leastIDavailable;
 		inline static bool initialized = false;
+
+		static entt::registry registry;
 	};
 }

@@ -1,12 +1,8 @@
 #pragma once
 #include "Engine.h"
-
 #include "utility.h"
 
-#include "Object.h"
-#include "generic/Transform.h"
-#include "utils/DataPool.h"
-#include "event/Event.h"
+#include "Scene.h"
 
 namespace engine {
 
@@ -15,106 +11,64 @@ namespace engine {
     class Layer;
     class Scene;
 
-    class Entity : public Object {
+    class Entity {
     public:
-        Entity(std::string name, const Transform& transform = Transform(), ProjectionMode mode = ProjectionMode::PERSPECTIVE);
+        Entity(std::string name, const Shr<Scene>& scene);
+        Entity(uuid id, std::string name, const Shr<Scene>& scene);
 
-        ~Entity() override;
-
-        template<typename T>
-        T* GetComponent();
+        ~Entity();
 
         template<typename T>
+        T& GetComponent();
+
+    	template<typename T>
+        bool HasComponent() const;
+
+    	template<typename T, typename... ARGS>
+        T& AddComponent(ARGS&... args);
+
+    	template<typename T>
         bool RemoveComponent();
 
-        bool AddComponent(Component* component);
-
-        void Update();
-        void Start();
-        void Stop();
-        void Imgui(float dt);
-        void OnEvent(Event& event);
-
-        void DeleteComponents();
+        operator bool() const { return entity != entt::null; }
+        operator entt::entity() const { return entity; }
+        operator uint32_t() const { return (uint32_t)entity; }
 
         Entity* AddTag(std::string tag);
         Entity* AddTag(std::initializer_list<std::string> tags);
         bool RemoveTag(std::string tag);
         bool HasTag(std::string tag);
 
-        Layer* GetLayer() const { return this->layer; }
-        bool IsRunning() const { return running; }
-
-        ProjectionMode GetProjectionMode() const
-        {
-            return mode;
-        }
-
-        bool onlyLayerReceive = true;
-        
-
     private:
-        std::vector<Component*> components;
-        RenderComponent* renderComponent;
-        Layer* layer = nullptr;
-        Scene* scene = nullptr;
-        bool deleted = false;
+        Shr<Scene> scene = nullptr;
 
-        std::initializer_list<std::string> tags;
-        ProjectionMode mode;
-
-        bool running = false;
-
-
-        std::vector<std::string> tagList;
-
-        void StopComponentIndex(int32_t index);
-        void DeleteComponentIndex(int32_t index);
-
-        friend class Layer;
-        void SetLayer(Layer* layer);
-
-        friend class Scene;
-        RenderComponent* GetRenderComponent() const;
-        void SetScene(Scene* scene);
+        entt::entity entity = entt::null;
     };
 
     template <typename T>
-    T* Entity::GetComponent()
+    T& Entity::GetComponent()
     {
-        if (dynamic_cast<T*>(renderComponent) != nullptr)
-        {
-            return dynamic_cast<T*>(renderComponent);
-        }
-        for (Component* com : components)
-        {
-            T* derived = dynamic_cast<T*>(com);
-            if (derived != nullptr) return derived;
-        }
-        return nullptr;
+        CORE_ASSERT(HasComponent<T>(), "Entity does not have this Component");
+        return scene->Registry().get<T>(entity);
     }
 
     template <typename T>
-    bool Entity::RemoveComponent() {
-        if (dynamic_cast<T*>(renderComponent) != nullptr)
-        {
-            if (running)
-                StopComponentIndex(-1);
-            DeleteComponentIndex(-1);
-            renderComponent = nullptr;
-            return true;
-        }
-        for (int i = 0; i < components.size(); i++)
-        {
-            if (dynamic_cast<T*>(components[i]) != nullptr) {
-                if (running)
-                    StopComponentIndex(i);
-                DeleteComponentIndex(i);
-                components.erase(components.begin() + i);
-                return true;
-            }
-        }
-        
-        return false;
+    bool Entity::HasComponent() const
+    {
+        return scene->Registry().all_of<T>(entity);
+    }
+
+    template <typename T, typename ... ARGS>
+    T& Entity::AddComponent(ARGS&... args)
+    {
+        CORE_ASSERT(!HasComponent<T>(), "Entity already has this Component");
+        return scene->Registry().emplace<T>(entity, std::forward<ARGS>(args)...);
+    }
+
+    template <typename T>
+    bool Entity::RemoveComponent()
+    {
+        CORE_ASSERT(HasComponent<T>(), "Entity does not have this Component");
+        return scene->Registry().remove<T>(entity);
     }
 }

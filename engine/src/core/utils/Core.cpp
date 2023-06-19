@@ -4,12 +4,15 @@
 
 namespace engine
 {
+	entt::registry Core::registry;
 	void Core::Init()
 	{
 		CORE_ASSERT(!initialized, "Core already initialized");
 		IDinUse[0] = nullptr;
 		leastIDavailable = 1;
 		initialized = true;
+
+		registry = entt::registry();
 	}
 
 	core_id Core::RequestID(Object* object)
@@ -53,5 +56,10 @@ namespace engine
 		}
 		CORE_ASSERT(false, "invalid ID");
 		return nullptr;
+	}
+
+	entt::registry& Core::GetRegistry()
+	{
+		return registry;
 	}
 }

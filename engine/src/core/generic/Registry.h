@@ -18,8 +18,7 @@ namespace engine
 
 	private:
 
-		template <typename T>
-		std::vector<std::vector<T>> registry;
+		std::vector<std::vector<Component>> registry;
 	};
 
 	template <typename  T>
@@ -27,7 +26,14 @@ namespace engine
 	{
 		static_assert(std::is_base_of_v<Component, T>, "T must inherit from Component");
 
+		for (auto& vec : registry)
+		{
+			if (dynamic_cast<T*>(&vec[0]) == nullptr) continue;
+			vec.push_back(component);
+			return;
+		}
 
+		registry.resize(registry.size() + 1, std::vector<Component>());
 
 	}
 }

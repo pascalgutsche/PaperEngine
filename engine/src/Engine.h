@@ -54,6 +54,13 @@
 #include <GLM/mat4x3.hpp>
 #include <GLM/mat4x4.hpp>
 
+//entt
+#include <entt/entt.hpp>
+
+//uuid
+#include <uuid.h>
+
+using namespace uuids;
 
 //Core
 #include "core/utils/Log.h"
