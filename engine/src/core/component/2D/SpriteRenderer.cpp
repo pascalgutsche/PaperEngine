@@ -22,23 +22,23 @@ namespace engine {
 
     void SpriteRenderer::OnRender()
     {
-        EdgeRenderData data;
-        data.transform = gameObject->transform;
-        data.color = color;
-        data.texture = texture;
-        data.tilingFactor = tilingFactor;
-        data.mode = gameObject->GetProjectionMode();
-        data.coreID = gameObject->GetCoreID();
-        data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
-        switch (geometry)
-        {
-            case Geometry::RECTANGLE:
-                Renderer2D::DrawRectangle(data);
-                break;
-            case Geometry::TRIANGLE:
-                Renderer2D::DrawTriangle(data);
-                break;
-        }
+        //EdgeRenderData data;
+        //data.transform = gameObject->transform;
+        //data.color = color;
+        //data.texture = texture;
+        //data.tilingFactor = tilingFactor;
+        //data.mode = gameObject->GetProjectionMode();
+        //data.coreID = gameObject->GetCoreID();
+        //data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
+        //switch (geometry)
+        //{
+        //    case Geometry::RECTANGLE:
+        //        Renderer2D::DrawRectangle(data);
+        //        break;
+        //    case Geometry::TRIANGLE:
+        //        Renderer2D::DrawTriangle(data);
+        //        break;
+        //}
     }
 
     static float timeUntilRefresh = 0.0f;

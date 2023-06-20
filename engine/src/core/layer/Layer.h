@@ -6,6 +6,8 @@
 #include "generic/Entity.h"
 #include "generic/Scene.h"
 
+#include "utils/DataPool.h"
+
 namespace engine
 {
 	class UIObject;

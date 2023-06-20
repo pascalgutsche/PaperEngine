@@ -18,10 +18,9 @@ namespace engine
 	void CubeRenderer::OnRender()
 	{
 		EdgeRenderData3D data;
-		data.transform = gameObject->transform;
+		//data.transform = gameObject->transform;
 		data.color = color;
-		if (gameObject->GetComponent<LightComponent>())
-			data.isLightSource = true;
+
 		data.texture = texture;
 		data.tilingFactor = tilingFactor;
 		Renderer3D::DrawCube(data);

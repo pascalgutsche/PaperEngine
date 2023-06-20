@@ -5,6 +5,8 @@
 #include "generic/Component.h"
 #include "event/Event.h"
 
+#include "renderer/Texture.h"
+
 namespace engine {
 
     enum class Geometry

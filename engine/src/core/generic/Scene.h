@@ -56,7 +56,7 @@ namespace engine {
 
         entt::registry registry;
 
-        std::unordered_map<uuid, Entity&> entityMap;
+        std::unordered_map<uuid, Entity> entityMap;
     };
 
 }

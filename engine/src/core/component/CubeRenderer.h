@@ -3,6 +3,8 @@
 
 #include "generic/Component.h"
 
+#include "renderer/Texture.h"
+
 namespace engine
 {
 	class CubeRenderer : public RenderComponent

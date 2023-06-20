@@ -33,6 +33,7 @@ project "PaperEditor"
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.STB_IMAGE}",
 		"%{IncludeDir.YAMLCPP}",
+		"%{IncludeDir.STDUUID}",
 		"%{IncludeDir.ENTT}"
 	}
 
@@ -56,7 +57,7 @@ project "PaperEditor"
 	}
 	
 	filter "system:windows"
-		cppdialect "C++17"
+		cppdialect "C++20"
 		systemversion "latest"
 
 		defines

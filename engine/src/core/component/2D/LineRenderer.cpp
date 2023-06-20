@@ -11,13 +11,13 @@ namespace engine
 
 	void LineRenderer::OnRender()
 	{
-		LineRenderData data;
-		data.point0 = positionA;
-		data.point1 = positionB;
-		data.color = color;
-		data.thickness = thickness;
-		data.mode = gameObject->GetProjectionMode();
-		data.coreID = gameObject->GetCoreID();
-		Renderer2D::DrawLine(data);
+		//LineRenderData data;
+		//data.point0 = positionA;
+		//data.point1 = positionB;
+		//data.color = color;
+		//data.thickness = thickness;
+		//data.mode = gameObject->GetProjectionMode();
+		//data.coreID = gameObject->GetCoreID();
+		//Renderer2D::DrawLine(data);
 	}
 };

@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "generic/Component.h"
 
+#include "renderer/Texture.h"
+
 namespace engine
 {
     class CircleRenderer : public RenderComponent {

@@ -23,81 +23,44 @@ namespace engine
 	void Layer::Attach()
 	{
 		attached = true;
-		for (Entity* game_object : gameObjects)
-		{
-			game_object->Start();
-		}
 		OnAttach();
 	}
 
 	void Layer::Detach()
 	{
 		attached = false;
-		for (Entity* game_object : gameObjects)
-		{
-			game_object->Stop();
-		}
 		OnDetach();
 	}
 
-	void Layer::LayerEvent(Event& event)
-	{
-		for (Entity* gm : gameObjects)
-		{
-			if (!gm->IsRunning()) continue;
-			if (!event.handled)
-			{
-				gm->OnEvent(event);
-			}
-		}
-		if (!event.handled)
-		{
-			OnEvent(event);
-		}
-	}
-
-
-	void Layer::AddEntityToLayer(Entity* gameObject)
-	{
-		if (attached) {
-			gameObjects.push_back(gameObject);
-			gameObject->Start();
-		}
-		else {
-			gameObjects.push_back(gameObject);
-		}
-		gameObject->SetLayer(this);
-	}
-
-	std::vector<Entity*> Layer::GetEntitysByTag(std::initializer_list<std::string> tags)
-	{
-		std::vector<Entity*> gos;
-		for (int i = 0; i < gameObjects.size(); i++)
-		{
-			for (std::string tag : tags)
-			{
-				if (gameObjects[i]->HasTag(tag))
-				{
-					gos.push_back(gameObjects[i]);
-					break;
-				}
-			}
-		}
-		return gos;
-	}
-
-	std::vector<Entity*> Layer::GetEntitysByTag(std::string tag)
-	{
-		std::vector<Entity*> gos;
-		for (int i = 0; i < gameObjects.size(); i++)
-		{
-			if (gameObjects[i]->HasTag(tag))
-			{
-				gos.push_back(gameObjects[i]);
-			}
-		}
-		return gos;
-	}
+	//std::vector<Entity*> Layer::GetEntitysByTag(std::initializer_list<std::string> tags)
+	//{
+	//	std::vector<Entity*> gos;
+	//	for (int i = 0; i < gameObjects.size(); i++)
+	//	{
+	//		for (std::string tag : tags)
+	//		{
+	//			if (gameObjects[i]->HasTag(tag))
+	//			{
+	//				gos.push_back(gameObjects[i]);
+	//				break;
+	//			}
+	//		}
+	//	}
+	//	return gos;
+	//}
+	//
+	//std::vector<Entity*> Layer::GetEntitysByTag(std::string tag)
+	//{
+	//	std::vector<Entity*> gos;
+	//	for (int i = 0; i < gameObjects.size(); i++)
+	//	{
+	//		if (gameObjects[i]->HasTag(tag))
+	//		{
+	//			gos.push_back(gameObjects[i]);
+	//		}
+	//	}
+	//	return gos;
+	//}
 
 	void Layer::AddUIObject(UIObject* object, ProjectionMode mode)
 	{

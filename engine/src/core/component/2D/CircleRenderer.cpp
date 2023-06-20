@@ -15,15 +15,15 @@ namespace engine {
 
     void CircleRenderer::OnRender()
     {
-        CircleRenderData data;
-        data.transform = gameObject->transform;
-        data.color = color;
-        data.thickness = thickness;
-        data.fade = fade;
-        data.texture = texture;
-        data.mode = gameObject->GetProjectionMode();
-        data.coreID = gameObject->GetCoreID();
-        data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
-        Renderer2D::DrawCircle(data);
+        //CircleRenderData data;
+        //data.transform = gameObject->transform;
+        //data.color = color;
+        //data.thickness = thickness;
+        //data.fade = fade;
+        //data.texture = texture;
+        //data.mode = gameObject->GetProjectionMode();
+        //data.coreID = gameObject->GetCoreID();
+        //data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
+        //Renderer2D::DrawCircle(data);
     }
 }

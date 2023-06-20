@@ -48,14 +48,14 @@ namespace engine
 
 	void SpriteSheet::OnRender()
 	{
-		EdgeRenderData data;
-		data.transform = gameObject->transform;
-		data.color = color;
-		data.texture = texture;
-		std::copy(std::begin(texCoords), std::end(texCoords), std::begin(data.texCoords));
-		data.mode = gameObject->GetProjectionMode();
-		data.coreID = gameObject->GetCoreID();
-		data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
-		Renderer2D::DrawRectangle(data);
+		//EdgeRenderData data;
+		//data.transform = gameObject->transform;
+		//data.color = color;
+		//data.texture = texture;
+		//std::copy(std::begin(texCoords), std::end(texCoords), std::begin(data.texCoords));
+		//data.mode = gameObject->GetProjectionMode();
+		//data.coreID = gameObject->GetCoreID();
+		//data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
+		//Renderer2D::DrawRectangle(data);
 	}
 };

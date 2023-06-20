@@ -25,20 +25,20 @@ namespace engine {
 	void Scene::Update()
 	{
 		OnUpdate();
-
-		//update entities
-		for (const auto& layer : Application::GetLayerStack())
-		{
-			if (!layer->IsAttached()) continue;
-			for (const auto& entity : layer->GetEntitys())
-			{
-				if (!entity->IsRunning()) continue;
-				entity->Update();
-
-				if (entity->GetRenderComponent() == nullptr) continue;
-				entity->GetRenderComponent()->OnUpdate();
-			}
-		}
+		//
+		////update entities
+		//for (const auto& layer : Application::GetLayerStack())
+		//{
+		//	if (!layer->IsAttached()) continue;
+		//	for (const auto& entity : layer->GetEntitys())
+		//	{
+		//		if (!entity->IsRunning()) continue;
+		//		entity->Update();
+		//
+		//		if (entity->GetRenderComponent() == nullptr) continue;
+		//		entity->GetRenderComponent()->OnUpdate();
+		//	}
+		//}
 	}
 
 	void Scene::Start()
@@ -55,38 +55,38 @@ namespace engine {
 
 	void Scene::Render()
 	{
-		//render anything inside the scene
-		RenderCommand::ClearStats();
-		RenderCommand::Clear();
-
-		RenderCommand::UploadCamera(camera);
-
-		Renderer3D::BeginRender();
-		for (Entity* entity : entities)
-		{
-			if (!entity->GetRenderComponent()) continue;
-			entity->GetRenderComponent()->OnRender();
-		}
-		Renderer3D::EndRender();
-
-		Renderer2D::BeginRender();
-
-		for (const auto& layer : Application::GetLayerStack())
-		{
-			if (!layer->IsAttached()) continue;
-
-			for (const auto& entity : layer->GetEntitys())
-			{
-				if (!entity->IsRunning()) continue;
-				if (entity->GetRenderComponent() == nullptr) continue;
-
-				entity->GetRenderComponent()->OnRender();
-			}
-			Renderer2D::NextBatch(ALL);
-			layer->RenderUI();
-		}
-
-		Renderer2D::EndRender();
+		////render anything inside the scene
+		//RenderCommand::ClearStats();
+		//RenderCommand::Clear();
+		//
+		//RenderCommand::UploadCamera(camera);
+		//
+		//Renderer3D::BeginRender();
+		//for (Entity* entity : entities)
+		//{
+		//	if (!entity->GetRenderComponent()) continue;
+		//	entity->GetRenderComponent()->OnRender();
+		//}
+		//Renderer3D::EndRender();
+		//
+		//Renderer2D::BeginRender();
+		//
+		//for (const auto& layer : Application::GetLayerStack())
+		//{
+		//	if (!layer->IsAttached()) continue;
+		//
+		//	for (const auto& entity : layer->GetEntitys())
+		//	{
+		//		if (!entity->IsRunning()) continue;
+		//		if (entity->GetRenderComponent() == nullptr) continue;
+		//
+		//		entity->GetRenderComponent()->OnRender();
+		//	}
+		//	Renderer2D::NextBatch(ALL);
+		//	layer->RenderUI();
+		//}
+		//
+		//Renderer2D::EndRender();
 
 		uuids::uuid const id = uuids::uuid_system_generator{}();
 		assert(!id.is_nil());

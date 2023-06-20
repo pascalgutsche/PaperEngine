@@ -17,9 +17,9 @@ namespace engine
 		{
 			this->name = name;
 			this->uuid = uuid_system_generator{}();
-			static_assert(!uuid.is_nil());
-			static_assert(uuid.version() == uuids::uuid_version::random_number_based);
-			static_assert(uuid.variant() == uuids::uuid_variant::rfc);
+			CORE_ASSERT(!uuid.is_nil(), "");
+			CORE_ASSERT(uuid.version() == uuids::uuid_version::random_number_based, "");
+			CORE_ASSERT(uuid.variant() == uuids::uuid_variant::rfc, "");
 		}
 	};
 }

@@ -16,14 +16,14 @@ namespace engine
 
 	void FontRenderer::OnRender()
 	{
-		TextRenderData data;
-		data.transform = gameObject->transform;
-		data.color = color;
-		data.string = text;
-		data.font = DataPool::GetFont(fontPath);
-		data.mode = gameObject->GetProjectionMode();
-		data.coreID = gameObject->GetCoreID();
-		data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
-		Renderer2D::DrawString(data);
+		//TextRenderData data;
+		//data.transform = gameObject->transform;
+		//data.color = color;
+		//data.string = text;
+		//data.font = DataPool::GetFont(fontPath);
+		//data.mode = gameObject->GetProjectionMode();
+		//data.coreID = gameObject->GetCoreID();
+		//data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
+		//Renderer2D::DrawString(data);
 	}
 };

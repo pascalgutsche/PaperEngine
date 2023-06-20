@@ -501,14 +501,14 @@ void PELayer::LayerPanel(const float dt, bool first)
 				int b = 0;
 				for (int i = 0; i < gameobjects.size(); i++)
 				{
-					if (ImGui::Selectable((gameobjects[i]->GetName() + std::string(" (ObjectID = " + std::to_string(gameobjects[i]->GetCoreID()) + std::string(")")) + std::string("##" + std::to_string(i))).c_str(), gameobjects[i] == selectedObject)) {
+					if (ImGui::Selectable((gameobjects[i]->GetName() + std::string(" (ObjectID = " + std::to_string(gameobjects[i]->GetUUID()) + std::string(")")) + std::string("##" + std::to_string(i))).c_str(), gameobjects[i] == selectedObject)) {
 						selectedObject = gameobjects[i];
 					}
 					b = i;
 				}
 				for (int i = 0; i < entities.size(); i++)
 				{
-					if (ImGui::Selectable((entities[i]->GetName() + std::string(" (ObjectID = " + std::to_string(entities[i]->GetCoreID()) + std::string(")")) + std::string("##" + std::to_string(i + b))).c_str(), entities[i] == selectedObject)) {
+					if (ImGui::Selectable((entities[i]->GetName() + std::string(" (ObjectID = " + std::to_string(entities[i]->GetUUID()) + std::string(")")) + std::string("##" + std::to_string(i + b))).c_str(), entities[i] == selectedObject)) {
 						selectedObject = entities[i];
 					}
 				}
