@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Engine.h"
 
-names
+namespace 
 class uuid
 {
 public:
