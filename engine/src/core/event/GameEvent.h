@@ -5,6 +5,8 @@
 #include "event/Event.h"
 #include "generic/Entity.h"
 
+#include "component/DataComponent.h"
+
 namespace engine
 {
 
@@ -12,14 +14,14 @@ namespace engine
 	{
 	public:
 		EntityEvent() = default;
-		EntityEvent(Entity* gameObject)
-			: gameObject(gameObject) { }
+		EntityEvent(Entity* entity)
+			: entity(entity) { }
 
-		inline Entity* GetEntity() const { return gameObject; }
+		inline Entity* GetEntity() const { return entity; }
 
 		inline std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityEvent: Name: " << gameObject->GetName() << " | CoreID: " << gameObject->GetCoreID();
+			string << "EntityEvent: Name: " << entity->GetComponent<DataComponent>().name << " | CoreID: " << entity->GetCoreID();
 			return string.str();
 		}
 
@@ -28,7 +30,7 @@ namespace engine
 		EVENT_CLASS_TYPE(EntityPressed);
 
 	protected:
-		Entity* gameObject = nullptr;
+		Entity* entity = nullptr;
 	};
 
 	class EntityPressedEvent : public EntityEvent {
@@ -40,7 +42,7 @@ namespace engine
 
 		inline std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityPressedEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
+			string << "EntityPressedEvent: Name: " << entity->GetName() << " | ID: " << entity->GetCoreID();
 			return string.str();
 		}
 
@@ -57,7 +59,7 @@ namespace engine
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityReleasedEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
+			string << "EntityReleasedEvent: Name: " << entity << " | ID: " << entity->GetCoreID();
 			return string.str();
 		}
 
@@ -74,7 +76,7 @@ namespace engine
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityHoverBeginEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
+			string << "EntityHoverBeginEvent: Name: " << entity->GetName() << " | ID: " << entity->GetCoreID();
 			return string.str();
 		}
 
@@ -91,7 +93,7 @@ namespace engine
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityHoverEndEvent: Name: " << gameObject->GetName() << " | ID: " << gameObject->GetCoreID();
+			string << "EntityHoverEndEvent: Name: " << entity->GetName() << " | ID: " << entity->GetCoreID();
 			return string.str();
 		}
 

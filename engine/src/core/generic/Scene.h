@@ -26,16 +26,17 @@ namespace engine {
 
         void Render();
 
-        void AddEntityToScene(Entity* entity);
+        Entity& CreateEntity(const std::string& name);
+        Entity& CreateEntity(const uuid& id, const std::string& name);
+        bool DestroyEntity(Entity& entity);
 
-        void AddLayer(Layer* layer);
-        void AddOverlay(Layer* layer);
-        void RemoveLayer(Layer* layer) const;
-        void RemoveOverlay(Layer* layer) const;
+        Entity& GetEntity(const uuid& id) const;
+
 
         std::vector<Entity*>& GetEntitys() { return entities; }
 
-        entt::registry& Registry() { return registry; }
+        auto& Registry() { return registry; }
+        auto& EntityMap() { return entityMap; }
 
     protected:
         Shr<Camera> camera = nullptr;
@@ -54,6 +55,8 @@ namespace engine {
         void Update();
 
         entt::registry registry;
+
+        std::unordered_map<uuid, Entity&> entityMap;
     };
 
 }

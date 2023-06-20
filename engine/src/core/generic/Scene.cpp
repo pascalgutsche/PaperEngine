@@ -55,7 +55,6 @@ namespace engine {
 
 	void Scene::Render()
 	{
-
 		//render anything inside the scene
 		RenderCommand::ClearStats();
 		RenderCommand::Clear();
@@ -95,47 +94,33 @@ namespace engine {
 		assert(id.variant() == uuids::uuid_variant::rfc);
 	}
 
-	void Scene::AddEntityToScene(Entity* entity)
+	Entity& Scene::CreateEntity(const std::string& name)
 	{
-		if (isRunning) {
-			entities.push_back(entity);
-			entity->Start();
-		}
-		else {
-			entities.push_back(entity);
-		}
-		entity->SetScene(this);
+		return CreateEntity(uuid_system_generator{}(), name);
 	}
 
+	Entity& Scene::CreateEntity(const uuid& id, const std::string& name)
+	{
+		Entity entity(id, name, this);
+		entityMap[id] = entity;
+		return entity;
+	}
 
-	Shr<Camera> Scene::GetCamera() {
-		// return the current scene camera, useful for scene testing
-		return this->camera;
+	bool Scene::DestroyEntity(Entity& entity)
+	{
+		if (!entityMap.contains(entity.GetUUID())) return false;
+
+		entityMap.erase(entity.GetUUID());
+		return true;
+	}
+
+	Entity& Scene::GetEntity(const uuid& id) const
+	{
+		CORE_ASSERT(entityMap.contains(id), "Entity does not exists");
+		return entityMap.at(id);
 	}
 
 	glm::vec4 Scene::GetBackcolor() {
 		return glm::vec4(this->backcolor, 1.0f);
-	}
-
-	void Scene::AddLayer(Layer* layer)
-	{
-		layer->SetScene(this);
-		Application::AddLayer(layer);
-	}
-
-	void Scene::AddOverlay(Layer* layer)
-	{
-		layer->SetScene(this);
-		Application::AddOverlay(layer);
-	}
-
-	void Scene::RemoveLayer(Layer* layer) const
-	{
-		Application::RemoveLayer(layer);
-	}
-
-	void Scene::RemoveOverlay(Layer* layer) const
-	{
-		Application::RemoveOverlay(layer);
 	}
 }

@@ -8,7 +8,6 @@
 #include "layer/LayerStack.h"
 
 #include "event/ApplicationEvent.h"
-#include "event/KeyEvent.h"
 
 
 
@@ -32,6 +31,11 @@ namespace engine {
 		static void ChangeScene(Scene* new_scene);
 
 		void Exit() { gameRunning = false; }
+
+		void AddLayer(Layer* layer);
+		void AddOverlay(Layer* layer);
+		void RemoveLayer(Layer* layer);
+		void RemoveOverlay(Layer* layer);
 
 		static void QueueEvents(Event* event);
 		static Application* GetInstance() { return instance; }
@@ -65,10 +69,6 @@ namespace engine {
 		void ProcessQueues();
 
 		friend class Scene;
-		static void AddLayer(Layer* layer);
-		static void AddOverlay(Layer* layer);
-		static void RemoveLayer(Layer* layer);
-		static void RemoveOverlay(Layer* layer);
 
 		LayerStack layerStack;
 	};

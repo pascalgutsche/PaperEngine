@@ -57,16 +57,6 @@ namespace engine {
 				return false;
 			});
 
-		if (!currentScene) return;
-		if (event.IsInCategory(EventCategoryEntity))
-		{
-			if (const Entity* gm = (*dynamic_cast<EntityEvent*>(&event)).GetEntity(); gm->onlyLayerReceive)
-			{
-				gm->GetLayer()->OnEvent(event);
-				return;
-			}
-		}
-
 		for (auto it = layerStack.end(); it != layerStack.begin(); )
 		{
 			if (event.handled)
@@ -191,25 +181,25 @@ namespace engine {
 
 	void Application::AddLayer(Layer* layer)
 	{
-		GetInstance()->layerStack.AddLayer(layer);
+		layerStack.AddLayer(layer);
 		layer->Attach();
 	}
 
 	void Application::AddOverlay(Layer* layer)
 	{
-		GetInstance()->layerStack.AddOverlay(layer);
+		layerStack.AddOverlay(layer);
 		layer->Attach();
 	}
 
 	void Application::RemoveLayer(Layer* layer)
 	{
 		layer->Detach();
-		GetInstance()->layerStack.RemoveLayer(layer);
+		layerStack.RemoveLayer(layer);
 	}
 
 	void Application::RemoveOverlay(Layer* layer)
 	{
 		layer->Detach();
-		GetInstance()->layerStack.RemoveOverlay(layer);
+		layerStack.RemoveOverlay(layer);
 	}
 }
