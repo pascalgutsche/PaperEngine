@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "utility.h"
 
+#include "utils/UUID.h"
+
 namespace engine {
 
     class Entity;

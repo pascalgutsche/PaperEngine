@@ -33,7 +33,8 @@ project "engine"
 		"%{IncludeDir.STB_IMAGE}",
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.STDUUID}",
-		"%{IncludeDir.ENTT}"
+		"%{IncludeDir.ENTT}",
+		"%{IncludeDir.BOOST}"
 	}
 
 	defines 

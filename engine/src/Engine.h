@@ -57,11 +57,6 @@
 //entt
 #include <entt/entt.hpp>
 
-//uuid
-#include <uuid.h>
-
-using namespace uuids;
-
 //Core
 #include "core/utils/Log.h"
 

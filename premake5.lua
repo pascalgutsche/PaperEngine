@@ -24,8 +24,8 @@ IncludeDir["MSDF_ATLAS_GEN"] = "%{wks.location}/engine/lib/msdf-atlas-gen/msdf-a
 IncludeDir["SPDLOG"] = "%{wks.location}/engine/lib/spdlog/include"
 IncludeDir["STB_IMAGE"] = "%{wks.location}/engine/lib/stb_image"
 IncludeDir["YAMLCPP"] = "%{wks.location}/engine/lib/yaml-cpp/include"
-IncludeDir["STDUUID"] = "%{wks.location}/engine/lib/STDUUID/include"
 IncludeDir["ENTT"] = "%{wks.location}/engine/lib/entt/src"
+IncludeDir["BOOST"] = "%{wks.location}/engine/lib"
 
 group "dependencies"
 include "engine/lib/glad"
