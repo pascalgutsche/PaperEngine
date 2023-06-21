@@ -30,7 +30,7 @@ public:
 		EditorScene* scene = new EditorScene();
 		scene->CreateEntity("lol");
 
-		LOG_DEBUG(scene->registry.alive());
+		LOG_DEBUG(scene->registry);
 	}
 
 };
