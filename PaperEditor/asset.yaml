@@ -1,6 +1,6 @@
 Entities:
   - TextComponent
-  - lol: TextString
+  - TextComponent: TextString
     textComponent.TextString: Color
     textComponent.Color: Kerning
     795348: LineSpacing

@@ -16,7 +16,7 @@ namespace engine {
     public:
 
         Scene();
-        virtual ~Scene() = default;
+        virtual ~Scene();
 
         Shr<Camera> GetCamera();
         glm::vec4 GetBackcolor();
@@ -29,10 +29,10 @@ namespace engine {
         void Render();
 
         Entity& CreateEntity(const std::string& name);
-        Entity& CreateEntity(const uuid& id, const std::string& name);
+        Entity& CreateEntity(const UUID& id, const std::string& name);
         bool DestroyEntity(Entity& entity);
 
-        Entity& GetEntity(const uuid& id) const;
+        Entity& GetEntity(const UUID& id);
 
 
         std::vector<Entity*>& GetEntitys() { return entities; }
@@ -40,9 +40,9 @@ namespace engine {
         auto& Registry() { return registry; }
         auto& EntityMap() { return entityMap; }
 
+        entt::registry registry;
     protected:
         Shr<Camera> camera = nullptr;
-        glm::vec3 backcolor = glm::vec3(1.0f, 0.1f, 0.6f);
 
         virtual void OnStart() = 0;
         virtual void OnStop() = 0;
@@ -56,9 +56,8 @@ namespace engine {
 
         void Update();
 
-        entt::registry registry;
 
-        std::unordered_map<uuid, Entity> entityMap;
+        std::unordered_map<UUID, Entity> entityMap;
     };
 
 }

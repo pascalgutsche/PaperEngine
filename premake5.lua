@@ -1,4 +1,4 @@
-workspace "PaperEditor"
+workspace "PaperEngine"
 	architecture "x64"
 	startproject "PaperEditor"
 	staticruntime "off"

@@ -8,14 +8,14 @@
 
 namespace engine
 {
-    UUID::UUID() {
+    UUID::UUID()
+	{
         boost::uuids::random_generator generator;
         uuid = generator();
     }
 
     UUID::UUID(const std::string& uuidStr) {
         uuid = boost::lexical_cast<boost::uuids::uuid>(uuidStr);
-        
     }
 
     std::string UUID::toString() const {

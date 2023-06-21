@@ -8,14 +8,20 @@
 namespace engine {
 
 	Entity::Entity(std::string name, Scene* scene)
-		: scene(scene), entity(scene->Registry().create())
+		: scene(scene)
 	{
+		LOG_DEBUG(scene->registry.storage<entt::entity>().in_use());
+		entity = scene->Registry().create();
+		LOG_DEBUG(scene->registry.storage<entt::entity>().in_use());
 		AddComponent<DataComponent>(name);
 	}
 
-	Entity::Entity(uuid id, std::string name, Scene* scene)
-		: scene(scene), entity(scene->Registry().create())
+	Entity::Entity(const UUID& id, std::string name, Scene* scene)
+		: scene(scene)
 	{
+		LOG_DEBUG(scene->registry.storage<entt::entity>().in_use());
+		entity = scene->Registry().create();
+		LOG_DEBUG(scene->registry.storage<entt::entity>().in_use());
 		AddComponent<DataComponent>(id, name);
 	}
 
@@ -68,7 +74,7 @@ namespace engine {
 		return it != tagList.end();
 	}
 
-	uuid Entity::GetUUID()
+	UUID& Entity::GetUUID()
 	{
 		return GetComponent<DataComponent>().uuid;
 	}

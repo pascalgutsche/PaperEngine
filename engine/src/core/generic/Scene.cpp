@@ -7,19 +7,23 @@
 #include "generic/Camera.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
-#include "renderer/RenderCommand.h"
 
-#include "Registry.h"
-
-#include "uuid.h"
-#include "component/2D/SpriteRenderer.h"
-#include "utils/Core.h"
 
 namespace engine {
 
 	Scene::Scene()
 	{
 		camera = std::make_shared<Camera>();
+	}
+
+	Scene::~Scene()
+	{
+
+	}
+
+	Shr<Camera> Scene::GetCamera()
+	{
+		return camera;
 	}
 
 	void Scene::Update()
@@ -87,22 +91,19 @@ namespace engine {
 		//}
 		//
 		//Renderer2D::EndRender();
-
-		uuids::uuid const id = uuids::uuid_system_generator{}();
-		assert(!id.is_nil());
-		assert(id.version() == uuids::uuid_version::random_number_based);
-		assert(id.variant() == uuids::uuid_variant::rfc);
 	}
 
 	Entity& Scene::CreateEntity(const std::string& name)
 	{
-		return CreateEntity(uuid_system_generator{}(), name);
+		return CreateEntity(UUID(), name);
 	}
 
-	Entity& Scene::CreateEntity(const uuid& id, const std::string& name)
+	Entity& Scene::CreateEntity(const UUID& id, const std::string& name)
 	{
 		Entity entity(id, name, this);
 		entityMap[id] = entity;
+		LOG_DEBUG(registry.storage<entt::entity>().in_use());
+
 		return entity;
 	}
 
@@ -114,13 +115,10 @@ namespace engine {
 		return true;
 	}
 
-	Entity& Scene::GetEntity(const uuid& id) const
+	Entity& Scene::GetEntity(const UUID& id)
 	{
 		CORE_ASSERT(entityMap.contains(id), "Entity does not exists");
 		return entityMap.at(id);
 	}
 
-	glm::vec4 Scene::GetBackcolor() {
-		return glm::vec4(this->backcolor, 1.0f);
-	}
 }

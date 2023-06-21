@@ -60,7 +60,7 @@ private:
 
     glm::ivec2 mousePosViewportRelative;
 
-    Object* selectedObject = nullptr;
+    Entity* selectedObject = nullptr;
 
     std::unordered_map<std::string, void*> variablePool;
 };

@@ -28,7 +28,6 @@ namespace engine
 		virtual void Imgui(const float dt) { };
 		virtual void OnEvent(Event& event) = 0;
 
-		void LayerEvent(Event& event);
 		bool IsAttached() const { return attached; }
 
 		void SetScene(Scene* scene) { this->scene = scene; }
@@ -41,10 +40,8 @@ namespace engine
 				return tmpScene;
 		}
 
-		void AddEntityToLayer(Entity* game_object);
-
-		std::vector<Entity*> GetEntitysByTag(std::initializer_list<std::string> tags);
-		std::vector<Entity*> GetEntitysByTag(std::string tag);
+		//std::vector<Entity*> GetEntitysByTag(std::initializer_list<std::string> tags);
+		//std::vector<Entity*> GetEntitysByTag(std::string tag);
 
 
 		void SetOverlayStatus(bool overlay) { this->overlay = overlay; }

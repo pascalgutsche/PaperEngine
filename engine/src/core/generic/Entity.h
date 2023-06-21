@@ -13,8 +13,9 @@ namespace engine {
 
     class Entity {
     public:
+        Entity() = default;
         Entity(std::string name, Scene* scene);
-        Entity(uuid id, std::string name, Scene* scene);
+        Entity(const UUID& id, std::string name, Scene* scene);
 
         ~Entity();
 
@@ -39,7 +40,7 @@ namespace engine {
         bool RemoveTag(std::string tag);
         bool HasTag(std::string tag);
 
-        uuid GetUUID();
+    	UUID& GetUUID();
 
         std::string GetName();
         void SetName(const std::string& name);

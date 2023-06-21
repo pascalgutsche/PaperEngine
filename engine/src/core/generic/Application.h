@@ -62,6 +62,7 @@ namespace engine {
 		float dt;
 		bool gameRunning = true;
 		bool resizing = false;
+		bool starting = true;
 
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);

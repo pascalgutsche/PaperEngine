@@ -25,6 +25,38 @@ void PELayer::OnDetach()
 {
 }
 
+//void EditorScene::CameraMovement()
+//{
+//	const float dt = Application::GetDT();
+//	if (Input::IsKeyPressed(KEY_W))
+//	{
+//		camera->position.x += 5 * dt * camera->GetFront().x;
+//		camera->position.z += 5 * dt * camera->GetFront().z;
+//	}
+//	if (Input::IsKeyPressed(KEY_A))
+//	{
+//		camera->position.x += 5 * dt * camera->GetFront().z;
+//		camera->position.z -= 5 * dt * camera->GetFront().x;
+//
+//	}
+//	if (Input::IsKeyPressed(KEY_S))
+//	{
+//		camera->position.x -= 5 * dt * camera->GetFront().x;
+//		camera->position.z -= 5 * dt * camera->GetFront().z;
+//
+//	}
+//	if (Input::IsKeyPressed(KEY_D))
+//	{
+//		camera->position.x -= 5 * dt * camera->GetFront().z;
+//		camera->position.z += 5 * dt * camera->GetFront().x;
+//
+//	}
+//	if (Input::IsKeyPressed(KEY_E))
+//		camera->position.y += 5 * dt;
+//	if (Input::IsKeyPressed(KEY_Q))
+//		camera->position.y -= 5 * dt;
+//}
+
 void PELayer::Update(const float dt)
 {
 	// Resize
@@ -35,15 +67,21 @@ void PELayer::Update(const float dt)
 		framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 
 		//update cameras aspect ratio //TODO: nuke it somewhere else
-		Application::GetActiveScene()->GetCamera()->aspectRatio = viewportSize.x / viewportSize.y;
+		//Application::GetActiveScene()->GetCamera()->aspectRatio = viewportSize.x / viewportSize.y;
 	}
 
-	mousePosViewportRelative = *(glm::vec2*)&ImGui::GetMousePos();
+	mousePosViewportRelative.x = ImGui::GetMousePos().x;
+	mousePosViewportRelative.y = ImGui::GetMousePos().y;
 	mousePosViewportRelative.x -= viewportBounds[0].x;
 	mousePosViewportRelative.y -= viewportBounds[0].y - 24;
 	glm::vec2 viewportSize = viewportBounds[1] - viewportBounds[0];
 
 	mousePosViewportRelative.y = viewportSize.y - mousePosViewportRelative.y;
+
+	if (IsCameraControlModeActive())
+	{
+		//CameraMovement();
+	}
 
 	//render
 	framebuffer->Bind();
@@ -374,6 +412,8 @@ void PELayer::AssetManagerPanel(const float dt, bool first)
 	{
 		YAMLSerializer serializer;
 		serializer.AssetSerialize("asset.yaml", Asset3D());
+
+		LOG_WARN(UUID());
 	}
 
 	const char* name = "Asset Manager: ";
@@ -477,48 +517,48 @@ void PELayer::LayerPanel(const float dt, bool first)
 
 	ImGui::Begin(name);
 
-	for (Layer* layer : Application::GetLayerStack())
-	{
-		if (layer == &Application::GetImGuiLayer()) continue;
-		std::vector<Entity*> gameobjects = layer->GetEntitys();
-		std::vector<Entity*> entities = Application::GetActiveScene()->GetEntitys();
-		std::vector<UIObject*> uiObjects = layer->GetUIObjects();
-
-		if (ImGui::TreeNode(layer->GetName().c_str()))
-		{
-			if (ImGui::TreeNode("UIObjects: "))
-			{
-				for (int i = 0; i < uiObjects.size(); i++)
-				{
-					if (ImGui::Selectable((uiObjects[i]->GetName() + std::string("##" + std::to_string(i))).c_str(), uiObjects[i] == selectedObject)) {
-						selectedObject = uiObjects[i];
-					}
-				}
-				ImGui::TreePop();
-			}
-			if (ImGui::TreeNode("Entitys: "))
-			{
-				int b = 0;
-				for (int i = 0; i < gameobjects.size(); i++)
-				{
-					if (ImGui::Selectable((gameobjects[i]->GetName() + std::string(" (ObjectID = " + std::to_string(gameobjects[i]->GetUUID()) + std::string(")")) + std::string("##" + std::to_string(i))).c_str(), gameobjects[i] == selectedObject)) {
-						selectedObject = gameobjects[i];
-					}
-					b = i;
-				}
-				for (int i = 0; i < entities.size(); i++)
-				{
-					if (ImGui::Selectable((entities[i]->GetName() + std::string(" (ObjectID = " + std::to_string(entities[i]->GetUUID()) + std::string(")")) + std::string("##" + std::to_string(i + b))).c_str(), entities[i] == selectedObject)) {
-						selectedObject = entities[i];
-					}
-				}
-				ImGui::TreePop();
-			}
-
-			ImGui::Text("");
-			ImGui::TreePop();
-		}
-	}
+	//for (Layer* layer : Application::GetLayerStack())
+	//{
+	//	if (layer == &Application::GetImGuiLayer()) continue;
+	//	std::vector<Entity*> gameobjects = layer->GetEntitys();
+	//	std::vector<Entity*> entities = Application::GetActiveScene()->GetEntitys();
+	//	std::vector<UIObject*> uiObjects = layer->GetUIObjects();
+	//
+	//	if (ImGui::TreeNode(layer->GetName().c_str()))
+	//	{
+	//		if (ImGui::TreeNode("UIObjects: "))
+	//		{
+	//			for (int i = 0; i < uiObjects.size(); i++)
+	//			{
+	//				//if (ImGui::Selectable((uiObjects[i]->GetName() + std::string("##" + std::to_string(i))).c_str(), uiObjects[i] == selectedObject)) {
+	//				//	//selectedObject = uiObjects[i];
+	//				//}
+	//			}
+	//			ImGui::TreePop();
+	//		}
+	//		if (ImGui::TreeNode("Entitys: "))
+	//		{
+	//			int b = 0;
+	//			for (int i = 0; i < gameobjects.size(); i++)
+	//			{
+	//				if (ImGui::Selectable((gameobjects[i]->GetName() + std::string(" (ObjectID = " + gameobjects[i]->GetUUID().toString() + std::string(")")) + std::string("##" + std::to_string(i))).c_str(), gameobjects[i] == selectedObject)) {
+	//					selectedObject = gameobjects[i];
+	//				}
+	//				b = i;
+	//			}
+	//			for (int i = 0; i < entities.size(); i++)
+	//			{
+	//				if (ImGui::Selectable((entities[i]->GetName() + std::string(" (ObjectID = " + entities[i]->GetUUID().toString() + std::string(")")) + std::string("##" + std::to_string(i + b))).c_str(), entities[i] == selectedObject)) {
+	//					selectedObject = entities[i];
+	//				}
+	//			}
+	//			ImGui::TreePop();
+	//		}
+	//
+	//		ImGui::Text("");
+	//		ImGui::TreePop();
+	//	}
+	//}
 
 	ImGui::End();
 }
@@ -530,11 +570,11 @@ void PELayer::InspectorPanel(const float dt, bool first) {
 	if (first)
 		DockPanel(name, GetDockspaceLeftBottom());
 
-	ImGui::Begin(name);
-	if (dynamic_cast<Entity*>(selectedObject) != nullptr) {
-		dynamic_cast<Entity*>(selectedObject)->Imgui(dt);
-	}
-	ImGui::End();
+	//ImGui::Begin(name);
+	//if (dynamic_cast<Entity*>(selectedObject) != nullptr) {
+	//	dynamic_cast<Entity*>(selectedObject)->Imgui(dt);
+	//}
+	//ImGui::End();
 }
 
 void PELayer::ViewPortPanel(const float dt, bool first)
