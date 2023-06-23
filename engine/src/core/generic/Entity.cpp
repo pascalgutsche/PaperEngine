@@ -2,32 +2,28 @@
 #include "generic/Entity.h"
 
 #include "Application.h"
+
 #include "component/DataComponent.h"
+#include "component/TransformComponent.h"
 
 
 namespace engine {
+	Entity::Entity(entt::entity entity, Scene* scene)
+		: scene(scene), entity(entity) { }
 
-	Entity::Entity(std::string name, Scene* scene)
-		: scene(scene)
+	Entity::Entity(entt::entity entity, std::string name, Scene* scene)
+		: scene(scene), entity(entity)
 	{
-		LOG_DEBUG(scene->registry.storage<entt::entity>().in_use());
-		entity = scene->Registry().create();
-		LOG_DEBUG(scene->registry.storage<entt::entity>().in_use());
 		AddComponent<DataComponent>(name);
+		AddComponent<TransformComponent>();
 	}
 
-	Entity::Entity(const UUID& id, std::string name, Scene* scene)
-		: scene(scene)
+	Entity::Entity(entt::entity entity, const UUID& id, std::string name, Scene* scene)
+		: scene(scene), entity(entity)
 	{
-		LOG_DEBUG(scene->registry.storage<entt::entity>().in_use());
-		entity = scene->Registry().create();
-		LOG_DEBUG(scene->registry.storage<entt::entity>().in_use());
 		AddComponent<DataComponent>(id, name);
-	}
+		AddComponent<TransformComponent>();
 
-	Entity::~Entity()
-	{
-		scene->Registry().destroy(entity);
 	}
 
 	Entity* Entity::AddTag(std::string tag)

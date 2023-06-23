@@ -24,13 +24,11 @@ public:
 	void Init() override {
 		ProjectManager::Init();
 		//Application::ChangeScene(new EditorScene);
-
+		
 		AddLayer(new PELayer());
 
 		EditorScene* scene = new EditorScene();
 		scene->CreateEntity("lol");
-
-		LOG_DEBUG(scene->registry);
 	}
 
 };

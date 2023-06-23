@@ -8,8 +8,14 @@ namespace engine
 {
     class CircleRenderer : public RenderComponent {
     public:
-        CircleRenderer(glm::vec4 color, float thickness, float fade, bool registerAlphaPixelsToEvent = false);
-        CircleRenderer(glm::vec4 color, Shr<Texture> texture, float thickness, float fade, bool registerAlphaPixelsToEvent = false);
+        glm::vec4 color = glm::vec(1.0f);
+        Shr<Texture> texture = nullptr;
+        float thickness = 1.0f;
+        float fade = 0.005f;
+        bool register_alpha_pixels_to_event = false;
+
+        CircleRenderer(glm::vec4 color, float thickness, float fade, bool register_alpha_pixels_to_event = false);
+        CircleRenderer(glm::vec4 color, Shr<Texture> texture, float thickness, float fade, bool register_alpha_pixels_to_event = false);
 
         ~CircleRenderer() override { }
 
@@ -22,11 +28,7 @@ namespace engine
         void SetColor(glm::vec4 color) { this->color = color; }
 
     private:
-        glm::vec4 color;
-        Shr<Texture> texture;
-        float thickness;
-        float fade;
-        bool registerAlphaPixelsToEvent;
+
     };
 }
 

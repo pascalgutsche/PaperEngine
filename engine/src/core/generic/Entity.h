@@ -13,11 +13,13 @@ namespace engine {
 
     class Entity {
     public:
-        Entity() = default;
-        Entity(std::string name, Scene* scene);
-        Entity(const UUID& id, std::string name, Scene* scene);
+        Entity(entt::entity entity, Scene* scene);
+        Entity(entt::entity entity, std::string name, Scene* scene);
+        Entity(entt::entity entity, const UUID& id, std::string name, Scene* scene);
 
-        ~Entity();
+        ~Entity() = default;
+
+        Entity(const Entity& entity) = default;
 
         template<typename T>
         T& GetComponent();
