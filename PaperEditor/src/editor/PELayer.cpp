@@ -339,26 +339,27 @@ void PELayer::ApplicationPanel(const float dt, bool first)
 
 		ImGui::TreePop();
 	}
-
+	ImGui::BeginDisabled();
 	if (ImGui::TreeNode("Camera"))
 	{
-		if (ImGui::Button("Reset Camera"))
-		{
-			Application::GetActiveScene()->GetCamera()->fov = 1.0f;
-			Application::GetActiveScene()->GetCamera()->position = glm::vec3(0.0f, 0.0f, 5.0f);
-		}
-
-		glm::vec3 pos = Application::GetActiveScene()->GetCamera()->position;
-		float arrayPos[]{ pos.x, pos.y, pos.z };
-		ImGui::DragFloat3("XYZ", arrayPos, 0.5f);
-		Application::GetActiveScene()->GetCamera()->position = glm::vec3(arrayPos[0], arrayPos[1], arrayPos[2]);
-
-		float fov = Application::GetActiveScene()->GetCamera()->fov;
-		ImGui::DragFloat("FOV", &fov, 0.5f);
-		Application::GetActiveScene()->GetCamera()->fov = fov;
-
+		//if (ImGui::Button("Reset Camera"))
+		//{
+		//	Application::GetActiveScene()->GetCamera()->fov = 1.0f;
+		//	Application::GetActiveScene()->GetCamera()->position = glm::vec3(0.0f, 0.0f, 5.0f);
+		//}
+		//
+		//glm::vec3 pos = Application::GetActiveScene()->GetCamera()->position;
+		//float arrayPos[]{ pos.x, pos.y, pos.z };
+		//ImGui::DragFloat3("XYZ", arrayPos, 0.5f);
+		//Application::GetActiveScene()->GetCamera()->position = glm::vec3(arrayPos[0], arrayPos[1], arrayPos[2]);
+		//
+		//float fov = Application::GetActiveScene()->GetCamera()->fov;
+		//ImGui::DragFloat("FOV", &fov, 0.5f);
+		//Application::GetActiveScene()->GetCamera()->fov = fov;
+		//
 		ImGui::TreePop();
 	}
+	ImGui::EndDisabled();
 
 	ImGui::End();
 }
@@ -407,14 +408,6 @@ void PELayer::AssetManagerPanel(const float dt, bool first)
 
 	std::filesystem::path itemPath;
 	bool itemClicked = false;
-
-	if (ImGui::Button("bunker"))
-	{
-		YAMLSerializer serializer;
-		serializer.AssetSerialize("asset.yaml", Asset3D());
-
-		LOG_WARN(UUID());
-	}
 
 	const char* name = "Asset Manager: ";
 	std::stringstream stream;

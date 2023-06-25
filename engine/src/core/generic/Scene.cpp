@@ -17,31 +17,30 @@
 namespace ppr {
 
 	Scene::Scene()
-	{
-		camera = std::make_shared<Camera>();
-	}
+		: uuid(UUID()), name("[Scene]") { }
+
+	Scene::Scene(const UUID& uuid)
+		: uuid(uuid), name("[Scene]") { }
+
+	Scene::Scene(const std::string& name)
+		: uuid(UUID()), name(name) { }
+
+	Scene::Scene(const UUID& uuid, const std::string& name)
+		: uuid(uuid), name(name) { }
 
 	Scene::~Scene()
 	{
-
-	}
-
-	Shr<Camera> Scene::GetCamera()
-	{
-		return camera;
+		registry.clear();
 	}
 
 	void Scene::Start()
 	{
-		isRunning = true;
-		OnStart();
 	}
 
 	void Scene::Stop()
 	{
-		isRunning = false;
-		OnStop();
 	}
+
 
 	void Scene::Render()
 	{
@@ -106,38 +105,6 @@ namespace ppr {
 
 			Renderer2D::DrawString(data);
 		}
-		////render anything inside the scene
-		//RenderCommand::ClearStats();
-		//RenderCommand::Clear();
-		//
-		//RenderCommand::UploadCamera(camera);
-		//
-		//Renderer3D::BeginRender();
-		//for (Entity* entity : entities)
-		//{
-		//	if (!entity->GetRenderComponent()) continue;
-		//	entity->GetRenderComponent()->OnRender();
-		//}
-		//Renderer3D::EndRender();
-		//
-		//Renderer2D::BeginRender();
-		//
-		//for (const auto& layer : Application::GetLayerStack())
-		//{
-		//	if (!layer->IsAttached()) continue;
-		//
-		//	for (const auto& entity : layer->GetEntitys())
-		//	{
-		//		if (!entity->IsRunning()) continue;
-		//		if (entity->GetRenderComponent() == nullptr) continue;
-		//
-		//		entity->GetRenderComponent()->OnRender();
-		//	}
-		//	Renderer2D::NextBatch(ALL);
-		//	layer->RenderUI();
-		//}
-		//
-		//Renderer2D::EndRender();
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
@@ -149,8 +116,6 @@ namespace ppr {
 	{
 		Entity entity(registry.create(), id, name, this);
 		entityMap[id] = entity;
-
-		LOG_DEBUG(registry.storage<entt::entity>().in_use());
 
 		return entity;
 	}
@@ -169,21 +134,5 @@ namespace ppr {
 		CORE_ASSERT(entityMap.contains(id), "Entity does not exists");
 		
 		return {entityMap.at(id), this};
-	}
-
-	void Scene::OnStart()
-	{
-	}
-
-	void Scene::OnStop()
-	{
-	}
-
-	void Scene::OnUpdate()
-	{
-	}
-
-	void Scene::OnEvent(Event& e)
-	{
 	}
 }

@@ -1,12 +1,14 @@
-Scene: Untitled
+Scene:
+  - b17fd873-c017-4d93-a25c-8278a6bc4126
+Name: "[Scene]"
 Entities:
   - Entity:
-      - ccc8ac25-d4ed-42f7-8cb8-c507c18aa30c
+      - 598afa28-9413-4ad8-a6c4-f97378638433
     Name: lol
     Components:
       DataComponent:
         UUID:
-          - ccc8ac25-d4ed-42f7-8cb8-c507c18aa30c
+          - 598afa28-9413-4ad8-a6c4-f97378638433
         Name: lol
         Tags:
           - A

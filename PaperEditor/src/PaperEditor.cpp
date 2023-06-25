@@ -4,7 +4,6 @@
 #include "EntryPoint.h"
 #include "editor/PELayer.h"
 
-#include "scene/EditorScene/EditorScene.h"
 #include "project/ProjectManager.h"
 
 #include "editor/PELayer.h"
@@ -29,7 +28,7 @@ public:
 
 		
 		YAML::Emitter out;
-		Shr<EditorScene> scene = MakeShr<EditorScene>();
+		Shr<Scene> scene = MakeShr<Scene>();
 		const UUID uuid = scene->CreateEntity("lol").GetUUID();
 
 		scene->GetEntity(uuid).AddComponent<SpriteComponent>();

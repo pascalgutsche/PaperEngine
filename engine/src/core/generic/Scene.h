@@ -7,9 +7,6 @@
 namespace ppr {
 
     class Entity;
-    class Camera;
-    class Layer;
-    class Event;
 
     class Scene {
         friend class Application;
@@ -17,12 +14,12 @@ namespace ppr {
     public:
 
         Scene();
-        virtual ~Scene();
-
-        Shr<Camera> GetCamera();
+        Scene(const UUID& uuid);
+        Scene(const std::string& name);
+        Scene(const UUID& uuid, const std::string& name);
+        ~Scene();
 
         void Start();
-
 
         void Stop();
 
@@ -33,25 +30,17 @@ namespace ppr {
         bool DestroyEntity(Entity entity);
 
         Entity GetEntity(const UUID& id);
+        UUID GetUUID() const { return uuid; }
+        std::string GetName() const { return name; }
 
         auto& Registry() { return registry; }
         auto& EntityMap() { return entityMap; }
-
-        entt::registry registry;
-    protected:
-        Shr<Camera> camera = nullptr;
-
-        virtual void OnStart();
-        virtual void OnStop();
-        virtual void OnUpdate();
-        virtual void OnEvent(Event& e);
-        virtual void Imgui(float dt) {}
-
+        
     private:
-        bool isRunning = false;
-
+        UUID uuid;
         std::string name;
 
+        entt::registry registry;
         std::unordered_map<UUID, entt::entity> entityMap;
     };
 
