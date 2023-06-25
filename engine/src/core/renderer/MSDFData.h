@@ -5,7 +5,7 @@
 #undef INFINITE
 #include "msdf-atlas-gen.h"
 
-namespace engine
+namespace ppr
 {
 	struct MSDFData
 	{

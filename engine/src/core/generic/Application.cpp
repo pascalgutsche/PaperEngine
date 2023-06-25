@@ -12,7 +12,7 @@
 #include "utils/Core.h"
 
 
-namespace engine {
+namespace ppr {
 
 	Application* Application::instance;
 

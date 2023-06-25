@@ -4,7 +4,7 @@
 
 #include "event/MouseEvent.h"
 
-namespace engine {
+namespace ppr {
 
     class Camera {
     private:

@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-namespace engine
+namespace ppr
 {
 	OpenGLContext::OpenGLContext(void* window)
 		: window(window) { }

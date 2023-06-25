@@ -3,7 +3,7 @@
 
 #include "utils/Core.h"
 
-namespace engine
+namespace ppr
 {
 	UIObject::UIObject(std::string name, const Transform& transform, glm::vec4 color)
 		: Object(name, transform), color(color), globalPos(glm::vec3(0.0f)), globalScale(glm::vec3(0.0f)) { }

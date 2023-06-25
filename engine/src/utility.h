@@ -14,7 +14,7 @@
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 #define BIND_BUTTON_EVENT_FN(x) std::bind(&x, this)
 
-namespace engine {
+namespace ppr {
 
 	enum STATE
 	{

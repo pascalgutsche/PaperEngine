@@ -4,7 +4,7 @@
 
 #include "utils/UUID.h"
 
-namespace engine {
+namespace ppr {
 
     class Entity;
     class Camera;
@@ -13,6 +13,7 @@ namespace engine {
 
     class Scene {
         friend class Application;
+        friend class YAMLSerializer;
     public:
 
         Scene();
@@ -48,6 +49,8 @@ namespace engine {
 
     private:
         bool isRunning = false;
+
+        std::string name;
 
         void Update();
 

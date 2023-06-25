@@ -1,8 +1,7 @@
 #pragma once
-#include "generic/Component.h"
 #include "utils/DataPool.h"
 
-namespace engine
+namespace ppr
 {
 	struct TextComponent
 	{

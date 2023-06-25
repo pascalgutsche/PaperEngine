@@ -1,19 +1,15 @@
 ﻿#pragma once
 #include "Engine.h"
 
-#include "generic/Component.h"
 
-namespace engine
+namespace ppr
 {
-	class LightComponent : public Component
+	class LightComponent
 	{
 	public:
 		LightComponent();
-		~LightComponent() override = default;
+		~LightComponent() = default;
 
-		void OnStart() override;
-		void OnStop() override;
-		void OnUpdate() override;
-		void OnEvent(Event& event) override;
+		
 	};
 }

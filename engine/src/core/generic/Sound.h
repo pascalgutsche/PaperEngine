@@ -4,7 +4,7 @@
 
 #include <MINIAUDIO/miniaudio.h>
 
-namespace engine {
+namespace ppr {
 
     class Sound
     {

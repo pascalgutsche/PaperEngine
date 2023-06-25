@@ -6,7 +6,7 @@
 
 //MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 
-namespace engine {
+namespace ppr {
 	class MouseButtonPressedEvent final : public Event {
 	private:
 		int button;

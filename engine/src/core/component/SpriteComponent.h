@@ -4,7 +4,7 @@
 
 #include "renderer/Texture.h"
 
-namespace engine {
+namespace ppr {
 
 	enum class Geometry
 	{

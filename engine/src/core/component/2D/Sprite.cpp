@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include "Sprite.h"
 
-namespace engine
+namespace ppr
 {
 	Sprite::Sprite(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent)
 	{

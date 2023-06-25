@@ -4,7 +4,7 @@
 
 #include "Layer.h"
 
-namespace engine
+namespace ppr
 {
 
 	class LayerStack

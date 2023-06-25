@@ -5,7 +5,7 @@
 
 #include "OpenGL/OpenGLContext.h"
 
-namespace engine {
+namespace ppr {
 	Shr<Context> Context::CreateContext(void* window)
 	{
 		switch (RenderAPI::GetAPI())

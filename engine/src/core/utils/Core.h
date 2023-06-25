@@ -3,7 +3,7 @@
 #include "utility.h"
 #include "generic/Object.h"
 
-namespace engine
+namespace ppr
 {
 	class Core
 	{

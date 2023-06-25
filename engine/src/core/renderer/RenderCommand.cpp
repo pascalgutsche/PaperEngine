@@ -6,7 +6,7 @@
 #include "renderer/Renderer3D.h"
 #include "generic/Camera.h"
 
-namespace engine
+namespace ppr
 {
 	Shr<RenderAPI> RenderCommand::rendererAPI = RenderAPI::CreateAPI();
 	SharedRenderData RenderCommand::sharedData;

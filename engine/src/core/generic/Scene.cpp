@@ -3,7 +3,6 @@
 #include "generic/Application.h"
 #include "generic/Scene.h"
 
-#include "Component.h"
 #include "generic/Camera.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
@@ -15,7 +14,7 @@
 #include "component/TextComponent.h"
 
 
-namespace engine {
+namespace ppr {
 
 	Scene::Scene()
 	{

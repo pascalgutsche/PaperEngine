@@ -4,7 +4,7 @@
 #include "generic/Object.h"
 #include "utils/DataPool.h"
 
-namespace engine
+namespace ppr
 {
 	enum class Type
 	{

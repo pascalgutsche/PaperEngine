@@ -4,7 +4,7 @@
 
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
-namespace engine {
+namespace ppr {
 	class Log
 	{
 	private:
@@ -22,18 +22,18 @@ namespace engine {
 #ifdef BUILD_DEBUG
 
 //Core Log
-#define LOG_CORE_CRITICAL(...) ::engine::Log::GetCoreLogger()->critical(__VA_ARGS__)
-#define LOG_CORE_ERROR(...)	   ::engine::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define LOG_CORE_WARN(...)	   ::engine::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define LOG_CORE_TRACE(...)	   ::engine::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define LOG_CORE_DEBUG(...)	   ::engine::Log::GetCoreLogger()->debug(__VA_ARGS__)
+#define LOG_CORE_CRITICAL(...) ::ppr::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define LOG_CORE_ERROR(...)	   ::ppr::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define LOG_CORE_WARN(...)	   ::ppr::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define LOG_CORE_TRACE(...)	   ::ppr::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define LOG_CORE_DEBUG(...)	   ::ppr::Log::GetCoreLogger()->debug(__VA_ARGS__)
 
 //Client Log
-#define LOG_CRITICAL(...) ::engine::Log::GetClientLogger()->critical(__VA_ARGS__)
-#define LOG_ERROR(...)	  ::engine::Log::GetClientLogger()->error(__VA_ARGS__)
-#define LOG_WARN(...)	  ::engine::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define LOG_TRACE(...)	  ::engine::Log::GetClientLogger()->info(__VA_ARGS__)
-#define LOG_DEBUG(...)	  ::engine::Log::GetClientLogger()->debug(__VA_ARGS__)
+#define LOG_CRITICAL(...) ::ppr::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define LOG_ERROR(...)	  ::ppr::Log::GetClientLogger()->error(__VA_ARGS__)
+#define LOG_WARN(...)	  ::ppr::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define LOG_TRACE(...)	  ::ppr::Log::GetClientLogger()->info(__VA_ARGS__)
+#define LOG_DEBUG(...)	  ::ppr::Log::GetClientLogger()->debug(__VA_ARGS__)
 
 #else 
 

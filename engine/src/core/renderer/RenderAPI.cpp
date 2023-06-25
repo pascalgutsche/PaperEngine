@@ -4,7 +4,7 @@
 
 #include "OpenGL/OpenGLRenderAPI.h"
 
-namespace engine
+namespace ppr
 {
 	RenderAPI::API RenderAPI::api = OPENGL;
 

@@ -3,7 +3,7 @@
 
 #include "renderer/Texture.h"
 
-namespace engine
+namespace ppr
 {
     struct CircleComponent {
         glm::vec4 color = glm::vec4(1.0f);

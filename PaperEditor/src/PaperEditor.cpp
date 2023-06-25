@@ -33,6 +33,6 @@ public:
 
 };
 
-Application* engine::CreateApplication() {
+Application* ppr::CreateApplication() {
 	return new PaperEditor();
 }

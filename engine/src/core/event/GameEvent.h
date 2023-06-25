@@ -7,7 +7,7 @@
 
 #include "component/DataComponent.h"
 
-namespace engine
+namespace ppr
 {
 
 	class EntityEvent : public Event

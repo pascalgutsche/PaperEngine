@@ -4,7 +4,7 @@
 #include "renderer/Renderer2D.h"
 
 
-namespace engine
+namespace ppr
 {
 	PictureBox::PictureBox(glm::vec4 color, const Transform& transform, Shr<Texture> texture, Type type,
 		std::string name)

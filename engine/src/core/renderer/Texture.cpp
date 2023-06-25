@@ -6,7 +6,7 @@
 
 #include "renderer/RenderAPI.h"
 
-namespace engine {
+namespace ppr {
 
     Shr<Texture> Texture::CreateTexture(std::string filePath, std::string name)
     {

@@ -101,7 +101,7 @@ namespace YAML
 	};
 }
 
-namespace engine
+namespace ppr
 {
 	inline YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
 	{
@@ -129,7 +129,9 @@ namespace engine
 
 		bool AssetSerialize(const std::filesystem::path& filePath, const Asset3D& asset);
 
-		bool SceneSerializer(const Scene& scene);
+		bool SceneSerializer(const std::filesystem::path& filePath, const Scene& scene) const;
+
+		bool EntitySerialize(Entity& entity, YAML::Emitter& out) const;
 	};
 }
 

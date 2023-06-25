@@ -6,7 +6,7 @@
 
 #include "glad/glad.h"
 
-namespace engine
+namespace ppr
 {
 	class OpenGLTexture : public Texture
 	{

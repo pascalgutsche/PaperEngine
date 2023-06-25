@@ -2,24 +2,23 @@
 #include "Engine.h"
 #include "utility.h"
 
-#include "generic/Component.h"
 #include "component/2D/Sprite.h"
 
-namespace engine
+namespace ppr
 {
-    class SpriteSheet : public RenderComponent
+    class SpriteSheet
     {
     public:
         SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent = false);
 
         void Init(Shr<Texture> texture, glm::vec2 selectedSprite);
 
-        void OnStart() override { }
-        void OnStop() override { }
-        void OnUpdate() override { };
-        void OnImgui(float dt) override { };
-        void OnEvent(Event& event) override { }
-        void OnRender() override;
+        //void OnStart() override { }
+        //void OnStop() override { }
+        //void OnUpdate() override { };
+        //void OnImgui(float dt) override { };
+        //void OnEvent(Event& event) override { }
+        //void OnRender() override;
 
         int GetSpriteCount() const { return spriteRows + spriteColumns; };
         int GetSpriteRows() const { return spriteRows; };

@@ -7,7 +7,7 @@
 #include "component/TransformComponent.h"
 
 
-namespace engine {
+namespace ppr {
 	Entity::Entity(entt::entity entity, Scene* scene)
 		: scene(scene), entity(entity) { }
 

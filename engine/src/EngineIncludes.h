@@ -23,7 +23,6 @@
 #include "core/generic/Camera.h"
 #include "core/generic/Transform.h"
 #include "core/generic/Entity.h"
-#include "core/generic/Component.h"
 #include "core/generic/Sound.h"
 
 #include "core/imgui/ImGuiLayer.h"
@@ -48,4 +47,4 @@
 #include "core/utils/FileDialog.h"
 
 #include "utility.h"
-using namespace engine;
+using namespace ppr;

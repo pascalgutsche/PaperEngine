@@ -6,7 +6,7 @@
 #include "renderer/RenderAPI.h"
 #include "renderer/FrameBuffer.h"
 
-namespace engine {
+namespace ppr {
 
 	class Camera;
 

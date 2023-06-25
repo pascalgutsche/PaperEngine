@@ -3,11 +3,11 @@
 #ifdef CORE_PLATFORM_WINDOWS
 #ifdef INCLUDE_MAIN
 
-extern engine::Application* engine::CreateApplication();
+extern ppr::Application* ppr::CreateApplication();
 
 int main(int argc, char ** argv) 
 {
-	auto app = engine::CreateApplication();
+	auto app = ppr::CreateApplication();
 	app->Run();
 	delete app;
 }

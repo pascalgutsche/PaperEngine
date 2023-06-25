@@ -4,7 +4,7 @@
 
 #include "UIObject.h"
 
-namespace engine
+namespace ppr
 {
 	class PictureBox : public UIObject
 	{

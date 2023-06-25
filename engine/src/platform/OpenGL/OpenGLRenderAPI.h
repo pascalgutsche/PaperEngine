@@ -4,7 +4,7 @@
 
 #include "core/renderer/RenderAPI.h"
 
-namespace engine
+namespace ppr
 {
 	class OpenGLRenderAPI : public RenderAPI
 	{

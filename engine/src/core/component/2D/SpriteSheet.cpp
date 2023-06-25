@@ -2,7 +2,7 @@
 #include "component/2D/SpriteSheet.h"
 #include "renderer/Renderer2D.h"
 
-namespace engine
+namespace ppr
 {
 	SpriteSheet::SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent)
 		: color(color), texture(texture), spriteWidth(spriteWidth), spriteHeight(spriteHeight),
@@ -46,16 +46,16 @@ namespace engine
 		this->texCoords = Sprites[selectedSprite.y].at(selectedSprite.x)->GetTexCoords();
 	}
 
-	void SpriteSheet::OnRender()
-	{
-		//EdgeRenderData data;
-		//data.transform = gameObject->transform;
-		//data.color = color;
-		//data.texture = texture;
-		//std::copy(std::begin(texCoords), std::end(texCoords), std::begin(data.texCoords));
-		//data.mode = gameObject->GetProjectionMode();
-		//data.coreID = gameObject->GetCoreID();
-		//data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
-		//Renderer2D::DrawRectangle(data);
-	}
+	//void SpriteSheet::OnRender()
+	//{
+	//	//EdgeRenderData data;
+	//	//data.transform = gameObject->transform;
+	//	//data.color = color;
+	//	//data.texture = texture;
+	//	//std::copy(std::begin(texCoords), std::end(texCoords), std::begin(data.texCoords));
+	//	//data.mode = gameObject->GetProjectionMode();
+	//	//data.coreID = gameObject->GetCoreID();
+	//	//data.coreIDToAlphaPixels = registerAlphaPixelsToEvent;
+	//	//Renderer2D::DrawRectangle(data);
+	//}
 };

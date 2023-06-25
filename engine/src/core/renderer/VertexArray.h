@@ -5,7 +5,7 @@
 #include "renderer/Buffer.h"
 
 
-namespace engine
+namespace ppr
 {
 	class VertexArray
 	{

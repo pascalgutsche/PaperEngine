@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace engine
+namespace ppr
 {
 	void OpenGLMessageCallback(
 		unsigned source,

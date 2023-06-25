@@ -4,7 +4,7 @@
 
 #include "Scene.h"
 
-namespace engine {
+namespace ppr {
 
     class Component;
     class RenderComponent;

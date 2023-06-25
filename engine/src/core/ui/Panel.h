@@ -3,7 +3,7 @@
 
 #include "UIObject.h"
 
-namespace engine
+namespace ppr
 {
 	class Panel : public UIObject
 	{

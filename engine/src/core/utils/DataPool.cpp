@@ -5,7 +5,7 @@
 #include "renderer/Texture.h"
 #include "renderer/Font.h"
 
-namespace engine {
+namespace ppr {
 
     // declare static maps in order to find a reference
     Map DataPool::dataPool;

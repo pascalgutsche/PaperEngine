@@ -3,7 +3,7 @@
 
 #include "UIObject.h"
 
-namespace engine
+namespace ppr
 {
 	class Label : public UIObject
 	{

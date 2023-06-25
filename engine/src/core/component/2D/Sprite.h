@@ -3,7 +3,7 @@
 
 #include "renderer/Texture.h"
 
-namespace engine
+namespace ppr
 {
 	class Sprite
 	{

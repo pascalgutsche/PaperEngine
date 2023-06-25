@@ -4,7 +4,7 @@
 
 #include "GLFW/GLFWWindow.h"
 
-namespace engine {
+namespace ppr {
 
     FRAMEWORK Window::framework = GLFW;
 

@@ -6,7 +6,7 @@
 #include "OpenGL/OpenGLShader.h"
 
 
-namespace engine {
+namespace ppr {
 	Shr<Shader> Shader::CreateShader(std::string filePath)
 	{
 		switch (RenderAPI::GetAPI())

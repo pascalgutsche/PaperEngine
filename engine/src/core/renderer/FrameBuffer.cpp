@@ -5,7 +5,7 @@
 
 #include "OpenGL/OpenGLFramebuffer.h"
 
-namespace engine {
+namespace ppr {
 
 	Shr<Framebuffer> Framebuffer::CreateBuffer(const FramebufferSpecification& specification)
 	{

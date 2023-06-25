@@ -7,7 +7,7 @@
 #include <STB_IMAGE/stb_image.h>
 
 
-namespace engine
+namespace ppr
 {
 
 	static GLenum ImageFormatToGLDataFormat(ImageFormat format)

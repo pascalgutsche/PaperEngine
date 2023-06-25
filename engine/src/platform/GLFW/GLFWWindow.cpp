@@ -9,7 +9,7 @@
 #include <glfw/glfw3.h>
 
 
-namespace engine
+namespace ppr
 {
     static void errorCallback(int error, const char* description)
     {

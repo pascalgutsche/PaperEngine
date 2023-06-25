@@ -2,7 +2,7 @@
 
 #include "Core.h"
 
-namespace engine
+namespace ppr
 {
 	entt::registry Core::registry;
 	void Core::Init()

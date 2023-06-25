@@ -4,7 +4,7 @@
 #include "generic/Application.h"
 #include "imgui/ImGuiLayer.h"
 
-namespace engine {
+namespace ppr {
 
     Camera::Camera() {
         // standard position of the camera

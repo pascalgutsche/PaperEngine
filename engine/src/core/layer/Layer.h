@@ -8,7 +8,7 @@
 
 #include "utils/DataPool.h"
 
-namespace engine
+namespace ppr
 {
 	class UIObject;
 	class Layer

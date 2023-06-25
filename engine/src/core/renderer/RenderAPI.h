@@ -4,7 +4,7 @@
 
 #include "renderer/VertexArray.h"
 
-namespace engine {
+namespace ppr {
 
 	enum class Polygon
 	{
