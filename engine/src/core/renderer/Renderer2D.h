@@ -15,11 +15,11 @@ namespace engine {
 
     struct EdgeRenderData
     {
-        Transform transform = Transform();
+        glm::mat4 transform = glm::mat4(1.0f);
         glm::vec4 color = DEFAULT_COLOR;
 
         Shr<Texture> texture = nullptr;
-        glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        std::array<glm::vec2, 4> texCoords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
         float tilingFactor = 1.0f;
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
@@ -30,14 +30,14 @@ namespace engine {
 
     struct CircleRenderData
     {
-        Transform transform = Transform();
+        glm::mat4 transform = glm::mat4(1.0f);
         glm::vec4 color = DEFAULT_COLOR;
 
         float thickness = 1.0f;
         float fade = 0.005f;
 
         Shr<Texture> texture = nullptr;
-        glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        std::array<glm::vec2, 4> texCoords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
         float tilingFactor = 1.0f;
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
@@ -61,10 +61,10 @@ namespace engine {
 
     struct TextRenderData
     {
-        Transform transform = Transform();
+        glm::mat4 transform = glm::mat4(1.0f);
         glm::vec4 color = DEFAULT_COLOR;
 
-        std::string string = "";
+        std::string text = "";
         Shr<Font> font = DataPool::GetFont("mononoki.ttf");
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;

@@ -19,7 +19,6 @@ namespace engine {
 		float tiling_factor = 1.0f;
 		std::array<glm::vec2, 4> tex_coords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
 		Geometry geometry = Geometry::NONE;
-		ProjectionMode projection_mode = ProjectionMode::PERSPECTIVE;
 		bool register_alpha_pixels_to_event = false;
 
 		SpriteComponent(const glm::vec4 color, const Geometry geometry, const bool register_alpha_pixels_to_event = false)

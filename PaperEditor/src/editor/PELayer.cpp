@@ -88,7 +88,7 @@ void PELayer::Update(const float dt)
 	RenderCommand::Clear();
 	framebuffer->ClearAttachment(1, 0);
 
-	scene->Render();
+	//scene->Render();
 
 	framebuffer->Unbind();
 }

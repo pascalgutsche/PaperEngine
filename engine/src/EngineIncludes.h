@@ -2,10 +2,10 @@
 
 #include "core/assets/Asset3D.h"
 
-#include "core/component/2D/CircleRenderer.h"
-#include "core/component/2D/SpriteRenderer.h"
-#include "core/component/2D/LineRenderer.h"
-#include "core/component/2D/FontRenderer.h"
+#include "core/component/CircleComponent.h"
+#include "core/component/SpriteComponent.h"
+#include "core/component/LineComponent.h"
+#include "core/component/TextComponent.h"
 #include "core/component/2D/SpriteSheet.h"
 #include "core/component/CubeRenderer.h"
 #include "core/component/LightComponent.h"

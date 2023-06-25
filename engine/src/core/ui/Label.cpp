@@ -17,14 +17,14 @@ namespace engine
 
 	void Label::Render(core_id idToRender)
 	{
-		TextRenderData data;
-		data.transform = { globalPos, globalScale, transform.rotation };
-		data.color = color;
-		data.string = text;
-		data.font = font;
-		data.mode = mode;
-		data.coreID = idToRender;
-		Renderer2D::DrawString(data);
+		//TextRenderData data;
+		//data.transform = { globalPos, globalScale, transform.rotation };
+		//data.color = color;
+		//data.string = text;
+		//data.font = font;
+		//data.mode = mode;
+		//data.coreID = idToRender;
+		//Renderer2D::DrawString(data);
 	}
 
 }

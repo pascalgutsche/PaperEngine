@@ -10,6 +10,9 @@
 
 #include "component/TransformComponent.h"
 #include "component/SpriteComponent.h"
+#include "component/CircleComponent.h"
+#include "component/LineComponent.h"
+#include "component/TextComponent.h"
 
 
 namespace engine {
@@ -68,11 +71,11 @@ namespace engine {
 
 
 			EdgeRenderData data;
+			data.transform = transform.GetTransform();
 			data.color = sprite.color;
 			data.texture = sprite.texture;
 			data.tilingFactor = sprite.tiling_factor;
 			data.texCoords = sprite.tex_coords;
-			data.mode = sprite.projection_mode;
 			data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
 
 			if (sprite.geometry == Geometry::RECTANGLE)
@@ -81,42 +84,47 @@ namespace engine {
 				Renderer2D::DrawTriangle(data);
 		}
 
-		for (const auto circle_entities = registry.group<TransformComponent>(entt::get<SpriteComponent>); auto & entity : sprite_entities)
+		for (const auto circle_entities = registry.group<TransformComponent>(entt::get<CircleComponent>); auto & entity : circle_entities)
 		{
-			auto [transform, sprite] = sprite_entities.get<TransformComponent, SpriteComponent>(entity);
+			auto [transform, circle] = circle_entities.get<TransformComponent, CircleComponent>(entity);
 
 
-			EdgeRenderData data;
-			data.color = sprite.color;
-			data.texture = sprite.texture;
-			data.tilingFactor = sprite.tiling_factor;
-			data.texCoords = sprite.tex_coords;
-			data.mode = sprite.projection_mode;
-			data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
+			CircleRenderData data;
+			data.transform = transform.GetTransform();
+			data.color = circle.color;
+			data.texture = circle.texture;
+			data.tilingFactor = circle.tiling_factor;
+			data.coreIDToAlphaPixels = circle.register_alpha_pixels_to_event;
 
-			if (sprite.geometry == Geometry::RECTANGLE)
-				Renderer2D::DrawRectangle(data);
-			else if (sprite.geometry == Geometry::TRIANGLE)
-				Renderer2D::DrawTriangle(data);
+			Renderer2D::DrawCircle(data);
 		}
 
-		for (const auto sprite_entities = registry.group<TransformComponent>(entt::get<SpriteComponent>); auto & entity : sprite_entities)
+		for (const auto line_entities = registry.group<TransformComponent>(entt::get<LineComponent>); auto & entity : line_entities)
 		{
-			auto [transform, sprite] = sprite_entities.get<TransformComponent, SpriteComponent>(entity);
+			auto [transform, line] = line_entities.get<TransformComponent, LineComponent>(entity);
 
 
-			EdgeRenderData data;
-			data.color = sprite.color;
-			data.texture = sprite.texture;
-			data.tilingFactor = sprite.tiling_factor;
-			data.texCoords = sprite.tex_coords;
-			data.mode = sprite.projection_mode;
-			data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
+			LineRenderData data;
+			data.point0 = line.positionA;
+			data.point1 = line.positionB;
+			data.color = line.color;
+			data.thickness = line.thickness;
 
-			if (sprite.geometry == Geometry::RECTANGLE)
-				Renderer2D::DrawRectangle(data);
-			else if (sprite.geometry == Geometry::TRIANGLE)
-				Renderer2D::DrawTriangle(data);
+			Renderer2D::DrawLine(data);
+		}
+
+		for (const auto text_entities = registry.group<TransformComponent>(entt::get<TextComponent>); auto & entity : text_entities)
+		{
+			auto [transform, text] = text_entities.get<TransformComponent, TextComponent>(entity);
+
+
+			TextRenderData data;
+			data.transform = transform.GetTransform();
+			data.color = text.color;
+			data.text = text.text;
+			data.coreIDToAlphaPixels = text.register_alpha_pixels_to_event;
+
+			Renderer2D::DrawString(data);
 		}
 		////render anything inside the scene
 		//RenderCommand::ClearStats();

@@ -14,20 +14,20 @@ namespace engine
 
 	void Panel::Render(core_id idToRender)
 	{
-		EdgeRenderData data;
-		data.transform = { globalPos, globalScale, transform.rotation };
-		data.color = color;
-		data.mode = mode;
-		data.coreID = idToRender;
-
-		switch (type)
-		{
-			case Type::Rectangle:
-				Renderer2D::DrawRectangle(data);
-				break;
-			case Type::Triangle:
-				Renderer2D::DrawTriangle(data);
-				break;
-		}
+		//EdgeRenderData data;
+		//data.transform = { globalPos, globalScale, transform.rotation };
+		//data.color = color;
+		//data.mode = mode;
+		//data.coreID = idToRender;
+		//
+		//switch (type)
+		//{
+		//	case Type::Rectangle:
+		//		Renderer2D::DrawRectangle(data);
+		//		break;
+		//	case Type::Triangle:
+		//		Renderer2D::DrawTriangle(data);
+		//		break;
+		//}
 	}
 }

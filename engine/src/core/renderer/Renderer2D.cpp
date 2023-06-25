@@ -436,7 +436,7 @@ namespace engine {
 	{
 		const uint32_t rectangleVertexCount = 4;
 
-		glm::mat4 transform = renderData.transform.GetMatrix();
+		glm::mat4 transform = renderData.transform;
 
 		if (data.rectangleElementCount >= data.MAX_ELEMENTS)
 		{
@@ -491,7 +491,7 @@ namespace engine {
 	{
 		const uint32_t triangleVertexCount = 3;
 
-		glm::mat4 transform = renderData.transform.GetMatrix();
+		glm::mat4 transform = renderData.transform;
 
 		if (data.triangleElementCount >= data.MAX_ELEMENTS)
 		{
@@ -574,7 +574,7 @@ namespace engine {
 	{
 		const uint32_t circleVertexCount = 4;
 
-		glm::mat4 transform = renderData.transform.GetMatrix();
+		glm::mat4 transform = renderData.transform;
 
 		if (data.circleElementCount >= data.MAX_ELEMENTS)
 		{
@@ -635,10 +635,10 @@ namespace engine {
 			NextBatch(TEXT);
 		}
 
-		std::string string = renderData.string;
+		std::string string = renderData.text;
 		auto& font = renderData.font;
 
-		size_t dataSize = renderData.string.length() * 4;
+		size_t dataSize = renderData.text.length() * 4;
 		size_t index = 0;
 
 		float leftVertex = 0.0f;
@@ -662,7 +662,7 @@ namespace engine {
 		double y = 0.0;
 		float lineHeightOffset = 0.0f;
 
-		glm::mat4 transform = renderData.transform.GetMatrix();
+		glm::mat4 transform = renderData.transform;
 
 		for (size_t i = 0; i < string.length(); i++)
 		{
