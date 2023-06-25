@@ -13,6 +13,8 @@ namespace ppr
 
 		std::string toString() const;
 
+		void Set(const std::string& id) const;
+
 		bool operator==(const UUID& other) const;
 
 		bool operator!=(const UUID& other) const;

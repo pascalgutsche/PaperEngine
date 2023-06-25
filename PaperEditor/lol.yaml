@@ -1,0 +1,43 @@
+Scene: Untitled
+Entities:
+  - Entity:
+      - ccc8ac25-d4ed-42f7-8cb8-c507c18aa30c
+    Name: lol
+    Components:
+      DataComponent:
+        UUID:
+          - ccc8ac25-d4ed-42f7-8cb8-c507c18aa30c
+        Name: lol
+        Tags:
+          - A
+          - B
+          - C
+          - AA
+          - AB
+          - AC
+      CircleComponent:
+        Color: [1, 1, 1, 1]
+        TilingFactor: 1
+        Thickness: 1
+        Fade: 0.00499999989
+        RegisterAlphaPixels: false
+      LineComponent:
+        Color: [1, 1, 1, 1]
+        Thickness: 1
+        PositionA: [-0.5, 0, 0]
+        PositionB: [0.5, 0, 0]
+      SpriteComponent:
+        Color: [1, 1, 1, 1]
+        TexturePath: resources/textures/ifdjgf/4578946/bunkerfilm.png
+        TilingFactor: 1
+        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+        RegisterAlphaPixels: false
+      TextComponent:
+        Color: [1, 1, 1, 1]
+        Text: "][DEFAULT-TEXT]["
+        FontPath: resources/fonts/mononoki.ttf
+        RegisterAlphaPixels: false
+      TransformComponent:
+        Position: [0, 0, 0]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]

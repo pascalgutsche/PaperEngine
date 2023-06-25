@@ -20,6 +20,8 @@ namespace ppr
 		MSDFData* GetMSDFData() const { return data; };
 		Shr<Texture> GetAtlasTexture() const { return atlasTexture; };
 
+		std::string GetFilePath() const { return fontPath; }
+
 		//static Shr<Font> GetFont(std::string fontPath);
 
 	private:

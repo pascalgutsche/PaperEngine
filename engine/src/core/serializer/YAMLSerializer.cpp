@@ -3,8 +3,7 @@
 
 #include "generic/Entity.h"
 
-#include "component/DataComponent.h"
-
+#include "Components.h"
 
 namespace ppr
 {
@@ -18,46 +17,45 @@ namespace ppr
 
 	bool YAMLSerializer::AssetSerialize(const std::filesystem::path& filePath, const Asset3D& asset)
 	{
-		YAML::Emitter out;
-		out << YAML::BeginMap;
-		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-		out << YAML::Key << "TextComponent";
-		out << YAML::BeginMap << "TextComponent"; // TextComponent
-
-		out << YAML::Key << "TextString" << YAML::Value << "textComponent.TextString";
-		out << YAML::Key << "Color" << YAML::Value << "textComponent.Color";
-		out << YAML::Key << "Kerning" << YAML::Value << 795348;
-		out << YAML::Key << "LineSpacing" << YAML::Value << 59435.957;
-
-		out << YAML::EndMap; // TextComponent
-		out << YAML::EndSeq;
-		out << YAML::EndMap;
-
-		std::ofstream fout(filePath);
-		fout << out.c_str();
-		fout.close();
-
+		//YAML::Emitter out;
+		//out << YAML::BeginMap;
+		//out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
+		//out << YAML::Key << "TextComponent";
+		//out << YAML::BeginMap << "TextComponent"; // TextComponent
+		//
+		//out << YAML::Key << "TextString" << YAML::Value << "textComponent.TextString";
+		//out << YAML::Key << "Color" << YAML::Value << "textComponent.Color";
+		//out << YAML::Key << "Kerning" << YAML::Value << 795348;
+		//out << YAML::Key << "LineSpacing" << YAML::Value << 59435.957;
+		//
+		//out << YAML::EndMap; // TextComponent
+		//out << YAML::EndSeq;
+		//out << YAML::EndMap;
+		//
+		//std::ofstream fout(filePath);
+		//fout << out.c_str();
+		//fout.close();
+		//
 		return true;
 	}
 
-	bool YAMLSerializer::SceneSerializer(const std::filesystem::path& filePath, const Scene& scene) const
+	bool YAMLSerializer::SceneSerialize(const std::filesystem::path& filePath, const Shr<Scene>& scene) const
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << YAML::BeginSeq;
-		out << YAML::Key << "Name" << YAML::Value << scene.name;
+		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-		out << YAML::Key << "TextComponent";
-		out << YAML::BeginMap << "TextComponent"; // TextComponent
+		scene->registry.each([&](auto entityID)
+			{
+				Entity entity = { entityID, scene.get() };
+				if (!entity)
+					return;
 
-		out << YAML::Key << "TextString" << YAML::Value << "textComponent.TextString";
-		out << YAML::Key << "Color" << YAML::Value << "textComponent.Color";
-		out << YAML::Key << "Kerning" << YAML::Value << 795348;
-		out << YAML::Key << "LineSpacing" << YAML::Value << 59435.957;
-
-		out << YAML::EndMap; // TextComponent
+				EntitySerialize(entity, out);
+			});
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
+
 
 		std::ofstream fout(filePath);
 		fout << out.c_str();
@@ -68,22 +66,98 @@ namespace ppr
 
 	bool YAMLSerializer::EntitySerialize(Entity& entity, YAML::Emitter& out) const
 	{
-		DataComponent& data = entity.GetComponent<DataComponent>();
-		out << YAML::BeginMap;
-		out << YAML::Key << "Entity" << YAML::Value << YAML::BeginSeq;
-		out << YAML::Key << "Name" << YAML::Value << data.name;
+		CORE_ASSERT(entity.HasComponent<DataComponent>(), "");
+
+		out << YAML::BeginMap; // Entity
+		out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
+		out << YAML::Key << "Name" << YAML::Value << entity.GetName();
+
 		out << YAML::Key << "Components";
-		out << YAML::BeginMap << "TextComponent"; // TextComponent
+		out << YAML::BeginMap;
 
-		out << YAML::Key << "TextString" << YAML::Value << "textComponent.TextString";
-		out << YAML::Key << "Color" << YAML::Value << "textComponent.Color";
-		out << YAML::Key << "Kerning" << YAML::Value << 795348;
-		out << YAML::Key << "LineSpacing" << YAML::Value << 59435.957;
+		if (entity.HasComponent<DataComponent>())
+			entity.GetComponent<DataComponent>().Serialize(out);
 
-		out << YAML::EndMap; // TextComponent
-		out << YAML::EndSeq;
+		if (entity.HasComponent<CircleComponent>())
+			entity.GetComponent<CircleComponent>().Serialize(out);
+
+		if (entity.HasComponent<LineComponent>())
+			entity.GetComponent<LineComponent>().Serialize(out);
+
+		if (entity.HasComponent<SpriteComponent>())
+			entity.GetComponent<SpriteComponent>().Serialize(out);
+
+		if (entity.HasComponent<TextComponent>())
+			entity.GetComponent<TextComponent>().Serialize(out);
+
+		if (entity.HasComponent<TransformComponent>())
+			entity.GetComponent<TransformComponent>().Serialize(out);
+
 		out << YAML::EndMap;
+		out << YAML::EndMap; // Entity
+
+		std::ofstream fout("lol.yaml");
+		fout << out.c_str();
+		fout.close();
+
 		return true;
+	}
+
+	Shr<Scene> YAMLSerializer::SceneDeserialize(const std::filesystem::path& filePath) const
+	{
+		Shr<Scene> scene = MakeShr<Scene>();
+
+		YAML::Node data;
+		try
+		{
+			data = YAML::LoadFile(filePath.string());
+		}
+		catch (YAML::ParserException e)
+		{
+			LOG_CORE_ERROR("Failed to load file '{0}'\n\t{1}", filePath, e.what());
+			return nullptr;
+		}
+
+		if (!data["Scene"])
+			return nullptr;
+
+		std::string scene_name = data["Scene"].as<std::string>();
+		LOG_CORE_TRACE("Deserializing scene '{0}' from '{1}'", scene_name, filePath.string());
+
+		if (auto entities = data["Entities"])
+		{
+			for (auto entity : entities)
+			{
+				//UUID uuid(entity["Entity"].as<std::string>());
+				UUID uuid = entity["Entity"].as<UUID>();
+
+				std::string entity_name;
+				auto dataComponent = entity["DataComponent"];
+				if (dataComponent)
+					entity_name = dataComponent["Name"].as<std::string>();
+				
+				LOG_CORE_TRACE("Deserializing entity name '{0}' and uuid '{1}' from '{2}'", entity_name, uuid.toString(), filePath.string());
+				
+				Entity deserialized_entity = scene->CreateEntity(uuid, entity_name);
+				
+				if (auto transformComponent = entity["TransformComponent"])
+					deserialized_entity.GetComponent<TransformComponent>().Deserialize(transformComponent);
+				
+				if (auto sprite_component = entity["SpriteComponent"])
+					deserialized_entity.AddComponent<SpriteComponent>().Deserialize(sprite_component);
+				
+				if (auto circle_component = entity["CircleComponent"])
+					deserialized_entity.AddComponent<CircleComponent>().Deserialize(circle_component);
+				
+				if (auto line_component = entity["LineComponent"])
+					deserialized_entity.AddComponent<LineComponent>().Deserialize(line_component);
+				
+				if (auto text_component = entity["TextComponent"])
+					deserialized_entity.AddComponent<TextComponent>().Deserialize(text_component);
+			}
+		}
+
+		return scene;
 	}
 }
 

@@ -31,25 +31,6 @@ namespace ppr {
 		return camera;
 	}
 
-	void Scene::Update()
-	{
-		OnUpdate();
-		//
-		////update entities
-		//for (const auto& layer : Application::GetLayerStack())
-		//{
-		//	if (!layer->IsAttached()) continue;
-		//	for (const auto& entity : layer->GetEntitys())
-		//	{
-		//		if (!entity->IsRunning()) continue;
-		//		entity->Update();
-		//
-		//		if (entity->GetRenderComponent() == nullptr) continue;
-		//		entity->GetRenderComponent()->OnUpdate();
-		//	}
-		//}
-	}
-
 	void Scene::Start()
 	{
 		isRunning = true;
@@ -190,4 +171,19 @@ namespace ppr {
 		return {entityMap.at(id), this};
 	}
 
+	void Scene::OnStart()
+	{
+	}
+
+	void Scene::OnStop()
+	{
+	}
+
+	void Scene::OnUpdate()
+	{
+	}
+
+	void Scene::OnEvent(Event& e)
+	{
+	}
 }

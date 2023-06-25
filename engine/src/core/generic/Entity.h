@@ -43,6 +43,7 @@ namespace ppr {
         bool HasTag(std::string tag);
 
     	UUID& GetUUID();
+        Scene* GetScene() const { return scene; }
 
         std::string GetName();
         void SetName(const std::string& name);

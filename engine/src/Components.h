@@ -1,0 +1,10 @@
+﻿#pragma once
+#include "core/component/CircleComponent.h"
+#include "core/component/CubeRenderer.h"
+#include "core/component/DataComponent.h"
+#include "core/component/LightComponent.h"
+#include "core/component/LineComponent.h"
+#include "core/component/SpriteComponent.h"
+#include "core/component/TextComponent.h"
+#include "core/component/TransformComponent.h"
+#include "core/component/2D/SpriteSheet.h"

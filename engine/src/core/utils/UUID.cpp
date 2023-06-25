@@ -22,6 +22,11 @@ namespace ppr
         return boost::uuids::to_string(uuid);
     }
 
+    void UUID::Set(const std::string& id) const
+    {
+        uuid = boost::lexical_cast<boost::uuids::uuid>(id);
+    }
+
     bool UUID::operator==(const UUID& other) const {
         return uuid == other.uuid;
     }

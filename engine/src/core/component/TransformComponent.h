@@ -5,7 +5,7 @@
 
 namespace ppr
 {
-	struct TransformComponent
+	struct TransformComponent : Serializable
 	{
 		glm::vec3 position;
 		glm::vec3 scale;
@@ -39,7 +39,11 @@ namespace ppr
 				glm::scale(glm::mat4(1.0f), scale);
 		}
 
+		bool Serialize(YAML::Emitter& out) override;
+		bool Deserialize(YAML::Node& data) override;
 	};
+
+	
 }
 
 

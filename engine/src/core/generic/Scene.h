@@ -41,19 +41,16 @@ namespace ppr {
     protected:
         Shr<Camera> camera = nullptr;
 
-        virtual void OnStart() = 0;
-        virtual void OnStop() = 0;
-        virtual void OnUpdate() = 0;
-        virtual void OnEvent(Event& e) = 0;
+        virtual void OnStart();
+        virtual void OnStop();
+        virtual void OnUpdate();
+        virtual void OnEvent(Event& e);
         virtual void Imgui(float dt) {}
 
     private:
         bool isRunning = false;
 
         std::string name;
-
-        void Update();
-
 
         std::unordered_map<UUID, entt::entity> entityMap;
     };

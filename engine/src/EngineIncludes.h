@@ -2,13 +2,7 @@
 
 #include "core/assets/Asset3D.h"
 
-#include "core/component/CircleComponent.h"
-#include "core/component/SpriteComponent.h"
-#include "core/component/LineComponent.h"
-#include "core/component/TextComponent.h"
-#include "core/component/2D/SpriteSheet.h"
-#include "core/component/CubeRenderer.h"
-#include "core/component/LightComponent.h"
+#include "Components.h"
 
 #include "core/event/KeyEvent.h"
 #include "core/event/MouseEvent.h"

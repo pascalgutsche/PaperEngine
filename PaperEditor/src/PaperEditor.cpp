@@ -27,8 +27,23 @@ public:
 		
 		AddLayer(new PELayer());
 
-		EditorScene* scene = new EditorScene();
-		scene->CreateEntity("lol");
+		
+		YAML::Emitter out;
+		Shr<EditorScene> scene = MakeShr<EditorScene>();
+		const UUID uuid = scene->CreateEntity("lol").GetUUID();
+
+		scene->GetEntity(uuid).AddComponent<SpriteComponent>();
+		scene->GetEntity(uuid).AddComponent<CircleComponent>();
+		scene->GetEntity(uuid).AddComponent<LineComponent>();
+		scene->GetEntity(uuid).AddComponent<TextComponent>();
+		scene->GetEntity(uuid).AddTag({ "A", "B", "C", "AA", "aB", "Ac" });
+		const YAMLSerializer serializer;
+		serializer.SceneSerialize("bunker.yaml", scene);
+
+		LOG_CORE_WARN("DESERIALIZE");
+
+		LOG_CORE_WARN(serializer.SceneDeserialize("bunker.yaml")->GetEntity(uuid).GetName());
+
 	}
 
 };
