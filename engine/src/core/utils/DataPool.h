@@ -18,8 +18,8 @@ namespace ppr {
         // get current shader with the specific string (name)
         static Shr<Shader> GetShader(std::string shaderName);
         // search for a texture with the specific string (name)
-        static Shr<Texture> GetAssetTexture(std::string textureName);
-        static Shr<Texture> GetTexture(std::string textureName);
+        static Shr<Texture> GetAssetTexture(std::string textureName, bool wholePath = false);
+        static Shr<Texture> GetTexture(std::string textureName, bool wholePath = false);
 
         static Shr<Font> GetFont(std::string fontName);
     };

@@ -1,126 +1,11 @@
 Scene:
-  - 65a8cddc-44a9-4c89-b1dc-371e1b94c70c
+  - eb00606b-85bb-4924-9ed2-0cdc62b091c8
 Name: "[Scene]"
 Entities:
   - Components:
       DataComponent:
         UUID:
-          - 8c95613a-cc54-42ad-a3e0-264904b96b54
-        Name: oiru9856zjrpdnshcbdfb
-        Tags:
-          - A
-          - B
-          - C
-          - AA
-          - AB
-          - AC
-      CircleComponent:
-        Color: [1, 1, 1, 1]
-        TilingFactor: 1
-        Thickness: 1
-        Fade: 0.00499999989
-        RegisterAlphaPixels: false
-      LineComponent:
-        Color: [1, 1, 1, 1]
-        Thickness: 1
-        PositionA: [-0.5, 0, 0]
-        PositionB: [0.5, 0, 0]
-      SpriteComponent:
-        Color: [1, 1, 1, 1]
-        TexturePath: resources/textures/ifdjgf/4578946/bunkerfilm.png
-        TilingFactor: 1
-        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-        RegisterAlphaPixels: false
-      TextComponent:
-        Color: [1, 1, 1, 1]
-        Text: "][DEFAULT-TEXT]["
-        FontPath: resources/fonts/mononoki.ttf
-        RegisterAlphaPixels: false
-      TransformComponent:
-        Position: [0, 0, 0]
-        Scale: [1, 1, 1]
-        Rotation: [0, 0, 0]
-  - Components:
-      DataComponent:
-        UUID:
-          - f2db9570-e7ac-439e-87f3-3de93802c28a
-        Name: lodfklgndfkndfl
-        Tags:
-          - A
-          - B
-          - C
-          - AA
-          - AB
-          - AC
-          - LKDLSFKLDFMBKFLMKOJ
-      CircleComponent:
-        Color: [1, 1, 1, 1]
-        TilingFactor: 1
-        Thickness: 1
-        Fade: 0.00499999989
-        RegisterAlphaPixels: false
-      LineComponent:
-        Color: [1, 1, 1, 1]
-        Thickness: 1
-        PositionA: [-0.5, 0, 0]
-        PositionB: [0.5, 0, 0]
-      SpriteComponent:
-        Color: [1, 1, 1, 1]
-        TexturePath: resources/textures/ifdjgf/4578946/bunkerfilm.png
-        TilingFactor: 1
-        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-        RegisterAlphaPixels: false
-      TextComponent:
-        Color: [1, 1, 1, 1]
-        Text: "][DEFAULT-TEXT]["
-        FontPath: resources/fonts/mononoki.ttf
-        RegisterAlphaPixels: false
-      TransformComponent:
-        Position: [0, 0, 0]
-        Scale: [1, 1, 1]
-        Rotation: [0, 0, 0]
-  - Components:
-      DataComponent:
-        UUID:
-          - 0d20c465-9bf3-484f-b608-de676e5e6ef7
-        Name: poriwioute
-        Tags:
-          - A
-          - B
-          - C
-          - AA
-          - AB
-          - AC
-      CircleComponent:
-        Color: [1, 1, 1, 1]
-        TilingFactor: 1
-        Thickness: 1
-        Fade: 0.00499999989
-        RegisterAlphaPixels: false
-      LineComponent:
-        Color: [1, 1, 1, 1]
-        Thickness: 1
-        PositionA: [-0.5, 0, 0]
-        PositionB: [0.5, 0, 0]
-      SpriteComponent:
-        Color: [1, 1, 1, 1]
-        TexturePath: resources/textures/ifdjgf/4578946/bunkerfilm.png
-        TilingFactor: 1
-        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-        RegisterAlphaPixels: false
-      TextComponent:
-        Color: [1, 1, 1, 1]
-        Text: "][DEFAULT-TEXT]["
-        FontPath: resources/fonts/mononoki.ttf
-        RegisterAlphaPixels: false
-      TransformComponent:
-        Position: [0, 0, 0]
-        Scale: [1, 1, 1]
-        Rotation: [0, 0, 0]
-  - Components:
-      DataComponent:
-        UUID:
-          - b365257c-f192-45d4-8b47-4da177cb424e
+          - e826dd79-1057-4941-9e99-f03f373b92ba
         Name: lol
         Tags:
           - A
@@ -129,30 +14,11 @@ Entities:
           - AA
           - AB
           - AC
-          - MKK
-          - AIEIOU34FFDKLMDSöC
-          - KLFKJDGA
-      CircleComponent:
-        Color: [1, 1, 1, 1]
-        TilingFactor: 1
-        Thickness: 1
-        Fade: 0.00499999989
-        RegisterAlphaPixels: false
-      LineComponent:
-        Color: [1, 1, 1, 1]
-        Thickness: 1
-        PositionA: [-0.5, 0, 0]
-        PositionB: [0.5, 0, 0]
       SpriteComponent:
         Color: [1, 1, 1, 1]
-        TexturePath: resources/textures/ifdjgf/4578946/bunkerfilm.png
+        TexturePath: assets/textures/james_webb.png
         TilingFactor: 1
         TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-        RegisterAlphaPixels: false
-      TextComponent:
-        Color: [1, 1, 1, 1]
-        Text: "][DEFAULT-TEXT]["
-        FontPath: resources/fonts/mononoki.ttf
         RegisterAlphaPixels: false
       TransformComponent:
         Position: [0, 0, 0]

@@ -36,7 +36,7 @@ namespace ppr
 		{
 			color = data["Color"].as<glm::vec4>();
 			if (data["TexturePath"])
-				texture = DataPool::GetTexture(data["TexturePath"].as<std::string>());
+				texture = DataPool::GetAssetTexture(data["TexturePath"].as<std::string>(), true);
 			tiling_factor = data["TilingFactor"].as<float>();
 			thickness = data["Thickness"].as<float>();
 			fade = data["Fade"].as<float>();

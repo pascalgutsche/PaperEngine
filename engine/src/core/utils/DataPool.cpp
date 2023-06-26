@@ -32,9 +32,9 @@ namespace ppr {
         return shader;
     }
 
-    Shr<Texture> DataPool::GetAssetTexture(std::string textureName) {
+    Shr<Texture> DataPool::GetAssetTexture(std::string textureName, bool wholePath) {
         // set default path
-        const std::string path = "assets/textures/" + textureName;
+        const std::string path = wholePath ? textureName : "assets/textures/" + textureName;
 
         std::string texture_id = "assettexture_" + textureName;
 
@@ -55,9 +55,9 @@ namespace ppr {
         return texture;
     }
 
-    Shr<Texture> DataPool::GetTexture(std::string textureName) {
+    Shr<Texture> DataPool::GetTexture(std::string textureName, bool wholePath) {
         // set default path
-        const std::string path = "resources/textures/" + textureName;
+        const std::string path = wholePath ? textureName : "resources/textures/" + textureName;
 
         std::string texture_id = "recourcetexture_" + textureName;
 

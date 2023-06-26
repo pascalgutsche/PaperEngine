@@ -198,12 +198,12 @@ namespace ppr
 		YAMLSerializer();
 		~YAMLSerializer();
 
-		bool AssetSerialize(const std::filesystem::path& filePath, const Asset3D& asset);
+		static bool AssetSerialize(const std::filesystem::path& filePath, const Asset3D& asset);
 
-		bool SceneSerialize(const std::filesystem::path& filePath, const Shr<Scene>& scene) const;
-		bool EntitySerialize(Entity& entity, YAML::Emitter& out) const;
+		static bool SceneSerialize(const std::filesystem::path& filePath, const Shr<Scene>& scene);
+		static bool EntitySerialize(Entity& entity, YAML::Emitter& out);
 
-		Shr<Scene> SceneDeserialize(const std::filesystem::path& filePath) const;
+		static Shr<Scene> SceneDeserialize(const std::filesystem::path& filePath);
 
 	};
 }

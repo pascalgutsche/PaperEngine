@@ -22,14 +22,17 @@ PELayer::~PELayer()
 
 void PELayer::OnAttach()
 {
-	scene = MakeShr<Scene>();
-	ppr::UUID uuid = scene->CreateEntity("lol").GetUUID();
-	
-	scene->GetEntity(uuid).AddComponent<SpriteComponent>();
-	scene->GetEntity(uuid).AddComponent<CircleComponent>();
-	scene->GetEntity(uuid).AddComponent<LineComponent>();
-	scene->GetEntity(uuid).AddComponent<TextComponent>();
-	scene->GetEntity(uuid).AddTag({ "A", "B", "C", "AA", "aB", "Ac" });
+	scene = YAMLSerializer::SceneDeserialize("bunker.yaml");
+	//Shr<Scene> scene1 = MakeShr<Scene>();
+	//ppr::UUID uuid = scene1->CreateEntity("lol").GetUUID();
+	//
+	//scene1->GetEntity(uuid).AddComponent<SpriteComponent>();
+	//scene1->GetEntity(uuid).AddComponent<CircleComponent>();
+	//scene1->GetEntity(uuid).AddComponent<LineComponent>();
+	//scene1->GetEntity(uuid).AddComponent<TextComponent>();
+	//scene1->GetEntity(uuid).AddTag({ "A", "B", "C", "AA", "aB", "Ac" });
+	//
+	//YAMLSerializer::SceneSerialize("bunker.yaml", scene1);
 }
 
 void PELayer::OnDetach()
@@ -135,7 +138,7 @@ void PELayer::Imgui(const float dt)
 		initialized = true;
 		ImGui::DockBuilderRemoveNode(dockspace_id);
 		ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
-		ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->GetWidth() + 500, Application::GetWindow()->GetHeight() + 500));
+		ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->GetWidth()/* + 500*/, Application::GetWindow()->GetHeight()/* + 500*/));
 
 		dock_id_main = dockspace_id;
 		

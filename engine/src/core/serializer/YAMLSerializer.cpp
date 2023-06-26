@@ -39,7 +39,7 @@ namespace ppr
 		return true;
 	}
 
-	bool YAMLSerializer::SceneSerialize(const std::filesystem::path& filePath, const Shr<Scene>& scene) const
+	bool YAMLSerializer::SceneSerialize(const std::filesystem::path& filePath, const Shr<Scene>& scene)
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
@@ -65,7 +65,7 @@ namespace ppr
 		return true;
 	}
 
-	bool YAMLSerializer::EntitySerialize(Entity& entity, YAML::Emitter& out) const
+	bool YAMLSerializer::EntitySerialize(Entity& entity, YAML::Emitter& out)
 	{
 		CORE_ASSERT(entity.HasComponent<DataComponent>(), "")
 
@@ -104,7 +104,7 @@ namespace ppr
 		return true;
 	}
 
-	Shr<Scene> YAMLSerializer::SceneDeserialize(const std::filesystem::path& filePath) const
+	Shr<Scene> YAMLSerializer::SceneDeserialize(const std::filesystem::path& filePath)
 	{
 		Shr<Scene> scene = MakeShr<Scene>();
 
@@ -144,16 +144,16 @@ namespace ppr
 				
 				Entity deserialized_entity = scene->CreateEntity(uuid, entity_name);
 				
-				if (auto transformComponent = entity["TransformComponent"])
+				if (auto transformComponent = components["TransformComponent"])
 					deserialized_entity.GetComponent<TransformComponent>().Deserialize(transformComponent);
 				
-				if (auto sprite_component = entity["SpriteComponent"])
+				if (auto sprite_component = components["SpriteComponent"])
 					deserialized_entity.AddComponent<SpriteComponent>().Deserialize(sprite_component);
 				
-				if (auto circle_component = entity["CircleComponent"])
+				if (auto circle_component = components["CircleComponent"])
 					deserialized_entity.AddComponent<CircleComponent>().Deserialize(circle_component);
 				
-				if (auto line_component = entity["LineComponent"])
+				if (auto line_component = components["LineComponent"])
 					deserialized_entity.AddComponent<LineComponent>().Deserialize(line_component);
 				
 				if (auto text_component = entity["TextComponent"])

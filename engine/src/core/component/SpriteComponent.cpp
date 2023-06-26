@@ -34,7 +34,7 @@ namespace ppr
 		{
 			color = data["Color"].as<glm::vec4>();
 			if (data["TexturePath"])
-				texture = DataPool::GetTexture(data["TexturePath"].as<std::string>());
+				texture = DataPool::GetAssetTexture(data["TexturePath"].as<std::string>(), true);
 			tiling_factor = data["TilingFactor"].as<float>();
 			tex_coords = data["TexCoords"].as<std::array<glm::vec2, 4>>();
 			register_alpha_pixels_to_event = data["RegisterAlphaPixels"].as<bool>();
