@@ -19,16 +19,18 @@ namespace ppr
 
 		void Update();
 
+		void ControlCamera(float x, float y, bool state);
+
+		glm::vec3 position{};
+		float aspect_ratio;
 	private:
 		glm::vec3 target{};
-		glm::vec3 position{};
 
 		float pitch;
 		float yaw;
 		float roll;
 
 		float fov;
-		float aspect_ratio;
 
 		float last_x, last_y;
 

@@ -48,15 +48,9 @@ namespace ppr {
 
 	void Application::OnEvent(Event& event)
 	{
-		if (starting) return;
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
-		dispatcher.dispatch<MouseMovedEvent>([this](MouseMovedEvent& e)
-			{
-				//this->GetActiveScene()->GetCamera()->MouseMoved(e);
-				return false;
-			});
 
 		for (auto it = layerStack.end(); it != layerStack.begin(); )
 		{
@@ -64,10 +58,6 @@ namespace ppr {
 				break;
 			(*--it)->OnEvent(event);
 		}
-		//if (!event.handled)
-		//{
-		//	currentScene->OnEvent(event);
-		//}
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
@@ -111,11 +101,12 @@ namespace ppr {
 		// start of the calculations
 		float begin_time = window->GetTime();
 		dt = 0.0167f;
-		bool warn = true;
+		bool starting = true;
 
 		while (gameRunning)
 		{
-			window->PollEvents();
+			if (!starting)
+				window->PollEvents();
 			ProcessQueues();
 
 			RenderCommand::ClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -137,30 +128,6 @@ namespace ppr {
 			Input::ProcessInput();
 
 			imguiLayer->End();
-
-
-			//if (currentScene != nullptr) {
-			//	if (dt >= 0) {
-			//		if (queuedScene != nullptr) {
-			//			// TODO: save scenes instead of deleting them
-			//			// delete the scene with it's heap components (renderer and camera)
-			//			currentScene->Stop();
-			//
-			//			// remove the scene
-			//			//delete currentScene;
-			//			// switch and initialize the scene
-			//			currentScene = queuedScene;
-			//			currentScene->Start();
-			//			// don't forget to reset the tempscene, because we want to override it
-			//			queuedScene = nullptr;
-			//		}
-			//		currentScene->Update();
-			//	}
-			//}
-			//else if (warn) {
-			//	LOG_CORE_ERROR("No Scene exists. Make sure to call Application::changeScene() in the 'init' function of your Application class");
-			//	warn = false;
-			//}
 
 			window->SwapBuffers();
 

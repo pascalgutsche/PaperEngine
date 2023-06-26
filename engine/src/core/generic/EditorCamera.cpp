@@ -92,7 +92,7 @@ namespace ppr
 		front = glm::normalize(directionA);
 
 		// this is being used for pointing upwards (y globally, e.g. in the world)
-		const glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+		constexpr auto up = glm::vec3(0.0f, 1.0f, 0.0f);
 		// declare z-axis
 		cameraZ = glm::normalize(position - target);
 		// declare x-axis by the cross-product
@@ -101,5 +101,45 @@ namespace ppr
 		cameraY = glm::cross(cameraZ, cameraX);
 		// make camera depend on position (who could have thought this)
 		cameraViewMatrix = glm::lookAt(position, position + front, up);
+	}
+
+	void EditorCamera::ControlCamera(const float x, const float y, bool state)
+	{
+		if (state)
+		{
+			last_x = x;
+			last_y = y;
+		}
+
+		float dX = x - last_x;
+		float dY = last_y - y;
+
+		last_x = x;
+		last_y = y;
+
+		if (Application::GetWindow()->IsCursorEnabled()) return;
+
+		constexpr float sens = 0.1f;
+		dX *= sens;
+		dY *= sens;
+
+		yaw += dX;
+
+		while (yaw >= 360)
+		{
+			yaw -= 360;
+		}
+		while (yaw <= -360)
+		{
+			yaw += 360;
+		}
+
+
+		if (pitch + dY > 89.9f)
+			pitch = 89.9f;
+		else if (pitch + dY < -89.9f)
+			pitch = -89.9f;
+		else
+			pitch += dY;
 	}
 }

@@ -35,37 +35,38 @@ void PELayer::OnDetach()
 {
 }
 
-//void EditorScene::CameraMovement()
-//{
-//	const float dt = Application::GetDT();
-//	if (Input::IsKeyPressed(KEY_W))
-//	{
-//		camera->position.x += 5 * dt * camera->GetFront().x;
-//		camera->position.z += 5 * dt * camera->GetFront().z;
-//	}
-//	if (Input::IsKeyPressed(KEY_A))
-//	{
-//		camera->position.x += 5 * dt * camera->GetFront().z;
-//		camera->position.z -= 5 * dt * camera->GetFront().x;
-//
-//	}
-//	if (Input::IsKeyPressed(KEY_S))
-//	{
-//		camera->position.x -= 5 * dt * camera->GetFront().x;
-//		camera->position.z -= 5 * dt * camera->GetFront().z;
-//
-//	}
-//	if (Input::IsKeyPressed(KEY_D))
-//	{
-//		camera->position.x -= 5 * dt * camera->GetFront().z;
-//		camera->position.z += 5 * dt * camera->GetFront().x;
-//
-//	}
-//	if (Input::IsKeyPressed(KEY_E))
-//		camera->position.y += 5 * dt;
-//	if (Input::IsKeyPressed(KEY_Q))
-//		camera->position.y -= 5 * dt;
-//}
+void PELayer::CameraMovement()
+{
+	const Shr<EditorCamera> camera = cameras[0];
+	const float dt = Application::GetDT();
+	if (Input::IsKeyPressed(KEY_W))
+	{
+		camera->position.x += 5 * dt * camera->GetFront().x;
+		camera->position.z += 5 * dt * camera->GetFront().z;
+	}
+	if (Input::IsKeyPressed(KEY_A))
+	{
+		camera->position.x += 5 * dt * camera->GetFront().z;
+		camera->position.z -= 5 * dt * camera->GetFront().x;
+
+	}
+	if (Input::IsKeyPressed(KEY_S))
+	{
+		camera->position.x -= 5 * dt * camera->GetFront().x;
+		camera->position.z -= 5 * dt * camera->GetFront().z;
+
+	}
+	if (Input::IsKeyPressed(KEY_D))
+	{
+		camera->position.x -= 5 * dt * camera->GetFront().z;
+		camera->position.z += 5 * dt * camera->GetFront().x;
+
+	}
+	if (Input::IsKeyPressed(KEY_E))
+		camera->position.y += 5 * dt;
+	if (Input::IsKeyPressed(KEY_Q))
+		camera->position.y -= 5 * dt;
+}
 
 void PELayer::Update(const float dt)
 {
@@ -76,8 +77,7 @@ void PELayer::Update(const float dt)
 	{
 		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
 
-		//update cameras aspect ratio //TODO: nuke it somewhere else
-		//Application::GetActiveScene()->GetCamera()->aspectRatio = viewportSize.x / viewportSize.y;
+		cameras[0]->aspect_ratio = viewport_size.x / viewport_size.y;
 	}
 
 	mouse_pos_viewport_relative.x = ImGui::GetMousePos().x;
@@ -90,7 +90,7 @@ void PELayer::Update(const float dt)
 
 	if (IsCameraControlModeActive())
 	{
-		//CameraMovement();
+		CameraMovement();
 	}
 
 	//render
@@ -125,6 +125,16 @@ void PELayer::OnEvent(Event& event)
 			camera_control_mode = false;
 			Application::GetWindow()->CursorEnabled(true);
 		}
+		return false;
+	});
+	dispatcher.dispatch<MouseMovedEvent>([this](MouseMovedEvent& e)
+	{
+		static bool last_control_mode = false;
+		if (camera_control_mode)
+		{
+			cameras[0]->ControlCamera(e.GetX(), e.GetY(), last_control_mode != camera_control_mode);
+		}
+		last_control_mode = camera_control_mode;
 		return false;
 	});
 	

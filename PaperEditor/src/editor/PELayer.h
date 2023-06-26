@@ -49,6 +49,8 @@ private:
 	void InspectorPanel(const float dt, bool first);
 	void ViewPortPanel(const float dt, bool first);
 
+	void CameraMovement();
+
 	glm::vec2 viewport_size;
 	glm::vec2 viewport_bounds[2];
 
