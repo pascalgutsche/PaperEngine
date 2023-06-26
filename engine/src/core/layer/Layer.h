@@ -30,7 +30,7 @@ namespace ppr
 
 		bool IsAttached() const { return attached; }
 
-		void SetScene(Scene* scene) { this->scene = scene; }
+		void SetScene(const Shr<Scene>& scene) { this->scene = scene; }
 
 		template <class T>
 		T* GetScene()
@@ -59,7 +59,7 @@ namespace ppr
 
 		std::vector<UIObject*>& GetUIObjects();
 	protected:
-		Scene* scene = nullptr;
+		Shr<Scene> scene = nullptr;
 		std::string name;
 		bool overlay = false;
 		bool attached = false;

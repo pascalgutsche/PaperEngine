@@ -44,11 +44,9 @@ namespace ppr {
 
 	void Scene::Render()
 	{
-		for (const auto sprite_entities = registry.group<TransformComponent>(entt::get<SpriteComponent>); auto & entity : sprite_entities)
+		Renderer2D::BeginRender();
+		for (auto&& [entity, transform, sprite] : registry.group<TransformComponent>(entt::get<SpriteComponent>).each())
 		{
-			auto [transform, sprite] = sprite_entities.get<TransformComponent, SpriteComponent>(entity);
-
-
 			EdgeRenderData data;
 			data.transform = transform.GetTransform();
 			data.color = sprite.color;
@@ -63,48 +61,50 @@ namespace ppr {
 				Renderer2D::DrawTriangle(data);
 		}
 
-		for (const auto circle_entities = registry.group<TransformComponent>(entt::get<CircleComponent>); auto & entity : circle_entities)
-		{
-			auto [transform, circle] = circle_entities.get<TransformComponent, CircleComponent>(entity);
+		//for (const auto circle_entities = registry.group<TransformComponent>(entt::get<CircleComponent>); auto & entity : circle_entities)
+		//{
+		//	auto [transform, circle] = circle_entities.get<TransformComponent, CircleComponent>(entity);
+		//
+		//
+		//	CircleRenderData data;
+		//	data.transform = transform.GetTransform();
+		//	data.color = circle.color;
+		//	data.texture = circle.texture;
+		//	data.tilingFactor = circle.tiling_factor;
+		//	data.coreIDToAlphaPixels = circle.register_alpha_pixels_to_event;
+		//
+		//	Renderer2D::DrawCircle(data);
+		//}
+		//
+		//for (const auto line_entities = registry.group<TransformComponent>(entt::get<LineComponent>); auto & entity : line_entities)
+		//{
+		//	auto [transform, line] = line_entities.get<TransformComponent, LineComponent>(entity);
+		//
+		//
+		//	LineRenderData data;
+		//	data.point0 = line.positionA;
+		//	data.point1 = line.positionB;
+		//	data.color = line.color;
+		//	data.thickness = line.thickness;
+		//
+		//	Renderer2D::DrawLine(data);
+		//}
+		//
+		//for (const auto text_entities = registry.group<TransformComponent>(entt::get<TextComponent>); auto & entity : text_entities)
+		//{
+		//	auto [transform, text] = text_entities.get<TransformComponent, TextComponent>(entity);
+		//
+		//
+		//	TextRenderData data;
+		//	data.transform = transform.GetTransform();
+		//	data.color = text.color;
+		//	data.text = text.text;
+		//	data.coreIDToAlphaPixels = text.register_alpha_pixels_to_event;
+		//
+		//	Renderer2D::DrawString(data);
+		//}
 
-
-			CircleRenderData data;
-			data.transform = transform.GetTransform();
-			data.color = circle.color;
-			data.texture = circle.texture;
-			data.tilingFactor = circle.tiling_factor;
-			data.coreIDToAlphaPixels = circle.register_alpha_pixels_to_event;
-
-			Renderer2D::DrawCircle(data);
-		}
-
-		for (const auto line_entities = registry.group<TransformComponent>(entt::get<LineComponent>); auto & entity : line_entities)
-		{
-			auto [transform, line] = line_entities.get<TransformComponent, LineComponent>(entity);
-
-
-			LineRenderData data;
-			data.point0 = line.positionA;
-			data.point1 = line.positionB;
-			data.color = line.color;
-			data.thickness = line.thickness;
-
-			Renderer2D::DrawLine(data);
-		}
-
-		for (const auto text_entities = registry.group<TransformComponent>(entt::get<TextComponent>); auto & entity : text_entities)
-		{
-			auto [transform, text] = text_entities.get<TransformComponent, TextComponent>(entity);
-
-
-			TextRenderData data;
-			data.transform = transform.GetTransform();
-			data.color = text.color;
-			data.text = text.text;
-			data.coreIDToAlphaPixels = text.register_alpha_pixels_to_event;
-
-			Renderer2D::DrawString(data);
-		}
+		Renderer2D::EndRender();
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)

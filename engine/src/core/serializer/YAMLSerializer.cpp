@@ -67,11 +67,11 @@ namespace ppr
 
 	bool YAMLSerializer::EntitySerialize(Entity& entity, YAML::Emitter& out) const
 	{
-		CORE_ASSERT(entity.HasComponent<DataComponent>(), "");
+		CORE_ASSERT(entity.HasComponent<DataComponent>(), "")
 
 		out << YAML::BeginMap; // Entity
-		out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
-		out << YAML::Key << "Name" << YAML::Value << entity.GetName();
+		//out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
+		//out << YAML::Key << "Name" << YAML::Value << entity.GetName();
 
 		out << YAML::Key << "Components";
 		out << YAML::BeginMap;
@@ -129,12 +129,16 @@ namespace ppr
 		{
 			for (auto entity : entities)
 			{
-				UUID uuid = entity["Entity"].as<UUID>();
+				CORE_ASSERT(entity["Components"], "")
+				auto components = entity["Components"];
 
+				UUID uuid;
 				std::string entity_name;
-				auto dataComponent = entity["DataComponent"];
-				if (dataComponent)
-					entity_name = dataComponent["Name"].as<std::string>();
+				if (auto data_component = components["DataComponent"])
+				{
+					uuid = data_component["UUID"].as<UUID>();
+					entity_name = data_component["Name"].as<std::string>();
+				}
 				
 				LOG_CORE_TRACE("Deserializing entity name '{0}' and uuid '{1}' from '{2}'", entity_name, uuid.toString(), filePath.string());
 				

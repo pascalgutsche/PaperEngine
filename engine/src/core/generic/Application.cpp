@@ -117,8 +117,10 @@ namespace ppr {
 			window->PollEvents();
 			ProcessQueues();
 
-			RenderCommand::ClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+			RenderCommand::ClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+			RenderCommand::Clear();
 
+			
 			imguiLayer->Begin(dt);
 
 			for (Layer* layer : layerStack)

@@ -19,6 +19,15 @@ void PELayer::OnAttach()
 	spec.width = Application::GetWindow()->GetWidth();
 	spec.height = Application::GetWindow()->GetHeight();
 	framebuffer = Framebuffer::CreateBuffer(spec);
+
+	scene = MakeShr<Scene>();
+	ppr::UUID uuid = scene->CreateEntity("lol").GetUUID();
+	
+	scene->GetEntity(uuid).AddComponent<SpriteComponent>();
+	scene->GetEntity(uuid).AddComponent<CircleComponent>();
+	scene->GetEntity(uuid).AddComponent<LineComponent>();
+	scene->GetEntity(uuid).AddComponent<TextComponent>();
+	scene->GetEntity(uuid).AddTag({ "A", "B", "C", "AA", "aB", "Ac" });
 }
 
 void PELayer::OnDetach()
@@ -85,10 +94,11 @@ void PELayer::Update(const float dt)
 
 	//render
 	framebuffer->Bind();
+	RenderCommand::ClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 	RenderCommand::Clear();
 	framebuffer->ClearAttachment(1, 0);
 
-	//scene->Render();
+	scene->Render();
 
 	framebuffer->Unbind();
 }
@@ -229,6 +239,40 @@ void PELayer::MenuBar()
 
 			if (ImGui::MenuItem("Exit"))
 				Application::GetInstance()->Exit();
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Scene"))
+		{
+			if (ImGui::MenuItem("New Scene"))
+			{
+				//NewProject();
+			}
+
+			if (ImGui::MenuItem("Open Scene"))
+			{
+				//ProjectManager::OpenFile("PaperEngine Project(*.peproj)\0 * .peproj\0");
+			}
+
+			ImGui::BeginDisabled();
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Save Project", "Ctrl+S"))
+			{
+				//SaveProject();
+			}
+
+			if (ImGui::MenuItem("Save Project As...", "Ctrl+Shift+S"))
+			{
+				//SaveProjectAs();
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Exit"))
+				Application::GetInstance()->Exit();
+			ImGui::EndDisabled();
 
 			ImGui::EndMenu();
 		}

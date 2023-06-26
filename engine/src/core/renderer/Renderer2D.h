@@ -22,9 +22,9 @@ namespace ppr {
         std::array<glm::vec2, 4> texCoords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
         float tilingFactor = 1.0f;
 
-        ProjectionMode mode = ProjectionMode::PERSPECTIVE;
+        ProjectionMode mode = ProjectionMode::SCREEN;
         core_id coreID = 0;
-        core_id uiID = -1;
+        core_id uiID = 0;
         bool coreIDToAlphaPixels = false;
     };
 
@@ -42,7 +42,7 @@ namespace ppr {
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
         core_id coreID = 0;
-        core_id uiID = -1;
+        core_id uiID = 0;
         bool coreIDToAlphaPixels = false;
     };
 
@@ -56,7 +56,7 @@ namespace ppr {
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
         core_id coreID = 0;
-        core_id uiID = -1;
+        core_id uiID = 0;
     };
 
     struct TextRenderData
@@ -69,7 +69,7 @@ namespace ppr {
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
         core_id coreID = 0;
-        core_id uiID = -1;
+        core_id uiID = 0;
         bool coreIDToAlphaPixels = false;
     };
 
