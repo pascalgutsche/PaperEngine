@@ -4,8 +4,9 @@
 #include "project/ProjectManager.h"
 
 PELayer::PELayer()
-	: viewportSize(glm::vec2()), viewportBounds{glm::vec2(), glm::vec2()}, mousePosViewportRelative(glm::ivec2())
+	: viewport_size(glm::vec2()), viewport_bounds{glm::vec2(), glm::vec2()}, mouse_pos_viewport_relative(glm::ivec2())
 {
+	cameras.push_back(MakeShr<EditorCamera>());
 }
 
 PELayer::~PELayer()
@@ -70,22 +71,22 @@ void PELayer::Update(const float dt)
 {
 	// Resize
 	if (FramebufferSpecification spec = framebuffer->GetSpecification();
-		viewportSize.x > 0.0f && viewportSize.y > 0.0f && // zero sized framebuffer is invalid
-		(spec.width != viewportSize.x || spec.height != viewportSize.y))
+		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
+		(spec.width != viewport_size.x || spec.height != viewport_size.y))
 	{
-		framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
 
 		//update cameras aspect ratio //TODO: nuke it somewhere else
 		//Application::GetActiveScene()->GetCamera()->aspectRatio = viewportSize.x / viewportSize.y;
 	}
 
-	mousePosViewportRelative.x = ImGui::GetMousePos().x;
-	mousePosViewportRelative.y = ImGui::GetMousePos().y;
-	mousePosViewportRelative.x -= viewportBounds[0].x;
-	mousePosViewportRelative.y -= viewportBounds[0].y - 24;
-	glm::vec2 viewportSize = viewportBounds[1] - viewportBounds[0];
+	mouse_pos_viewport_relative.x = ImGui::GetMousePos().x;
+	mouse_pos_viewport_relative.y = ImGui::GetMousePos().y;
+	mouse_pos_viewport_relative.x -= viewport_bounds[0].x;
+	mouse_pos_viewport_relative.y -= viewport_bounds[0].y - 24;
+	glm::vec2 viewportSize = viewport_bounds[1] - viewport_bounds[0];
 
-	mousePosViewportRelative.y = viewportSize.y - mousePosViewportRelative.y;
+	mouse_pos_viewport_relative.y = viewportSize.y - mouse_pos_viewport_relative.y;
 
 	if (IsCameraControlModeActive())
 	{
@@ -98,7 +99,7 @@ void PELayer::Update(const float dt)
 	RenderCommand::Clear();
 	framebuffer->ClearAttachment(1, 0);
 
-	scene->Render();
+	scene->Render(cameras[0]);
 
 	framebuffer->Unbind();
 }
@@ -108,12 +109,12 @@ void PELayer::OnEvent(Event& event)
 	EventDispatcher dispatcher(event);
 	dispatcher.dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent& e)
 	{
-		if (viewportHovered && e.GetButton() == MOUSE_BUTTON_RIGHT)
+		if (viewport_hovered && e.GetButton() == MOUSE_BUTTON_RIGHT)
 		{
-			cameraControlMode = true;
+			camera_control_mode = true;
 			Application::GetWindow()->CursorEnabled(false);
 			ImGui::SetWindowFocus("ViewPort: ");
-			viewportFocused = true;
+			viewport_focused = true;
 		}
 		return false;
 	});
@@ -121,14 +122,14 @@ void PELayer::OnEvent(Event& event)
 	{
 		if (e.GetButton() == MOUSE_BUTTON_RIGHT)
 		{
-			cameraControlMode = false;
+			camera_control_mode = false;
 			Application::GetWindow()->CursorEnabled(true);
 		}
 		return false;
 	});
 	
 
-	if (!viewportFocused)
+	if (!viewport_focused)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		event.handled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
@@ -630,17 +631,17 @@ void PELayer::ViewPortPanel(const float dt, bool first)
 	auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 	auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 	auto viewportOffset = ImGui::GetWindowPos();
-	viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
-	viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+	viewport_bounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+	viewport_bounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
-	viewportFocused = ImGui::IsWindowFocused();
-	viewportHovered = ImGui::IsWindowHovered();
+	viewport_focused = ImGui::IsWindowFocused();
+	viewport_hovered = ImGui::IsWindowHovered();
 
 	ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
-	viewportSize = { viewport_panel_size.x, viewport_panel_size.y };
+	viewport_size = { viewport_panel_size.x, viewport_panel_size.y };
 
 	uint32_t textureID = framebuffer->GetColorID(0);
-	ImGui::Image((void*)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+	ImGui::Image((void*)textureID, ImVec2(viewport_size.x, viewport_size.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 	ImGui::End();
 	ImGui::PopStyleVar();

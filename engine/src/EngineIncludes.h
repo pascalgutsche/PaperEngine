@@ -14,7 +14,7 @@
 
 #include "core/generic/Application.h"
 #include "core/generic/Scene.h"
-#include "core/generic/Camera.h"
+#include "core/generic/EditorCamera.h"
 #include "core/generic/Transform.h"
 #include "core/generic/Entity.h"
 #include "core/generic/Sound.h"

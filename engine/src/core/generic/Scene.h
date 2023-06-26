@@ -4,6 +4,8 @@
 
 #include "utils/UUID.h"
 
+#include "generic/EditorCamera.h"
+
 namespace ppr {
 
     class Entity;
@@ -23,7 +25,7 @@ namespace ppr {
 
         void Stop();
 
-        void Render();
+        void Render(const Shr<EditorCamera>& camera);
 
         Entity CreateEntity(const std::string& name);
         Entity CreateEntity(const UUID& id, const std::string& name);

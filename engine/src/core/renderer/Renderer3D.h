@@ -1,11 +1,8 @@
 #pragma once
 #include "utility.h"
 
-#include "generic/Camera.h"
 #include "generic/Transform.h"
-#include "renderer/FrameBuffer.h"
 #include "renderer/Texture.h"
-#include "utils/DataPool.h"
 
 #include "renderer/Font.h"
 

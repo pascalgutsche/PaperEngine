@@ -4,7 +4,6 @@
 #include "generic/Application.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
-#include "generic/Camera.h"
 
 namespace ppr
 {
@@ -22,9 +21,8 @@ namespace ppr
 		Renderer3D::Init();
 	}
 
-	void RenderCommand::UploadCamera(const Shr<Camera>& camera)
+	void RenderCommand::UploadCamera(const Shr<EditorCamera>& camera)
 	{
-		camera->CalcCameraVectors();
 		sharedData.cameraData.uOrthographic = camera->GetOrthographicMatrix();
 		sharedData.cameraData.uPerspective = camera->GetProjectionMatrix();
 		sharedData.cameraData.uView = camera->GetViewMatrix();

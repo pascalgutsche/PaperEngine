@@ -3,7 +3,6 @@
 #include "generic/Application.h"
 #include "generic/Scene.h"
 
-#include "generic/Camera.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
 
@@ -42,9 +41,9 @@ namespace ppr {
 	}
 
 
-	void Scene::Render()
+	void Scene::Render(const Shr<EditorCamera>& camera)
 	{
-		Renderer2D::BeginRender();
+		Renderer2D::BeginRender(camera);
 		for (auto&& [entity, transform, sprite] : registry.group<TransformComponent>(entt::get<SpriteComponent>).each())
 		{
 			EdgeRenderData data;

@@ -7,6 +7,7 @@
 #include "generic/Application.h"
 #include "imgui/ImGuiLayer.h"
 
+
 namespace ppr {
 
 	struct EdgeVertex
@@ -124,7 +125,6 @@ namespace ppr {
 		glm::vec4 triangleVertexData[3];
 
 		Shr<Texture> fontAtlasTexture;
-
 	};
 
 	static RenderData2D data;
@@ -294,8 +294,10 @@ namespace ppr {
 		
 	}
 
-	void Renderer2D::BeginRender()
+	void Renderer2D::BeginRender(const Shr<EditorCamera>& camera)
 	{
+		camera->Update();
+		RenderCommand::UploadCamera(camera);
 		RenderCommand::EnableDepthTesting(false);
 
 		StartBatch();

@@ -5,6 +5,7 @@
 #include "event/Input.h"
 #include "event/KeyCodes.h"
 #include "event/GameEvent.h"
+#include "event/MouseEvent.h"
 #include "renderer/RenderCommand.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"

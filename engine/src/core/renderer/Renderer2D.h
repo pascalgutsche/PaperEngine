@@ -1,15 +1,16 @@
 #pragma once
 #include "utility.h"
 
-#include "generic/Camera.h"
 #include "generic/Transform.h"
-#include "renderer/FrameBuffer.h"
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
+#include "generic/EditorCamera.h"
 
 #include "renderer/Font.h"
 
 #define DEFAULT_COLOR glm::vec4(0.925f, 0.329f, 0.956, 1.0f)
+
+class EditorCamera;
 
 namespace ppr {
 
@@ -22,7 +23,7 @@ namespace ppr {
         std::array<glm::vec2, 4> texCoords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
         float tilingFactor = 1.0f;
 
-        ProjectionMode mode = ProjectionMode::SCREEN;
+        ProjectionMode mode = ProjectionMode::PERSPECTIVE;
         core_id coreID = 0;
         core_id uiID = 0;
         bool coreIDToAlphaPixels = false;
@@ -85,7 +86,7 @@ namespace ppr {
 
         static void ResizeWindow(uint32_t width, uint32_t height);
 
-        static void BeginRender();
+        static void BeginRender(const Shr<EditorCamera>& camera);
         static void EndRender();
 
         static void Render(RenderTarget2D target);

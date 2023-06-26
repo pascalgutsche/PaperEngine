@@ -4,8 +4,7 @@
 
 #include "renderer/VertexArray.h"
 #include "renderer/RenderAPI.h"
-#include "renderer/FrameBuffer.h"
-
+#include "generic/EditorCamera.h"
 namespace ppr {
 
 	class Camera;
@@ -43,7 +42,7 @@ namespace ppr {
 
 		static void Init();
 
-		static void UploadCamera(const Shr<Camera>& camera);
+		static void UploadCamera(const Shr<EditorCamera>& camera);
 		static SharedRenderData::Stats& GetStats();
 		static void ClearStats();
 
