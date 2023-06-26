@@ -6,6 +6,8 @@
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
 
+#include "renderer/RenderCommand.h"
+
 #include "component/TransformComponent.h"
 #include "component/SpriteComponent.h"
 #include "component/CircleComponent.h"
@@ -43,66 +45,70 @@ namespace ppr {
 
 	void Scene::Render(const Shr<EditorCamera>& camera)
 	{
+		RenderCommand::ClearStats();
 		Renderer2D::BeginRender(camera);
-		for (auto&& [entity, transform, sprite] : registry.group<TransformComponent>(entt::get<SpriteComponent>).each())
-		{
-			EdgeRenderData data;
-			data.transform = transform.GetTransform();
-			data.color = sprite.color;
-			data.texture = sprite.texture;
-			data.tilingFactor = sprite.tiling_factor;
-			data.texCoords = sprite.tex_coords;
-			data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
 
-			if (sprite.geometry == Geometry::RECTANGLE)
-				Renderer2D::DrawRectangle(data);
-			else if (sprite.geometry == Geometry::TRIANGLE)
-				Renderer2D::DrawTriangle(data);
+		{
+			auto view = registry.view<TransformComponent, SpriteComponent>();
+			for (auto [entity, transform, sprite] : view.each()) {
+
+				EdgeRenderData data;
+				data.transform = transform.GetTransform();
+				data.color = sprite.color;
+				data.texture = sprite.texture;
+				data.tilingFactor = sprite.tiling_factor;
+				data.texCoords = sprite.tex_coords;
+				data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
+
+				if (sprite.geometry == Geometry::RECTANGLE)
+					Renderer2D::DrawRectangle(data);
+				else if (sprite.geometry == Geometry::TRIANGLE)
+					Renderer2D::DrawTriangle(data);
+			}
 		}
 
-		//for (const auto circle_entities = registry.group<TransformComponent>(entt::get<CircleComponent>); auto & entity : circle_entities)
-		//{
-		//	auto [transform, circle] = circle_entities.get<TransformComponent, CircleComponent>(entity);
-		//
-		//
-		//	CircleRenderData data;
-		//	data.transform = transform.GetTransform();
-		//	data.color = circle.color;
-		//	data.texture = circle.texture;
-		//	data.tilingFactor = circle.tiling_factor;
-		//	data.coreIDToAlphaPixels = circle.register_alpha_pixels_to_event;
-		//
-		//	Renderer2D::DrawCircle(data);
-		//}
-		//
-		//for (const auto line_entities = registry.group<TransformComponent>(entt::get<LineComponent>); auto & entity : line_entities)
-		//{
-		//	auto [transform, line] = line_entities.get<TransformComponent, LineComponent>(entity);
-		//
-		//
-		//	LineRenderData data;
-		//	data.point0 = line.positionA;
-		//	data.point1 = line.positionB;
-		//	data.color = line.color;
-		//	data.thickness = line.thickness;
-		//
-		//	Renderer2D::DrawLine(data);
-		//}
-		//
-		//for (const auto text_entities = registry.group<TransformComponent>(entt::get<TextComponent>); auto & entity : text_entities)
-		//{
-		//	auto [transform, text] = text_entities.get<TransformComponent, TextComponent>(entity);
-		//
-		//
-		//	TextRenderData data;
-		//	data.transform = transform.GetTransform();
-		//	data.color = text.color;
-		//	data.text = text.text;
-		//	data.coreIDToAlphaPixels = text.register_alpha_pixels_to_event;
-		//
-		//	Renderer2D::DrawString(data);
-		//}
+		{
+			auto view = registry.view<TransformComponent, CircleComponent>();
+			for (auto [entity, transform, circle] : view.each()) {
+				
+				CircleRenderData data;
+				data.transform = transform.GetTransform();
+				data.color = circle.color;
+				data.texture = circle.texture;
+				data.tilingFactor = circle.tiling_factor;
+				data.coreIDToAlphaPixels = circle.register_alpha_pixels_to_event;
 
+				Renderer2D::DrawCircle(data);
+			}
+		}
+
+		{
+			auto view = registry.view<TransformComponent, LineComponent>();
+			for (auto [entity, transform, line] : view.each()) {
+
+				LineRenderData data;
+				data.point0 = line.positionA;
+				data.point1 = line.positionB;
+				data.color = line.color;
+				data.thickness = line.thickness;
+				
+				Renderer2D::DrawLine(data);
+			}
+		}
+
+		{
+			auto view = registry.view<TransformComponent, TextComponent>();
+			for (auto [entity, transform, text] : view.each()) {
+
+				TextRenderData data;
+				data.transform = transform.GetTransform();
+				data.color = text.color;
+				data.text = text.text;
+				data.coreIDToAlphaPixels = text.register_alpha_pixels_to_event;
+				
+				Renderer2D::DrawString(data);
+			}
+		}
 		Renderer2D::EndRender();
 	}
 

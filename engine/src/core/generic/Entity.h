@@ -6,8 +6,6 @@
 
 namespace ppr {
 
-    class Component;
-    class RenderComponent;
     class Layer;
     class Scene;
 
