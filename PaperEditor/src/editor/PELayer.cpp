@@ -138,7 +138,7 @@ void PELayer::Imgui(const float dt)
 		initialized = true;
 		ImGui::DockBuilderRemoveNode(dockspace_id);
 		ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
-		ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->GetWidth()/* + 500*/, Application::GetWindow()->GetHeight()/* + 500*/));
+		ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->GetWidth() + 500, Application::GetWindow()->GetHeight() + 500));
 
 		dock_id_main = dockspace_id;
 		
