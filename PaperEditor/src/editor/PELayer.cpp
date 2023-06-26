@@ -1,12 +1,19 @@
 #include "Editor.h"
 #include "PELayer.h"
 
+#include <boost/mpl/pair.hpp>
+
 #include "project/ProjectManager.h"
+
+
 
 PELayer::PELayer()
 	: viewport_size(glm::vec2()), viewport_bounds{glm::vec2(), glm::vec2()}, mouse_pos_viewport_relative(glm::ivec2())
 {
-	cameras.push_back(MakeShr<EditorCamera>());
+	viewports.emplace_back("1");
+	viewports.emplace_back("2");
+	viewports.emplace_back("3");
+	viewports.emplace_back("4");
 }
 
 PELayer::~PELayer()
@@ -15,12 +22,6 @@ PELayer::~PELayer()
 
 void PELayer::OnAttach()
 {
-	FramebufferSpecification spec;
-	spec.attachment = { FramebufferTexFormat::RGBA8, FramebufferTexFormat::RED_INTEGER, FramebufferTexFormat::Depth };
-	spec.width = Application::GetWindow()->GetWidth();
-	spec.height = Application::GetWindow()->GetHeight();
-	framebuffer = Framebuffer::CreateBuffer(spec);
-
 	scene = MakeShr<Scene>();
 	ppr::UUID uuid = scene->CreateEntity("lol").GetUUID();
 	
@@ -35,51 +36,10 @@ void PELayer::OnDetach()
 {
 }
 
-void PELayer::CameraMovement()
-{
-	const Shr<EditorCamera> camera = cameras[0];
-	const float dt = Application::GetDT();
-	if (Input::IsKeyPressed(KEY_W))
-	{
-		camera->position.x += 5 * dt * camera->GetFront().x;
-		camera->position.z += 5 * dt * camera->GetFront().z;
-	}
-	if (Input::IsKeyPressed(KEY_A))
-	{
-		camera->position.x += 5 * dt * camera->GetFront().z;
-		camera->position.z -= 5 * dt * camera->GetFront().x;
 
-	}
-	if (Input::IsKeyPressed(KEY_S))
-	{
-		camera->position.x -= 5 * dt * camera->GetFront().x;
-		camera->position.z -= 5 * dt * camera->GetFront().z;
-
-	}
-	if (Input::IsKeyPressed(KEY_D))
-	{
-		camera->position.x -= 5 * dt * camera->GetFront().z;
-		camera->position.z += 5 * dt * camera->GetFront().x;
-
-	}
-	if (Input::IsKeyPressed(KEY_E))
-		camera->position.y += 5 * dt;
-	if (Input::IsKeyPressed(KEY_Q))
-		camera->position.y -= 5 * dt;
-}
 
 void PELayer::Update(const float dt)
 {
-	// Resize
-	if (FramebufferSpecification spec = framebuffer->GetSpecification();
-		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
-		(spec.width != viewport_size.x || spec.height != viewport_size.y))
-	{
-		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
-
-		cameras[0]->aspect_ratio = viewport_size.x / viewport_size.y;
-	}
-
 	mouse_pos_viewport_relative.x = ImGui::GetMousePos().x;
 	mouse_pos_viewport_relative.y = ImGui::GetMousePos().y;
 	mouse_pos_viewport_relative.x -= viewport_bounds[0].x;
@@ -87,21 +47,6 @@ void PELayer::Update(const float dt)
 	glm::vec2 viewportSize = viewport_bounds[1] - viewport_bounds[0];
 
 	mouse_pos_viewport_relative.y = viewportSize.y - mouse_pos_viewport_relative.y;
-
-	if (IsCameraControlModeActive())
-	{
-		CameraMovement();
-	}
-
-	//render
-	framebuffer->Bind();
-	RenderCommand::ClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
-	RenderCommand::Clear();
-	framebuffer->ClearAttachment(1, 0);
-
-	scene->Render(cameras[0]);
-
-	framebuffer->Unbind();
 }
 
 void PELayer::OnEvent(Event& event)
@@ -109,32 +54,48 @@ void PELayer::OnEvent(Event& event)
 	EventDispatcher dispatcher(event);
 	dispatcher.dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent& e)
 	{
-		if (viewport_hovered && e.GetButton() == MOUSE_BUTTON_RIGHT)
+		for (auto& port : viewports)
 		{
-			camera_control_mode = true;
-			Application::GetWindow()->CursorEnabled(false);
-			ImGui::SetWindowFocus("ViewPort: ");
-			viewport_focused = true;
+			if (port.viewport_hovered && e.GetButton() == MOUSE_BUTTON_RIGHT)
+			{
+				for (auto& port1 : viewports)
+				{
+					port1.viewport_focused = false;
+					port1.last_viewport_focused = false;
+				}
+				Application::GetWindow()->CursorEnabled(false);
+				ImGui::SetWindowFocus(port.name.c_str());
+				port.viewport_focused = true;
+			}
 		}
+		
 		return false;
 	});
 	dispatcher.dispatch<MouseButtonReleasedEvent>([this](MouseButtonReleasedEvent& e)
 	{
 		if (e.GetButton() == MOUSE_BUTTON_RIGHT)
 		{
-			camera_control_mode = false;
+			for (auto& port1 : viewports)
+			{
+				port1.viewport_focused = false;
+				port1.last_viewport_focused = false;
+			}
 			Application::GetWindow()->CursorEnabled(true);
 		}
 		return false;
 	});
 	dispatcher.dispatch<MouseMovedEvent>([this](MouseMovedEvent& e)
 	{
-		static bool last_control_mode = false;
-		if (camera_control_mode)
+		for (auto& port : viewports)
 		{
-			cameras[0]->ControlCamera(e.GetX(), e.GetY(), last_control_mode != camera_control_mode);
+			if (port.viewport_focused)
+			{
+				LOG_DEBUG(port.name);
+				port.camera->ControlCamera(e.GetX(), e.GetY(), port.last_viewport_focused != port.viewport_focused);
+				port.last_viewport_focused = true;
+				break;
+			}
 		}
-		last_control_mode = camera_control_mode;
 		return false;
 	});
 	
@@ -201,7 +162,8 @@ void PELayer::Imgui(const float dt)
 	ApplicationPanel(dt, first);
 	AssetManagerPanel(dt, first);
 	//LayerPanel(dt, first);
-	ViewPortPanel(dt, first);
+	for (auto& port : viewports)
+		port.Panel(this);
 	//InspectorPanel(dt, first);
 
 	if (first) {
@@ -625,27 +587,72 @@ void PELayer::InspectorPanel(const float dt, bool first) {
 	//ImGui::End();
 }
 
-void PELayer::ViewPortPanel(const float dt, bool first)
+static void CameraMovement(const Shr<EditorCamera>& camera)
 {
-	const char* name = "ViewPort: ";
+	const float dt = Application::GetDT();
+	if (Input::IsKeyPressed(KEY_W))
+	{
+		camera->position.x += 5 * dt * camera->GetFront().x;
+		camera->position.z += 5 * dt * camera->GetFront().z;
+	}
+	if (Input::IsKeyPressed(KEY_A))
+	{
+		camera->position.x += 5 * dt * camera->GetFront().z;
+		camera->position.z -= 5 * dt * camera->GetFront().x;
 
-	if (first)
-		DockPanel(name, GetDockspaceMain());
+	}
+	if (Input::IsKeyPressed(KEY_S))
+	{
+		camera->position.x -= 5 * dt * camera->GetFront().x;
+		camera->position.z -= 5 * dt * camera->GetFront().z;
+
+	}
+	if (Input::IsKeyPressed(KEY_D))
+	{
+		camera->position.x -= 5 * dt * camera->GetFront().z;
+		camera->position.z += 5 * dt * camera->GetFront().x;
+
+	}
+	if (Input::IsKeyPressed(KEY_E))
+		camera->position.y += 5 * dt;
+	if (Input::IsKeyPressed(KEY_Q))
+		camera->position.y -= 5 * dt;
+}
+
+void ViewPort::Panel(PELayer* peLayer)
+{
+	if (FramebufferSpecification spec = framebuffer->GetSpecification();
+		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
+		(spec.width != viewport_size.x || spec.height != viewport_size.y))
+	{
+		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
+
+		camera->aspect_ratio = viewport_size.x / viewport_size.y;
+	}
+
+	framebuffer->Bind();
+
+	RenderCommand::ClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+	RenderCommand::Clear();
+	framebuffer->ClearAttachment(1, 0);
+
+	peLayer->scene->Render(camera);
+
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(name);
+	ImGui::Begin(name.c_str());
 
+	//viewport_focused = ImGui::IsWindowFocused();
+	viewport_hovered = ImGui::IsWindowHovered();
 
-	//RenderCommand::GetFramebuffer()->Bind();
+	if (viewport_focused)
+		CameraMovement(camera);
 
 	auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 	auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 	auto viewportOffset = ImGui::GetWindowPos();
 	viewport_bounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
 	viewport_bounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
-
-	viewport_focused = ImGui::IsWindowFocused();
-	viewport_hovered = ImGui::IsWindowHovered();
 
 	ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
 	viewport_size = { viewport_panel_size.x, viewport_panel_size.y };
@@ -657,5 +664,5 @@ void PELayer::ViewPortPanel(const float dt, bool first)
 	ImGui::PopStyleVar();
 
 
-
+	framebuffer->Unbind();
 }

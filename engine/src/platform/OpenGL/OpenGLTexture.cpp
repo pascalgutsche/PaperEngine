@@ -41,7 +41,7 @@ namespace ppr
 		if (!Init(this->filePath))
 		{
 			glDeleteTextures(1, &texID);
-			Init("assets/textures/error_texture_256x256.png");
+			Init("resources/textures/error_texture_256x256.png");
 		}
 	}
 

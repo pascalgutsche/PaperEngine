@@ -58,8 +58,8 @@ namespace ppr
 		void RemoveUIObject(UIObject* object);
 
 		std::vector<UIObject*>& GetUIObjects();
-	protected:
 		Shr<Scene> scene = nullptr;
+	protected:
 		std::string name;
 		bool overlay = false;
 		bool attached = false;

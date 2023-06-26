@@ -32,11 +32,34 @@ namespace ppr {
         return shader;
     }
 
+    Shr<Texture> DataPool::GetAssetTexture(std::string textureName) {
+        // set default path
+        const std::string path = "assets/textures/" + textureName;
+
+        std::string texture_id = "assettexture_" + textureName;
+
+        Map::iterator it = dataPool.find(texture_id);
+
+        std::shared_ptr<Texture> texture;
+
+        if (it == dataPool.end())
+        {
+            texture = Texture::CreateTexture(path, textureName);
+            dataPool.emplace(texture_id, texture);
+        }
+        else
+        {
+            texture = std::static_pointer_cast<Texture>(it->second);
+        }
+
+        return texture;
+    }
+
     Shr<Texture> DataPool::GetTexture(std::string textureName) {
         // set default path
         const std::string path = "resources/textures/" + textureName;
 
-        std::string texture_id = "texture_" + textureName;
+        std::string texture_id = "recourcetexture_" + textureName;
 
         Map::iterator it = dataPool.find(texture_id);
 

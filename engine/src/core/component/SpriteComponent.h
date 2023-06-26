@@ -18,7 +18,7 @@ namespace ppr {
 
 	struct SpriteComponent : Serializable {
 		glm::vec4 color = glm::vec4(1.0f);
-		Shr<Texture> texture = DataPool::GetTexture("ifdjgf/4578946/bunkerfilm.png");
+		Shr<Texture> texture = DataPool::GetAssetTexture("james_webb.png");
 		float tiling_factor = 1.0f;
 		std::array<glm::vec2, 4> tex_coords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
 		Geometry geometry = Geometry::RECTANGLE;

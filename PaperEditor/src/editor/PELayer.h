@@ -1,6 +1,37 @@
 #pragma once
 #include "Editor.h"
 
+class PELayer;
+
+struct ViewPort
+{
+public:
+	Shr<EditorCamera> camera;
+	Shr<Framebuffer> framebuffer;
+
+	std::string name;
+
+	ViewPort(const std::string& name)
+		: camera(MakeShr<EditorCamera>()), name(name)
+	{
+		FramebufferSpecification spec;
+		spec.attachment = { FramebufferTexFormat::RGBA8, FramebufferTexFormat::RED_INTEGER, FramebufferTexFormat::Depth };
+		spec.width = Application::GetWindow()->GetWidth();
+		spec.height = Application::GetWindow()->GetHeight();
+		framebuffer = Framebuffer::CreateBuffer(spec);
+	}
+
+	void Panel(PELayer* peLayer);
+
+	glm::vec2 viewport_size;
+	glm::vec2 viewport_bounds[2];
+
+	bool viewport_focused = false;
+	bool viewport_hovered = false;
+
+	bool last_viewport_focused = false;
+};
+
 class PELayer : public Layer
 {
 public:
@@ -30,8 +61,6 @@ public:
 	ImGuiID GetDockspaceLeftBottom() const { return dock_id_left_bottom; }
 
 private:
-	Shr<Framebuffer> framebuffer;
-
 	ImGuiID dockspace_id = 0;
 	ImGuiID dock_id_main = 0;
 	ImGuiID dock_id_top = 0;
@@ -47,9 +76,6 @@ private:
 	void AssetManagerPanel(const float dt, bool first);
 	void LayerPanel(const float dt, bool first);
 	void InspectorPanel(const float dt, bool first);
-	void ViewPortPanel(const float dt, bool first);
-
-	void CameraMovement();
 
 	glm::vec2 viewport_size;
 	glm::vec2 viewport_bounds[2];
@@ -60,8 +86,6 @@ private:
 
 	glm::ivec2 mouse_pos_viewport_relative;
 
-	std::unordered_map<std::string, void*> variable_pool;
-
-	std::vector<Shr<EditorCamera>> cameras;
+	std::vector<ViewPort> viewports;
 };
 
