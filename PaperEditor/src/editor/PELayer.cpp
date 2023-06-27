@@ -11,9 +11,9 @@ PELayer::PELayer()
 	: viewport_size(glm::vec2()), viewport_bounds{glm::vec2(), glm::vec2()}, mouse_pos_viewport_relative(glm::ivec2())
 {
 	viewports.emplace_back("1");
-	//viewports.emplace_back("2");
-	//viewports.emplace_back("3");
-	//viewports.emplace_back("4");
+	viewports.emplace_back("2");
+	viewports.emplace_back("3");
+	viewports.emplace_back("4");
 }
 
 PELayer::~PELayer()
@@ -93,7 +93,6 @@ void PELayer::OnEvent(Event& event)
 		{
 			if (port.viewport_focused)
 			{
-				LOG_DEBUG(port.name);
 				port.camera->ControlCamera(e.GetX(), e.GetY(), port.last_viewport_focused != port.viewport_focused);
 				port.last_viewport_focused = true;
 				break;
@@ -159,9 +158,12 @@ void PELayer::Imgui(const float dt)
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
 	MainMenuBar();
 
+
 	ImGui::End();
 
-	
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowMenuButtonPosition = ImGuiDir_None;
+	style.FrameRounding = 12.0f;
 
 	static bool first = true;
 	ApplicationPanel(dt, first);
@@ -182,8 +184,8 @@ void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
 {
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 	window_flags |= ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_NoDocking;
-	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
-	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_MenuBar;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
+	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
 	const char* name = "ViewPorts: ";
 
@@ -200,7 +202,7 @@ void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
 	//ImGui::Begin("Cameras", nullptr, window_flags | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoMove);
 	ImGuiID dockspaddce_id = ImGui::GetID("ViewPort");
 	ImGui::DockSpace(dockspaddce_id, ImVec2(0.0f, 0.0f), dock_flags);
-	CameraBar();
+	//CameraBar();
 	//ImGui::End();
 	ImGui::End();
 }
@@ -295,6 +297,23 @@ void PELayer::MainMenuBar()
 			{
 				
 			}
+
+			if (ImGui::BeginCombo("##1", "Activate Camera"))
+			{
+
+				for (auto& port : viewports)
+				{
+					if (!port.open)
+					{
+						if (ImGui::Selectable(port.name.c_str()))
+						{
+							port.open = true;
+						}
+					}
+				}
+				ImGui::EndCombo();
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -307,55 +326,8 @@ void PELayer::CameraBar()
 	
 	if (ImGui::BeginMenuBar())
 	{
+
 		
-		if (ImGui::BeginMenu("Camera"))
-		{
-				
-			if (ImGui::MenuItem("New Project...", "Ctrl+O"))
-			{
-				//NewProject();
-			}
-
-			if (ImGui::MenuItem("Open Project...", "Ctrl+O"))
-			{
-				ProjectManager::OpenFile("PaperEngine Project(*.peproj)\0 * .peproj\0");
-			}
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Save Project", "Ctrl+S"))
-			{
-				//SaveProject();
-			}
-
-			if (ImGui::MenuItem("Save Project As...", "Ctrl+Shift+S"))
-			{
-				//SaveProjectAs();
-			}
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Exit"))
-				Application::GetInstance()->Exit();
-
-			ImGui::EndMenu();
-		}
-		
-		if (ImGui::BeginCombo("##1", "Activate Camera"))
-		{
-
-			for (auto& port : viewports)
-			{
-				if (!port.open)
-				{
-					if (ImGui::Selectable(port.name.c_str()))
-					{
-						port.open = true;
-					}
-				}
-			}
-			ImGui::EndCombo();
-		}
 
 		ImGui::EndMenuBar();
 	}
@@ -744,7 +716,7 @@ void ViewPort::Panel(PELayer* peLayer)
 
 	framebuffer->Bind();
 
-	RenderCommand::ClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+	RenderCommand::ClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	RenderCommand::Clear();
 	framebuffer->ClearAttachment(1, 0);
 

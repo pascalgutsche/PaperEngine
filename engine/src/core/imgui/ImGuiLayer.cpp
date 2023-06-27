@@ -76,7 +76,7 @@ namespace ppr {
 
 		//ImGui Config
 		ImGuiIO& io = ImGui::GetIO();
-		ImGuiStyle& style = ImGui::GetStyle();
+
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
@@ -86,7 +86,13 @@ namespace ppr {
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
-		darkmode(io, style);
+		ImGuiStyle& style = ImGui::GetStyle();
+		ImGui::StyleColorsClassic();
+		auto& colors = style.Colors;
+		colors[ImGuiCol_DockingPreview] = ImVec4{ 0.4f, 0.4f, 0.9f, 1.0f };
+		colors[ImGuiCol_WindowBg] = ImVec4{ 0.0f, 0.0f, 0.0f, 1.0f };
+		colors[ImGuiCol_TitleBg] = ImVec4{ 0.0f, 0.0f, 0.0f, 1.0f };
+		colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.0f, 0.1f, 0.1f, 1.0f };
 
 		//fonts
 		ImFontAtlas* fontAtlas = io.Fonts;
