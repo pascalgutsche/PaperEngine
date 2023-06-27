@@ -16,7 +16,7 @@ Entities:
           - AC
       SpriteComponent:
         Color: [1, 1, 1, 1]
-        TexturePath: assets/textures/james_webb.png
+        TexturePath: assets/textures/max.jpg
         TilingFactor: 1
         TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
         RegisterAlphaPixels: false

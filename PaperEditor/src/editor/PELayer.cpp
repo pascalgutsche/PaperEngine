@@ -11,9 +11,9 @@ PELayer::PELayer()
 	: viewport_size(glm::vec2()), viewport_bounds{glm::vec2(), glm::vec2()}, mouse_pos_viewport_relative(glm::ivec2())
 {
 	viewports.emplace_back("1");
-	viewports.emplace_back("2");
-	viewports.emplace_back("3");
-	viewports.emplace_back("4");
+	//viewports.emplace_back("2");
+	//viewports.emplace_back("3");
+	//viewports.emplace_back("4");
 }
 
 PELayer::~PELayer()
@@ -148,7 +148,6 @@ void PELayer::Imgui(const float dt)
 		dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Down, 0.25f, nullptr, &dock_id_main);
 		dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right,     ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
 		dock_id_left_bottom = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
-
 		ImGui::DockBuilderFinish(dockspace_id);
 	}
 	for (auto [key, val] : dockPanelQueue)
@@ -158,13 +157,17 @@ void PELayer::Imgui(const float dt)
 	dockPanelQueue.clear();
 
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
-	MenuBar();
+	MainMenuBar();
+
 	ImGui::End();
+
+	
 
 	static bool first = true;
 	ApplicationPanel(dt, first);
 	AssetManagerPanel(dt, first);
 	//LayerPanel(dt, first);
+	CameraPanel(first, dockflags);
 	for (auto& port : viewports)
 		port.Panel(this);
 	//InspectorPanel(dt, first);
@@ -175,6 +178,33 @@ void PELayer::Imgui(const float dt)
 	}
 }
 
+void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
+{
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+	window_flags |= ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_NoDocking;
+	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_MenuBar;
+
+	const char* name = "ViewPorts: ";
+
+	if (first)
+		DockPanel(name, GetDockspaceMain());
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+	ImGui::Begin(name, nullptr, window_flags);
+	ImGui::PopStyleVar(3);
+
+	//ImGui::Begin("Cameras", nullptr, window_flags | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoMove);
+	ImGuiID dockspaddce_id = ImGui::GetID("ViewPort");
+	ImGui::DockSpace(dockspaddce_id, ImVec2(0.0f, 0.0f), dock_flags);
+	CameraBar();
+	//ImGui::End();
+	ImGui::End();
+}
+
 void PELayer::DockPanel(std::string name, ImGuiID dock_id)
 {
 	if (dockPanelQueue.find(name) == dockPanelQueue.end())
@@ -183,7 +213,7 @@ void PELayer::DockPanel(std::string name, ImGuiID dock_id)
 	}
 }
 
-void PELayer::MenuBar()
+void PELayer::MainMenuBar()
 {
 	if (ImGui::BeginMenuBar())
 	{
@@ -253,6 +283,80 @@ void PELayer::MenuBar()
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Add"))
+		{
+			
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Camera"))
+		{
+			if (ImGui::MenuItem("Add Editor Camera"))
+			{
+				
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+}
+
+void PELayer::CameraBar()
+{
+	
+	if (ImGui::BeginMenuBar())
+	{
+		
+		if (ImGui::BeginMenu("Camera"))
+		{
+				
+			if (ImGui::MenuItem("New Project...", "Ctrl+O"))
+			{
+				//NewProject();
+			}
+
+			if (ImGui::MenuItem("Open Project...", "Ctrl+O"))
+			{
+				ProjectManager::OpenFile("PaperEngine Project(*.peproj)\0 * .peproj\0");
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Save Project", "Ctrl+S"))
+			{
+				//SaveProject();
+			}
+
+			if (ImGui::MenuItem("Save Project As...", "Ctrl+Shift+S"))
+			{
+				//SaveProjectAs();
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Exit"))
+				Application::GetInstance()->Exit();
+
+			ImGui::EndMenu();
+		}
+		
+		if (ImGui::BeginCombo("##1", "Activate Camera"))
+		{
+
+			for (auto& port : viewports)
+			{
+				if (!port.open)
+				{
+					if (ImGui::Selectable(port.name.c_str()))
+					{
+						port.open = true;
+					}
+				}
+			}
+			ImGui::EndCombo();
+		}
+
 		ImGui::EndMenuBar();
 	}
 }
@@ -265,6 +369,7 @@ void PELayer::ApplicationPanel(const float dt, bool first)
 		DockPanel(name, GetDockspaceRight());
 
 	ImGui::Begin(name);
+	
 
 	static float time = 0;
 	static float timehelper = -1;
@@ -423,6 +528,7 @@ static void displayText(std::vector<std::string>& filenames)
 
 void PELayer::AssetManagerPanel(const float dt, bool first)
 {
+	ImGui::ShowDemoWindow();
 	static float size = 120.0f;
 	static std::filesystem::path path = "assets/";
 
@@ -576,6 +682,8 @@ void PELayer::LayerPanel(const float dt, bool first)
 	ImGui::End();
 }
 
+
+
 void PELayer::InspectorPanel(const float dt, bool first) {
 	const char* name = "Inspector: ";
 	std::stringstream stream;
@@ -624,6 +732,7 @@ static void CameraMovement(const Shr<EditorCamera>& camera)
 
 void ViewPort::Panel(PELayer* peLayer)
 {
+	if (!open) return;
 	if (FramebufferSpecification spec = framebuffer->GetSpecification();
 		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
 		(spec.width != viewport_size.x || spec.height != viewport_size.y))
@@ -643,7 +752,7 @@ void ViewPort::Panel(PELayer* peLayer)
 
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(name.c_str());
+	ImGui::Begin(name.c_str(), &open, ImGuiWindowFlags_NoCollapse);
 
 	//viewport_focused = ImGui::IsWindowFocused();
 	viewport_hovered = ImGui::IsWindowHovered();

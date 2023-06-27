@@ -30,6 +30,8 @@ public:
 	bool viewport_hovered = false;
 
 	bool last_viewport_focused = false;
+
+	bool open = true;
 };
 
 class PELayer : public Layer
@@ -71,10 +73,12 @@ private:
 	ImGuiID dock_id_left_bottom = 0;
 	std::unordered_map<std::string, ImGuiID> dockPanelQueue;
 
-	void MenuBar();
+	void MainMenuBar();
+	void CameraBar();
 	void ApplicationPanel(const float dt, bool first);
 	void AssetManagerPanel(const float dt, bool first);
 	void LayerPanel(const float dt, bool first);
+	void CameraPanel(bool first, ImGuiWindowFlags& dock_flags);
 	void InspectorPanel(const float dt, bool first);
 
 	glm::vec2 viewport_size;
