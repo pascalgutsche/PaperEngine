@@ -36,6 +36,7 @@ public:
 
 class PELayer : public Layer
 {
+	friend struct ViewPort;
 public:
 	PELayer();
 	~PELayer() override;
@@ -72,6 +73,11 @@ private:
 	ImGuiID dock_id_right2 = 0;
 	ImGuiID dock_id_left_bottom = 0;
 	std::unordered_map<std::string, ImGuiID> dockPanelQueue;
+
+	Shr<Scene> scene = nullptr;
+
+	void CheckSceneChange();
+	Shr<Scene> new_scene = nullptr;
 
 	void MainMenuBar();
 	void CameraBar();

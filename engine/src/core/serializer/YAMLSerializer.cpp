@@ -45,6 +45,7 @@ namespace ppr
 		out << YAML::BeginMap;
 		out << YAML::Key << "Scene" << YAML::Value << scene->GetUUID();
 		out << YAML::Key << "Name" << YAML::Value << scene->GetName();
+		out << YAML::Key << "Path" << YAML::Value << scene->path.string();
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 		scene->registry.each([&](auto entityID)
 			{
@@ -124,6 +125,10 @@ namespace ppr
 
 		std::string scene_name = data["Name"].as<std::string>();
 		LOG_CORE_TRACE("Deserializing scene '{0}' from '{1}'", scene_name, filePath.string());
+
+		scene->name = scene_name;
+		if (data["Path"])
+			scene->path = data["Path"].as<std::filesystem::path>();
 
 		if (auto entities = data["Entities"])
 		{

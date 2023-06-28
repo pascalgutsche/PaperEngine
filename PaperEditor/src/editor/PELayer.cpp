@@ -11,9 +11,9 @@ PELayer::PELayer()
 	: viewport_size(glm::vec2()), viewport_bounds{glm::vec2(), glm::vec2()}, mouse_pos_viewport_relative(glm::ivec2())
 {
 	viewports.emplace_back("1");
-	viewports.emplace_back("2");
-	viewports.emplace_back("3");
-	viewports.emplace_back("4");
+	//viewports.emplace_back("2");
+	//viewports.emplace_back("3");
+	//viewports.emplace_back("4");
 }
 
 PELayer::~PELayer()
@@ -22,7 +22,7 @@ PELayer::~PELayer()
 
 void PELayer::OnAttach()
 {
-	scene = YAMLSerializer::SceneDeserialize("bunker.yaml");
+	// scene =
 	//Shr<Scene> scene1 = MakeShr<Scene>();
 	//ppr::UUID uuid = scene1->CreateEntity("lol").GetUUID();
 	//
@@ -50,6 +50,8 @@ void PELayer::Update(const float dt)
 	glm::vec2 viewportSize = viewport_bounds[1] - viewport_bounds[0];
 
 	mouse_pos_viewport_relative.y = viewportSize.y - mouse_pos_viewport_relative.y;
+
+	CheckSceneChange();
 }
 
 void PELayer::OnEvent(Event& event)
@@ -164,6 +166,7 @@ void PELayer::Imgui(const float dt)
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.WindowMenuButtonPosition = ImGuiDir_None;
 	style.FrameRounding = 12.0f;
+	style.GrabRounding = 12.0f;
 
 	static bool first = true;
 	ApplicationPanel(dt, first);
@@ -215,6 +218,31 @@ void PELayer::DockPanel(std::string name, ImGuiID dock_id)
 	}
 }
 
+void PELayer::CheckSceneChange()
+{
+	ImGui::ShowDemoWindow();
+	if (!new_scene) return;
+	if (!scene || !scene->IsDirty())
+	{
+		scene = new_scene;
+		new_scene = nullptr;
+		return;
+	}
+
+	ImGui::Begin("Issue #1453");
+	ImGui::BeginChild("test", ImVec2(100, 100));
+	if (ImGui::BeginPopupContextWindow())
+	{
+		if (ImGui::Selectable("Clear"))
+		{
+			ImGui::Button("lkfnsojgndfngrkosdjogreuinwioviej");
+		}
+		ImGui::EndPopup();
+	}
+	ImGui::EndChild();
+	ImGui::End();
+}
+
 void PELayer::MainMenuBar()
 {
 	if (ImGui::BeginMenuBar())
@@ -255,32 +283,28 @@ void PELayer::MainMenuBar()
 		{
 			if (ImGui::MenuItem("New Scene"))
 			{
-				//NewProject();
+				scene = MakeShr<Scene>();
 			}
 
 			if (ImGui::MenuItem("Open Scene"))
 			{
-				//ProjectManager::OpenFile("PaperEngine Project(*.peproj)\0 * .peproj\0");
-			}
-
-			ImGui::BeginDisabled();
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Save Project", "Ctrl+S"))
-			{
-				//SaveProject();
-			}
-
-			if (ImGui::MenuItem("Save Project As...", "Ctrl+Shift+S"))
-			{
-				//SaveProjectAs();
+				std::filesystem::path path = ProjectManager::OpenFile("");
+				//std::filesystem::path path = ProjectManager::OpenFile("PaperEngine Scene(*.pescene)\0 * .pescene\0");
+				if (!path.empty())
+					new_scene = YAMLSerializer::SceneDeserialize(path);
 			}
 
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("Exit"))
-				Application::GetInstance()->Exit();
-			ImGui::EndDisabled();
+			if (ImGui::MenuItem("Save Scene"))
+			{
+				//YAMLSerializer::SceneSerialize(scene->)
+			}
+
+			if (ImGui::MenuItem("Save Scene As..."))
+			{
+
+			}
 
 			ImGui::EndMenu();
 		}
@@ -500,11 +524,10 @@ static void displayText(std::vector<std::string>& filenames)
 
 void PELayer::AssetManagerPanel(const float dt, bool first)
 {
-	ImGui::ShowDemoWindow();
 	static float size = 120.0f;
 	static std::filesystem::path path = "assets/";
 
-	std::filesystem::path itemPath;
+	//std::filesystem::path itemPath;
 	bool itemClicked = false;
 
 	const char* name = "Asset Manager: ";
@@ -574,9 +597,16 @@ void PELayer::AssetManagerPanel(const float dt, bool first)
 					path = item.path();
 				else
 				{
-					itemPath = path.string() + "/" + item.path().filename().string();
+					//itemPath = path.string() + "/" + item.path().filename().string();
 					itemClicked = true;
 				}
+			}
+
+			if (ImGui::BeginDragDropSource() && !item.is_directory())
+			{
+				const wchar_t* item_path = item.path().c_str();
+				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
+				ImGui::EndDragDropSource();
 			}
 
 			ImGui::PopID();
@@ -592,7 +622,7 @@ void PELayer::AssetManagerPanel(const float dt, bool first)
 	
 	if (itemClicked)
 	{
-		LOG_TRACE(itemPath);
+		//LOG_TRACE(itemPath);
 	}
 
 	ImGui::End();
@@ -720,7 +750,8 @@ void ViewPort::Panel(PELayer* peLayer)
 	RenderCommand::Clear();
 	framebuffer->ClearAttachment(1, 0);
 
-	peLayer->scene->Render(camera);
+	if (peLayer->scene)
+		peLayer->scene->Render(camera);
 
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -743,6 +774,16 @@ void ViewPort::Panel(PELayer* peLayer)
 
 	uint32_t textureID = framebuffer->GetColorID(0);
 	ImGui::Image((void*)textureID, ImVec2(viewport_size.x, viewport_size.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+		{
+			const wchar_t* path = (const wchar_t*)payload->Data;
+			peLayer->new_scene = YAMLSerializer::SceneDeserialize(path);
+		}
+		ImGui::EndDragDropTarget();
+	}
 
 	ImGui::End();
 	ImGui::PopStyleVar();

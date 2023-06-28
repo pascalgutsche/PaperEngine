@@ -11,8 +11,8 @@ namespace ppr
 		GLFWFileDialog();
 		~GLFWFileDialog() override;
 
-		std::string OpenFile(std::string filter) override;
-		std::string SaveFile(std::string filter) override;
+		std::filesystem::path OpenFile(std::string filter) override;
+		std::filesystem::path SaveFile(std::string filter) override;
 	};
 }
 

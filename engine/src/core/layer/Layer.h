@@ -30,16 +30,6 @@ namespace ppr
 
 		bool IsAttached() const { return attached; }
 
-		void SetScene(const Shr<Scene>& scene) { this->scene = scene; }
-
-		template <class T>
-		T* GetScene()
-		{
-			T* tmpScene = dynamic_cast<T>(scene);
-			CORE_ASSERT(tmpScene, "this scene doesnt own this layer")
-				return tmpScene;
-		}
-
 		//std::vector<Entity*> GetEntitysByTag(std::initializer_list<std::string> tags);
 		//std::vector<Entity*> GetEntitysByTag(std::string tag);
 
@@ -58,7 +48,7 @@ namespace ppr
 		void RemoveUIObject(UIObject* object);
 
 		std::vector<UIObject*>& GetUIObjects();
-		Shr<Scene> scene = nullptr;
+		
 	protected:
 		std::string name;
 		bool overlay = false;

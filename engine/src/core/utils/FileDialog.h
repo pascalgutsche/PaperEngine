@@ -8,8 +8,8 @@ namespace ppr
 
 	    virtual ~FileDialog() = default;
 
-		virtual std::string OpenFile(std::string filter) = 0;
-		virtual std::string SaveFile(std::string filter) = 0;
+		virtual std::filesystem::path OpenFile(std::string filter) = 0;
+		virtual std::filesystem::path SaveFile(std::string filter) = 0;
 
 	    static Shr<FileDialog> Create();
 	};

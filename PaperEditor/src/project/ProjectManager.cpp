@@ -8,12 +8,12 @@ void ProjectManager::Init()
 	fileDialog = FileDialog::Create();
 }
 
-std::string ProjectManager::OpenFile(std::string filter)
+std::filesystem::path ProjectManager::OpenFile(std::string filter)
 {
 	return fileDialog->OpenFile(filter);
 }
 
-std::string ProjectManager::SaveFile(std::string filter)
+std::filesystem::path ProjectManager::SaveFile(std::string filter)
 {
 	return fileDialog->OpenFile(filter);
 }

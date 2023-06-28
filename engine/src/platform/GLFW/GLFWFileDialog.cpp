@@ -17,7 +17,7 @@ namespace ppr
 	{
 	}
 
-	std::string GLFWFileDialog::OpenFile(std::string filter)
+	std::filesystem::path GLFWFileDialog::OpenFile(std::string filter)
 	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
@@ -36,10 +36,10 @@ namespace ppr
 		if (GetOpenFileNameA(&ofn) == TRUE)
 			return ofn.lpstrFile;
 
-		return std::string();
+		return {};
 	}
 
-	std::string GLFWFileDialog::SaveFile(std::string filter)
+	std::filesystem::path GLFWFileDialog::SaveFile(std::string filter)
 	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
@@ -61,6 +61,6 @@ namespace ppr
 		if (GetSaveFileNameA(&ofn) == TRUE)
 			return ofn.lpstrFile;
 
-		return std::string();
+		return {};
 	}
 }

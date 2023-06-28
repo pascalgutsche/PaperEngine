@@ -18,16 +18,16 @@
 namespace ppr {
 
 	Scene::Scene()
-		: uuid(UUID()), name("[Scene]") { }
+		: uuid(UUID()), name("[Scene]"), is_dirty(true) { }
 
 	Scene::Scene(const UUID& uuid)
-		: uuid(uuid), name("[Scene]") { }
+		: uuid(uuid), name("[Scene]"), is_dirty(true) { }
 
 	Scene::Scene(const std::string& name)
-		: uuid(UUID()), name(name) { }
+		: uuid(UUID()), name(name), is_dirty(true) { }
 
 	Scene::Scene(const UUID& uuid, const std::string& name)
-		: uuid(uuid), name(name) { }
+		: uuid(uuid), name(name), is_dirty(true) { }
 
 	Scene::~Scene()
 	{
@@ -114,30 +114,34 @@ namespace ppr {
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
+		is_dirty = true;
 		return CreateEntity(UUID(), name);
 	}
 
 	Entity Scene::CreateEntity(const UUID& id, const std::string& name)
 	{
+		is_dirty = true;
 		Entity entity(registry.create(), id, name, this);
-		entityMap[id] = entity;
+		entity_map[id] = entity;
 
 		return entity;
 	}
 
 	bool Scene::DestroyEntity(Entity entity)
 	{
-		if (!entityMap.contains(entity.GetUUID())) return false;
+		if (!entity_map.contains(entity.GetUUID())) return false;
 
-		entityMap.erase(entity.GetUUID());
+		is_dirty = true;
+
+		entity_map.erase(entity.GetUUID());
 		registry.destroy(entity);
 		return true;
 	}
 
 	Entity Scene::GetEntity(const UUID& id)
 	{
-		CORE_ASSERT(entityMap.contains(id), "Entity does not exists");
+		CORE_ASSERT(entity_map.contains(id), "Entity does not exists");
 		
-		return {entityMap.at(id), this};
+		return {entity_map.at(id), this};
 	}
 }

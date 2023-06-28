@@ -123,6 +123,22 @@ namespace YAML
 	};
 
 	template <>
+	struct convert<std::filesystem::path> {
+		static Node encode(const std::filesystem::path& rhs)
+		{
+			Node node;
+			node.push_back(rhs.string());
+			return node;
+		}
+
+		static bool decode(const Node& node, std::filesystem::path& rhs)
+		{
+			rhs = node[0].as<std::string>();
+			return true;
+		}
+	};
+
+	template <>
 	struct convert<std::array<glm::vec2, 4>> {
 		static Node encode(const std::array<glm::vec2, 4>& rhs)
 		{

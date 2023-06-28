@@ -36,14 +36,21 @@ namespace ppr {
         std::string GetName() const { return name; }
 
         auto& Registry() { return registry; }
-        auto& EntityMap() { return entityMap; }
-        
+        auto& EntityMap() { return entity_map; }
+
+        bool IsDirty() const { return is_dirty; }
+        void SetClean() { is_dirty = false; }
+
     private:
         UUID uuid;
         std::string name;
 
+        bool is_dirty = false;
+
+        std::filesystem::path path;
+
         entt::registry registry;
-        std::unordered_map<UUID, entt::entity> entityMap;
+        std::unordered_map<UUID, entt::entity> entity_map;
     };
 
 }
