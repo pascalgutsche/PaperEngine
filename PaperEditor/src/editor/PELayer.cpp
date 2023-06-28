@@ -229,17 +229,31 @@ void PELayer::CheckSceneChange()
 		return;
 	}
 
-	ImGui::Begin("Issue #1453");
-	ImGui::BeginChild("test", ImVec2(100, 100));
-	if (ImGui::BeginPopupContextWindow())
+	const ImGuiIO& io = ImGui::GetIO();
+	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f + Application::GetWindow()->GetPosition().x, io.DisplaySize.y * 0.5f + Application::GetWindow()->GetPosition().y), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+	ImGui::Begin("UNSAVED SCENE", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::TextWrapped("Do you want to save the current scene?");
+	if (ImGui::Button("Yes"))
 	{
-		if (ImGui::Selectable("Clear"))
+		if (scene->GetPath().empty())
 		{
-			ImGui::Button("lkfnsojgndfngrkosdjogreuinwioviej");
+			std::filesystem::path filePath = ProjectManager::SaveFile("");
+			if (!filePath.empty())
+			{
+				scene->SetPath(filePath);
+				YAMLSerializer::SceneSerialize(filePath, scene);
+				scene->SetClean();
+			}
 		}
-		ImGui::EndPopup();
+		scene = new_scene;
+		new_scene = nullptr;
 	}
-	ImGui::EndChild();
+	ImGui::SameLine();
+	if (ImGui::Button("No"))
+	{
+		scene = new_scene;
+		new_scene = nullptr;
+	}
 	ImGui::End();
 }
 

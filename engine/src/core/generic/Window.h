@@ -32,6 +32,8 @@ namespace ppr {
         virtual unsigned int GetWidth() const = 0;
         virtual unsigned int GetHeight() const = 0;
 
+        virtual glm::ivec2 GetPosition() const = 0;
+
         virtual float GetTime() const = 0;
 
         virtual void SetEventCallback(const EventCallbackFunction& callback_function) = 0;

@@ -3,6 +3,7 @@
 #ifdef CORE_PLATFORM_WINDOWS
 #ifdef INCLUDE_MAIN
 
+
 extern ppr::Application* ppr::CreateApplication();
 
 int main(int argc, char ** argv) 

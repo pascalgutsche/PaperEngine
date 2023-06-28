@@ -39,8 +39,7 @@ project "PaperEditor"
 
 	defines 
 	{
-		"_CRT_SECURE_NO_WARNINGS",
-		"CORE_ENABLE_ASSERTS"
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	links
@@ -66,7 +65,7 @@ project "PaperEditor"
 		}
 
 	filter "configurations:Debug"
-		defines "BUILD_DEBUG"
+		defines {"BUILD_DEBUG", "CORE_ENABLE_ASSERTS"}
 		symbols "On"
 
 	filter "configurations:Release"

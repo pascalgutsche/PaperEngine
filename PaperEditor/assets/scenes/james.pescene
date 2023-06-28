@@ -1,7 +1,7 @@
 Scene:
   - 2d20c733-b833-4f1b-bced-ef0e2365ec9d
 Name: "[Scene]"
-Path: D:\dev\C++\PaperEngine\PaperEditor\assets\scenes\bunker.pescene
+Path: assets\scenes\james.pescene
 Entities:
   - Components:
       DataComponent:
@@ -12,7 +12,7 @@ Entities:
           []
       SpriteComponent:
         Color: [1, 1, 1, 1]
-        TexturePath: assets/textures/max.jpg
+        TexturePath: assets/textures/james_webb.png
         TilingFactor: 1
         TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
         RegisterAlphaPixels: false

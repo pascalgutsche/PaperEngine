@@ -40,7 +40,6 @@ project "engine"
 	defines 
 	{
 		"_CRT_SECURE_NO_WARNINGS",
-		"CORE_ENABLE_ASSERTS",
 		"GLFW_INCLUDE_NONE"
 	}
 
@@ -77,7 +76,7 @@ project "engine"
 		}
 
 	filter "configurations:Debug"
-		defines "BUILD_DEBUG"
+		defines {"BUILD_DEBUG", "CORE_ENABLE_ASSERTS"}
 		symbols "On"
 
 	filter "configurations:Release"

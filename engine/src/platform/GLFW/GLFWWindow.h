@@ -22,6 +22,8 @@ namespace ppr
         unsigned int GetWidth() const override { return windowData.width; }
         unsigned int GetHeight() const override { return windowData.height; }
 
+        glm::ivec2 GetPosition() const override;
+
         float GetTime() const override;
 
         void SetEventCallback(const EventCallbackFunction& callback_function) override { windowData.callback = callback_function; }

@@ -128,7 +128,7 @@ namespace ppr
 
 		scene->name = scene_name;
 		if (data["Path"])
-			scene->path = data["Path"].as<std::filesystem::path>();
+			scene->path = data["Path"].as<std::string>();
 
 		if (auto entities = data["Entities"])
 		{
@@ -165,7 +165,7 @@ namespace ppr
 					deserialized_entity.AddComponent<TextComponent>().Deserialize(text_component);
 			}
 		}
-
+		scene->SetClean();
 		return scene;
 	}
 }

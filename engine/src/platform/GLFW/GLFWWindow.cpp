@@ -177,6 +177,13 @@ namespace ppr
         glfwTerminate();
     }
 
+    glm::ivec2 GLFWWindow::GetPosition() const
+    {
+        int xpos, ypos;
+        glfwGetWindowPos(glfwWindow, &xpos, &ypos);
+        return { xpos, ypos };
+    }
+
     float GLFWWindow::GetTime() const
     {
         return (float)glfwGetTime();
