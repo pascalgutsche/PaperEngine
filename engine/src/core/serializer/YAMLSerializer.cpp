@@ -165,7 +165,7 @@ namespace ppr
 					deserialized_entity.AddComponent<TextComponent>().Deserialize(text_component);
 			}
 		}
-		scene->SetClean();
+		//scene->SetClean();
 		return scene;
 	}
 }

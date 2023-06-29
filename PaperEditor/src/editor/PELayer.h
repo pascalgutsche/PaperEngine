@@ -3,37 +3,6 @@
 
 class PELayer;
 
-struct ViewPort
-{
-public:
-	Shr<EditorCamera> camera;
-	Shr<Framebuffer> framebuffer;
-
-	std::string name;
-
-	ViewPort(const std::string& name)
-		: camera(MakeShr<EditorCamera>()), name(name)
-	{
-		FramebufferSpecification spec;
-		spec.attachment = { FramebufferTexFormat::RGBA8, FramebufferTexFormat::RED_INTEGER, FramebufferTexFormat::Depth };
-		spec.width = Application::GetWindow()->GetWidth();
-		spec.height = Application::GetWindow()->GetHeight();
-		framebuffer = Framebuffer::CreateBuffer(spec);
-	}
-
-	void Panel(PELayer* peLayer);
-
-	glm::vec2 viewport_size;
-	glm::vec2 viewport_bounds[2];
-
-	bool viewport_focused = false;
-	bool viewport_hovered = false;
-
-	bool last_viewport_focused = false;
-
-	bool open = true;
-};
-
 class PELayer : public Layer
 {
 	friend struct ViewPort;
@@ -80,12 +49,9 @@ private:
 	Shr<Scene> new_scene = nullptr;
 
 	void MainMenuBar();
-	void CameraBar();
-	void ApplicationPanel(const float dt, bool first);
-	void AssetManagerPanel(const float dt, bool first);
-	void LayerPanel(const float dt, bool first);
+	void ApplicationPanel(bool first);
+	void AssetManagerPanel(bool first);
 	void CameraPanel(bool first, ImGuiWindowFlags& dock_flags);
-	void InspectorPanel(const float dt, bool first);
 
 	glm::vec2 viewport_size;
 	glm::vec2 viewport_bounds[2];

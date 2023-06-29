@@ -1,10 +1,9 @@
 #include "Editor.h"
 #include "PELayer.h"
 
-#include <boost/mpl/pair.hpp>
-
 #include "project/ProjectManager.h"
 
+#include "ViewPort.h"
 
 
 PELayer::PELayer()
@@ -169,18 +168,13 @@ void PELayer::Imgui(const float dt)
 	style.GrabRounding = 12.0f;
 
 	static bool first = true;
-	ApplicationPanel(dt, first);
-	AssetManagerPanel(dt, first);
-	//LayerPanel(dt, first);
+	ApplicationPanel(first);
+	AssetManagerPanel(first);
 	CameraPanel(first, dockflags);
 	for (auto& port : viewports)
 		port.Panel(this);
-	//InspectorPanel(dt, first);
 
-	if (first) {
-		first = false;
-		ImGui::SetWindowFocus("ViewPort: ");
-	}
+	first = false;
 }
 
 void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
@@ -230,6 +224,7 @@ void PELayer::CheckSceneChange()
 	}
 
 	const ImGuiIO& io = ImGui::GetIO();
+	ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f), ImGuiCond_Always);
 	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f + Application::GetWindow()->GetPosition().x, io.DisplaySize.y * 0.5f + Application::GetWindow()->GetPosition().y), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 	ImGui::Begin("UNSAVED SCENE", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 	ImGui::TextWrapped("Do you want to save the current scene?");
@@ -359,20 +354,10 @@ void PELayer::MainMenuBar()
 	}
 }
 
-void PELayer::CameraBar()
+void PELayer::ApplicationPanel(bool first)
 {
-	
-	if (ImGui::BeginMenuBar())
-	{
+	const float dt = Application::GetDT();
 
-		
-
-		ImGui::EndMenuBar();
-	}
-}
-
-void PELayer::ApplicationPanel(const float dt, bool first)
-{
 	const char* name = "Application: ";
 	std::stringstream stream;
 	if (first)
@@ -499,309 +484,80 @@ void PELayer::ApplicationPanel(const float dt, bool first)
 	ImGui::End();
 }
 
-static bool displayIcon(const std::filesystem::directory_entry& item, const float size)
-{
-	if (item.is_directory())
-	{
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		if (ImGui::ImageButton((void*)DataPool::GetTexture("folder_icon.png")->GetID(), ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0))
-		{
-			ImGui::PopStyleColor();
-			return true;
-		}
-		ImGui::PopStyleColor();
-	}
-	else
-	{
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		if (ImGui::ImageButton((void*)DataPool::GetTexture("file_icon.png")->GetID(), ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0))
-		{
-			ImGui::PopStyleColor();
-			return true;
-		}
-		ImGui::PopStyleColor();
-	}
-	return false;
-}
 
-static void displayText(std::vector<std::string>& filenames)
-{
-	ImGui::TableNextRow();
-	int i = 0;
-	for (std::string name : filenames)
-	{
-		ImGui::TableSetColumnIndex(i);
-		ImGui::TextWrapped(filenames.at(i).c_str());
-		i++;
-	}
-}
 
-void PELayer::AssetManagerPanel(const float dt, bool first)
-{
-	static float size = 120.0f;
-	static std::filesystem::path path = "assets/";
-
-	//std::filesystem::path itemPath;
-	bool itemClicked = false;
-
-	const char* name = "Asset Manager: ";
-	std::stringstream stream;
-
-	if (first)
-		DockPanel(name, GetDockspaceBottom());
-
-	const ImGuiTableFlags flags = ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX;
-
-	ImGui::Begin(name);
-	std::stringstream ss;
-	for (const auto& pathPart : path)
-	{
-		if (pathPart.string().empty()) continue;
-		ss << pathPart.string() << "/";
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.5, 3));
-		if (ImGui::Button(pathPart.filename().string().c_str()))
-		{
-			path = ss.str();
-			ImGui::PopStyleColor();
-			ImGui::PopStyleVar();
-			break;
-		}
-		ImGui::PopStyleColor();
-		ImGui::PopStyleVar();
-		ImGui::SameLine();
-		ImGui::Text("/");
-		ImGui::SameLine();
-	}
-	ImGui::Text("");
-
-	int cols = size > (ImGui::GetContentRegionAvail().x) ? 1 : ((int)ImGui::GetContentRegionAvail().x) / size;
-	if (cols > 64) cols = 64;
-
-	if (ImGui::BeginTable("dirTable", cols, flags, ImVec2(cols*size, 0.0f)))
-	{
-		ImGui::TableSetupColumn("dirCol");
-
-		ImGui::TableNextRow();
-		std::vector<std::string> filenames;
-
-		while (!exists(path))
-		{
-			path = path.parent_path();
-			if (path == "assets") break;
-		}
-		int i = 0;
-		for (const auto item : std::filesystem::directory_iterator(path))
-		{
-			if (i >= cols)
-			{
-				i = 0;
-
-				displayText(filenames);
-				ImGui::TableNextRow();
-				filenames.clear();
-			}
-			ImGui::TableSetColumnIndex(i);
-
-			ImGui::PushID(item.path().filename().string().c_str());
-
-			if (displayIcon(item, size))
-			{
-				if (item.is_directory())
-					path = item.path();
-				else
-				{
-					//itemPath = path.string() + "/" + item.path().filename().string();
-					itemClicked = true;
-				}
-			}
-
-			if (ImGui::BeginDragDropSource() && !item.is_directory())
-			{
-				const wchar_t* item_path = item.path().c_str();
-				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
-				ImGui::EndDragDropSource();
-			}
-
-			ImGui::PopID();
-
-			filenames.push_back(item.path().filename().string());
-			
-			i++;
-		}
-
-		displayText(filenames);
-		ImGui::EndTable();
-	}
-	
-	if (itemClicked)
-	{
-		//LOG_TRACE(itemPath);
-	}
-
-	ImGui::End();
-}
-
-void PELayer::LayerPanel(const float dt, bool first)
-{
-	const char* name = "Layers: ";
-	std::stringstream stream;
-
-	if (first)
-		DockPanel(name, GetDockspaceLeft());
-
-	ImGui::Begin(name);
-
-	//for (Layer* layer : Application::GetLayerStack())
-	//{
-	//	if (layer == &Application::GetImGuiLayer()) continue;
-	//	std::vector<Entity*> gameobjects = layer->GetEntitys();
-	//	std::vector<Entity*> entities = Application::GetActiveScene()->GetEntitys();
-	//	std::vector<UIObject*> uiObjects = layer->GetUIObjects();
-	//
-	//	if (ImGui::TreeNode(layer->GetName().c_str()))
-	//	{
-	//		if (ImGui::TreeNode("UIObjects: "))
-	//		{
-	//			for (int i = 0; i < uiObjects.size(); i++)
-	//			{
-	//				//if (ImGui::Selectable((uiObjects[i]->GetName() + std::string("##" + std::to_string(i))).c_str(), uiObjects[i] == selectedObject)) {
-	//				//	//selectedObject = uiObjects[i];
-	//				//}
-	//			}
-	//			ImGui::TreePop();
-	//		}
-	//		if (ImGui::TreeNode("Entitys: "))
-	//		{
-	//			int b = 0;
-	//			for (int i = 0; i < gameobjects.size(); i++)
-	//			{
-	//				if (ImGui::Selectable((gameobjects[i]->GetName() + std::string(" (ObjectID = " + gameobjects[i]->GetUUID().toString() + std::string(")")) + std::string("##" + std::to_string(i))).c_str(), gameobjects[i] == selectedObject)) {
-	//					selectedObject = gameobjects[i];
-	//				}
-	//				b = i;
-	//			}
-	//			for (int i = 0; i < entities.size(); i++)
-	//			{
-	//				if (ImGui::Selectable((entities[i]->GetName() + std::string(" (ObjectID = " + entities[i]->GetUUID().toString() + std::string(")")) + std::string("##" + std::to_string(i + b))).c_str(), entities[i] == selectedObject)) {
-	//					selectedObject = entities[i];
-	//				}
-	//			}
-	//			ImGui::TreePop();
-	//		}
-	//
-	//		ImGui::Text("");
-	//		ImGui::TreePop();
-	//	}
-	//}
-
-	ImGui::End();
-}
+//void PELayer::LayerPanel(const float dt, bool first)
+//{
+//	const char* name = "Layers: ";
+//	std::stringstream stream;
+//
+//	if (first)
+//		DockPanel(name, GetDockspaceLeft());
+//
+//	ImGui::Begin(name);
+//
+//	//for (Layer* layer : Application::GetLayerStack())
+//	//{
+//	//	if (layer == &Application::GetImGuiLayer()) continue;
+//	//	std::vector<Entity*> gameobjects = layer->GetEntitys();
+//	//	std::vector<Entity*> entities = Application::GetActiveScene()->GetEntitys();
+//	//	std::vector<UIObject*> uiObjects = layer->GetUIObjects();
+//	//
+//	//	if (ImGui::TreeNode(layer->GetName().c_str()))
+//	//	{
+//	//		if (ImGui::TreeNode("UIObjects: "))
+//	//		{
+//	//			for (int i = 0; i < uiObjects.size(); i++)
+//	//			{
+//	//				//if (ImGui::Selectable((uiObjects[i]->GetName() + std::string("##" + std::to_string(i))).c_str(), uiObjects[i] == selectedObject)) {
+//	//				//	//selectedObject = uiObjects[i];
+//	//				//}
+//	//			}
+//	//			ImGui::TreePop();
+//	//		}
+//	//		if (ImGui::TreeNode("Entitys: "))
+//	//		{
+//	//			int b = 0;
+//	//			for (int i = 0; i < gameobjects.size(); i++)
+//	//			{
+//	//				if (ImGui::Selectable((gameobjects[i]->GetName() + std::string(" (ObjectID = " + gameobjects[i]->GetUUID().toString() + std::string(")")) + std::string("##" + std::to_string(i))).c_str(), gameobjects[i] == selectedObject)) {
+//	//					selectedObject = gameobjects[i];
+//	//				}
+//	//				b = i;
+//	//			}
+//	//			for (int i = 0; i < entities.size(); i++)
+//	//			{
+//	//				if (ImGui::Selectable((entities[i]->GetName() + std::string(" (ObjectID = " + entities[i]->GetUUID().toString() + std::string(")")) + std::string("##" + std::to_string(i + b))).c_str(), entities[i] == selectedObject)) {
+//	//					selectedObject = entities[i];
+//	//				}
+//	//			}
+//	//			ImGui::TreePop();
+//	//		}
+//	//
+//	//		ImGui::Text("");
+//	//		ImGui::TreePop();
+//	//	}
+//	//}
+//
+//	ImGui::End();
+//}
 
 
 
-void PELayer::InspectorPanel(const float dt, bool first) {
-	const char* name = "Inspector: ";
-	std::stringstream stream;
-
-	if (first)
-		DockPanel(name, GetDockspaceLeftBottom());
-
-	//ImGui::Begin(name);
-	//if (dynamic_cast<Entity*>(selectedObject) != nullptr) {
-	//	dynamic_cast<Entity*>(selectedObject)->Imgui(dt);
-	//}
-	//ImGui::End();
-}
-
-static void CameraMovement(const Shr<EditorCamera>& camera)
-{
-	const float dt = Application::GetDT();
-	if (Input::IsKeyPressed(KEY_W))
-	{
-		camera->position.x += 5 * dt * camera->GetFront().x;
-		camera->position.z += 5 * dt * camera->GetFront().z;
-	}
-	if (Input::IsKeyPressed(KEY_A))
-	{
-		camera->position.x += 5 * dt * camera->GetFront().z;
-		camera->position.z -= 5 * dt * camera->GetFront().x;
-
-	}
-	if (Input::IsKeyPressed(KEY_S))
-	{
-		camera->position.x -= 5 * dt * camera->GetFront().x;
-		camera->position.z -= 5 * dt * camera->GetFront().z;
-
-	}
-	if (Input::IsKeyPressed(KEY_D))
-	{
-		camera->position.x -= 5 * dt * camera->GetFront().z;
-		camera->position.z += 5 * dt * camera->GetFront().x;
-
-	}
-	if (Input::IsKeyPressed(KEY_E))
-		camera->position.y += 5 * dt;
-	if (Input::IsKeyPressed(KEY_Q))
-		camera->position.y -= 5 * dt;
-}
-
-void ViewPort::Panel(PELayer* peLayer)
-{
-	if (!open) return;
-	if (FramebufferSpecification spec = framebuffer->GetSpecification();
-		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
-		(spec.width != viewport_size.x || spec.height != viewport_size.y))
-	{
-		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
-
-		camera->aspect_ratio = viewport_size.x / viewport_size.y;
-	}
-
-	framebuffer->Bind();
-
-	RenderCommand::ClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
-	RenderCommand::Clear();
-	framebuffer->ClearAttachment(1, 0);
-
-	if (peLayer->scene)
-		peLayer->scene->Render(camera);
+//void PELayer::InspectorPanel(const float dt, bool first) {
+//	const char* name = "Inspector: ";
+//	std::stringstream stream;
+//
+//	if (first)
+//		DockPanel(name, GetDockspaceLeftBottom());
+//
+//	//ImGui::Begin(name);
+//	//if (dynamic_cast<Entity*>(selectedObject) != nullptr) {
+//	//	dynamic_cast<Entity*>(selectedObject)->Imgui(dt);
+//	//}
+//	//ImGui::End();
+//}
 
 
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(name.c_str(), &open, ImGuiWindowFlags_NoCollapse);
-
-	//viewport_focused = ImGui::IsWindowFocused();
-	viewport_hovered = ImGui::IsWindowHovered();
-
-	if (viewport_focused)
-		CameraMovement(camera);
-
-	auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
-	auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
-	auto viewportOffset = ImGui::GetWindowPos();
-	viewport_bounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
-	viewport_bounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
-
-	ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
-	viewport_size = { viewport_panel_size.x, viewport_panel_size.y };
-
-	uint32_t textureID = framebuffer->GetColorID(0);
-	ImGui::Image((void*)textureID, ImVec2(viewport_size.x, viewport_size.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-	if (ImGui::BeginDragDropTarget())
-	{
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-		{
-			const wchar_t* path = (const wchar_t*)payload->Data;
-			peLayer->new_scene = YAMLSerializer::SceneDeserialize(path);
-		}
-		ImGui::EndDragDropTarget();
-	}
-
-	ImGui::End();
-	ImGui::PopStyleVar();
 
 
-	framebuffer->Unbind();
-}
