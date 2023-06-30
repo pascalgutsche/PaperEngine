@@ -7,6 +7,8 @@
 
 #include "ViewPort.h"
 
+#include "ImGuizmo/ImGuizmo.h"
+
 
 PELayer::PELayer()
 {
@@ -37,6 +39,7 @@ void PELayer::OnAttach()
 	//scene1->GetEntity(uuid).AddTag({ "A", "B", "C", "AA", "aB", "Ac" });
 	//
 	//YAMLSerializer::SceneSerialize("bunker.yaml", scene1);
+
 }
 
 void PELayer::OnDetach()
@@ -102,6 +105,59 @@ void PELayer::OnEvent(Event& event)
 		}
 		return false;
 	});
+	dispatcher.dispatch<KeyPressedEvent>([this](KeyPressedEvent& e)
+		{
+
+			// Shortcuts
+			if (e.getRepeated())
+				return false;
+
+			bool control = Input::IsKeyPressed(KEY_LEFT_CONTROL) || Input::IsKeyPressed(KEY_RIGHT_CONTROL);
+			bool shift = Input::IsKeyPressed(KEY_LEFT_SHIFT) || Input::IsKeyPressed(KEY_RIGHT_SHIFT);
+
+			switch (e.getKeyCode())
+			{
+				// Gizmos
+				case KEY_Q:
+				{
+					if (!ImGuizmo::IsUsing())
+						gizmo_type = -1;
+					break;
+				}
+				case KEY_W:
+				{
+					if (!ImGuizmo::IsUsing())
+						gizmo_type = ImGuizmo::OPERATION::TRANSLATE;
+					break;
+				}
+				case KEY_E:
+				{
+					if (!ImGuizmo::IsUsing())
+						gizmo_type = ImGuizmo::OPERATION::ROTATE;
+					break;
+				}
+				case KEY_R:
+				{
+					
+					if (!ImGuizmo::IsUsing())
+						gizmo_type = ImGuizmo::OPERATION::SCALE;
+					break;
+				}
+				case KEY_DELETE:
+				{
+					if (active_entity)
+					{
+						scene->DestroyEntity(active_entity);
+						active_entity = Entity();
+						hovered_entity = Entity();
+					}
+					break;
+				}
+			}
+
+			return false;
+
+		});
 	
 
 	//if (!viewport_focused)

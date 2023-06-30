@@ -27,6 +27,7 @@ project "PaperEditor"
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.IMPLOT}",
+		"%{IncludeDir.IMGUIZMO}",
 		"%{IncludeDir.MINIAUDIO}",
 		"%{IncludeDir.MSDFGEN}",
 		"%{IncludeDir.MSDF_ATLAS_GEN}",

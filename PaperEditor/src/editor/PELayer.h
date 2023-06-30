@@ -42,6 +42,11 @@ public:
 	ImGuiID GetDockspaceRight2() const { return dock_id_right2; }
 	ImGuiID GetDockspaceLeftBottom() const { return dock_id_left_bottom; }
 
+	Entity hovered_entity;
+	Entity active_entity;
+
+	int GetGuizmoType() const { return gizmo_type; }
+
 private:
 	ImGuiID dockspace_id = 0;
 	ImGuiID dock_id_main = 0;
@@ -75,9 +80,8 @@ private:
 
 	void ViewPortDebugging();
 
-	Entity hovered_entity;
-	Entity active_entity;
 
+	int gizmo_type = -1;
 
 	CameraModes camera_mode = Single;
 	bool camera_mode_changed = true;
