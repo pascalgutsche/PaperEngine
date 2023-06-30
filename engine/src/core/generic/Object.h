@@ -13,13 +13,13 @@ namespace ppr
 		void SetName(std::string name);
 
 		std::string GetName();
-		core_id GetCoreID() const;
+		entity_id GetCoreID() const;
 
 		Transform transform;
 
 	protected:
 		std::string name;
-		core_id coreID;
+		entity_id coreID;
 	};
 }
 

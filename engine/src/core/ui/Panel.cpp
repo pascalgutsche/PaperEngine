@@ -12,7 +12,7 @@ namespace ppr
 	{
 	}
 
-	void Panel::Render(core_id idToRender)
+	void Panel::Render(entity_id idToRender)
 	{
 		//EdgeRenderData data;
 		//data.transform = { globalPos, globalScale, transform.rotation };

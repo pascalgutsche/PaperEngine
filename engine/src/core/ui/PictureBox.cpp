@@ -22,7 +22,7 @@ namespace ppr
 	{
 	}
 
-	void PictureBox::Render(core_id idToRender)
+	void PictureBox::Render(entity_id idToRender)
 	{
 		//EdgeRenderData data;
 		//data.transform = { globalPos, globalScale, transform.rotation };

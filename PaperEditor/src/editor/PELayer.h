@@ -33,12 +33,6 @@ public:
 	void Imgui(const float dt) override;
 
 	void DockPanel(std::string name, ImGuiID dock_id);
-	
-	glm::vec2 GetViewportSize() const { return viewport_size; };
-	glm::ivec2 GetMousePosViewportRelative() const { return mouse_pos_viewport_relative; }
-	bool IsMouseInsideViewport() const { return mouse_pos_viewport_relative.x >= 0 && mouse_pos_viewport_relative.y >= 0 && mouse_pos_viewport_relative.x < viewport_size.x&& mouse_pos_viewport_relative.y < viewport_size.y; }
-	bool IsViewportHovered() const { return viewport_hovered; }
-	bool IsCameraControlModeActive() const { return camera_control_mode; }
 
 	ImGuiID GetDockspaceMain() const { return dock_id_main; }
 	ImGuiID GetDockspaceTop() const { return dock_id_top; }
@@ -64,6 +58,10 @@ private:
 	void CheckSceneChange();
 	Shr<Scene> new_scene = nullptr;
 
+	void MousePicking();
+
+	//PANELS
+
 	void MainMenuBar();
 	void ApplicationPanel();
 	void AssetManagerPanel();
@@ -75,14 +73,10 @@ private:
 	void DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size);
 	void EnableCamera(CameraModes mode);
 
-	glm::vec2 viewport_size;
-	glm::vec2 viewport_bounds[2];
+	void ViewPortDebugging();
 
-	bool viewport_focused = false, viewport_hovered = false;
-
-	bool camera_control_mode = false;
-
-	glm::ivec2 mouse_pos_viewport_relative;
+	Entity hovered_entity;
+	Entity active_entity;
 
 
 	CameraModes camera_mode = Single;

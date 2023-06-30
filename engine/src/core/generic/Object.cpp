@@ -7,12 +7,12 @@ namespace ppr
 	Object::Object(std::string name, const Transform& transform)
 		: transform(transform), name(name)
 	{
-		coreID = Core::RequestID(this);
+		//coreID = Core::RequestID(this);
 	}
 
 	Object::~Object()
 	{
-		Core::AddToDelete(coreID);
+		//Core::AddToDelete(coreID);
 	}
 
 	void Object::SetName(const std::string name)
@@ -25,7 +25,7 @@ namespace ppr
 		return name;
 	}
 
-	core_id Object::GetCoreID() const
+	entity_id Object::GetCoreID() const
 	{
 		return coreID;
 	}

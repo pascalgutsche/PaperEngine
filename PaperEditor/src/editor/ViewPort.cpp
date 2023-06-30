@@ -50,7 +50,7 @@ void ViewPort::Panel(PELayer* peLayer)
 
 	RenderCommand::ClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	RenderCommand::Clear();
-	framebuffer->ClearAttachment(1, 0);
+	framebuffer->ClearAttachment(1, -1);
 
 	if (peLayer->scene)
 		peLayer->scene->Render(camera);
@@ -64,6 +64,8 @@ void ViewPort::Panel(PELayer* peLayer)
 
 	if (viewport_focused)
 		CameraMovement(camera);
+
+	viewport_pos_abs = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
 
 	auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 	auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();

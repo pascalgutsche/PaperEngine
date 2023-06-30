@@ -295,7 +295,7 @@ namespace ppr {
             data.cubeVertexBufferPtr->texCoords = renderData.texCoords[i % 4];
             data.cubeVertexBufferPtr->tilingFactor = renderData.tilingFactor;
             data.cubeVertexBufferPtr->texIndex = texIndex;
-            data.cubeVertexBufferPtr->coreID = renderData.coreID;
+            data.cubeVertexBufferPtr->coreID = renderData.entity_id;
             data.cubeVertexBufferPtr++;
 
             RenderCommand::GetStats().vertexCount++;

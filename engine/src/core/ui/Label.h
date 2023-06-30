@@ -11,7 +11,7 @@ namespace ppr
 		Label(std::string text, glm::vec4 color, const Transform& transform, const Shr<Font>& font, std::string name = "Label");
 		~Label() override;
 
-		void Render(core_id idToRender) override;
+		void Render(entity_id idToRender) override;
 
 		std::string text;
 	private:

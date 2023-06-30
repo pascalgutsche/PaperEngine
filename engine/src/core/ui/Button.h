@@ -15,7 +15,7 @@ namespace ppr
 		Button(glm::vec4 color, const Transform& transform, Type type, const ButtonEventCallbackFunction& buttonEventFunction, std::string name = "Button");
 		~Button() override;
 
-		void Render(core_id idToRender) override;
+		void Render(entity_id idToRender) override;
 
 	private:
 		Type type;

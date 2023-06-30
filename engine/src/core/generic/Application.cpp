@@ -23,7 +23,7 @@ namespace ppr {
 		CORE_ASSERT(!instance, "application is already instanced!");
 		instance = this;
 
-		Core::Init();
+		//Core::Init();
 
 		window = Window::Create(props);
 		SetEventCallback(BIND_EVENT_FN(Application::OnEvent));

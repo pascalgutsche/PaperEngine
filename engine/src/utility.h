@@ -40,5 +40,5 @@ namespace ppr {
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
-	using core_id = uint32_t;
+	using entity_id = uint32_t;
 }

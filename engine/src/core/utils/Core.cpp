@@ -2,9 +2,9 @@
 
 #include "Core.h"
 
+#if 0
 namespace ppr
 {
-	entt::registry Core::registry;
 	void Core::Init()
 	{
 		CORE_ASSERT(!initialized, "Core already initialized");
@@ -15,7 +15,7 @@ namespace ppr
 		registry = entt::registry();
 	}
 
-	core_id Core::RequestID(Object* object)
+	entity_id Core::RequestID(Object* object)
 	{
 		CORE_ASSERT(initialized, "Core not initialized");
 		uint32_t id = leastIDavailable;
@@ -24,10 +24,10 @@ namespace ppr
 		return id;
 	}
 
-	void Core::DeleteID(core_id id)
+	void Core::DeleteID(entity_id id)
 	{
 		CORE_ASSERT(initialized, "Core not initialized");
-		std::unordered_map<core_id, Object*>::iterator it = IDinUse.find(id);
+		std::unordered_map<entity_id, Object*>::iterator it = IDinUse.find(id);
 		if (it == IDinUse.end())
 		{
 			CORE_ASSERT(false, "ID does not exist");
@@ -37,18 +37,18 @@ namespace ppr
 		if (id < leastIDavailable) leastIDavailable = id;
 	}
 
-	bool Core::IsDeleted(core_id id)
+	bool Core::IsDeleted(entity_id id)
 	{
 		return std::find(deletedIDs.begin(), deletedIDs.end(), id) != deletedIDs.end();
 	}
 
-	void Core::AddToDelete(core_id id)
+	void Core::AddToDelete(entity_id id)
 	{
 		deletedIDs.push_back(id);
 	}
 
 	//TODO: ERROR HERE
-	Object* Core::GetObjectByID(core_id id)
+	Object* Core::GetObjectByID(entity_id id)
 	{
 		CORE_ASSERT(id > 0, "invalid ID");
 		if (IDinUse.find(id) != IDinUse.end()) {
@@ -63,3 +63,4 @@ namespace ppr
 		return registry;
 	}
 }
+#endif

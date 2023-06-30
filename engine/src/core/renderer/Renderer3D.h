@@ -20,7 +20,7 @@ namespace ppr {
         glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
         float tilingFactor = 1.0f;
 
-        core_id coreID = 0;
+        entity_id entity_id = 0;
     };
 
 

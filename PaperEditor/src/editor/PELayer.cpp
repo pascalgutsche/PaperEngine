@@ -9,7 +9,6 @@
 
 
 PELayer::PELayer()
-	: viewport_size(glm::vec2()), viewport_bounds{glm::vec2(), glm::vec2()}, mouse_pos_viewport_relative(glm::ivec2())
 {
 	viewports.emplace_back("1");
 	viewports.emplace_back("2");
@@ -48,15 +47,11 @@ void PELayer::OnDetach()
 
 void PELayer::Update(const float dt)
 {
-	mouse_pos_viewport_relative.x = ImGui::GetMousePos().x;
-	mouse_pos_viewport_relative.y = ImGui::GetMousePos().y;
-	mouse_pos_viewport_relative.x -= viewport_bounds[0].x;
-	mouse_pos_viewport_relative.y -= viewport_bounds[0].y - 24;
-	glm::vec2 viewportSize = viewport_bounds[1] - viewport_bounds[0];
-
-	mouse_pos_viewport_relative.y = viewportSize.y - mouse_pos_viewport_relative.y;
+	
 
 	CheckSceneChange();
+
+	MousePicking();
 }
 
 void PELayer::OnEvent(Event& event)
@@ -109,12 +104,12 @@ void PELayer::OnEvent(Event& event)
 	});
 	
 
-	if (!viewport_focused)
-	{
-		ImGuiIO& io = ImGui::GetIO();
-		event.handled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
-		event.handled |= event.IsInCategory(EventCategoryKeyBoard) & io.WantCaptureKeyboard;
-	}
+	//if (!viewport_focused)
+	//{
+	//	ImGuiIO& io = ImGui::GetIO();
+	//	event.handled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+	//	event.handled |= event.IsInCategory(EventCategoryKeyBoard) & io.WantCaptureKeyboard;
+	//}
 }
 
 void PELayer::Imgui(const float dt)
@@ -184,6 +179,8 @@ void PELayer::Imgui(const float dt)
 	if (show_camera_settings_panel)
 		CameraSettingsPanel();
 
+	if (show_viewport_debug_panel)
+		ViewPortDebugging();
 }
 
 
@@ -264,6 +261,16 @@ void PELayer::ApplicationPanel()
 	}
 	timehelper += dt;
 	time += dt;
+
+	std::string entity_name1 = "None";
+	if (hovered_entity)
+		entity_name1 = hovered_entity.GetName();
+	ImGui::Text("Hovered Entity: %s", entity_name1.c_str());
+
+	std::string entity_name2 = "None";
+	if (active_entity)
+		entity_name2 = active_entity.GetName();
+	ImGui::Text("Active Entity: %s", entity_name2.c_str());
 
 	if (ImGui::TreeNode("Time"))
 	{

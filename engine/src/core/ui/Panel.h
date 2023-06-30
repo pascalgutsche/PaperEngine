@@ -11,7 +11,7 @@ namespace ppr
 		Panel(glm::vec4 color, const Transform& transform, Type type, std::string name = "Panel");
 		~Panel() override;
 
-		void Render(core_id idToRender) override;
+		void Render(entity_id idToRender) override;
 
 	private:
 		Type type;

@@ -26,6 +26,9 @@ void MenuTabView()
 		if (ImGui::MenuItem("ImGui Demo Window"))
 			show_imgui_demo = true;
 
+		if (ImGui::MenuItem("ViewPort Debugging"))
+			show_viewport_debug_panel = true;
+
 		ImGui::EndMenu();
 	}
 }

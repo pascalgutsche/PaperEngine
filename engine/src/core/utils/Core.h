@@ -3,6 +3,8 @@
 #include "utility.h"
 #include "generic/Object.h"
 
+#if 0
+
 namespace ppr
 {
 	class Core
@@ -10,21 +12,22 @@ namespace ppr
 	public:
 		static void Init();
 
-		static core_id RequestID(Object* object);
-		static void DeleteID(core_id id);
+		static entity_id RequestID(Object* object);
+		static void DeleteID(entity_id id);
 
-		static bool IsDeleted(core_id id);
-		static void AddToDelete(core_id id);
+		static bool IsDeleted(entity_id id);
+		static void AddToDelete(entity_id id);
 
-		static Object* GetObjectByID(core_id id);
+		static Object* GetObjectByID(entity_id id);
 
 		static entt::registry& GetRegistry();
 	private:
-		inline static std::unordered_map<core_id, Object*> IDinUse;
-		inline static std::vector<core_id> deletedIDs;
-		inline static core_id leastIDavailable;
+		inline static std::unordered_map<entity_id, Object*> IDinUse;
+		inline static std::vector<entity_id> deletedIDs;
+		inline static entity_id leastIDavailable;
 		inline static bool initialized = false;
 
 		static entt::registry registry;
 	};
 }
+#endif

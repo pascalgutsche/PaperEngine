@@ -15,7 +15,7 @@ namespace ppr
 	{
 	}
 
-	void Label::Render(core_id idToRender)
+	void Label::Render(entity_id idToRender)
 	{
 		//TextRenderData data;
 		//data.transform = { globalPos, globalScale, transform.rotation };

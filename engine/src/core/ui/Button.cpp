@@ -16,7 +16,7 @@ namespace ppr
 	{
 	}
 
-	void Button::Render(core_id idToRender)
+	void Button::Render(entity_id idToRender)
 	{
 		//EdgeRenderData data;
 		//data.transform = { globalPos, globalScale, transform.rotation };

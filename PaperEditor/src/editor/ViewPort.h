@@ -22,6 +22,8 @@ public:
 
 	void Panel(PELayer* peLayer);
 
+	glm::vec2 viewport_pos_abs{};
+
 	glm::vec2 viewport_size;
 	glm::vec2 viewport_bounds[2];
 

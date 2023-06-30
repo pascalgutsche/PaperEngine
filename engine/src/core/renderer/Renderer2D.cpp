@@ -18,7 +18,7 @@ namespace ppr {
 		float tilingFactor;
 		int texIndex;
 		int projectionMode;
-		int coreID;
+		entity_id entity_id;
 		int uiID;
 		int alphaCoreID;
 	};
@@ -28,7 +28,7 @@ namespace ppr {
 		glm::vec3 position;
 		glm::vec4 color;
 		int projectionMode;
-		int coreID;
+		entity_id entity_id;
 		int uiID;
 	};
 
@@ -46,7 +46,7 @@ namespace ppr {
 		float fade;
 
 		int projectionMode;
-		int coreID;
+		entity_id entity_id;
 		int alphaCoreID;
 	};
 
@@ -57,7 +57,7 @@ namespace ppr {
 		glm::vec2 texCoord;
 
 		int projectionMode;
-		int coreID;
+		entity_id entity_id;
 		int uiID;
 		int alphaCoreID;
 	};
@@ -476,7 +476,7 @@ namespace ppr {
 			data.rectangleVertexBufferPtr->tilingFactor = renderData.tilingFactor;
 			data.rectangleVertexBufferPtr->texIndex = texIndex;
 			data.rectangleVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
-			data.rectangleVertexBufferPtr->coreID = renderData.coreID;
+			data.rectangleVertexBufferPtr->entity_id = renderData.enity_id;
 			data.rectangleVertexBufferPtr->alphaCoreID = renderData.coreIDToAlphaPixels;
 			data.rectangleVertexBufferPtr++;
 
@@ -531,7 +531,7 @@ namespace ppr {
 			data.triangleVertexBufferPtr->tilingFactor = renderData.tilingFactor;
 			data.triangleVertexBufferPtr->texIndex = texIndex;
 			data.triangleVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
-			data.triangleVertexBufferPtr->coreID = renderData.coreID;
+			data.triangleVertexBufferPtr->entity_id = renderData.enity_id;
 			data.triangleVertexBufferPtr->alphaCoreID = renderData.coreIDToAlphaPixels;
 			data.triangleVertexBufferPtr++;
 
@@ -550,7 +550,7 @@ namespace ppr {
 		data.lineVertexBufferPtr->position = renderData.point0;
 		data.lineVertexBufferPtr->color = renderData.color;
 		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
-		data.lineVertexBufferPtr->coreID = renderData.coreID;
+		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
 		data.lineVertexBufferPtr++;
 
 		RenderCommand::GetStats().vertexCount++;
@@ -558,7 +558,7 @@ namespace ppr {
 		data.lineVertexBufferPtr->position = renderData.point1;
 		data.lineVertexBufferPtr->color = renderData.color;
 		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
-		data.lineVertexBufferPtr->coreID = renderData.coreID;
+		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
 		data.lineVertexBufferPtr++;
 
 		RenderCommand::GetStats().vertexCount++;
@@ -617,7 +617,7 @@ namespace ppr {
 			data.circleVertexBufferPtr->thickness = renderData.thickness;
 			data.circleVertexBufferPtr->fade = renderData.fade;
 			data.circleVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
-			data.circleVertexBufferPtr->coreID = renderData.coreID;
+			data.circleVertexBufferPtr->entity_id = renderData.enity_id;
 			data.circleVertexBufferPtr->alphaCoreID = renderData.coreIDToAlphaPixels;
 			data.circleVertexBufferPtr++;
 			RenderCommand::GetStats().vertexCount++;
@@ -747,7 +747,7 @@ namespace ppr {
 			data.textVertexBufferPtr->color = renderData.color;
 			data.textVertexBufferPtr->texCoord = texCoordData.at(i);
 			data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
-			data.textVertexBufferPtr->coreID = renderData.coreID;
+			data.textVertexBufferPtr->entity_id = renderData.enity_id;
 			data.textVertexBufferPtr->alphaCoreID = renderData.coreIDToAlphaPixels;
 			data.textVertexBufferPtr++;
 			RenderCommand::GetStats().vertexCount++;

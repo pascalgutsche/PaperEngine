@@ -47,9 +47,9 @@ namespace ppr
 		UIObject* parent = nullptr;
 		std::vector<UIObject*> childOjects;
 
-		core_id buttonID = 0;
+		entity_id buttonID = 0;
 
-		virtual void Render(core_id idToRender) = 0;
+		virtual void Render(entity_id idToRender) = 0;
 	private:
 
 		void CalculateGlobalCoords();

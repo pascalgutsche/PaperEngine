@@ -26,7 +26,7 @@ void PELayer::CameraMode()
 					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
 					pop = true;
 				}
-				if (ImGui::ImageButton("single", (void*)DataPool::GetTexture("main_view.png")->GetID(), ImVec2(75.0f, 50.0f)))
+				if (ImGui::ImageButton("single", (void*)DataPool::GetTexture("main_view.png")->GetID(), ImVec2(75.0f, 50.0f), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
 				{
 					active = !active;
 					camera_mode = mode;
@@ -43,7 +43,7 @@ void PELayer::CameraMode()
 					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
 					pop = true;
 				}
-				if (ImGui::ImageButton("split", (void*)DataPool::GetTexture("split_view.png")->GetID(), ImVec2(75.0f, 50.0f)))
+				if (ImGui::ImageButton("split", (void*)DataPool::GetTexture("split_view.png")->GetID(), ImVec2(75.0f, 50.0f), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
 				{
 					active = !active;
 					camera_mode = mode;
@@ -60,7 +60,7 @@ void PELayer::CameraMode()
 					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
 					pop = true;
 				}
-				if (ImGui::ImageButton("triple", (void*)DataPool::GetTexture("triple_view.png")->GetID(), ImVec2(75.0f, 50.0f)))
+				if (ImGui::ImageButton("triple", (void*)DataPool::GetTexture("triple_view.png")->GetID(), ImVec2(75.0f, 50.0f), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
 				{
 					active = !active;
 					camera_mode = mode;
@@ -77,7 +77,7 @@ void PELayer::CameraMode()
 					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
 					pop = true;
 				}
-				if (ImGui::ImageButton("quadro", (void*)DataPool::GetTexture("quadro_view.png")->GetID(), ImVec2(75.0f, 50.0f)))
+				if (ImGui::ImageButton("quadro", (void*)DataPool::GetTexture("quadro_view.png")->GetID(), ImVec2(75.0f, 50.0f), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
 				{
 					active = !active;
 					camera_mode = mode;
@@ -213,4 +213,26 @@ void PELayer::ViewPortPanel()
 	}
 
 	first = false;
+}
+
+void PELayer::ViewPortDebugging()
+{
+	ImGui::Begin("Viewporting", &show_viewport_debug_panel);
+
+	for (auto& viewport : viewports)
+	{
+		ImGui::Text(viewport.name.c_str());
+		ImGui::Checkbox("is_visible", &viewport.is_visible);
+		ImGui::Checkbox("last_viewport_focused", &viewport.last_viewport_focused);
+		ImGui::Checkbox("viewport_hovered", &viewport.viewport_hovered);
+		ImGui::Checkbox("viewport_focused", &viewport.viewport_focused);
+
+		ImGui::InputFloat2("viewport_bounds[0]", &viewport.viewport_bounds[0].x);
+		ImGui::InputFloat2("viewport_bounds[1]", &viewport.viewport_bounds[1].x);
+		ImGui::InputFloat2("viewport_size", &viewport.viewport_size.x);
+		ImGui::InputFloat2("viewport_pos_abs", &viewport.viewport_pos_abs.x);
+
+	}
+
+	ImGui::End();
 }

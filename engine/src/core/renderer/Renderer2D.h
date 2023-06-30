@@ -24,8 +24,8 @@ namespace ppr {
         float tilingFactor = 1.0f;
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
-        core_id coreID = 0;
-        core_id uiID = 0;
+        entity_id enity_id = 0;
+        entity_id uiID = 0;
         bool coreIDToAlphaPixels = false;
     };
 
@@ -42,8 +42,8 @@ namespace ppr {
         float tilingFactor = 1.0f;
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
-        core_id coreID = 0;
-        core_id uiID = 0;
+        entity_id enity_id = 0;
+        entity_id uiID = 0;
         bool coreIDToAlphaPixels = false;
     };
 
@@ -56,8 +56,8 @@ namespace ppr {
         float thickness = 1.0f;
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
-        core_id coreID = 0;
-        core_id uiID = 0;
+        entity_id enity_id = 0;
+        entity_id uiID = 0;
     };
 
     struct TextRenderData
@@ -69,8 +69,8 @@ namespace ppr {
         Shr<Font> font = DataPool::GetFont("mononoki.ttf");
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
-        core_id coreID = 0;
-        core_id uiID = 0;
+        entity_id enity_id = 0;
+        entity_id uiID = 0;
         bool coreIDToAlphaPixels = false;
     };
 

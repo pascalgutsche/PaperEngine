@@ -193,7 +193,7 @@ namespace ppr {
 
 		auto& spec = colorAttachmentSpec[attachmentIndex];
 
-		glClearTexImage(colorAttachmentsID[attachmentIndex], 0, FBTexFormatToGL(spec.texFormat), GL_UNSIGNED_INT, &value);
+		glClearTexImage(colorAttachmentsID[attachmentIndex], 0, FBTexFormatToGL(spec.texFormat), GL_INT, &value);
 	}
 
 	void OpenGLFramebuffer::Bind() {

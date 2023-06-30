@@ -59,6 +59,7 @@ namespace ppr {
 				data.tilingFactor = sprite.tiling_factor;
 				data.texCoords = sprite.tex_coords;
 				data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
+				data.enity_id = (entity_id)entity;
 
 				if (sprite.geometry == Geometry::RECTANGLE)
 					Renderer2D::DrawRectangle(data);
@@ -77,6 +78,7 @@ namespace ppr {
 				data.texture = circle.texture;
 				data.tilingFactor = circle.tiling_factor;
 				data.coreIDToAlphaPixels = circle.register_alpha_pixels_to_event;
+				data.enity_id = (entity_id)entity;
 
 				Renderer2D::DrawCircle(data);
 			}
@@ -91,6 +93,7 @@ namespace ppr {
 				data.point1 = line.positionB;
 				data.color = line.color;
 				data.thickness = line.thickness;
+				data.enity_id = (entity_id)entity;
 				
 				Renderer2D::DrawLine(data);
 			}
@@ -105,6 +108,7 @@ namespace ppr {
 				data.color = text.color;
 				data.text = text.text;
 				data.coreIDToAlphaPixels = text.register_alpha_pixels_to_event;
+				data.enity_id = (entity_id)entity;
 				
 				Renderer2D::DrawString(data);
 			}
