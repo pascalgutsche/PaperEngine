@@ -86,9 +86,9 @@ namespace ppr {
 
 	void Application::Run() 
 	{
+		AddOverlay(imguiLayer);
 		Init();
 
-		AddOverlay(imguiLayer);
 
 
 		//set start scene

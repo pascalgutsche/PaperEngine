@@ -65,13 +65,14 @@ private:
 	Shr<Scene> new_scene = nullptr;
 
 	void MainMenuBar();
-	void ApplicationPanel(bool first);
-	void AssetManagerPanel(bool first);
+	void ApplicationPanel();
+	void AssetManagerPanel();
 
+	void CameraSettingsPanel();
 
-	void CameraPanel(bool first, ImGuiWindowFlags& dock_flags);
+	void ViewPortPanel();
 	void CameraMode();
-	void DockCameraPanel(CameraModes mode, ImGuiID main_id);
+	void DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size);
 	void EnableCamera(CameraModes mode);
 
 	glm::vec2 viewport_size;

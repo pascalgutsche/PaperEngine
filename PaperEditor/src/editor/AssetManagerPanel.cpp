@@ -1,4 +1,5 @@
 ﻿#include "Editor.h"
+#include "WindowsOpen.h"
 
 #include "PELayer.h"
 
@@ -39,8 +40,9 @@ static void displayText(std::vector<std::string>& filenames)
 	}
 }
 
-void PELayer::AssetManagerPanel(bool first)
+void PELayer::AssetManagerPanel()
 {
+	static bool first = true;
 	static float size = 120.0f;
 	static std::filesystem::path path = "assets/";
 
@@ -55,7 +57,7 @@ void PELayer::AssetManagerPanel(bool first)
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX;
 
-	ImGui::Begin(name);
+	ImGui::Begin(name, &show_asset_manager_panel);
 	std::stringstream ss;
 	for (const auto& pathPart : path)
 	{
@@ -143,4 +145,6 @@ void PELayer::AssetManagerPanel(bool first)
 	}
 
 	ImGui::End();
+
+	first = false;
 }

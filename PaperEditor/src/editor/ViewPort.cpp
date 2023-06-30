@@ -37,7 +37,6 @@ static void CameraMovement(const Shr<EditorCamera>& camera)
 
 void ViewPort::Panel(PELayer* peLayer)
 {
-	if (!open) return;
 	if (FramebufferSpecification spec = framebuffer->GetSpecification();
 		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
 		(spec.width != viewport_size.x || spec.height != viewport_size.y))
@@ -58,7 +57,7 @@ void ViewPort::Panel(PELayer* peLayer)
 
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin(name.c_str(), &open, ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
 
 	//viewport_focused = ImGui::IsWindowFocused();
 	viewport_hovered = ImGui::IsWindowHovered();

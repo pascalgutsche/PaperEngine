@@ -1,6 +1,8 @@
 #include "Editor.h"
 #include "PELayer.h"
 
+#include "WindowsOpen.h"
+
 #include "project/ProjectManager.h"
 
 #include "ViewPort.h"
@@ -21,6 +23,10 @@ PELayer::~PELayer()
 
 void PELayer::OnAttach()
 {
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowMenuButtonPosition = ImGuiDir_None;
+	style.FrameRounding = 12.0f;
+	style.GrabRounding = 12.0f;
 	// scene =
 	//Shr<Scene> scene1 = MakeShr<Scene>();
 	//ppr::UUID uuid = scene1->CreateEntity("lol").GetUUID();
@@ -162,17 +168,22 @@ void PELayer::Imgui(const float dt)
 
 	ImGui::End();
 
-	ImGuiStyle& style = ImGui::GetStyle();
-	style.WindowMenuButtonPosition = ImGuiDir_None;
-	style.FrameRounding = 12.0f;
-	style.GrabRounding = 12.0f;
+	if (show_imgui_demo)
+		ImGui::ShowDemoWindow(&show_imgui_demo);
 
-	static bool first = true;
-	ApplicationPanel(first);
-	AssetManagerPanel(first);
-	CameraPanel(first, dockflags);
 
-	first = false;
+	if (show_asset_manager_panel)
+		AssetManagerPanel();
+
+	if (show_application_panel)
+		ApplicationPanel();
+
+	if (show_viewport_panel)
+		ViewPortPanel();
+
+	if (show_camera_settings_panel)
+		CameraSettingsPanel();
+
 }
 
 
@@ -187,7 +198,6 @@ void PELayer::DockPanel(std::string name, ImGuiID dock_id)
 
 void PELayer::CheckSceneChange()
 {
-	ImGui::ShowDemoWindow();
 	if (!new_scene) return;
 	if (!scene || !scene->IsDirty())
 	{
@@ -225,110 +235,13 @@ void PELayer::CheckSceneChange()
 	ImGui::End();
 }
 
-void PELayer::MainMenuBar()
+
+
+
+
+void PELayer::ApplicationPanel()
 {
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("New Project...", "Ctrl+O"))
-			{
-				//NewProject();
-			}
-
-			if (ImGui::MenuItem("Open Project...", "Ctrl+O"))
-			{
-				ProjectManager::OpenFile("PaperEngine Project(*.peproj)\0 * .peproj\0");
-			}
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Save Project", "Ctrl+S"))
-			{
-				//SaveProject();
-			}
-
-			if (ImGui::MenuItem("Save Project As...", "Ctrl+Shift+S"))
-			{
-				//SaveProjectAs();
-			}
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Exit"))
-				Application::GetInstance()->Exit();
-
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Scene"))
-		{
-			if (ImGui::MenuItem("New Scene"))
-			{
-				scene = MakeShr<Scene>();
-			}
-
-			if (ImGui::MenuItem("Open Scene"))
-			{
-				std::filesystem::path path = ProjectManager::OpenFile("");
-				//std::filesystem::path path = ProjectManager::OpenFile("PaperEngine Scene(*.pescene)\0 * .pescene\0");
-				if (!path.empty())
-					new_scene = YAMLSerializer::SceneDeserialize(path);
-			}
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Save Scene"))
-			{
-				//YAMLSerializer::SceneSerialize(scene->)
-			}
-
-			if (ImGui::MenuItem("Save Scene As..."))
-			{
-
-			}
-
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Add"))
-		{
-			
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Camera"))
-		{
-			if (ImGui::MenuItem("Add Editor Camera"))
-			{
-				
-			}
-
-			if (ImGui::BeginCombo("##1", "Activate Camera"))
-			{
-
-				for (auto& port : viewports)
-				{
-					if (!port.open)
-					{
-						if (ImGui::Selectable(port.name.c_str()))
-						{
-							port.open = true;
-						}
-					}
-				}
-				ImGui::EndCombo();
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMenuBar();
-	}
-}
-
-void PELayer::ApplicationPanel(bool first)
-{
+	static bool first = true;
 	const float dt = Application::GetDT();
 
 	const char* name = "Application: ";
@@ -336,7 +249,7 @@ void PELayer::ApplicationPanel(bool first)
 	if (first)
 		DockPanel(name, GetDockspaceRight());
 
-	ImGui::Begin(name);
+	ImGui::Begin(name, &show_application_panel);
 	
 
 	static float time = 0;
@@ -455,6 +368,8 @@ void PELayer::ApplicationPanel(bool first)
 	ImGui::EndDisabled();
 
 	ImGui::End();
+
+	first = false;
 }
 
 

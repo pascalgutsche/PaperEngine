@@ -1,6 +1,8 @@
 ﻿#include "Editor.h"
 #include "PELayer.h"
 
+#include "WindowsOpen.h"
+
 void PELayer::CameraMode()
 {
 	static bool active = true, previous_active = true;
@@ -91,7 +93,7 @@ void PELayer::CameraMode()
 	}
 }
 
-void PELayer::DockCameraPanel(CameraModes mode, ImGuiID main_id)
+void PELayer::DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size)
 {
 	ImGuiID top_id;
 	ImGuiID bottom_id;
@@ -103,21 +105,21 @@ void PELayer::DockCameraPanel(CameraModes mode, ImGuiID main_id)
 	ImGuiID bottom_right_id;
 
 	ImGui::DockBuilderRemoveNode(main_id);
-	ImGui::DockBuilderAddNode(main_id, ImGuiDockNodeFlags_DockSpace);
-	ImGui::DockBuilderSetNodeSize(main_id, ImVec2(500, 500));
+	ImGui::DockBuilderAddNode(main_id, ImGuiDockNodeFlags_None);
+	ImGui::DockBuilderSetNodeSize(main_id, dockspace_size);
 
 	switch (camera_mode)
 	{
 		case Split:
-			ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Left, 0.5f, &left_id, &right_id);
+			ImGui::DockBuilderSplitNode(main_id,   ImGuiDir_Left, 0.5f, &left_id,			&right_id);
 			break;
 		case Triple:
-			ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Up, 0.5f, &top_id, &bottom_id);
-			ImGui::DockBuilderSplitNode(top_id, ImGuiDir_Left, 0.5f, &top_left_id, &top_right_id);
-			break;
-		case Quadro:
-			ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Up, 0.5f, &top_id, &bottom_id);
-			ImGui::DockBuilderSplitNode(top_id, ImGuiDir_Left, 0.5f, &top_left_id, &top_right_id);
+			ImGui::DockBuilderSplitNode(main_id,   ImGuiDir_Up,   0.5f, &top_id,			&bottom_id);
+			ImGui::DockBuilderSplitNode(top_id,    ImGuiDir_Left, 0.5f, &top_left_id,		&top_right_id);
+			break;														 
+		case Quadro:													 
+			ImGui::DockBuilderSplitNode(main_id,   ImGuiDir_Up,   0.5f, &top_id,         &bottom_id);
+			ImGui::DockBuilderSplitNode(top_id,    ImGuiDir_Left, 0.5f, &top_left_id,    &top_right_id);
 			ImGui::DockBuilderSplitNode(bottom_id, ImGuiDir_Left, 0.5f, &bottom_left_id, &bottom_right_id);
 			break;
 		default: ;
@@ -159,8 +161,9 @@ void PELayer::EnableCamera(CameraModes mode)
 	}
 }
 
-void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
+void PELayer::ViewPortPanel()
 {
+	static bool first = true;
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 	window_flags |= ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_NoDocking;
 	window_flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar;
@@ -175,7 +178,8 @@ void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-	ImGui::Begin(name, nullptr, window_flags);
+	ImGui::Begin(name, &show_viewport_panel, window_flags);
+	const ImVec2 dockspace_size = ImGui::GetItemRectSize();
 	ImGui::PopStyleVar(3);
 
 	if (ImGui::BeginMenuBar())
@@ -190,10 +194,10 @@ void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
 		ImGui::EndMenuBar();
 	}
 
-	ImGuiID dock_main_id = ImGui::GetID("ViewPort");
-	ImGui::DockSpace(dock_main_id, ImVec2(0.0f, 0.0f), dock_flags);
+	const ImGuiID dock_main_id = ImGui::GetID("ViewPort");
+	ImGui::DockSpace(dock_main_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_NoDockingOverMe | ImGuiDockNodeFlags_NoDockingSplitOther);
 
-
+	
 
 	ImGui::End();
 
@@ -204,7 +208,9 @@ void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
 	if (camera_mode_changed)
 	{
 		EnableCamera(camera_mode);
-		DockCameraPanel(camera_mode, dock_main_id);
+		DockCameraPanel(camera_mode, dock_main_id, dockspace_size);
 		camera_mode_changed = false;
 	}
+
+	first = false;
 }

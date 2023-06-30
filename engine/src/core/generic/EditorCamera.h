@@ -23,7 +23,7 @@ namespace ppr
 
 		glm::vec3 position{};
 		float aspect_ratio;
-	private:
+
 		glm::vec3 target{};
 
 		float pitch;
@@ -34,6 +34,17 @@ namespace ppr
 
 		float last_x, last_y;
 
+		
+
+		float left_frostum{};
+		float right_frostum{};
+		float bottom_frostum{};
+		float top_frostum{};
+
+		float near_plane{};
+		float far_plane{};
+
+	private:
 		// X
 		glm::vec3 cameraX{};
 		// Y
@@ -47,14 +58,6 @@ namespace ppr
 
 		glm::vec3 directionA{};
 		glm::vec3 directionB{};
-
-		float left_frostum{};
-		float right_frostum{};
-		float bottom_frostum{};
-		float top_frostum{};
-
-		float near_plane{};
-		float far_plane{};
 
 	};
 
