@@ -7,8 +7,6 @@
 #include "generic/EditorCamera.h"
 namespace ppr {
 
-	class Camera;
-
 	struct SharedRenderData
 	{
 

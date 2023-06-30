@@ -1,6 +1,8 @@
 ﻿#include "Editor.h"
 #include "ViewPort.h"
 
+#include "PELayer.h"
+
 static void CameraMovement(const Shr<EditorCamera>& camera)
 {
 	const float dt = Application::GetDT();

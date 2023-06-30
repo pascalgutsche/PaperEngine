@@ -1,5 +1,6 @@
 ﻿#pragma once
-#include "PELayer.h"
+
+class PELayer;
 
 struct ViewPort
 {
@@ -30,4 +31,6 @@ public:
 	bool last_viewport_focused = false;
 
 	bool open = true;
+
+	bool is_visible = false;
 };

@@ -1,7 +1,23 @@
 #pragma once
 #include "Editor.h"
 
-class PELayer;
+#include "ViewPort.h"
+
+enum CameraModes
+{
+	Single, Split, Triple, Quadro
+};
+
+inline std::string CameraModesToString(CameraModes mode)
+{
+	switch (mode) {
+		case Single: return "Single";
+		case Split: return "Split";
+		case Triple: return "Triple";
+		case Quadro: return "Quadro";
+		default: return "";
+	}
+}
 
 class PELayer : public Layer
 {
@@ -51,7 +67,12 @@ private:
 	void MainMenuBar();
 	void ApplicationPanel(bool first);
 	void AssetManagerPanel(bool first);
+
+
 	void CameraPanel(bool first, ImGuiWindowFlags& dock_flags);
+	void CameraMode();
+	void DockCameraPanel(CameraModes mode, ImGuiID main_id);
+	void EnableCamera(CameraModes mode);
 
 	glm::vec2 viewport_size;
 	glm::vec2 viewport_bounds[2];
@@ -62,6 +83,9 @@ private:
 
 	glm::ivec2 mouse_pos_viewport_relative;
 
+
+	CameraModes camera_mode = Single;
+	bool camera_mode_changed = true;
 	std::vector<ViewPort> viewports;
 };
 

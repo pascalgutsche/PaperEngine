@@ -10,9 +10,9 @@ PELayer::PELayer()
 	: viewport_size(glm::vec2()), viewport_bounds{glm::vec2(), glm::vec2()}, mouse_pos_viewport_relative(glm::ivec2())
 {
 	viewports.emplace_back("1");
-	//viewports.emplace_back("2");
-	//viewports.emplace_back("3");
-	//viewports.emplace_back("4");
+	viewports.emplace_back("2");
+	viewports.emplace_back("3");
+	viewports.emplace_back("4");
 }
 
 PELayer::~PELayer()
@@ -171,38 +171,11 @@ void PELayer::Imgui(const float dt)
 	ApplicationPanel(first);
 	AssetManagerPanel(first);
 	CameraPanel(first, dockflags);
-	for (auto& port : viewports)
-		port.Panel(this);
 
 	first = false;
 }
 
-void PELayer::CameraPanel(bool first, ImGuiWindowFlags& dock_flags)
-{
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-	window_flags |= ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_NoDocking;
-	window_flags |= ImGuiWindowFlags_NoCollapse;
-	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-	const char* name = "ViewPorts: ";
-
-	if (first)
-		DockPanel(name, GetDockspaceMain());
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
-	ImGui::Begin(name, nullptr, window_flags);
-	ImGui::PopStyleVar(3);
-
-	//ImGui::Begin("Cameras", nullptr, window_flags | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoMove);
-	ImGuiID dockspaddce_id = ImGui::GetID("ViewPort");
-	ImGui::DockSpace(dockspaddce_id, ImVec2(0.0f, 0.0f), dock_flags);
-	//CameraBar();
-	//ImGui::End();
-	ImGui::End();
-}
 
 void PELayer::DockPanel(std::string name, ImGuiID dock_id)
 {
