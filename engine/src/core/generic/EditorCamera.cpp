@@ -3,6 +3,9 @@
 
 #include "Application.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+
 namespace ppr
 {
 	struct DefaultValues
@@ -11,7 +14,7 @@ namespace ppr
 		inline static glm::vec3 position = glm::vec3(0.0f, 0.0f, 5.0f);
 
 		inline static float pitch = 0.0f;
-		inline static float yaw = -90.0f;
+		inline static float yaw = 0.0f;
 		inline static float roll = 0.0f;
 
 		inline static glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -45,7 +48,7 @@ namespace ppr
 		yaw = DefaultValues::yaw;
 		roll = DefaultValues::roll;
 
-		front = DefaultValues::front;
+		//front = DefaultValues::front;
 
 		fov = DefaultValues::fov;
 		near_plane = DefaultValues::near_plane;
@@ -81,26 +84,33 @@ namespace ppr
 	{
 		this->target = glm::vec3(this->position.x, this->position.y, 0.0f);
 
-		directionA.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
-		directionA.y = glm::sin(glm::radians(pitch));
-		directionA.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+		//directionA.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+		//directionA.y = glm::sin(glm::radians(pitch));
+		//directionA.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 
-		directionB.x = glm::cos(glm::radians(yaw));
 		directionB.y = glm::sin(glm::radians(pitch));
+		directionB.x = glm::cos(glm::radians(yaw));
 		directionB.z = glm::sin(glm::radians(yaw));
 
-		front = glm::normalize(directionA);
+		//front = glm::normalize(directionA);
 
-		// this is being used for pointing upwards (y globally, e.g. in the world)
-		constexpr auto up = glm::vec3(0.0f, 1.0f, 0.0f);
-		// declare z-axis
-		cameraZ = glm::normalize(position - target);
-		// declare x-axis by the cross-product
-		cameraX = glm::normalize(glm::cross(up, cameraZ));
-		// declare y-axis by the cross-product of z and x
-		cameraY = glm::cross(cameraZ, cameraX);
-		// make camera depend on position (who could have thought this)
-		cameraViewMatrix = glm::lookAt(position, position + front, up);
+		//// this is being used for pointing upwards (y globally, e.g. in the world)
+		//constexpr auto up = glm::vec3(0.0f, 1.0f, 0.0f);
+		//// declare z-axis
+		//cameraZ = glm::normalize(position - target);
+		//// declare x-axis by the cross-product
+		//cameraX = glm::normalize(glm::cross(up, cameraZ));
+		//// declare y-axis by the cross-product of z and x
+		//cameraY = glm::cross(cameraZ, cameraX);
+		//// make camera depend on position (who could have thought this)
+		//cameraViewMatrix = glm::lookAt(position, position + front, up);
+
+		//
+
+		glm::quat orientation = glm::quat(glm::vec3(glm::radians(pitch), -glm::radians(yaw), 0.0f));
+
+		cameraViewMatrix = glm::translate(glm::mat4(1.0f), position) * glm::toMat4(orientation);
+		cameraViewMatrix = glm::inverse(cameraViewMatrix);
 	}
 
 	void EditorCamera::ControlCamera(const float x, const float y, bool state)

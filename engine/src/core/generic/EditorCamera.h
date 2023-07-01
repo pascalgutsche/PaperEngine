@@ -54,7 +54,7 @@ namespace ppr
 
 		glm::mat4 cameraViewMatrix{};
 
-		glm::vec3 front{};
+		//glm::vec3 front{};
 
 		glm::vec3 directionA{};
 		glm::vec3 directionB{};

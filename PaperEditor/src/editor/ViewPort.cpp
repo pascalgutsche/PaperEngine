@@ -14,26 +14,23 @@ static void CameraMovement(const Shr<EditorCamera>& camera)
 	const float dt = Application::GetDT();
 	if (Input::IsKeyPressed(KEY_W))
 	{
-		camera->position.x += 5 * dt * camera->GetFront().x;
-		camera->position.z += 5 * dt * camera->GetFront().z;
+		camera->position.x += 5 * dt * camera->GetFront().z;
+		camera->position.z -= 5 * dt * camera->GetFront().x;
 	}
 	if (Input::IsKeyPressed(KEY_A))
 	{
-		camera->position.x += 5 * dt * camera->GetFront().z;
-		camera->position.z -= 5 * dt * camera->GetFront().x;
-
+		camera->position.x -= 5 * dt * camera->GetFront().x;
+		camera->position.z -= 5 * dt * camera->GetFront().z;
 	}
 	if (Input::IsKeyPressed(KEY_S))
 	{
-		camera->position.x -= 5 * dt * camera->GetFront().x;
-		camera->position.z -= 5 * dt * camera->GetFront().z;
-
+		camera->position.x -= 5 * dt * camera->GetFront().z;
+		camera->position.z += 5 * dt * camera->GetFront().x;
 	}
 	if (Input::IsKeyPressed(KEY_D))
 	{
-		camera->position.x -= 5 * dt * camera->GetFront().z;
-		camera->position.z += 5 * dt * camera->GetFront().x;
-
+		camera->position.x += 5 * dt * camera->GetFront().x;
+		camera->position.z += 5 * dt * camera->GetFront().z;
 	}
 	if (Input::IsKeyPressed(KEY_E))
 		camera->position.y += 5 * dt;
@@ -96,20 +93,12 @@ void ViewPort::Panel(PELayer* peLayer)
 	}
 
 	// Gizmos
-	if (peLayer->active_entity) // && peLayer->GetGuizmoType() != -1
+	if (peLayer->active_entity && peLayer->GetGuizmoType() != -1)
 	{
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
 
 		ImGuizmo::SetRect(viewport_bounds[0].x, viewport_bounds[0].y, viewport_bounds[1].x - viewport_bounds[0].x, viewport_bounds[1].y - viewport_bounds[0].y);
-
-		// Camera
-
-		// Runtime camera from entity
-		// auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-		// const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-		// const glm::mat4& cameraProjection = camera.GetProjection();
-		// glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
 
 		// Editor camera
 		const glm::mat4& cameraProjection = camera->GetProjectionMatrix();
@@ -117,43 +106,32 @@ void ViewPort::Panel(PELayer* peLayer)
 
 		// Entity transform
 		auto& tc = peLayer->active_entity.GetComponent<TransformComponent>();
-		glm::mat4 transform1 = tc.GetTransform();
-		glm::mat4 transform(transform1);
-		
+		glm::mat4 transform = tc.GetTransform();
+
+		// Snapping
+		bool snap = Input::IsKeyPressed(KEY_LEFT_CONTROL);
+		float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+		// Snap to 45 degrees for rotation
+		if (peLayer->GetGuizmoType() == ImGuizmo::OPERATION::ROTATE)
+			snapValue = 45.0f;
+
+		float snapValues[3] = { snapValue, snapValue, snapValue };
 
 		ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-			ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform));
-
+			(ImGuizmo::OPERATION)peLayer->GetGuizmoType(), ImGuizmo::LOCAL, glm::value_ptr(transform),
+			nullptr, snap ? snapValues : nullptr);
 
 		if (ImGuizmo::IsUsing())
 		{
+			glm::vec3 translation, rotation, scale;
+			Math::DecomposeTransform(transform, translation, rotation, scale);
 
-			glm::vec3 position = glm::vec3(transform[3]);
-			if (position.x != 0.0f)
-			{
-				int i = 0;
-			}
-			//ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
-			//
-			//glm::vec3 deltaRotation = rotation - tc.rotation;
-			tc.position = position;
-			//tc.rotation += deltaRotation;
-			//tc.scale = scale;
+			glm::vec3 deltaRotation = rotation - tc.rotation;
+			tc.position = translation;
+			tc.rotation += deltaRotation;
+			tc.scale = scale;
 		}
 	}
-
-	//// Snapping
-		//bool snap = Input::IsKeyPressed(KEY_LEFT_CONTROL);
-		//float snapValue = 0.5f; // Snap to 0.5m for translation/scale
-		//// Snap to 45 degrees for rotation
-		//if (peLayer->GetGuizmoType() == ImGuizmo::OPERATION::ROTATE)
-		//	snapValue = 45.0f;
-		//
-		//float snapValues[3] = { snapValue, snapValue, snapValue };
-
-		//ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-		//	(ImGuizmo::OPERATION)peLayer->GetGuizmoType(), ImGuizmo::WORLD, glm::value_ptr(transform),
-		//	nullptr, snap ? snapValues : nullptr);
 
 	ImGui::End();
 	ImGui::PopStyleVar();
