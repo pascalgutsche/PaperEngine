@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "Engine.h"
 
+
+#include <gtx/quaternion.hpp>
+
 #include "serializer/Serializable.h"
 
 namespace ppr
@@ -32,11 +35,16 @@ namespace ppr
 
 		glm::mat4 GetTransform() const
 		{
-			return glm::translate(glm::mat4(1.0f), position) *
-				glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
-				glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
-				glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)) *
-				glm::scale(glm::mat4(1.0f), scale);
+			glm::mat4 rotation_mat = glm::toMat4(glm::quat(rotation));
+
+			return glm::translate(glm::mat4(1.0f), position)
+				* rotation_mat
+				* glm::scale(glm::mat4(1.0f), scale);
+			//return glm::translate(glm::mat4(1.0f), position) *
+			//	glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
+			//	glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
+			//	glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)) *
+			//	glm::scale(glm::mat4(1.0f), scale);
 		}
 
 		bool Serialize(YAML::Emitter& out) override;

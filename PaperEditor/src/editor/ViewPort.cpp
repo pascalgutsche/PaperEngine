@@ -93,10 +93,10 @@ void ViewPort::Panel(PELayer* peLayer)
 	}
 
 	// Gizmos
-	if (peLayer->active_entity && peLayer->GetGuizmoType() != -1)
+	if (peLayer->active_entity) //  && peLayer->GetGuizmoType() != -1
 	{
 		ImGuizmo::SetOrthographic(false);
-		ImGuizmo::SetDrawlist();
+		ImGuizmo::SetDrawlist(ImGui::GetCurrentWindow()->DrawList);
 
 		ImGuizmo::SetRect(viewport_bounds[0].x, viewport_bounds[0].y, viewport_bounds[1].x - viewport_bounds[0].x, viewport_bounds[1].y - viewport_bounds[0].y);
 
@@ -118,7 +118,7 @@ void ViewPort::Panel(PELayer* peLayer)
 		float snapValues[3] = { snapValue, snapValue, snapValue };
 
 		ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-			(ImGuizmo::OPERATION)peLayer->GetGuizmoType(), ImGuizmo::LOCAL, glm::value_ptr(transform),
+			ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform),
 			nullptr, snap ? snapValues : nullptr);
 
 		if (ImGuizmo::IsUsing())
