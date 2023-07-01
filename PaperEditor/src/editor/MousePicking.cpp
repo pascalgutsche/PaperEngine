@@ -33,13 +33,18 @@ void PELayer::MousePicking()
 
     pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, scene.get()) : Entity();
 
-    if (hovered_entity && Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    bool left_mouse_button_pressed = Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+    static bool left_mouse_button_pressed_last_frame;
+
+    if (hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame) {
         active_entity = hovered_entity;
     }
-    else if (!hovered_entity && Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    else if (!hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame)
     {
         active_entity = Entity();
     }
+
+    left_mouse_button_pressed_last_frame = left_mouse_button_pressed;
 
 #if 0
 

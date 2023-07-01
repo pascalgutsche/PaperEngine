@@ -41,8 +41,8 @@ project "engine"
 	defines 
 	{
 		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE",
-		"GLM_FORCE_XYZW_ONLY"
+		"GLFW_INCLUDE_NONE"
+		--"GLM_FORCE_XYZW_ONLY"
 	}
 
 	links 

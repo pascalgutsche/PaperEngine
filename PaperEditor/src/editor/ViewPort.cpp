@@ -96,7 +96,7 @@ void ViewPort::Panel(PELayer* peLayer)
 	}
 
 	// Gizmos
-	if (peLayer->active_entity && peLayer->GetGuizmoType() != -1)
+	if (peLayer->active_entity) // && peLayer->GetGuizmoType() != -1
 	{
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
@@ -117,46 +117,43 @@ void ViewPort::Panel(PELayer* peLayer)
 
 		// Entity transform
 		auto& tc = peLayer->active_entity.GetComponent<TransformComponent>();
-		glm::mat4 transform = tc.GetTransform();
-
-		// Snapping
-		bool snap = Input::IsKeyPressed(KEY_LEFT_CONTROL);
-		float snapValue = 0.5f; // Snap to 0.5m for translation/scale
-		// Snap to 45 degrees for rotation
-		if (peLayer->GetGuizmoType() == ImGuizmo::OPERATION::ROTATE)
-			snapValue = 45.0f;
-
-		float snapValues[3] = { snapValue, snapValue, snapValue };
-
-		float dArray[16] = { 0.0 };
-
-		const float* pSource = (const float*)glm::value_ptr(transform);
-		for (int i = 0; i < 16; ++i)
-			dArray[i] = pSource[i];
+		glm::mat4 transform1 = tc.GetTransform();
+		glm::mat4 transform(transform1);
+		
 
 		ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-			(ImGuizmo::OPERATION)peLayer->GetGuizmoType(), ImGuizmo::WORLD, dArray,
-			nullptr, snap ? snapValues : nullptr);
-
-		glm::vec3 translation = glm::vec3(0.0f), rotation = glm::vec3(0.0f), scale = glm::vec3(1.0f);
-
+			ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform));
 
 
 		if (ImGuizmo::IsUsing())
 		{
-			ImGuizmo::DecomposeMatrixToComponents(dArray, glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
 
-			LOG_DEBUG("position: {0}, {1}, {2}", translation.x, translation.y, translation.z);
-			LOG_DEBUG("scale: {0}, {1}, {2}", scale.x, scale.y, scale.z);
-			LOG_DEBUG("rotation: {0}, {1}, {2}", rotation.x, rotation.y, rotation.z);
-			//Math::DecomposeTransform(transform, translation, rotation, scale);
-
-			glm::vec3 deltaRotation = rotation - tc.rotation;
-			tc.position = translation;
-			tc.rotation += deltaRotation;
-			tc.scale = scale;
+			glm::vec3 position = glm::vec3(transform[3]);
+			if (position.x != 0.0f)
+			{
+				int i = 0;
+			}
+			//ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
+			//
+			//glm::vec3 deltaRotation = rotation - tc.rotation;
+			tc.position = position;
+			//tc.rotation += deltaRotation;
+			//tc.scale = scale;
 		}
 	}
+
+	//// Snapping
+		//bool snap = Input::IsKeyPressed(KEY_LEFT_CONTROL);
+		//float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+		//// Snap to 45 degrees for rotation
+		//if (peLayer->GetGuizmoType() == ImGuizmo::OPERATION::ROTATE)
+		//	snapValue = 45.0f;
+		//
+		//float snapValues[3] = { snapValue, snapValue, snapValue };
+
+		//ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+		//	(ImGuizmo::OPERATION)peLayer->GetGuizmoType(), ImGuizmo::WORLD, glm::value_ptr(transform),
+		//	nullptr, snap ? snapValues : nullptr);
 
 	ImGui::End();
 	ImGui::PopStyleVar();

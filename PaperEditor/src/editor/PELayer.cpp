@@ -126,20 +126,19 @@ void PELayer::OnEvent(Event& event)
 				}
 				case KEY_W:
 				{
-					if (!ImGuizmo::IsUsing())
+					if (!ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::TRANSLATE;
 					break;
 				}
 				case KEY_E:
 				{
-					if (!ImGuizmo::IsUsing())
+					if (!ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::ROTATE;
 					break;
 				}
 				case KEY_R:
 				{
-					
-					if (!ImGuizmo::IsUsing())
+					if (!ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::SCALE;
 					break;
 				}
@@ -237,6 +236,9 @@ void PELayer::Imgui(const float dt)
 
 	if (show_viewport_debug_panel)
 		ViewPortDebugging();
+
+	if (show_scene_debugger_panel)
+		SceneDebugger();
 }
 
 
@@ -247,6 +249,16 @@ void PELayer::DockPanel(std::string name, ImGuiID dock_id)
 	{
 		dockPanelQueue.emplace(name, dock_id);
 	}
+}
+
+bool PELayer::AnyCameraActive() const
+{
+	for (const auto& viewPort : viewports)
+	{
+		if (viewPort.viewport_focused)
+			return true;
+	}
+	return false;
 }
 
 void PELayer::CheckSceneChange()
@@ -433,6 +445,32 @@ void PELayer::ApplicationPanel()
 	ImGui::End();
 
 	first = false;
+}
+
+void PELayer::SceneDebugger()
+{
+	ImGui::Begin("SceneDebugger", &show_scene_debugger_panel);
+
+	if (!scene)
+	{
+		ImGui::Text("no scene active!");
+		ImGui::End();
+		return;
+	}
+
+	auto view = scene->Registry().view<TransformComponent>();
+
+	for (auto [entity, transform] : view.each()) {
+
+		ImGui::Text(Entity(entity, scene.get()).GetName().c_str());
+		ImGui::InputFloat3("Position", &transform.position.x);
+		ImGui::InputFloat3("Scale", &transform.scale.x);
+		ImGui::InputFloat3("Rotation", &transform.rotation.x);
+
+		ImGui::Text("-----------------------");
+	}
+
+	ImGui::End();
 }
 
 

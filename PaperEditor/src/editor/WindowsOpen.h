@@ -2,6 +2,7 @@
 
 inline bool show_imgui_demo = false;
 inline bool show_viewport_debug_panel = false;
+inline bool show_scene_debugger_panel = false;
 
 inline bool show_asset_manager_panel = true;
 inline bool show_application_panel = true;

@@ -47,6 +47,8 @@ public:
 
 	int GetGuizmoType() const { return gizmo_type; }
 
+	bool AnyCameraActive() const;
+
 private:
 	ImGuiID dockspace_id = 0;
 	ImGuiID dock_id_main = 0;
@@ -69,6 +71,7 @@ private:
 
 	void MainMenuBar();
 	void ApplicationPanel();
+	void SceneDebugger();
 	void AssetManagerPanel();
 
 	void CameraSettingsPanel();
