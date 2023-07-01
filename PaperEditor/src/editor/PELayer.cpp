@@ -54,7 +54,6 @@ void PELayer::Update(const float dt)
 
 	CheckSceneChange();
 
-	MousePicking();
 }
 
 void PELayer::OnEvent(Event& event)
@@ -239,6 +238,9 @@ void PELayer::Imgui(const float dt)
 
 	if (show_scene_debugger_panel)
 		SceneDebugger();
+
+	MousePicking();
+
 }
 
 

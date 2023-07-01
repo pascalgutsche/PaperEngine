@@ -1,11 +1,7 @@
 ﻿#include "Editor.h"
 #include "PELayer.h"
 
-static ViewPort& GetActiveViewPort(std::vector<ViewPort>& viewports)
-{
-
-
-}
+#include <ImGuizmo/ImGuizmo.h>
 
 void PELayer::MousePicking()
 {
@@ -35,11 +31,12 @@ void PELayer::MousePicking()
 
     bool left_mouse_button_pressed = Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
     static bool left_mouse_button_pressed_last_frame;
+    
 
     if (hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame) {
         active_entity = hovered_entity;
     }
-    else if (!hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame)
+    else if (!hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame && !ImGuizmo::IsUsing())
     {
         active_entity = Entity();
     }

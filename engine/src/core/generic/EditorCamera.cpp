@@ -20,7 +20,7 @@ namespace ppr
 		inline static glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
 
 		inline static float fov = 45.0f;
-		inline static float near_plane = 0.0f;
+		inline static float near_plane = 0.1f;
 		inline static float far_plane = 100.0f;
 
 		// ORTHOGRAPHIC
