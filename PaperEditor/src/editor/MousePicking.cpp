@@ -29,19 +29,30 @@ void PELayer::MousePicking()
 
     pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, scene.get()) : Entity();
 
-    bool left_mouse_button_pressed = Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
-    static bool left_mouse_button_pressed_last_frame;
-    
-
-    if (hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame) {
-        active_entity = hovered_entity;
-    }
-    else if (!hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame && !ImGuizmo::IsUsing())
-    {
-        active_entity = Entity();
-    }
-
-    left_mouse_button_pressed_last_frame = left_mouse_button_pressed;
+    //bool left_mouse_button_pressed = Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+    //static bool left_mouse_button_pressed_last_frame;
+    //
+    //static int frames_left_pressed = 0;
+    //frames_left_pressed++;
+    //if (!left_mouse_button_pressed)
+    //{
+    //    frames_left_pressed = 0;
+    //}
+    //if (hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame) {
+    //    active_entity = hovered_entity;
+    //}
+    //else if (!hovered_entity && left_mouse_button_pressed && !left_mouse_button_pressed_last_frame && !ImGuizmo::IsUsing())
+    //{
+    //    active_entity = Entity();
+    //}
+    //else if (hovered_entity == active_entity && left_mouse_button_pressed == left_mouse_button_pressed_last_frame)
+    //{
+    //    active_entity = Entity();
+    //}
+    //if (frames_left_pressed)
+	//	LOG_DEBUG(frames_left_pressed);
+    //
+    //left_mouse_button_pressed_last_frame = left_mouse_button_pressed;
 
 #if 0
 

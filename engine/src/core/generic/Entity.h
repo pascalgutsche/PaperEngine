@@ -35,6 +35,7 @@ namespace ppr {
         operator bool() const { return entity != entt::null; }
         operator entt::entity() const { return entity; }
         operator uint32_t() const { return (uint32_t)entity; }
+        bool operator==(const Entity& entity) const { return this->entity == entity.entity; }
 
         Entity* AddTag(std::string tag);
         Entity* AddTag(std::initializer_list<std::string> tags);

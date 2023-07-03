@@ -45,8 +45,7 @@ namespace ppr {
 
 	void Scene::Render(const Shr<EditorCamera>& camera)
 	{
-		RenderCommand::ClearStats();
-		Renderer2D::BeginRender(camera);
+
 
 		{
 			auto view = registry.view<TransformComponent, SpriteComponent>();
@@ -113,7 +112,6 @@ namespace ppr {
 				Renderer2D::DrawString(data);
 			}
 		}
-		Renderer2D::EndRender();
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)

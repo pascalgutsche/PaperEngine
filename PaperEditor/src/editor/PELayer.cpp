@@ -9,6 +9,8 @@
 
 #include "ImGuizmo/ImGuizmo.h"
 
+#include "renderer/Renderer2D.h"
+
 
 PELayer::PELayer()
 {
@@ -50,7 +52,6 @@ void PELayer::OnDetach()
 
 void PELayer::Update(const float dt)
 {
-	
 
 	CheckSceneChange();
 
@@ -61,19 +62,27 @@ void PELayer::OnEvent(Event& event)
 	EventDispatcher dispatcher(event);
 	dispatcher.dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent& e)
 	{
-		for (auto& port : viewports)
+		if (e.GetButton() == MOUSE_BUTTON_RIGHT)
 		{
-			if (port.viewport_hovered && e.GetButton() == MOUSE_BUTTON_RIGHT)
+			for (auto& port : viewports)
 			{
-				for (auto& port1 : viewports)
+				if (port.viewport_hovered)
 				{
-					port1.viewport_focused = false;
-					port1.last_viewport_focused = false;
+					for (auto& port1 : viewports)
+					{
+						port1.viewport_focused = false;
+						port1.last_viewport_focused = false;
+					}
+					Application::GetWindow()->CursorEnabled(false);
+					ImGui::SetWindowFocus(port.name.c_str());
+					port.viewport_focused = true;
 				}
-				Application::GetWindow()->CursorEnabled(false);
-				ImGui::SetWindowFocus(port.name.c_str());
-				port.viewport_focused = true;
 			}
+		}
+		if (e.GetButton() == MOUSE_BUTTON_LEFT)
+		{
+			if (hovered_entity == active_entity) active_entity = Entity();
+			else active_entity = hovered_entity;
 		}
 		
 		return false;
@@ -261,6 +270,10 @@ bool PELayer::AnyCameraActive() const
 			return true;
 	}
 	return false;
+}
+
+void PELayer::DrawOutline(Entity entity)
+{
 }
 
 void PELayer::CheckSceneChange()

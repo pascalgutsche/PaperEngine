@@ -79,6 +79,8 @@ namespace ppr {
         ALL, RECTANGLE, TRIANGLE, CIRCLE, LINE, TEXT
     };
 
+    struct RenderData2D;
+
     class Renderer2D {
     public:
         static void Init();
@@ -101,10 +103,13 @@ namespace ppr {
 
         static void DrawString(const TextRenderData& renderData);
 
-        
-        static void NextBatch(RenderTarget2D target);
+    	static void NextBatch(RenderTarget2D target);
+
+        static void DrawLineRect(const glm::mat4& transform, const glm::vec4& color, int entityID);
+
+
     private:
-        static void StartBatch();
+        static void StartBatch(RenderTarget2D target);
     };
 
 }

@@ -99,7 +99,7 @@ void PELayer::MainMenuBar()
 
 			if (ImGui::MenuItem("Save Scene"))
 			{
-				//YAMLSerializer::SceneSerialize(scene->)
+				YAMLSerializer::SceneSerialize(scene->GetPath(), scene);
 			}
 
 			if (ImGui::MenuItem("Save Scene As..."))

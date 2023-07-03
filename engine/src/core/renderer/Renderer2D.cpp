@@ -300,7 +300,7 @@ namespace ppr {
 		RenderCommand::UploadCamera(camera);
 		RenderCommand::EnableDepthTesting(false);
 
-		StartBatch();
+		StartBatch(ALL);
 	}
 
 	void Renderer2D::EndRender()
@@ -308,31 +308,46 @@ namespace ppr {
 		Render(ALL);
 	}
 
-	void Renderer2D::StartBatch()
+	void Renderer2D::StartBatch(RenderTarget2D target)
 	{
-		data.rectangleElementCount = 0;
-		data.rectangleVertexBufferPtr = data.rectangleVertexBufferBase;
-		data.rectangleTextureSlotIndex = 0;
+		if (target == RECTANGLE || target == ALL)
+		{
+			data.rectangleElementCount = 0;
+			data.rectangleVertexBufferPtr = data.rectangleVertexBufferBase;
+			data.rectangleTextureSlotIndex = 0;
+		}
 
-		data.triangleElementCount = 0;
-		data.triangleVertexBufferPtr = data.triangleVertexBufferBase;
-		data.triangleTextureSlotIndex = 0;
+		if (target == TRIANGLE || target == ALL)
+		{
+			data.triangleElementCount = 0;
+			data.triangleVertexBufferPtr = data.triangleVertexBufferBase;
+			data.triangleTextureSlotIndex = 0;
+		}
 
-		data.lineElementCount = 0;
-		data.lineVertexBufferPtr = data.lineVertexBufferBase;
+		if (target == LINE || target == ALL)
+		{
+			data.lineElementCount = 0;
+			data.lineVertexBufferPtr = data.lineVertexBufferBase;
+		}
 
-		data.circleElementCount = 0;
-		data.circleVertexBufferPtr = data.circleVertexBufferBase;
-		data.circleTextureSlotIndex = 0;
+		if (target == CIRCLE || target == ALL)
+		{
+			data.circleElementCount = 0;
+			data.circleVertexBufferPtr = data.circleVertexBufferBase;
+			data.circleTextureSlotIndex = 0;
+		}
 
-		data.textElementCount = 0;
-		data.textVertexBufferPtr = data.textVertexBufferBase;
+		if (target == TEXT || target == ALL)
+		{
+			data.textElementCount = 0;
+			data.textVertexBufferPtr = data.textVertexBufferBase;
+		}
 	}
 
 	void Renderer2D::NextBatch(RenderTarget2D target)
 	{
 		Render(target);
-		StartBatch();
+		StartBatch(target);
 	}
 
 	void Renderer2D::Render(RenderTarget2D target)
@@ -563,13 +578,58 @@ namespace ppr {
 
 		RenderCommand::GetStats().vertexCount++;
 
-		data.lineElementCount += 1;
+		data.lineElementCount += 2;
 
 		RenderCommand::GetStats().elementCount += 1;
 		RenderCommand::GetStats().objectCount++;
 
 		data.lineWidth = renderData.thickness;
 		NextBatch(LINE);
+	}
+
+	static void DrawLineS(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, int entityID)
+	{
+		data.lineVertexBufferPtr->position = p0;
+		data.lineVertexBufferPtr->color = color;
+		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(ProjectionMode::PERSPECTIVE);
+		data.lineVertexBufferPtr->entity_id = entityID;
+		data.lineVertexBufferPtr++;
+			 
+		data.lineVertexBufferPtr->position = p1;
+		data.lineVertexBufferPtr->color = color;
+		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(ProjectionMode::PERSPECTIVE);
+		data.lineVertexBufferPtr->entity_id = entityID;
+		data.lineVertexBufferPtr++;
+			 
+		data.lineElementCount += 2;
+	}
+
+	void Renderer2D::DrawLineRect(const glm::mat4& transform, const glm::vec4& color, int entityID)
+	{
+		glm::vec3 lineVertices[4];
+		for (size_t i = 0; i < 4; i++)
+			lineVertices[i] = transform * data.rectangleVertexData[i];
+
+		LineRenderData data;
+		data.color = color;
+		data.thickness = 7.0f;
+		data.enity_id = entityID;
+
+		data.point0 = lineVertices[0];
+		data.point1 = lineVertices[1];
+		DrawLine(data);
+
+		data.point0 = lineVertices[1];
+		data.point1 = lineVertices[2];
+		DrawLine(data);
+
+		data.point0 = lineVertices[2];
+		data.point1 = lineVertices[3];
+		DrawLine(data);
+
+		data.point0 = lineVertices[3];
+		data.point1 = lineVertices[0];
+		DrawLine(data);
 	}
 
 	void Renderer2D::DrawCircle(const CircleRenderData& renderData)

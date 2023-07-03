@@ -49,6 +49,8 @@ public:
 
 	bool AnyCameraActive() const;
 
+	void DrawOutline(Entity entity);
+
 private:
 	ImGuiID dockspace_id = 0;
 	ImGuiID dock_id_main = 0;

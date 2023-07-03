@@ -1,5 +1,5 @@
 Scene:
-  - 2d20c733-b833-4f1b-bced-ef0e2365ec9d
+  - f425c5f6-f626-4283-a4b2-0b86f5178eda
 Name: "[Scene]"
 Path: D:\dev\C++\PaperEngine\PaperEditor\assets\scenes\bunker.pescene
 Entities:
@@ -17,6 +17,6 @@ Entities:
         TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
         RegisterAlphaPixels: false
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [0, 1, 0]
         Scale: [1, 1, 1]
         Rotation: [0, 0, 0]

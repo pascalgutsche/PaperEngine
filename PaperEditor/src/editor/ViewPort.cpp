@@ -9,6 +9,8 @@
 
 #include <ImGuizmo/ImGuizmo.h>
 
+
+
 static void CameraMovement(const Shr<EditorCamera>& camera)
 {
 	const float dt = Application::GetDT();
@@ -38,6 +40,7 @@ static void CameraMovement(const Shr<EditorCamera>& camera)
 		camera->position.y -= 5 * dt;
 }
 
+#include "renderer/Renderer2D.h"
 void ViewPort::Panel(PELayer* peLayer)
 {
 	if (FramebufferSpecification spec = framebuffer->GetSpecification();
@@ -55,8 +58,18 @@ void ViewPort::Panel(PELayer* peLayer)
 	RenderCommand::Clear();
 	framebuffer->ClearAttachment(1, -1);
 
+	RenderCommand::ClearStats();
+	Renderer2D::BeginRender(camera);
 	if (peLayer->scene)
+	{
 		peLayer->scene->Render(camera);
+		if (peLayer->active_entity)
+		{
+			Renderer2D::DrawLineRect(peLayer->active_entity.GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), peLayer->active_entity);
+		}
+	}
+	Renderer2D::EndRender();
+
 
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -88,6 +101,7 @@ void ViewPort::Panel(PELayer* peLayer)
 		{
 			const wchar_t* path = (const wchar_t*)payload->Data;
 			peLayer->new_scene = YAMLSerializer::SceneDeserialize(path);
+			peLayer->new_scene->CreateEntity("Line").AddComponent<LineComponent>();
 		}
 		ImGui::EndDragDropTarget();
 	}
