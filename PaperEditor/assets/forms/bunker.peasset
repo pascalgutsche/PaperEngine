@@ -1,7 +1,7 @@
 Scene:
-  - 271df0e7-d897-4a43-bc0f-3d07ca1b2245
+  - 2d20c733-b833-4f1b-bced-ef0e2365ec9d
 Name: "[Scene]"
-Path: assets\scenes\bunker.pescene
+Path: D:\dev\C++\PaperEngine\PaperEditor\assets\scenes\bunker.pescene
 Entities:
   - Components:
       DataComponent:

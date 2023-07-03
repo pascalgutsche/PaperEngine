@@ -35,7 +35,7 @@ namespace ppr {
         UUID GetUUID() const { return uuid; }
         std::string GetName() const { return name; }
 
-        std::filesystem::path GetPath() const { return path; }
+        std::filesystem::path GetPath() { return path; }
         void SetPath(const std::filesystem::path& path ) { this->path = path; }
 
         auto& Registry() { return registry; }
