@@ -282,16 +282,17 @@ void PELayer::CheckSceneChange()
 	{
 		if (scene->GetPath().empty())
 		{
-			std::filesystem::path filePath = ProjectManager::SaveFile("");
-			if (!filePath.empty())
-			{
-				scene->SetPath(filePath);
-				YAMLSerializer::SceneSerialize(filePath, scene);
-				scene->SetClean();
-			}
+			scene->SetPath(ProjectManager::SaveFile(""));
 		}
-		scene = new_scene;
-		new_scene = nullptr;
+		std::string filePath = scene->GetPath().string();
+		if (!filePath.empty())
+		{
+			scene->SetPath(filePath);
+			YAMLSerializer::SceneSerialize(filePath, scene);
+			scene->SetClean();
+			scene = new_scene;
+			new_scene = nullptr;
+		}
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("No"))

@@ -45,7 +45,14 @@ namespace ppr
 		out << YAML::BeginMap;
 		out << YAML::Key << "Scene" << YAML::Value << scene->GetUUID();
 		out << YAML::Key << "Name" << YAML::Value << scene->GetName();
-		out << YAML::Key << "Path" << YAML::Value << scene->path.string();
+
+		std::string scene_path = scene->GetPath().string();
+		const std::string abs_path = std::filesystem::current_path().string() + "\\";
+		const size_t pos = scene_path.find(abs_path);
+		const std::filesystem::path path(scene_path.erase(pos, abs_path.length()));
+
+		
+		out << YAML::Key << "Path" << YAML::Value << path.string();
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 		scene->registry.each([&](auto entityID)
 			{
