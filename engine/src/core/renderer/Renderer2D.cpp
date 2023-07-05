@@ -587,23 +587,6 @@ namespace ppr {
 		NextBatch(LINE);
 	}
 
-	static void DrawLineS(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, int entityID)
-	{
-		data.lineVertexBufferPtr->position = p0;
-		data.lineVertexBufferPtr->color = color;
-		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(ProjectionMode::PERSPECTIVE);
-		data.lineVertexBufferPtr->entity_id = entityID;
-		data.lineVertexBufferPtr++;
-			 
-		data.lineVertexBufferPtr->position = p1;
-		data.lineVertexBufferPtr->color = color;
-		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(ProjectionMode::PERSPECTIVE);
-		data.lineVertexBufferPtr->entity_id = entityID;
-		data.lineVertexBufferPtr++;
-			 
-		data.lineElementCount += 2;
-	}
-
 	void Renderer2D::DrawLineRect(const glm::mat4& transform, const glm::vec4& color, int entityID)
 	{
 		glm::vec3 lineVertices[4];
@@ -612,7 +595,7 @@ namespace ppr {
 
 		LineRenderData data;
 		data.color = color;
-		data.thickness = 7.0f;
+		data.thickness = 1.0f; // 7.0f;
 		data.enity_id = entityID;
 
 		data.point0 = lineVertices[0];

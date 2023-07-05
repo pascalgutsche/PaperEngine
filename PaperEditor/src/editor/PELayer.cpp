@@ -79,10 +79,18 @@ void PELayer::OnEvent(Event& event)
 				}
 			}
 		}
-		if (e.GetButton() == MOUSE_BUTTON_LEFT)
+		if (e.GetButton() == MOUSE_BUTTON_LEFT && false)
 		{
-			if (hovered_entity == active_entity) active_entity = Entity();
-			else active_entity = hovered_entity;
+			if (hovered_entity == active_entity && gizmo_type == -1) 
+			{
+				active_entity = Entity();
+				LOG_DEBUG(11);
+			}
+			else if (!ImGuizmo::IsUsing()) 
+			{
+				active_entity = hovered_entity;
+				LOG_DEBUG(22);
+			}
 		}
 		
 		return false;
@@ -156,7 +164,6 @@ void PELayer::OnEvent(Event& event)
 					{
 						scene->DestroyEntity(active_entity);
 						active_entity = Entity();
-						hovered_entity = Entity();
 					}
 					break;
 				}

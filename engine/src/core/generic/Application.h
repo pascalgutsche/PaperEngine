@@ -22,8 +22,9 @@ namespace ppr {
 		Application(const WindowProps& props = WindowProps());
 		virtual ~Application();
 
-		virtual void Init();
-		
+		virtual void Init() = 0;
+		virtual void BeforePollEvents() {}
+
 		void Run();
 
 		void OnEvent(Event& event);

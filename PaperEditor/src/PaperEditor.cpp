@@ -6,17 +6,18 @@
 
 #include "project/ProjectManager.h"
 
-#include "editor/PELayer.h"
+#include <ImGuizmo/ImGuizmo.h>
 
 class PaperEditor : public Application {
 public:
 	PaperEditor()
 		: Application(WindowProps("PaperEditor"))
 	{
-		
+
 	}
 	
-	~PaperEditor() override {
+	~PaperEditor() override
+	{
 		
 	}
 
@@ -44,6 +45,19 @@ public:
 		//LOG_CORE_WARN(serializer.SceneDeserialize("bunker.yaml")->GetEntity(uuid).GetName());
 
 	}
+
+	void BeforePollEvents() override
+	{
+		is_using_imguizmo = ImGuizmo::IsUsing();
+	}
+
+	bool IsUsingImGuizmo()
+	{
+		return is_using_imguizmo;
+	}
+
+private:
+	bool is_using_imguizmo = false;
 
 };
 

@@ -38,8 +38,6 @@ namespace ppr {
 		Exit();
 	}
 
-	void Application::Init() { }
-
 	void Application::QueueEvents(Event* event)
 	{
 		GetInstance()->eventQueue.emplace(GetInstance()->eventQueue.begin(), event);
@@ -105,13 +103,9 @@ namespace ppr {
 
 		while (gameRunning)
 		{
-			if (!starting)
+			if (!starting) {}
 				window->PollEvents();
 			ProcessQueues();
-
-			RenderCommand::ClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-			RenderCommand::Clear();
-
 			
 			imguiLayer->Begin(dt);
 

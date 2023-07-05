@@ -49,6 +49,7 @@ namespace ppr
 		std::string scene_path = scene->GetPath().string();
 		const std::string abs_path = std::filesystem::current_path().string() + "\\";
 		const size_t pos = scene_path.find(abs_path);
+		ASSERT(pos != std::string::npos, "")
 		const std::filesystem::path path(scene_path.erase(pos, abs_path.length()));
 
 		
