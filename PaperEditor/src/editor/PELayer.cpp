@@ -246,6 +246,12 @@ void PELayer::Imgui(const float dt)
 	if (show_viewport_panel)
 		ViewPortPanel();
 
+	if (show_outliner_panel)
+		OutlinerPanel();
+
+	if (show_property_panel)
+		PropertiesPanel();
+
 	if (show_camera_settings_panel)
 		CameraSettingsPanel();
 

@@ -53,7 +53,7 @@ void ViewPort::Panel(PELayer* peLayer)
 	}
 
 	framebuffer->Bind();
-	
+
 	RenderCommand::ClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	RenderCommand::Clear();
 	framebuffer->ClearAttachment(1, -1);

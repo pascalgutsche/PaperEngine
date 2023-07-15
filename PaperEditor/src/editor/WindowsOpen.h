@@ -5,6 +5,8 @@ inline bool show_viewport_debug_panel = false;
 inline bool show_scene_debugger_panel = false;
 
 inline bool show_asset_manager_panel = true;
-inline bool show_application_panel = true;
+inline bool show_application_panel = false;
 inline bool show_viewport_panel = true;
 inline bool show_camera_settings_panel = false;
+inline bool show_outliner_panel = true;
+inline bool show_property_panel = true;

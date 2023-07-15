@@ -5,32 +5,38 @@
 #include "PELayer.h"
 #include "project/ProjectManager.h"
 
+void MenuItemPanel(const char* name, const char* shortcut, bool* p_open)
+{
+	if (ImGui::MenuItem(name, shortcut, *p_open))
+	{
+		*p_open = !*p_open;
+	}
+}
+
 void MenuTabView()
 {
 	if (ImGui::BeginMenu("View"))
 	{
-		if (ImGui::MenuItem("Asset Manager"))
-			show_asset_manager_panel = true;
+		MenuItemPanel("Asset Manager", nullptr, &show_asset_manager_panel);
 
-		if (ImGui::MenuItem("Application"))
-			show_application_panel = true;
+		MenuItemPanel("Application", nullptr, &show_application_panel);
 
-		if (ImGui::MenuItem("ViewPort"))
-			show_viewport_panel = true;
+		MenuItemPanel("ViewPort", nullptr, &show_viewport_panel);
+#
+		MenuItemPanel("Camera Settings", nullptr, &show_camera_settings_panel);
 
-		if (ImGui::MenuItem("Camera Settings"))
-			show_camera_settings_panel = true;
+		MenuItemPanel("Outliner", nullptr, &show_outliner_panel);
+
+		MenuItemPanel("Properties", nullptr, &show_property_panel);
 
 		ImGui::Separator();
 
-		if (ImGui::MenuItem("ImGui Demo Window"))
-			show_imgui_demo = true;
-		
-		if (ImGui::MenuItem("ViewPort Debugging"))
-			show_viewport_debug_panel = true;
+		MenuItemPanel("ImGui Demo Window", nullptr, &show_imgui_demo);
 
-		if (ImGui::MenuItem("Scene Debugger"))
-			show_scene_debugger_panel = true;
+		MenuItemPanel("ViewPort Debugging", nullptr, &show_viewport_debug_panel);
+
+		MenuItemPanel("Scene Debugger", nullptr, &show_scene_debugger_panel);
+
 
 		ImGui::EndMenu();
 	}

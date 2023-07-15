@@ -75,6 +75,8 @@ private:
 	void ApplicationPanel();
 	void SceneDebugger();
 	void AssetManagerPanel();
+	void OutlinerPanel();
+	void PropertiesPanel();
 
 	void CameraSettingsPanel();
 

@@ -66,7 +66,7 @@ namespace ppr {
 
 	ImGuiLayer::~ImGuiLayer()
 	{
-		Detach();
+		ImGui::DestroyContext();
 	}
 
 	void ImGuiLayer::OnAttach()

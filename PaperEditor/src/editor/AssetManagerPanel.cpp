@@ -50,7 +50,6 @@ void PELayer::AssetManagerPanel()
 	bool itemClicked = false;
 
 	const char* name = "Asset Manager: ";
-	std::stringstream stream;
 
 	if (first)
 		DockPanel(name, GetDockspaceBottom());
