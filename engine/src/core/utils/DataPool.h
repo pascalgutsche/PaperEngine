@@ -2,7 +2,7 @@
 #include "Engine.h"
 #include "utility.h"
 
-namespace ppr {
+namespace Paper {
 
     using Map = std::unordered_map<std::string, std::shared_ptr<void>>;
 

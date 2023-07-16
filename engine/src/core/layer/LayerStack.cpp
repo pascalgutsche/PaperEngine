@@ -2,7 +2,7 @@
 #include "LayerStack.h"
 
 
-namespace ppr
+namespace Paper
 {
 	LayerStack::LayerStack()
 	{

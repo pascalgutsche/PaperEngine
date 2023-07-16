@@ -4,7 +4,7 @@
 
 #include "renderer/VertexArray.h"
 
-namespace ppr
+namespace Paper
 {
     class OpenGLVertexArray : public VertexArray
 	{

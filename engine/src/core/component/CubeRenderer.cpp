@@ -4,7 +4,7 @@
 #include "renderer/Renderer3D.h"
 #include "component/LightComponent.h"
 
-namespace ppr
+namespace Paper
 {
 	CubeRenderer::CubeRenderer(glm::vec4 color)
 		: color(color), texture(nullptr), tilingFactor(1.0f) { }

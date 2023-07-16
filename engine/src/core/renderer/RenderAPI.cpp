@@ -4,7 +4,7 @@
 
 #include "OpenGL/OpenGLRenderAPI.h"
 
-namespace ppr
+namespace Paper
 {
 	RenderAPI::API RenderAPI::api = OPENGL;
 

@@ -1,7 +1,7 @@
 ﻿#include "Engine.h"
 #include "SpriteComponent.h"
 
-namespace ppr
+namespace Paper
 {
 
 	bool SpriteComponent::Serialize(YAML::Emitter& out)

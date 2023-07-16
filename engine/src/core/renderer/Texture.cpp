@@ -6,7 +6,7 @@
 
 #include "renderer/RenderAPI.h"
 
-namespace ppr {
+namespace Paper {
 
     Shr<Texture> Texture::CreateTexture(std::string filePath, std::string name)
     {

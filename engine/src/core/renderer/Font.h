@@ -9,7 +9,7 @@
 
 #include <filesystem>
 
-namespace ppr
+namespace Paper
 {
 	class Font
 	{

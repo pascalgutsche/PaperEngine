@@ -3,7 +3,7 @@
 
 #include "utils/FileDialog.h"
 
-namespace ppr
+namespace Paper
 {
 	class GLFWFileDialog : public FileDialog
 	{

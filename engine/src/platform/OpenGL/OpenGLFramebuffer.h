@@ -4,7 +4,7 @@
 
 #include "core/renderer/Framebuffer.h"
 
-namespace ppr
+namespace Paper
 {
 	class OpenGLFramebuffer : public Framebuffer
 	{

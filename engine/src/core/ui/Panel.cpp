@@ -3,7 +3,7 @@
 
 #include "renderer/Renderer2D.h"
 
-namespace ppr
+namespace Paper
 {
 	Panel::Panel(glm::vec4 color, const Transform& transform, Type type, std::string name)
 		: UIObject(name, transform, color), type(type) { }

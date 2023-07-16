@@ -4,7 +4,7 @@
 
 #include "UIObject.h"
 
-namespace ppr
+namespace Paper
 {
 	class PictureBox : public UIObject
 	{

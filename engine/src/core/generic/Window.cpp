@@ -4,7 +4,7 @@
 
 #include "GLFW/GLFWWindow.h"
 
-namespace ppr {
+namespace Paper {
 
     FRAMEWORK Window::framework = GLFW;
 

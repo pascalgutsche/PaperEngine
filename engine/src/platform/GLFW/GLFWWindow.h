@@ -7,7 +7,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace ppr
+namespace Paper
 {
 	class GLFWWindow : public Window
 	{

@@ -5,7 +5,7 @@
 #include "renderer/Buffer.h"
 
 
-namespace ppr
+namespace Paper
 {
 	class VertexArray
 	{

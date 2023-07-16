@@ -3,7 +3,7 @@
 
 #include <boost/uuid/uuid.hpp>
 
-namespace ppr
+namespace Paper
 {
 	class UUID {
 	public:
@@ -31,9 +31,9 @@ namespace std {
 	template <typename T> struct hash;
 
 	template<>
-	struct hash<ppr::UUID>
+	struct hash<Paper::UUID>
 	{
-		size_t operator()(const ppr::UUID& uuid) const noexcept
+		size_t operator()(const Paper::UUID& uuid) const noexcept
 		{
 			return std::hash<std::string_view>{}(uuid.toString());
 		}

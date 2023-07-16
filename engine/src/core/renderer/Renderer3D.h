@@ -8,7 +8,7 @@
 
 #define DEFAULT_COLOR glm::vec4(0.925f, 0.329f, 0.956, 1.0f)
 
-namespace ppr {
+namespace Paper {
 
     struct EdgeRenderData3D
     {

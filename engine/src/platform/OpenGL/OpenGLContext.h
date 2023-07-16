@@ -4,7 +4,7 @@
 
 #include "renderer/Context.h"
 
-namespace ppr {
+namespace Paper {
 	class OpenGLContext : public Context
 	{
 	public:

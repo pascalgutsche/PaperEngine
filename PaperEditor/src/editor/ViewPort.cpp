@@ -52,6 +52,9 @@ void ViewPort::Panel(PELayer* peLayer)
 		camera->aspect_ratio = viewport_size.x / viewport_size.y;
 	}
 
+	RenderCommand::ClearColor(glm::vec4(0.0f));
+	RenderCommand::Clear();
+
 	framebuffer->Bind();
 	
 	RenderCommand::ClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));

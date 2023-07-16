@@ -9,7 +9,7 @@
 
 #include "MSDFData.h"
 
-namespace ppr
+namespace Paper
 {
 	template<typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
 	

@@ -5,7 +5,7 @@
 #include "renderer/Texture.h"
 #include "renderer/Font.h"
 
-namespace ppr {
+namespace Paper {
 
     // declare static maps in order to find a reference
     Map DataPool::dataPool;

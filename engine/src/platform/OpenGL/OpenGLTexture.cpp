@@ -7,7 +7,7 @@
 #include <STB_IMAGE/stb_image.h>
 
 
-namespace ppr
+namespace Paper
 {
 
 	static GLenum ImageFormatToGLDataFormat(ImageFormat format)

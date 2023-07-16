@@ -1,7 +1,7 @@
 ﻿#include "Engine.h"
 #include "DataComponent.h"
 
-namespace ppr
+namespace Paper
 {
 	bool DataComponent::Serialize(YAML::Emitter& out)
 	{

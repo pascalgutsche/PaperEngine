@@ -4,14 +4,14 @@
 #ifdef INCLUDE_MAIN
 
 
-extern ppr::Application* ppr::CreateApplication();
+extern Paper::Application* Paper::CreateApplication();
 
 
 int main(int argc, char ** argv) 
 {
 	do
 	{
-		auto app = ppr::CreateApplication();
+		auto app = Paper::CreateApplication();
 		app->Run();
 		delete app;
 	} while (Application::restart);

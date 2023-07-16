@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace ppr {
+namespace Paper {
 
 	static bool IsDepthFormat(FramebufferTexFormat format)
 	{

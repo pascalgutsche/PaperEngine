@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace ppr
+namespace Paper
 {
 	static GLenum GLSLDataTypeToOpenGlBaseType(GLSLDataType type)
 	{

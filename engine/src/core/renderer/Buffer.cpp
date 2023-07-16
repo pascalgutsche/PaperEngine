@@ -5,7 +5,7 @@
 
 #include "OpenGL/OpenGLBuffer.h"
 
-namespace ppr
+namespace Paper
 {
 	Shr<VertexBuffer> VertexBuffer::CreateBuffer(BufferLayout& layout, uint32_t size)
 	{

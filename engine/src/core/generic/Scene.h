@@ -6,7 +6,7 @@
 
 #include "generic/EditorCamera.h"
 
-namespace ppr {
+namespace Paper {
 
     class Entity;
 

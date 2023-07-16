@@ -2,7 +2,7 @@
 #include "Engine.h"
 #include "Transform.h"
 
-namespace ppr
+namespace Paper
 {
 	class Object
 	{

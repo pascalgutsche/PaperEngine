@@ -4,7 +4,7 @@
 
 #include "Scene.h"
 
-namespace ppr {
+namespace Paper {
 
     class Layer;
     class Scene;

@@ -11,7 +11,7 @@
 #include "GLFW/glfw3.h"
 #include "utils/Core.h"
 
-namespace ppr
+namespace Paper
 {
 	bool Input::IsKeyPressed(int key_code)
 	{

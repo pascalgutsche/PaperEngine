@@ -3,7 +3,7 @@
 #include "Core.h"
 
 #if 0
-namespace ppr
+namespace Paper
 {
 	void Core::Init()
 	{

@@ -4,7 +4,7 @@
 
 #include <MINIAUDIO/miniaudio.h>
 
-namespace ppr {
+namespace Paper {
 
     class Sound
     {

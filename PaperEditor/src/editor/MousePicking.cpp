@@ -48,12 +48,10 @@ void PELayer::MousePicking()
 		if (hovered_entity == active_entity) 
 		{
 			active_entity = Entity();
-			LOG_DEBUG(1);
 		}
 		else if (!ImGuizmo::IsUsing())
 		{
 			active_entity = hovered_entity;
-			LOG_DEBUG(2);
 		}
 	}
 }

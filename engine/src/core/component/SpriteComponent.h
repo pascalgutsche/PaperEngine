@@ -7,7 +7,7 @@
 #include "serializer/Serializable.h"
 #include "utils/DataPool.h"
 
-namespace ppr {
+namespace Paper {
 
 	enum class Geometry
 	{

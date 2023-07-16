@@ -6,7 +6,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-namespace ppr
+namespace Paper
 {
 	struct DefaultValues
 	{

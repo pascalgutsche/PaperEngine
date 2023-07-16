@@ -5,7 +5,7 @@
 
 #if 0
 
-namespace ppr
+namespace Paper
 {
 	class Core
 	{

@@ -4,7 +4,7 @@
 
 #include "event/Event.h"
 
-namespace ppr {
+namespace Paper {
 
 	class KeyPressedEvent : public Event {
 	private:

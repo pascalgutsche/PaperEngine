@@ -4,7 +4,7 @@
 
 #include "event/Event.h"
 
-namespace ppr {
+namespace Paper {
 
     enum FRAMEWORK
     {

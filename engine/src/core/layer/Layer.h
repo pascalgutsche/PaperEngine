@@ -8,7 +8,7 @@
 
 #include "utils/DataPool.h"
 
-namespace ppr
+namespace Paper
 {
 	class UIObject;
 	class Layer

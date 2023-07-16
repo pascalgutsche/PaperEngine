@@ -7,7 +7,7 @@
 #include "component/TransformComponent.h"
 
 
-namespace ppr {
+namespace Paper {
 	Entity::Entity(entt::entity entity, Scene* scene)
 		: scene(scene), entity(entity) { }
 

@@ -6,7 +6,7 @@
 #include "ui/Button.h"
 #include "ui/UIObject.h"
 
-namespace ppr
+namespace Paper
 {
 
 	Layer::~Layer()

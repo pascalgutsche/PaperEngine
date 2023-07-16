@@ -4,7 +4,7 @@
 #include "UIObject.h"
 #include "event/Event.h"
 
-namespace ppr
+namespace Paper
 {
 	using ButtonEventCallbackFunction = std::function<void()>;
 

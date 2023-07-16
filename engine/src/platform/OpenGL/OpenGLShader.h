@@ -4,7 +4,7 @@
 
 #include "core/renderer/Shader.h"
 
-namespace ppr
+namespace Paper
 {
 	class OpenGLShader : public Shader
 	{

@@ -5,7 +5,7 @@
 #include "generic/Application.h"
 #include "renderer/Texture.h"
 
-namespace ppr
+namespace Paper
 {
 	class CubeRenderer
 	{

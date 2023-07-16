@@ -12,7 +12,7 @@
 
 class EditorCamera;
 
-namespace ppr {
+namespace Paper {
 
     struct EdgeRenderData
     {

@@ -2,7 +2,7 @@
 #include "Object.h"
 #include "utils/Core.h"
 
-namespace ppr
+namespace Paper
 {
 	Object::Object(std::string name, const Transform& transform)
 		: transform(transform), name(name)

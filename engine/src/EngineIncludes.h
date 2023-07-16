@@ -20,6 +20,7 @@
 #include "core/generic/Sound.h"
 
 #include "core/imgui/ImGuiLayer.h"
+#include "core/imgui/ImGuiUtils.h"
 
 #include "core/layer/Layer.h"
 #include "core/layer/LayerStack.h"
@@ -41,4 +42,4 @@
 #include "core/utils/FileDialog.h"
 
 #include "utility.h"
-using namespace ppr;
+using namespace Paper;

@@ -6,7 +6,7 @@
 
 #include "serializer/Serializable.h"
 
-namespace ppr
+namespace Paper
 {
 	struct TransformComponent : Serializable
 	{

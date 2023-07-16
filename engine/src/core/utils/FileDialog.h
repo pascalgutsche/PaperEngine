@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine.h"
 
-namespace ppr
+namespace Paper
 {
 	class FileDialog {
 	public:

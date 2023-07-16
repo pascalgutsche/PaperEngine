@@ -51,7 +51,7 @@ void PELayer::AssetManagerPanel()
 	const char* name = "Asset Manager: ";
 
 	if (asset_manager_panel_first)
-		DockPanel(name, GetDockspaceBottom());
+		DockPanel(name, dock_id_down);
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX;
 

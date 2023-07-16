@@ -3,7 +3,7 @@
 
 #include "utility.h"
 
-namespace ppr {
+namespace Paper {
 	namespace Utils
 	{
         std::string GetSystemDateInString();

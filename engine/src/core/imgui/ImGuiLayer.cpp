@@ -49,7 +49,7 @@ namespace Colors
 }
 
 
-namespace ppr {
+namespace Paper {
 
 	void ImGuiLayer::SetDarkThemeV2Colors()
 	{

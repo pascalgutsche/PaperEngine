@@ -29,7 +29,7 @@ public:
 
 		
 		//Shr<Scene> scene = MakeShr<Scene>();
-		//ppr::UUID uuid = scene->CreateEntity("lol").GetUUID();
+		//Paper::UUID uuid = scene->CreateEntity("lol").GetUUID();
 		//
 		//scene->GetEntity(uuid).AddComponent<SpriteComponent>();
 		//scene->GetEntity(uuid).AddComponent<CircleComponent>();
@@ -61,6 +61,6 @@ private:
 
 };
 
-Application* ppr::CreateApplication() {
+Application* Paper::CreateApplication() {
 	return new PaperEditor();
 }

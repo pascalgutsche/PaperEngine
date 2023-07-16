@@ -2,7 +2,7 @@
 
 #include "utils/Utils.h"
 
-namespace ppr {
+namespace Paper {
     namespace Utils {
         std::string Utils::GetSystemDateInString() {
             std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());

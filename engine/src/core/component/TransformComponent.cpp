@@ -1,7 +1,7 @@
 ﻿#include "Engine.h"
 #include "TransformComponent.h"
 
-namespace ppr
+namespace Paper
 {
 	bool TransformComponent::Serialize(YAML::Emitter& out)
 	{

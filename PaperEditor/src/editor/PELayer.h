@@ -34,13 +34,15 @@ public:
 
 	void DockPanel(std::string name, ImGuiID dock_id);
 
-	ImGuiID GetDockspaceMain() const { return dock_id_main; }
-	ImGuiID GetDockspaceTop() const { return dock_id_top; }
-	ImGuiID GetDockspaceBottom() const { return dock_id_down; }
-	ImGuiID GetDockspaceLeft() const { return dock_id_left; }
-	ImGuiID GetDockspaceRight() const { return dock_id_right; }
-	ImGuiID GetDockspaceRight2() const { return dock_id_right2; }
-	ImGuiID GetDockspaceLeftBottom() const { return dock_id_left_bottom; }
+	ImGuiID dockspace_id = 0;
+	ImGuiID dock_id_main = 0;
+	ImGuiID dock_id_top = 0;
+	ImGuiID dock_id_down = 0;
+	ImGuiID dock_id_left = 0;
+	ImGuiID dock_id_right = 0;
+	ImGuiID dock_id_right_bottom = 0;
+	ImGuiID dock_id_right2 = 0;
+	ImGuiID dock_id_left_bottom = 0;
 
 	Entity hovered_entity;
 	Entity active_entity;
@@ -52,14 +54,7 @@ public:
 	void DrawOutline(Entity entity);
 
 private:
-	ImGuiID dockspace_id = 0;
-	ImGuiID dock_id_main = 0;
-	ImGuiID dock_id_top = 0;
-	ImGuiID dock_id_down = 0;
-	ImGuiID dock_id_left = 0;
-	ImGuiID dock_id_right = 0;
-	ImGuiID dock_id_right2 = 0;
-	ImGuiID dock_id_left_bottom = 0;
+
 	std::unordered_map<std::string, ImGuiID> dockPanelQueue;
 
 	Shr<Scene> scene = nullptr;

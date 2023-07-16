@@ -3,7 +3,7 @@
 
 #include "UIObject.h"
 
-namespace ppr
+namespace Paper
 {
 	class Label : public UIObject
 	{

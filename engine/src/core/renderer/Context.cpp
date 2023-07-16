@@ -5,7 +5,7 @@
 
 #include "OpenGL/OpenGLContext.h"
 
-namespace ppr {
+namespace Paper {
 	Shr<Context> Context::CreateContext(void* window)
 	{
 		switch (RenderAPI::GetAPI())

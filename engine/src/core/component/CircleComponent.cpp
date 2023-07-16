@@ -3,7 +3,7 @@
 
 #include "utils/DataPool.h"
 
-namespace ppr
+namespace Paper
 {
 	bool CircleComponent::Serialize(YAML::Emitter& out)
 	{

@@ -62,8 +62,9 @@ void PELayer::OutlinerPanel()
 	std::string name = "Outliner";
 
 	if (outliner_panel_first)
-		DockPanel(name, GetDockspaceRight());
+		DockPanel(name, dock_id_right);
 
+	UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 
 	ImGui::Begin(name.c_str(), &show_outliner_panel);
 

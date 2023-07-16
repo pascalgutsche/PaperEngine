@@ -4,7 +4,7 @@
 #include "generic/Object.h"
 #include "utils/DataPool.h"
 
-namespace ppr
+namespace Paper
 {
 	enum class Type
 	{

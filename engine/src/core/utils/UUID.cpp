@@ -6,7 +6,7 @@
 #include <boost/lexical_cast.hpp>
 
 
-namespace ppr
+namespace Paper
 {
     UUID::UUID()
 	{

@@ -4,7 +4,7 @@
 #include "renderer/Renderer2D.h"
 
 
-namespace ppr
+namespace Paper
 {
 	Button::Button(glm::vec4 color, const Transform& transform, Type type, const ButtonEventCallbackFunction& buttonEventFunction, std::string name)
 		: UIObject(name, transform, color), type(type), buttonEventFunction(buttonEventFunction)

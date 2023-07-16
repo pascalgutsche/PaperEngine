@@ -2,7 +2,7 @@
 #include "component/2D/SpriteSheet.h"
 #include "renderer/Renderer2D.h"
 
-namespace ppr
+namespace Paper
 {
 	SpriteSheet::SpriteSheet(glm::vec4 color, Shr<Texture> texture, float spriteWidth, float spriteHeight, float paddingWidth, float paddingHeight, glm::vec2 selectedSprite, bool registerAlphaPixelsToEvent)
 		: color(color), texture(texture), spriteWidth(spriteWidth), spriteHeight(spriteHeight),

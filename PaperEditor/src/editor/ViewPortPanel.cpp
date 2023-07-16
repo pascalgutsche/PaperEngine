@@ -171,7 +171,7 @@ void PELayer::ViewPortPanel()
 	const char* name = "ViewPorts: ";
 
 	if (viewport_panel_first)
-		DockPanel(name, GetDockspaceMain());
+		DockPanel(name, dock_id_main);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);

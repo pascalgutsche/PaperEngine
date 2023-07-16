@@ -11,7 +11,7 @@
 #include "stb_image.h"
 
 
-namespace ppr
+namespace Paper
 {
     static void errorCallback(int error, const char* description)
     {

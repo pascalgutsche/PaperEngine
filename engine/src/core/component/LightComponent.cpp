@@ -1,7 +1,7 @@
 ﻿#include "Engine.h"
 #include "LightComponent.h"
 
-namespace ppr
+namespace Paper
 {
 	LightComponent::LightComponent()
 	{

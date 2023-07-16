@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace ppr
+namespace Paper
 {
     OpenGLShader::OpenGLShader(std::string filePath) {
         this->filePath = filePath;

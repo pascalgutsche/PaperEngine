@@ -11,7 +11,7 @@
 
 
 
-namespace ppr {
+namespace Paper {
 
 	class ImGuiLayer;
 

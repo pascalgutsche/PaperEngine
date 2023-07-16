@@ -4,7 +4,7 @@
 
 #include "core/renderer/Buffer.h"
 
-namespace ppr
+namespace Paper
 {
 	class OpenGLVertexBuffer : public VertexBuffer
 	{

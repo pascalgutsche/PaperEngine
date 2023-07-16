@@ -5,7 +5,7 @@
 
 #include "GLFW/GLFWFileDialog.h"
 
-namespace ppr
+namespace Paper
 {
 	Shr<FileDialog> FileDialog::Create()
 	{

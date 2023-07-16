@@ -2,7 +2,7 @@
 #include "Engine.h"
 #include "utility.h"
 
-namespace ppr {
+namespace Paper {
 
 	class Input
 	{

@@ -5,7 +5,7 @@
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
 
-namespace ppr
+namespace Paper
 {
 	Shr<RenderAPI> RenderCommand::rendererAPI = RenderAPI::CreateAPI();
 	SharedRenderData RenderCommand::sharedData;

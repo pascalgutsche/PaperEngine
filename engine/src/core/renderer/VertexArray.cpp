@@ -5,7 +5,7 @@
 
 #include "renderer/RenderAPI.h"
 
-namespace ppr {
+namespace Paper {
 
 	Shr<VertexArray> VertexArray::CreateArray()
 	{

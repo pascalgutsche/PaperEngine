@@ -4,7 +4,7 @@
 
 #include "component/2D/Sprite.h"
 
-namespace ppr
+namespace Paper
 {
     class SpriteSheet
     {

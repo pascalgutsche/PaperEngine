@@ -5,7 +5,7 @@
 #include "renderer/VertexArray.h"
 #include "renderer/RenderAPI.h"
 #include "generic/EditorCamera.h"
-namespace ppr
+namespace Paper
 {
 	struct SharedRenderData
 	{

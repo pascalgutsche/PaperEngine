@@ -5,7 +5,7 @@
 
 #include "Components.h"
 
-namespace ppr
+namespace Paper
 {
 	YAMLSerializer::YAMLSerializer()
 	{

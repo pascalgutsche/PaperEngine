@@ -5,7 +5,7 @@
 
 #include "serializer/Serializable.h"
 
-namespace ppr
+namespace Paper
 {
     struct CircleComponent : Serializable
 	{

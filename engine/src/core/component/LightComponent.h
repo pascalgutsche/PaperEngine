@@ -2,7 +2,7 @@
 #include "Engine.h"
 
 
-namespace ppr
+namespace Paper
 {
 	class LightComponent
 	{

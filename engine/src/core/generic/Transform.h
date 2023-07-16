@@ -3,7 +3,7 @@
 #include "utility.h"
 
 
-namespace ppr {
+namespace Paper {
 
     class Transform {
     public:

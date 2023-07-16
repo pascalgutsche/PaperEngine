@@ -13,7 +13,7 @@
 #include "utils/Core.h"
 
 
-namespace ppr {
+namespace Paper {
 
 	Application* Application::instance;
 

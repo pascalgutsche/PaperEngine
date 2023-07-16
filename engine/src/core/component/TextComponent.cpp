@@ -3,7 +3,7 @@
 
 #include "renderer/Font.h"
 
-namespace ppr
+namespace Paper
 {
 	bool TextComponent::Serialize(YAML::Emitter& out)
 	{

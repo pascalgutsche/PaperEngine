@@ -107,15 +107,15 @@ namespace YAML
 	};
 
 	template <>
-	struct convert<ppr::UUID> {
-		static Node encode(const ppr::UUID& rhs)
+	struct convert<Paper::UUID> {
+		static Node encode(const Paper::UUID& rhs)
 		{
 			Node node;
 			node.push_back(rhs.toString());
 			return node;
 		}
 
-		static bool decode(const Node& node, ppr::UUID& rhs)
+		static bool decode(const Node& node, Paper::UUID& rhs)
 		{
 			rhs.Set(node[0].as<std::string>());
 			return true;
@@ -157,7 +157,7 @@ namespace YAML
 	};
 }
 
-namespace ppr
+namespace Paper
 {
 	inline YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
 	{

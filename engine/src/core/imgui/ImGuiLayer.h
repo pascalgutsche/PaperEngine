@@ -10,7 +10,7 @@
 #include <implot.h>
 #include <implot_internal.h>
 
-namespace ppr {
+namespace Paper {
 
     class ImGuiLayer : public Layer {
     

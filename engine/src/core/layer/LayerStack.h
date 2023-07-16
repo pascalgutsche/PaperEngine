@@ -4,7 +4,7 @@
 
 #include "Layer.h"
 
-namespace ppr
+namespace Paper
 {
 
 	class LayerStack

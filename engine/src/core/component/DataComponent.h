@@ -4,7 +4,7 @@
 #include "utils/UUID.h"
 #include "serializer/Serializable.h"
 
-namespace ppr
+namespace Paper
 {
 	struct DataComponent : Serializable
 	{

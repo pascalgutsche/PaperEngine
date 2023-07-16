@@ -6,7 +6,7 @@
 //WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 //AppTick, AppUpdate, AppRender,
 
-namespace ppr {
+namespace Paper {
 	class WindowCloseEvent final : public Event
 	{
 	public:

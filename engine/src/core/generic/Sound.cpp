@@ -3,7 +3,7 @@
 #include "Sound.h"
 
 
-namespace ppr {
+namespace Paper {
 
     Sound::Sound()
     {

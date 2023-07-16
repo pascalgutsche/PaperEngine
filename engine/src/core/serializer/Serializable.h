@@ -5,7 +5,7 @@
 #include "YAMLSerializer.h"
 
 
-namespace ppr {
+namespace Paper {
 
     struct Serializable {
 	    virtual ~Serializable() = default;

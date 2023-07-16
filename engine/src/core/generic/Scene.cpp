@@ -15,7 +15,7 @@
 #include "component/TextComponent.h"
 
 
-namespace ppr {
+namespace Paper {
 
 	Scene::Scene()
 		: uuid(UUID()), name("[Scene]"), is_dirty(true) { }

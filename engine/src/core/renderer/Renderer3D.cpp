@@ -7,7 +7,7 @@
 #include "generic/Application.h"
 #include "imgui/ImGuiLayer.h"
 
-namespace ppr {
+namespace Paper {
 
     struct EdgeVertex
     {
