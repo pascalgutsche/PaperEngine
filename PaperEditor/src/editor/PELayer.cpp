@@ -212,7 +212,7 @@ void PELayer::Imgui(const float dt)
 		ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->GetWidth() + 500, Application::GetWindow()->GetHeight() + 500));
 
 		dock_id_main = dockspace_id;
-		
+
 		dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main,       ImGuiDir_Right, 0.2f, nullptr, &dock_id_main);
 		dock_id_right_bottom = ImGui::DockBuilderSplitNode(dock_id_right,ImGuiDir_Down, 0.5f, nullptr, &dock_id_right);
 		dock_id_left = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Left, 0.2f, nullptr, &dock_id_main);
