@@ -59,10 +59,9 @@ void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 
 void PELayer::OutlinerPanel()
 {
-	static bool first = true;
 	std::string name = "Outliner";
 
-	if (first)
+	if (outliner_panel_first)
 		DockPanel(name, GetDockspaceRight());
 
 
@@ -76,5 +75,5 @@ void PELayer::OutlinerPanel()
 
 	ImGui::End();
 
-	first = false;
+	outliner_panel_first = false;
 }

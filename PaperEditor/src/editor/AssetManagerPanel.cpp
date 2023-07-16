@@ -42,7 +42,6 @@ static void displayText(std::vector<std::string>& filenames)
 
 void PELayer::AssetManagerPanel()
 {
-	static bool first = true;
 	static float size = 120.0f;
 	static std::filesystem::path path = "assets/";
 
@@ -51,7 +50,7 @@ void PELayer::AssetManagerPanel()
 
 	const char* name = "Asset Manager: ";
 
-	if (first)
+	if (asset_manager_panel_first)
 		DockPanel(name, GetDockspaceBottom());
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX;
@@ -145,5 +144,5 @@ void PELayer::AssetManagerPanel()
 
 	ImGui::End();
 
-	first = false;
+	asset_manager_panel_first = false;
 }

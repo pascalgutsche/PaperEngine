@@ -87,6 +87,16 @@ private:
 
 	void ViewPortDebugging();
 
+	bool first_frame = true;
+	bool viewport_panel_first = true;
+	bool application_panel_first = true;
+	bool scene_debugger_panel_first = true;
+	bool asset_manager_panel_first = true;
+	bool properties_panel_first = true;
+	bool outliner_panel_first = true;
+	bool camera_settings_panel_first = true;
+	bool viewport_debugging_panel_first = true;
+
 
 	int gizmo_type = -1;
 

@@ -285,6 +285,7 @@ namespace ppr {
 	{
 		delete[] data.rectangleVertexBufferBase;
 		delete[] data.triangleVertexBufferBase;
+		delete[] data.circleVertexBufferBase;
 		delete[] data.lineVertexBufferBase;
 		delete[] data.textVertexBufferBase;
 	 }

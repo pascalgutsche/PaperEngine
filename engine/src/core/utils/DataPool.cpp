@@ -102,7 +102,11 @@ namespace ppr {
         return font;
     }
 
-    
+    void DataPool::ErasePool()
+    {
+        dataPool.clear();
+    }
+
 
     int ProjectionModeToInt(const ProjectionMode& mode)
     {

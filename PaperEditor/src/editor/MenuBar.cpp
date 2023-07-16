@@ -75,6 +75,9 @@ void PELayer::MainMenuBar()
 			if (ImGui::MenuItem("Exit"))
 				Application::GetInstance()->Exit();
 
+			if (ImGui::MenuItem("Restart"))
+				Application::GetInstance()->Exit(true);
+
 			ImGui::EndMenu();
 		}
 

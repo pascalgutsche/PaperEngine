@@ -16,6 +16,7 @@ namespace ppr
         // this magic saves the file into the string
         std::string content((std::istreambuf_iterator<char>(ifs)),
             (std::istreambuf_iterator<char>()));
+        ifs.close();
 
         // declare shader structure
         int vertexPos = content.find("#type vertex");
@@ -28,6 +29,7 @@ namespace ppr
             fragmentSources += content[i];
         }
         LOG_CORE_TRACE("Loaded shader: '" + filePath + "'");
+
     }
     OpenGLShader::~OpenGLShader() { }
 

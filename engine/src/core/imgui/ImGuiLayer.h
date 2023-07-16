@@ -18,6 +18,8 @@ namespace ppr {
         ImGuiLayer();
     	~ImGuiLayer() override;
 
+        void SetDarkThemeV2Colors();
+
         void OnAttach() override;
         void OnDetach() override;
         void Update(const float dt) override { };

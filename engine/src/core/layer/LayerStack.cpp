@@ -13,6 +13,7 @@ namespace ppr
 	{
 		for (Layer* layer : layers)
 		{
+			layer->Detach();
 			delete layer;
 		}
 		layers.clear();

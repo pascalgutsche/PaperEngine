@@ -163,7 +163,6 @@ void PELayer::EnableCamera(CameraModes mode)
 
 void PELayer::ViewPortPanel()
 {
-	static bool first = true;
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 	window_flags |= ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_NoDocking;
 	window_flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar;
@@ -171,7 +170,7 @@ void PELayer::ViewPortPanel()
 
 	const char* name = "ViewPorts: ";
 
-	if (first)
+	if (viewport_panel_first)
 		DockPanel(name, GetDockspaceMain());
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -205,14 +204,14 @@ void PELayer::ViewPortPanel()
 		if (port.is_visible)
 			port.Panel(this);
 
-	if (camera_mode_changed)
+	if (camera_mode_changed && dockspace_size.x > 0.0f && dockspace_size.y > 0.0f)
 	{
 		EnableCamera(camera_mode);
 		DockCameraPanel(camera_mode, dock_main_id, dockspace_size);
 		camera_mode_changed = false;
 	}
 
-	first = false;
+	viewport_panel_first = false;
 }
 
 void PELayer::ViewPortDebugging()

@@ -5,8 +5,6 @@
 
 void PELayer::CameraSettingsPanel()
 {
-	static bool first = true;
-
 	ImGui::Begin("Camera Settings", &show_camera_settings_panel, ImGuiWindowFlags_AlwaysAutoResize);
 
 	if (ImGui::BeginTabBar("##tabs"))
@@ -50,5 +48,5 @@ void PELayer::CameraSettingsPanel()
 	ImGui::End();
 
 
-	first = false;
+	camera_settings_panel_first = false;
 }

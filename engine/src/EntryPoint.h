@@ -6,11 +6,15 @@
 
 extern ppr::Application* ppr::CreateApplication();
 
+
 int main(int argc, char ** argv) 
 {
-	auto app = ppr::CreateApplication();
-	app->Run();
-	delete app;
+	do
+	{
+		auto app = ppr::CreateApplication();
+		app->Run();
+		delete app;
+	} while (Application::restart);
 }
 
 #endif

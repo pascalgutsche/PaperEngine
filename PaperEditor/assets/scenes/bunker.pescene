@@ -1,8 +1,24 @@
 Scene:
-  - 271df0e7-d897-4a43-bc0f-3d07ca1b2245
+  - e7de72e9-49e3-4f27-a919-3e461ab8d937
 Name: "[Scene]"
 Path: assets\scenes\bunker.pescene
 Entities:
+  - Components:
+      DataComponent:
+        UUID:
+          - 8614edd3-2240-46c2-aa74-1311864921e1
+        Name: Line
+        Tags:
+          []
+      LineComponent:
+        Color: [1, 1, 1, 1]
+        Thickness: 1
+        PositionA: [-0.5, 0, 0]
+        PositionB: [0.5, 0, 0]
+      TransformComponent:
+        Position: [0, 0, 0]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]
   - Components:
       DataComponent:
         UUID:
@@ -17,6 +33,6 @@ Entities:
         TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
         RegisterAlphaPixels: false
       TransformComponent:
-        Position: [0, 1, 0]
+        Position: [0, 0, 0]
         Scale: [1, 1, 1]
         Rotation: [0, 0, 0]

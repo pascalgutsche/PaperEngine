@@ -39,6 +39,7 @@ namespace ppr
 		static SharedRenderData sharedData;
 
 		static void Init();
+		static void Shutdown();
 
 		static void UploadCamera(const Shr<EditorCamera>& camera);
 		static SharedRenderData::Stats& GetStats();

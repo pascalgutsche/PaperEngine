@@ -21,6 +21,12 @@ namespace ppr
 		Renderer3D::Init();
 	}
 
+	void RenderCommand::Shutdown()
+	{
+		Renderer2D::Shutdown();
+		Renderer3D::Shutdown();
+	}
+
 	void RenderCommand::UploadCamera(const Shr<EditorCamera>& camera)
 	{
 		sharedData.cameraData.uOrthographic = camera->GetOrthographicMatrix();

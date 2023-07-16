@@ -5,11 +5,10 @@
 
 void PELayer::PropertiesPanel()
 {
-	static bool first = true;
 
 	ImGui::Begin("Properties", &show_property_panel);
 
 	ImGui::End();
 
-	first = false;
+	properties_panel_first = false;
 }

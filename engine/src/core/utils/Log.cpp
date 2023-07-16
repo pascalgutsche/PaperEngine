@@ -16,4 +16,11 @@ namespace ppr {
 		clientLogger = spdlog::stdout_color_mt("GAME");
 		clientLogger->set_level(spdlog::level::trace);
 	}
+
+	void Log::Shutdown()
+	{
+		clientLogger.reset();
+		coreLogger.reset();
+		spdlog::drop_all();
+	}
 }

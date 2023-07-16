@@ -22,6 +22,8 @@ namespace ppr {
         static Shr<Texture> GetTexture(std::string textureName, bool wholePath = false);
 
         static Shr<Font> GetFont(std::string fontName);
+
+        static void ErasePool();
     };
 
     enum class ProjectionMode { PERSPECTIVE, ORTHOGRAPHIC, SCREEN };

@@ -31,7 +31,13 @@ namespace ppr {
 
 		static void ChangeScene(Scene* new_scene);
 
-		void Exit() { gameRunning = false; }
+		void Exit(bool _restart = false)
+		{
+			gameRunning = false;
+			restart = _restart;
+		}
+
+		void RemoveAllLayers();
 
 		void AddLayer(Layer* layer);
 		void AddOverlay(Layer* layer);
@@ -49,6 +55,8 @@ namespace ppr {
 		static Scene* GetActiveScene() { return GetInstance()->currentScene; }
 		static ImGuiLayer& GetImGuiLayer() { return *GetInstance()->imguiLayer; }
 		static LayerStack& GetLayerStack() { return GetInstance()->layerStack; }
+
+		inline static bool restart = false;
 
 	protected:
 		WindowProps windowProps;

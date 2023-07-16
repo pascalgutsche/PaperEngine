@@ -35,6 +35,7 @@ namespace ppr
 
 
 		void SetOverlayStatus(bool overlay) { this->overlay = overlay; }
+		bool GetOverlayStatus() { return this->overlay; }
 
 		bool GetOverlayStatus() const { return overlay; }
 		std::vector<Entity*>& GetEntitys() { return gameObjects; }

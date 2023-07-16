@@ -20,7 +20,7 @@ namespace ppr {
 	Application::Application(const WindowProps& props)
 	{
 		Log::Init();
-		CORE_ASSERT(!instance, "application is already instanced!");
+ 
 		instance = this;
 
 		//Core::Init();
@@ -35,7 +35,9 @@ namespace ppr {
 
 	Application::~Application()
 	{
-		Exit();
+		RenderCommand::Shutdown();
+		DataPool::ErasePool();
+		Log::Shutdown();
 	}
 
 	void Application::QueueEvents(Event* event)
@@ -60,7 +62,7 @@ namespace ppr {
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		gameRunning = false;
+		Exit();
 		return true;
 	}
 
@@ -84,6 +86,7 @@ namespace ppr {
 
 	void Application::Run() 
 	{
+		restart = false;
 		AddOverlay(imguiLayer);
 		Init();
 
@@ -138,6 +141,20 @@ namespace ppr {
 	void Application::ChangeScene(Scene* new_scene)
 	{
 		GetInstance()->queuedScene = new_scene;
+	}
+
+	void Application::RemoveAllLayers()
+	{
+		for (auto& layer : layerStack)
+		{
+			if (layer->IsAttached())
+			{
+				if (layer->GetOverlayStatus())
+					RemoveOverlay(layer);
+				else
+					RemoveLayer(layer);
+			}
+		}
 	}
 
 	void Application::AddLayer(Layer* layer)

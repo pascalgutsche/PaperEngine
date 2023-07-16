@@ -8,6 +8,8 @@
 
 #include <glfw/glfw3.h>
 
+#include "stb_image.h"
+
 
 namespace ppr
 {
@@ -53,12 +55,25 @@ namespace ppr
             initialized = true;
         }
 
+        //glfwWindowHint(GLFW_TITLEBAR, false);
+
+
         glfwWindow = glfwCreateWindow(window_props.width, window_props.height, window_props.title.c_str(), nullptr, nullptr);
         glfwSetWindowUserPointer(glfwWindow, &windowData);
         SetVSync(true);
 
         context = Context::CreateContext(glfwWindow);
         context->Init();
+
+
+        // Set icon
+        {
+            GLFWimage icon;
+            int channels;
+            icon.pixels = stbi_load("resources/editor/paper.png", &icon.width, &icon.height, &channels, 4);
+            glfwSetWindowIcon(glfwWindow, 1, &icon);
+            stbi_image_free(icon.pixels);
+        }
 
         //callbacks
         glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* window, int width, int height)
