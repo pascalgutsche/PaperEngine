@@ -54,8 +54,6 @@ void PELayer::PropertiesPanel()
 	UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 
 	ImGui::Begin("Properties", &show_property_panel);
-	//if (ImGui::GetWindowSize().x < 400) ImGui::SetWindowSize(ImVec2(400.0f, ImGui::GetWindowSize().y));
-	LOG_DEBUG(ImGui::GetContentRegionAvail().x);
 	ImGui::Text("Name:");
 	ImGui::SameLine();
 	std::string name = active_entity.GetName();
@@ -65,7 +63,8 @@ void PELayer::PropertiesPanel()
 	if (active_entity.HasComponent<TransformComponent>())
 	{
 		auto& tc = active_entity.GetComponent<TransformComponent>();
-
+		ImGui::BeginGroup();
+		if ()
 		if (ImGui::TreeNode("TransformComponent"))
 		{
 			ImGui::BeginTable("##dummy_id_transform", 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_NoClip);
@@ -83,6 +82,7 @@ void PELayer::PropertiesPanel()
 
 			ImGui::TreePop();
 		}
+		ImGui::EndGroup();
 
 	}
 
