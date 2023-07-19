@@ -34,7 +34,7 @@ namespace Paper {
 		// Buttons
 		colors[ImGuiCol_Button] = ImGui::ColorConvertU32ToFloat4(Colors::Theme::button);
 		colors[ImGuiCol_ButtonHovered] = ImGui::ColorConvertU32ToFloat4(Colors::Theme::button_hovered);
-			colors[ImGuiCol_ButtonActive] = ImGui::ColorConvertU32ToFloat4(Colors::Theme::button_active);
+		colors[ImGuiCol_ButtonActive] = ImGui::ColorConvertU32ToFloat4(Colors::Theme::button_active);
 
 		// Frame BG
 		colors[ImGuiCol_FrameBg] = ImGui::ColorConvertU32ToFloat4(Colors::Theme::propertyField);

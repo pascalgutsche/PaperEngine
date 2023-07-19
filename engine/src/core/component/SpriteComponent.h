@@ -13,12 +13,25 @@ namespace Paper {
 	{
 		NONE,
 		RECTANGLE,
-		TRIANGLE
+		TRIANGLE,
+
+		_LAST = TRIANGLE
 	};
+
+	inline std::string GeometryToString(const Geometry geometry)
+	{
+		switch (geometry) {
+			case Geometry::NONE: return "None";
+			case Geometry::RECTANGLE: return "Rectangle";
+			case Geometry::TRIANGLE: return "Triangle";
+		}
+		ASSERT(false, "")
+		return "";
+	}
 
 	struct SpriteComponent : Serializable {
 		glm::vec4 color = glm::vec4(1.0f);
-		Shr<Texture> texture = DataPool::GetAssetTexture("james_webb.png");
+		Shr<Texture> texture = nullptr;
 		float tiling_factor = 1.0f;
 		std::array<glm::vec2, 4> tex_coords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
 		Geometry geometry = Geometry::RECTANGLE;
