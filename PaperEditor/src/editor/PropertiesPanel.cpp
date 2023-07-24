@@ -6,12 +6,21 @@
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
-static void DrawFloatControl(const std::string& label, float& value, float resetValue, float content_avail_x)
+static void FillNameCol(const std::string& name)
+{
+	ImGui::TableNextRow();
+	ImGui::TableSetColumnIndex(0);
+	ImGui::AlignTextToFramePadding();
+	ImGui::TextUnformatted(name.c_str());
+	ImGui::TableSetColumnIndex(1);
+}
+
+static void SingleFloatControl(const std::string& label, float& value, float min, float max, float resetValue, float content_avail_x, int count)
 {
 	float padding = 3.0f;
 	float line_height = GImGui->Font->FontSize + padding * 2;
 	ImVec2 button_size = { line_height + 3.0f, line_height };
-	float input_item_width = (content_avail_x - 5.0f) / 3.0f - button_size.x;
+	float input_item_width = (content_avail_x - 5.0f) / (float)count - button_size.x;
 
 	UI::ScopedID id(ImGui::TableGetRowIndex());
 
@@ -21,16 +30,13 @@ static void DrawFloatControl(const std::string& label, float& value, float reset
 	};
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(input_item_width);
-	ImGui::DragFloat(("##" + label).c_str(), &value, 0.1f, 0, 0, "%.2f", 0);
+	ImGui::DragFloat(("##" + label).c_str(), &value, 0.1f, min, max, "%.2f", 0);
 }
 
-static void Draw3FloatControl(const std::string& name, glm::vec3& val, float reset_value = 0.0f, std::initializer_list<std::string> format = { "X", "Y" })
+static void Draw3FloatControl(const std::string& name, glm::vec3& val, glm::vec3 min = glm::vec3(0.0f), glm::vec3 max = glm::vec3(0.0f), glm::vec3 reset_value = glm::vec3(0.0f), std::initializer_list<std::string> format = { "X", "Y", "Z" })
 {
-	ImGui::TableNextRow();
-	ImGui::TableSetColumnIndex(0);
-	ImGui::AlignTextToFramePadding();
-	ImGui::TextUnformatted(name.c_str());
-	ImGui::TableSetColumnIndex(1);
+	FillNameCol(name);
+
 	UI::ScopedStyle item_spacing(ImGuiStyleVar_ItemSpacing, ImVec2{ 0.0f, 0.0f });
 	UI::ScopedStyle padding(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 2.0f });
 
@@ -38,20 +44,17 @@ static void Draw3FloatControl(const std::string& name, glm::vec3& val, float res
 
 	ASSERT(format.size() == 3, "")
 
-	DrawFloatControl(*(format.begin() + 0), val.x, reset_value, content_avail_x);
+	SingleFloatControl(*(format.begin() + 0), val.x, min.x, max.x, reset_value.x, content_avail_x, 3);
 	ImGui::SameLine();
-	DrawFloatControl(*(format.begin() + 1), val.y, reset_value, content_avail_x);
+	SingleFloatControl(*(format.begin() + 1), val.y, min.y, max.y, reset_value.y, content_avail_x, 3);
 	ImGui::SameLine();
-	DrawFloatControl(*(format.begin() + 2), val.z, reset_value, content_avail_x);
+	SingleFloatControl(*(format.begin() + 2), val.z, min.z, max.z, reset_value.z, content_avail_x, 3);
 }
 
-static void Draw2FloatControl(const std::string& name, glm::vec2& val, float reset_value = 0.0f, std::initializer_list<std::string> format = { "X", "Y" })
+static void Draw2FloatControl(const std::string& name, glm::vec2& val, glm::vec2 min = glm::vec2(0.0f), glm::vec2 max = glm::vec2(0.0f), glm::vec2 reset_value = glm::vec2(0.0f), std::initializer_list<std::string> format = { "X", "Y" })
 {
-	ImGui::TableNextRow();
-	ImGui::TableSetColumnIndex(0);
-	ImGui::AlignTextToFramePadding();
-	ImGui::TextUnformatted(name.c_str());
-	ImGui::TableSetColumnIndex(1);
+	FillNameCol(name);
+
 	UI::ScopedStyle item_spacing(ImGuiStyleVar_ItemSpacing, ImVec2{ 0.0f, 0.0f });
 	UI::ScopedStyle padding(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 2.0f });
 
@@ -59,9 +62,33 @@ static void Draw2FloatControl(const std::string& name, glm::vec2& val, float res
 
 	ASSERT(format.size() == 2, "")
 
-	DrawFloatControl(*(format.begin() + 0), val.x, reset_value, content_avail_x);
+	SingleFloatControl(*(format.begin() + 0), val.x, min.x, max.x, reset_value.x, content_avail_x, 2);
 	ImGui::SameLine();
-	DrawFloatControl(*(format.begin() + 1), val.y, reset_value, content_avail_x);
+	SingleFloatControl(*(format.begin() + 1), val.y, min.y, max.y, reset_value.y, content_avail_x, 2);
+}
+
+static void DrawFloatControl(const std::string& name, float& val, float min = 0.0f, float max = 0.0f, float reset_value = 0.0f, std::initializer_list<std::string> format = { "X" })
+{
+	FillNameCol(name);
+
+	UI::ScopedStyle item_spacing(ImGuiStyleVar_ItemSpacing, ImVec2{ 0.0f, 0.0f });
+	UI::ScopedStyle padding(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 2.0f });
+
+	float content_avail_x = ImGui::GetContentRegionAvail().x;
+
+	ASSERT(format.size() == 1, "")
+
+	SingleFloatControl(*(format.begin() + 0), val, min, max, reset_value, content_avail_x, 1);
+}
+
+static void DrawCheckbox(const std::string& name, bool& val)
+{
+	FillNameCol(name);
+
+	UI::ScopedStyle item_spacing(ImGuiStyleVar_ItemSpacing, ImVec2{ 0.0f, 0.0f });
+	UI::ScopedStyle padding(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 2.0f });
+
+	ImGui::Checkbox(("##" + name).c_str(), &val);
 }
 
 template<typename ComponentType>
@@ -118,6 +145,25 @@ void DrawComponent(PELayer* _instance, const std::string& name, bool canRemove, 
 
 }
 
+
+struct ContentTable
+{
+	ContentTable(const ContentTable&) = delete;
+	ContentTable& operator=(const ContentTable&) = delete;
+	ContentTable(int space_name_column = 0)
+	{
+		ImGui::BeginTable(CONST_UI_ID, 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_NoClip);
+		ImGui::TableSetupColumn("name", 0, space_name_column);
+		float space_left = space_name_column > 0 ? ImGui::GetContentRegionAvail().x - space_name_column : 0;
+		ImGui::TableSetupColumn("value", ImGuiTableColumnFlags_IndentEnable | ImGuiTableColumnFlags_NoClip, space_left);
+	}
+	~ContentTable()
+	{
+		ImGui::EndTable();
+	}
+};
+
+
 void PELayer::PropertiesPanel()
 {
 	if (!active_entity) return;
@@ -157,56 +203,82 @@ void PELayer::PropertiesPanel()
 	DrawComponent<TransformComponent>(this, "Transform Component", false, 
 		[](TransformComponent& tc, Entity entity)
 	{
-		ImGui::BeginTable("##dummy_id_transform", 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_NoClip);
-		ImGui::TableSetupColumn("name", 0, 100.0f);
-		ImGui::TableSetupColumn("value", ImGuiTableColumnFlags_IndentEnable | ImGuiTableColumnFlags_NoClip, ImGui::GetContentRegionAvail().x - 100.0f);
-
-
-
+		
+		ContentTable transform_section(100);
 
 		Draw3FloatControl("Position", tc.position);
 		Draw3FloatControl("Rotation", tc.rotation);
 		Draw3FloatControl("Scale", tc.scale);
 
-		ImGui::EndTable();
 	});
 
 	DrawComponent<SpriteComponent>(this, "Sprite Component", true,
 		[](SpriteComponent& sc, Entity entity)
 	{
-		if (ImGui::BeginCombo("Geometry Type", GeometryToString(sc.geometry).c_str()))
 		{
-			for (int i = 0; i <= (int)Geometry::_LAST; i++)
+			std::string name = "Geometry Type";
+			ContentTable geometry_section(ImGui::CalcTextSize(name.c_str()).x);
+			FillNameCol(name);
+
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+			if (ImGui::BeginCombo(CONST_UI_ID, GeometryToString(sc.geometry).c_str()))
 			{
-				if (ImGui::Selectable(GeometryToString((Geometry)i).c_str(), sc.geometry == (Geometry)i))
+				for (int i = 0; i <= (int)Geometry::_LAST; i++)
 				{
-					sc.geometry = (Geometry)i;
+					if (ImGui::Selectable(GeometryToString((Geometry)i).c_str(), sc.geometry == (Geometry)i))
+					{
+						sc.geometry = (Geometry)i;
+					}
 				}
+				ImGui::EndCombo();
 			}
-			ImGui::EndCombo();
 		}
+		
 
-		ImGui::Checkbox("RegisterAlphaPixels[temp]", &sc.register_alpha_pixels_to_event);
-
-		ImGui::BeginTable("##dummy_id_uv", 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_NoClip);
-		ImGui::TableSetupColumn("name", 0, 100.0f);
-		ImGui::TableSetupColumn("value", ImGuiTableColumnFlags_IndentEnable | ImGuiTableColumnFlags_NoClip, ImGui::GetContentRegionAvail().x - 100.0f);
-
-		glm::vec2 uv0 = sc.tex_coords[0];
-		glm::vec2 uv1 = sc.tex_coords[2];
-
-		Draw2FloatControl("UV_0", uv0);
-		Draw2FloatControl("UV_1", uv1);
-
-		if (uv0 != sc.tex_coords[0] || uv1 != sc.tex_coords[1])
 		{
-			sc.tex_coords[0] = uv0;
-			sc.tex_coords[1] = { uv1.x, uv0.y };
-			sc.tex_coords[2] = uv1;
-			sc.tex_coords[3] = { uv0.x, uv1.y };
+			std::string name = "RegisterAlphaPixels[temp]";
+			ContentTable pixelregister_section(ImGui::CalcTextSize(name.c_str()).x);
+			DrawCheckbox(name, sc.register_alpha_pixels_to_event);
 		}
 
-		ImGui::EndTable();
+		{
+			ContentTable texture_section(ImGui::CalcTextSize("Texture").x);
+			FillNameCol("Texture");
+
+			ImVec2 size(50, 50);
+
+			if (sc.texture)
+				ImGui::ImageButton((ImTextureID)sc.texture->GetID(), size, ImVec2(0, 1), ImVec2(1, 0));
+			else
+				ImGui::Button("null", size);
+		}
+
+		{
+			std::string name = "Tiling Factor";
+			ContentTable tilingfactor_section(ImGui::CalcTextSize(name.c_str()).x);
+
+			DrawFloatControl(name, sc.tiling_factor, 0, 0, 1.0f, { "TF" });
+		}
+
+		{
+			ContentTable uv_section(ImGui::CalcTextSize("UV_0").x);
+
+			glm::vec2 uv0 = sc.tex_coords[0];
+			glm::vec2 uv1 = sc.tex_coords[2];
+
+			Draw2FloatControl("UV_0", uv0, {0.0f, 0.0f}, {1.0f, 1.0f}, { 0.0f, 0.0f });
+			Draw2FloatControl("UV_1", uv1, {0.0f, 0.0f}, {1.0f, 1.0f}, { 1.0f, 1.0f });
+
+			if (uv0 != sc.tex_coords[0] || uv1 != sc.tex_coords[2])
+			{
+				sc.tex_coords[0] = uv0;
+				sc.tex_coords[1] = { uv1.x, uv0.y };
+				sc.tex_coords[2] = uv1;
+				sc.tex_coords[3] = { uv0.x, uv1.y };
+			}
+		}
+
+		ImGui::ColorPicker4("picker4", &sc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
 	});
 
 	ImGui::End();

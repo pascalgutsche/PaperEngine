@@ -2,8 +2,16 @@
 
 #include <ImGui/imgui.h>
 
+#define CONST_UI_ID ("##" + CutStringAfterLastSlash(__FILE__ + std::to_string(__LINE__))).c_str()
+
+
 namespace Paper::UI
 {
+	const char* GenerateID();
+
+	const char* GenerateLabelID(std::string_view label);
+
+
 	struct ScopedStyle
 	{
 		ScopedStyle(const ScopedStyle&) = delete;
@@ -38,5 +46,9 @@ namespace Paper::UI
 		ScopedID(T id) { ImGui::PushID(id); }
 		~ScopedID() { ImGui::PopID(); }
 	};
+
+	
 }
+
+std::string CutStringAfterLastSlash(std::string val);
 
