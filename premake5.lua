@@ -28,6 +28,14 @@ IncludeDir["YAMLCPP"] = "%{wks.location}/engine/lib/yaml-cpp/include"
 IncludeDir["ENTT"] = "%{wks.location}/engine/lib/entt/src"
 IncludeDir["BOOST"] = "%{wks.location}/engine/lib"
 
+Library = {}
+Library["ASSIMP_DEBUG"] = "%{wks.location}/engine/lib/assimp/assimp/bin/Debug/assimp-vc143-mtd.lib"
+Library["ASSIMP_RELEASE"] = "%{wks.location}/engine/lib/assimp/assimp/bin/Release/assimp-vc143-mt.lib"
+
+Binaries = {}
+Binaries["Assimp_Debug"] = "%{wks.location}/engine/lib/assimp/bin/Debug/assimp-vc143-mtd.dll"
+Binaries["Assimp_Release"] = "%{wks.location}/engine/lib/assimp/assimp/bin/Release/assimp-vc143-mt.dll"
+
 group "dependencies"
 include "engine/lib/glad"
 include "engine/lib/glfw"

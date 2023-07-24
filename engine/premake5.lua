@@ -79,9 +79,11 @@ project "engine"
 		}
 
 	filter "configurations:Debug"
-		defines {"BUILD_DEBUG", "CORE_ENABLE_ASSERTS"}
+		defines { "BUILD_DEBUG", "CORE_ENABLE_ASSERTS" }
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
 		optimize "On"
+		
+		
