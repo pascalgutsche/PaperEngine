@@ -104,7 +104,6 @@ void ViewPort::Panel(PELayer* peLayer)
 		{
 			const wchar_t* path = (const wchar_t*)payload->Data;
 			peLayer->new_scene = YAMLSerializer::SceneDeserialize(path);
-			peLayer->new_scene->CreateEntity("Line").AddComponent<LineComponent>();
 		}
 		ImGui::EndDragDropTarget();
 	}

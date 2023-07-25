@@ -305,8 +305,18 @@ void PELayer::PropertiesPanel()
 			}
 		}
 
-		ImGui::ColorPicker4("picker4", &sc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+		ImGui::ColorPicker4("##picker4", &sc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
 	});
+
+	DrawComponent<LineComponent>(this, "Line Component", true, [](LineComponent& ln, Entity entity)
+		{
+			{
+				ContentTable thickness_section(ImGui::CalcTextSize("Thickness").x);
+				DrawFloatControl("Thickness", ln.thickness, 0.1f, 10.0f, 0.05f, 1.0f, { "TH" });
+			}
+
+			ImGui::ColorPicker4("##picker4", &ln.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+		});
 
 	ImGui::End();
 

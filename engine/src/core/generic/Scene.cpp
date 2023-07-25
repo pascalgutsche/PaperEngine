@@ -86,11 +86,10 @@ namespace Paper {
 
 		{
 			auto view = registry.view<TransformComponent, LineComponent>();
-			for (auto [entity, transform, line] : view.each()) {
-
+			for (auto [entity, transform, line] : view.each()) 
+			{
 				LineRenderData data;
-				data.point0 = line.positionA;
-				data.point1 = line.positionB;
+				data.transform = transform.GetTransform();
 				data.color = line.color;
 				data.thickness = line.thickness;
 				data.enity_id = (entity_id)entity;

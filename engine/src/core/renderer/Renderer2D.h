@@ -49,6 +49,8 @@ namespace Paper {
 
     struct LineRenderData
     {
+        glm::mat4 transform = glm::mat4(1);
+
         glm::vec3 point0 = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::vec3 point1 = glm::vec3(1.0f, 0.0f, 0.0f);
         glm::vec4 color = DEFAULT_COLOR;
@@ -98,6 +100,7 @@ namespace Paper {
         static void DrawTriangle(const EdgeRenderData& renderData);
 
         static void DrawLine(const LineRenderData& renderData);
+        static void DrawLineLegacy(const LineRenderData& renderData);
 
         static void DrawCircle(const CircleRenderData& renderData);
 

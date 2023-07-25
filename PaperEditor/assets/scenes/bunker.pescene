@@ -7,16 +7,16 @@ Entities:
       DataComponent:
         UUID:
           - 8614edd3-2240-46c2-aa74-1311864921e1
-        Name: Line
+        Name: LineWhat
         Tags:
           []
       LineComponent:
         Color: [1, 1, 1, 1]
-        Thickness: 1
+        Thickness: 10
         PositionA: [-0.5, 0, 0]
         PositionB: [0.5, 0, 0]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [2, 1, 3]
         Scale: [1, 1, 1]
         Rotation: [0, 0, 0]
   - Components:
@@ -35,6 +35,6 @@ Entities:
         Thickness: 1
         Fade: 0.005
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [0, 2, 0]
         Scale: [1, 1, 1]
         Rotation: [0, 0, 0]

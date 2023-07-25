@@ -566,7 +566,12 @@ namespace Paper {
 
 	void Renderer2D::DrawLine(const LineRenderData& renderData)
 	{
-		data.lineVertexBufferPtr->position = renderData.point0;
+		glm::vec4 pos0 = glm::vec4(-0.5f, 0.0f, 0.0f, 1.0f);
+		glm::vec4 pos1 = glm::vec4(0.5f, 0.0f, 0.0f, 1.0f);
+
+		glm::mat4 transform = renderData.transform;
+
+		data.lineVertexBufferPtr->position = transform * pos0;
 		data.lineVertexBufferPtr->color = renderData.color;
 		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
@@ -574,6 +579,34 @@ namespace Paper {
 
 		RenderCommand::GetStats().vertexCount++;
 		
+		data.lineVertexBufferPtr->position = transform * pos1;
+		data.lineVertexBufferPtr->color = renderData.color;
+		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
+		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
+		data.lineVertexBufferPtr++;
+
+		RenderCommand::GetStats().vertexCount++;
+
+		data.lineElementCount += 2;
+
+		RenderCommand::GetStats().elementCount += 1;
+		RenderCommand::GetStats().objectCount++;
+
+		data.lineWidth = renderData.thickness;
+		NextBatch(LINE);
+	}
+
+	void Renderer2D::DrawLineLegacy(const LineRenderData& renderData)
+	{
+		return;
+		data.lineVertexBufferPtr->position = renderData.point0;
+		data.lineVertexBufferPtr->color = renderData.color;
+		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
+		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
+		data.lineVertexBufferPtr++;
+
+		RenderCommand::GetStats().vertexCount++;
+
 		data.lineVertexBufferPtr->position = renderData.point1;
 		data.lineVertexBufferPtr->color = renderData.color;
 		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
@@ -604,19 +637,19 @@ namespace Paper {
 
 		data.point0 = lineVertices[0];
 		data.point1 = lineVertices[1];
-		DrawLine(data);
+		DrawLineLegacy(data);
 
 		data.point0 = lineVertices[1];
 		data.point1 = lineVertices[2];
-		DrawLine(data);
+		DrawLineLegacy(data);
 
 		data.point0 = lineVertices[2];
 		data.point1 = lineVertices[3];
-		DrawLine(data);
+		DrawLineLegacy(data);
 
 		data.point0 = lineVertices[3];
 		data.point1 = lineVertices[0];
-		DrawLine(data);
+		DrawLineLegacy(data);
 	}
 
 	void Renderer2D::DrawCircle(const CircleRenderData& renderData)

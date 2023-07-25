@@ -489,15 +489,17 @@ void PELayer::SceneDebugger()
 	}
 
 	auto view = scene->Registry().view<TransformComponent>();
-
+	int i = 0;
 	for (auto [entity, transform] : view.each()) {
-
+		ImGui::PushID(i);
 		ImGui::Text(Entity(entity, scene.get()).GetName().c_str());
 		ImGui::InputFloat3("Position", &transform.position.x);
 		ImGui::InputFloat3("Scale", &transform.scale.x);
 		ImGui::InputFloat3("Rotation", &transform.rotation.x);
 
 		ImGui::Text("-----------------------");
+		ImGui::PopID();
+		i++;
 	}
 
 	ImGui::End();
