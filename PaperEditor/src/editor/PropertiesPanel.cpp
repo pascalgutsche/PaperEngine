@@ -199,6 +199,26 @@ void PELayer::PropertiesPanel()
 		ImGui::EndPopup();
 	}
 
+	DrawComponent<DataComponent>(this, "Tag Component", false, [](DataComponent& dc, Entity entity)
+		{
+			int i = 0;
+			for (auto& tag : dc.tags)
+			{
+				ImGui::BeginDisabled();
+				if (ImGui::InputText(("##" + std::to_string(i)).c_str(), &tag, ImGuiInputTextFlags_EnterReturnsTrue)) LOG_DEBUG(true);
+				ImGui::EndDisabled();
+				i++;
+			}
+			if (dc.tags.size() == 0)
+			{
+				ImGui::Text("No tags...");
+			}
+			if (ImGui::Button("Add Tag"))
+			{
+				dc.tags.emplace_back("");
+			};
+		});
+
 
 	DrawComponent<TransformComponent>(this, "Transform Component", false, 
 		[](TransformComponent& tc, Entity entity)

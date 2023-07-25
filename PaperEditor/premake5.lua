@@ -70,26 +70,26 @@ project "PaperEditor"
 		defines {"BUILD_DEBUG", "CORE_ENABLE_ASSERTS"}
 		symbols "On"
 		
-		links
-		{
-			"%{Library.ASSIMP_DEBUG}"
-		}
+		--links
+		--{
+		--	"%{Library.ASSIMP_DEBUG}"
+		--}
 
-		postbuildcommands 
-		{
-			'{COPY} "%{Binaries.ASSIMP_DEBUG}" "%{cfg.targetdir}"'
-		}
+		--postbuildcommands 
+		--{
+		--	'{COPY} "%{Binaries.ASSIMP_DEBUG}" "%{cfg.targetdir}"'
+		--}
 
 	filter "configurations:Release"
 		defines "BUILD_RELEASE"
 		optimize "On"
 		
-		links
-		{
-			"%{Library.ASSIMP_RELEASE}"
-		}
+		--links
+		--{
+		--	"%{Library.ASSIMP_RELEASE}"
+		--}
 
-		postbuildcommands 
-		{
-			'{COPY} "%{Binaries.ASSIMP_RELEASE}" "%{cfg.targetdir}"'
-		}
+		--postbuildcommands 
+		--{
+		--	'{COPY} "%{Binaries.ASSIMP_RELEASE}" "%{cfg.targetdir}"'
+		--}
