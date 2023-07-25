@@ -15,7 +15,7 @@ static void FillNameCol(const std::string& name)
 	ImGui::TableSetColumnIndex(1);
 }
 
-static void SingleFloatControl(const std::string& label, float& value, float min, float max, float resetValue, float content_avail_x, int count)
+static void SingleFloatControl(const std::string& label, float& value, float min, float max, float speed, float resetValue, float content_avail_x, int count)
 {
 	float padding = 3.0f;
 	float line_height = GImGui->Font->FontSize + padding * 2;
@@ -33,7 +33,7 @@ static void SingleFloatControl(const std::string& label, float& value, float min
 	ImGui::DragFloat(("##" + label).c_str(), &value, 0.1f, min, max, "%.2f", 0);
 }
 
-static void Draw3FloatControl(const std::string& name, glm::vec3& val, glm::vec3 min = glm::vec3(0.0f), glm::vec3 max = glm::vec3(0.0f), glm::vec3 reset_value = glm::vec3(0.0f), std::initializer_list<std::string> format = { "X", "Y", "Z" })
+static void Draw3FloatControl(const std::string& name, glm::vec3& val, glm::vec3 min = glm::vec3(0.0f), glm::vec3 max = glm::vec3(0.0f), glm::vec3 speed = glm::vec3(1.0f), glm::vec3 reset_value = glm::vec3(0.0f), std::initializer_list<std::string> format = { "X", "Y", "Z" })
 {
 	FillNameCol(name);
 
@@ -44,14 +44,14 @@ static void Draw3FloatControl(const std::string& name, glm::vec3& val, glm::vec3
 
 	ASSERT(format.size() == 3, "")
 
-	SingleFloatControl(*(format.begin() + 0), val.x, min.x, max.x, reset_value.x, content_avail_x, 3);
+	SingleFloatControl(*(format.begin() + 0), val.x, min.x, max.x, speed.x, reset_value.x, content_avail_x, 3);
 	ImGui::SameLine();
-	SingleFloatControl(*(format.begin() + 1), val.y, min.y, max.y, reset_value.y, content_avail_x, 3);
+	SingleFloatControl(*(format.begin() + 1), val.y, min.y, max.y, speed.y, reset_value.y, content_avail_x, 3);
 	ImGui::SameLine();
-	SingleFloatControl(*(format.begin() + 2), val.z, min.z, max.z, reset_value.z, content_avail_x, 3);
+	SingleFloatControl(*(format.begin() + 2), val.z, min.z, max.z, speed.z, reset_value.z, content_avail_x, 3);
 }
 
-static void Draw2FloatControl(const std::string& name, glm::vec2& val, glm::vec2 min = glm::vec2(0.0f), glm::vec2 max = glm::vec2(0.0f), glm::vec2 reset_value = glm::vec2(0.0f), std::initializer_list<std::string> format = { "X", "Y" })
+static void Draw2FloatControl(const std::string& name, glm::vec2& val, glm::vec2 min = glm::vec2(0.0f), glm::vec2 max = glm::vec2(0.0f), glm::vec2 speed = glm::vec2(1.0f), glm::vec2 reset_value = glm::vec2(0.0f), std::initializer_list<std::string> format = { "X", "Y" })
 {
 	FillNameCol(name);
 
@@ -62,12 +62,12 @@ static void Draw2FloatControl(const std::string& name, glm::vec2& val, glm::vec2
 
 	ASSERT(format.size() == 2, "")
 
-	SingleFloatControl(*(format.begin() + 0), val.x, min.x, max.x, reset_value.x, content_avail_x, 2);
+	SingleFloatControl(*(format.begin() + 0), val.x, min.x, max.x, speed.x,  reset_value.x, content_avail_x, 2);
 	ImGui::SameLine();
-	SingleFloatControl(*(format.begin() + 1), val.y, min.y, max.y, reset_value.y, content_avail_x, 2);
+	SingleFloatControl(*(format.begin() + 1), val.y, min.y, max.y, speed.y,  reset_value.y, content_avail_x, 2);
 }
 
-static void DrawFloatControl(const std::string& name, float& val, float min = 0.0f, float max = 0.0f, float reset_value = 0.0f, std::initializer_list<std::string> format = { "X" })
+static void DrawFloatControl(const std::string& name, float& val, float min = 0.0f, float max = 0.0f, float speed = 1.0f, float reset_value = 0.0f, std::initializer_list<std::string> format = { "X" })
 {
 	FillNameCol(name);
 
@@ -78,7 +78,7 @@ static void DrawFloatControl(const std::string& name, float& val, float min = 0.
 
 	ASSERT(format.size() == 1, "")
 
-	SingleFloatControl(*(format.begin() + 0), val, min, max, reset_value, content_avail_x, 1);
+	SingleFloatControl(*(format.begin() + 0), val, min, max, speed, reset_value, content_avail_x, 1);
 }
 
 static void DrawCheckbox(const std::string& name, bool& val)
@@ -140,6 +140,9 @@ void DrawComponent(PELayer* _instance, const std::string& name, bool canRemove, 
 	if (tree_open)
 	{
 		draw_components_fn(_instance->active_entity.GetComponent<ComponentType>(), _instance->active_entity);
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
 		ImGui::TreePop();
 	}
 
@@ -193,7 +196,6 @@ void PELayer::PropertiesPanel()
 	if (ImGui::BeginPopup("components_add_popup"))
 	{
 		DrawComponentToAddPopup<SpriteComponent>(this, "Sprite Component");
-		DrawComponentToAddPopup<CircleComponent>(this, "Circle Component");
 		DrawComponentToAddPopup<LineComponent>(this, "Line Component");
 		DrawComponentToAddPopup<TextComponent>(this, "Text Component");
 		ImGui::EndPopup();
@@ -204,9 +206,7 @@ void PELayer::PropertiesPanel()
 			int i = 0;
 			for (auto& tag : dc.tags)
 			{
-				ImGui::BeginDisabled();
-				if (ImGui::InputText(("##" + std::to_string(i)).c_str(), &tag, ImGuiInputTextFlags_EnterReturnsTrue)) LOG_DEBUG(true);
-				ImGui::EndDisabled();
+				ImGui::InputText(("##" + std::to_string(i)).c_str(), &tag);
 				i++;
 			}
 			if (dc.tags.size() == 0)
@@ -253,6 +253,13 @@ void PELayer::PropertiesPanel()
 				ImGui::EndCombo();
 			}
 		}
+
+		if (sc.geometry == Geometry::CIRCLE)
+		{
+			ContentTable pixelregister_section(ImGui::CalcTextSize("Thickness").x);
+			DrawFloatControl("Thickness", sc.thickness, 0, 0, 0.1f, 1.0f, { "TH" });
+			DrawFloatControl("Fade", sc.fade, 0, 0, 0.001f, 0.005f, { "FA" });
+		}
 		
 
 		{
@@ -277,7 +284,7 @@ void PELayer::PropertiesPanel()
 			std::string name = "Tiling Factor";
 			ContentTable tilingfactor_section(ImGui::CalcTextSize(name.c_str()).x);
 
-			DrawFloatControl(name, sc.tiling_factor, 0, 0, 1.0f, { "TF" });
+			DrawFloatControl(name, sc.tiling_factor, 0, 0, 1.0f, 1.0f, { "TF" });
 		}
 
 		{
@@ -286,8 +293,8 @@ void PELayer::PropertiesPanel()
 			glm::vec2 uv0 = sc.tex_coords[0];
 			glm::vec2 uv1 = sc.tex_coords[2];
 
-			Draw2FloatControl("UV_0", uv0, {0.0f, 0.0f}, {1.0f, 1.0f}, { 0.0f, 0.0f });
-			Draw2FloatControl("UV_1", uv1, {0.0f, 0.0f}, {1.0f, 1.0f}, { 1.0f, 1.0f });
+			Draw2FloatControl("UV_0", uv0, {0.0f, 0.0f}, {1.0f, 1.0f}, { 1.0f, 1.0f }, { 0.0f, 0.0f });
+			Draw2FloatControl("UV_1", uv1, {0.0f, 0.0f}, {1.0f, 1.0f}, { 1.0f, 1.0f }, { 1.0f, 1.0f });
 
 			if (uv0 != sc.tex_coords[0] || uv1 != sc.tex_coords[2])
 			{

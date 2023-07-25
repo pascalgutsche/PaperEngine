@@ -8,16 +8,9 @@ void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 	if (ImGui::TreeNode("2D-Objects"))
 	{
 		auto sprites_s = scene->Registry().view<SpriteComponent>();
-		auto sprites_c = scene->Registry().view<CircleComponent>();
-		if ((!sprites_s.empty() || !sprites_c.empty()) && ImGui::TreeNode("Sprite"))
+		if (!sprites_s.empty() && ImGui::TreeNode("Sprite"))
 		{
 			for (auto [entt, sprite] : sprites_s.each()) {
-				Entity entity(entt, scene.get());
-				if (ImGui::Selectable(entity.GetName().c_str())) {
-					active_entity = entity;
-				}
-			}
-			for (auto [entt, circle] : sprites_c.each()) {
 				Entity entity(entt, scene.get());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
 					active_entity = entity;

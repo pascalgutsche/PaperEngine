@@ -18,6 +18,9 @@ namespace Paper
 			out << YAML::Key << "TexCoords" << YAML::Value << tex_coords;
 			out << YAML::Key << "RegisterAlphaPixels" << YAML::Value << register_alpha_pixels_to_event;
 
+			out << YAML::Key << "Thickness" << YAML::Value << thickness;
+			out << YAML::Key << "Fade" << YAML::Value << fade;
+
 			out << YAML::EndMap; // SpriteComponent
 		}
 		catch (YAML::EmitterException& e)
@@ -38,6 +41,9 @@ namespace Paper
 			tiling_factor = data["TilingFactor"].as<float>();
 			tex_coords = data["TexCoords"].as<std::array<glm::vec2, 4>>();
 			register_alpha_pixels_to_event = data["RegisterAlphaPixels"].as<bool>();
+
+			thickness = data["Thickness"].as<float>();
+			fade = data["Fade"].as<float>();
 		}
 		catch (YAML::EmitterException& e)
 		{

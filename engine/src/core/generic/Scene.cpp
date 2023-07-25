@@ -10,7 +10,6 @@
 
 #include "component/TransformComponent.h"
 #include "component/SpriteComponent.h"
-#include "component/CircleComponent.h"
 #include "component/LineComponent.h"
 #include "component/TextComponent.h"
 
@@ -50,36 +49,38 @@ namespace Paper {
 		{
 			auto view = registry.view<TransformComponent, SpriteComponent>();
 			for (auto [entity, transform, sprite] : view.each()) {
+				if (sprite.geometry == Geometry::CIRCLE)
+				{
+					CircleRenderData data;
+					data.transform = transform.GetTransform();
+					data.color = sprite.color;
+					data.texture = sprite.texture;
+					data.tilingFactor = sprite.tiling_factor;
+					data.texCoords = sprite.tex_coords;
+					data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
+					data.enity_id = (entity_id)entity;
 
-				EdgeRenderData data;
-				data.transform = transform.GetTransform();
-				data.color = sprite.color;
-				data.texture = sprite.texture;
-				data.tilingFactor = sprite.tiling_factor;
-				data.texCoords = sprite.tex_coords;
-				data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
-				data.enity_id = (entity_id)entity;
+					data.thickness = sprite.thickness;
+					data.fade = sprite.fade;
 
-				if (sprite.geometry == Geometry::RECTANGLE)
-					Renderer2D::DrawRectangle(data);
-				else if (sprite.geometry == Geometry::TRIANGLE)
-					Renderer2D::DrawTriangle(data);
-			}
-		}
+					Renderer2D::DrawCircle(data);
+				}
+				else
+				{
+					EdgeRenderData data;
+					data.transform = transform.GetTransform();
+					data.color = sprite.color;
+					data.texture = sprite.texture;
+					data.tilingFactor = sprite.tiling_factor;
+					data.texCoords = sprite.tex_coords;
+					data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
+					data.enity_id = (entity_id)entity;
 
-		{
-			auto view = registry.view<TransformComponent, CircleComponent>();
-			for (auto [entity, transform, circle] : view.each()) {
-				
-				CircleRenderData data;
-				data.transform = transform.GetTransform();
-				data.color = circle.color;
-				data.texture = circle.texture;
-				data.tilingFactor = circle.tiling_factor;
-				data.coreIDToAlphaPixels = circle.register_alpha_pixels_to_event;
-				data.enity_id = (entity_id)entity;
-
-				Renderer2D::DrawCircle(data);
+					if (sprite.geometry == Geometry::RECTANGLE)
+						Renderer2D::DrawRectangle(data);
+					else if (sprite.geometry == Geometry::TRIANGLE)
+						Renderer2D::DrawTriangle(data);
+				}
 			}
 		}
 

@@ -88,9 +88,6 @@ namespace Paper
 		if (entity.HasComponent<DataComponent>())
 			entity.GetComponent<DataComponent>().Serialize(out);
 
-		if (entity.HasComponent<CircleComponent>())
-			entity.GetComponent<CircleComponent>().Serialize(out);
-
 		if (entity.HasComponent<LineComponent>())
 			entity.GetComponent<LineComponent>().Serialize(out);
 
@@ -162,9 +159,6 @@ namespace Paper
 				
 				if (auto sprite_component = components["SpriteComponent"])
 					deserialized_entity.AddComponent<SpriteComponent>().Deserialize(sprite_component);
-				
-				if (auto circle_component = components["CircleComponent"])
-					deserialized_entity.AddComponent<CircleComponent>().Deserialize(circle_component);
 				
 				if (auto line_component = components["LineComponent"])
 					deserialized_entity.AddComponent<LineComponent>().Deserialize(line_component);

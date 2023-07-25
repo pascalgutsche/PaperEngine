@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "core/component/CircleComponent.h"
 #include "core/component/CubeRenderer.h"
 #include "core/component/DataComponent.h"
 #include "core/component/LightComponent.h"

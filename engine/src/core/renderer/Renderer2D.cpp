@@ -543,7 +543,10 @@ namespace Paper {
 		{
 			data.triangleVertexBufferPtr->position = transform * data.triangleVertexData[i];
 			data.triangleVertexBufferPtr->color = renderData.color;
-			data.triangleVertexBufferPtr->texCoords = renderData.texCoords[i];
+			if (i == 2)
+				data.triangleVertexBufferPtr->texCoords = { (renderData.texCoords[i].x + renderData.texCoords[i + 1].x) / 2, (renderData.texCoords[i].y + renderData.texCoords[i + 1].y) / 2 };
+			else
+				data.triangleVertexBufferPtr->texCoords = renderData.texCoords[i];
 			data.triangleVertexBufferPtr->tilingFactor = renderData.tilingFactor;
 			data.triangleVertexBufferPtr->texIndex = texIndex;
 			data.triangleVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
