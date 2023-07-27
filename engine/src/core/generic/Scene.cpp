@@ -44,7 +44,12 @@ namespace Paper {
 
 	void Scene::Render(const Shr<EditorCamera>& camera)
 	{
-
+		{
+			auto view = registry.view<TransformComponent>();
+			for (auto [entity, transform] : view.each()) {
+				transform.UpdateRotation();
+			}
+		}
 
 		{
 			auto view = registry.view<TransformComponent, SpriteComponent>();
@@ -106,6 +111,7 @@ namespace Paper {
 				data.transform = transform.GetTransform();
 				data.color = text.color;
 				data.text = text.text;
+				data.font = text.font;
 				data.coreIDToAlphaPixels = text.register_alpha_pixels_to_event;
 				data.enity_id = (entity_id)entity;
 				

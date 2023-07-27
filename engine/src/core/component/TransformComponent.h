@@ -28,14 +28,14 @@ namespace Paper
 
 		void UpdateRotation()
 		{
-			rotation.x = (float)((int)rotation.x * 100 % 36000) / 100.0f;
-			rotation.y = (float)((int)rotation.y * 100 % 36000) / 100.0f;
-			rotation.z = (float)((int)rotation.z * 100 % 36000) / 100.0f;
+			rotation.x = (float)((int)(rotation.x * 100) % 36000) / 100.0f;
+			rotation.y = (float)((int)(rotation.y * 100) % 36000) / 100.0f;
+			rotation.z = (float)((int)(rotation.z * 100) % 36000) / 100.0f;
 		}
 
 		glm::mat4 GetTransform() const
 		{
-			glm::mat4 rotation_mat = glm::toMat4(glm::quat(rotation));
+			glm::mat4 rotation_mat = glm::toMat4(glm::quat(glm::radians(rotation)));
 
 			return glm::translate(glm::mat4(1.0f), position)
 				* rotation_mat

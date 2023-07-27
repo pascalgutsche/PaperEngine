@@ -598,7 +598,6 @@ namespace Paper {
 
 	void Renderer2D::DrawLineLegacy(const LineRenderData& renderData)
 	{
-		return;
 		data.lineVertexBufferPtr->position = renderData.point0;
 		data.lineVertexBufferPtr->color = renderData.color;
 		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);

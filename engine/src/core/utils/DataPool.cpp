@@ -78,9 +78,15 @@ namespace Paper {
         return texture;
     }
 
-    Shr<Font> DataPool::GetFont(std::string fontName) {
+    Shr<Font> DataPool::GetDefaultFont()
+	{
+        return GetFont("resources/fonts/mononoki.ttf", true);
+    }
+
+    Shr<Font> DataPool::GetFont(std::string fontName, bool wholePath)
+	{
         // set default path
-        const std::string path = "resources/fonts/" + fontName;
+        const std::string path = wholePath ? fontName : "assets/fonts/" + fontName;
 
         std::string fontID = "font_" + fontName;
 

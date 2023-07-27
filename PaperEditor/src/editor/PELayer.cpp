@@ -18,6 +18,8 @@ PELayer::PELayer()
 	viewports.emplace_back("2");
 	viewports.emplace_back("3");
 	viewports.emplace_back("4");
+
+	new_scene = YAMLSerializer::SceneDeserialize("assets/scenes/bunker.pescene");
 }
 
 PELayer::~PELayer()

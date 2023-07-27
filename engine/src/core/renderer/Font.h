@@ -14,19 +14,18 @@ namespace Paper
 	class Font
 	{
 	public:
-		Font(std::string fileString);
+		Font(const std::filesystem::path& path);
 		~Font();
 
 		MSDFData* GetMSDFData() const { return data; };
 		Shr<Texture> GetAtlasTexture() const { return atlasTexture; };
 
-		std::string GetFilePath() const { return fontPath; }
-
-		//static Shr<Font> GetFont(std::string fontPath);
+		std::string GetFilePath() const { return fontPath.string(); }
+		std::string GetFontName() const { return fontPath.filename().string(); }
 
 	private:
 		MSDFData* data;
-		std::string fontPath;
+		std::filesystem::path fontPath;
 		Shr<Texture> atlasTexture;
 	};
 

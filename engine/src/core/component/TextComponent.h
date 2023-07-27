@@ -9,7 +9,7 @@ namespace Paper
 	{
 		glm::vec4 color = glm::vec4(1.0f);
 		std::string text = "][DEFAULT-TEXT][";
-		Shr<Font> font = DataPool::GetFont("mononoki.ttf");
+		Shr<Font> font = DataPool::GetDefaultFont();
 		bool register_alpha_pixels_to_event = false;
 
 		TextComponent() = default;

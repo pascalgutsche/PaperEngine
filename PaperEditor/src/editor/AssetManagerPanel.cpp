@@ -2,28 +2,43 @@
 #include "WindowsOpen.h"
 
 #include "PELayer.h"
+#include "renderer/Font.h"
+
+enum FileType
+{
+	Texture,
+	Font,
+	UNDEFINED
+};
+
+FileType isItemType(const std::filesystem::directory_entry& item)
+{
+	if (item.path().extension() == ".png" || item.path().extension() == ".jpg")
+		return FileType::Texture;
+	if (item.path().extension() == ".ttf")
+		return FileType::Font;
+	return FileType::UNDEFINED;
+}
 
 static bool displayIcon(const std::filesystem::directory_entry& item, const float size)
 {
 	if (item.is_directory())
 	{
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		UI::ScopedColour button_col(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		if (ImGui::ImageButton((void*)DataPool::GetTexture("folder_icon.png")->GetID(), ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0))
-		{
-			ImGui::PopStyleColor();
 			return true;
-		}
-		ImGui::PopStyleColor();
 	}
 	else
 	{
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		if (ImGui::ImageButton((void*)DataPool::GetTexture("file_icon.png")->GetID(), ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0))
-		{
-			ImGui::PopStyleColor();
+		UI::ScopedColour button_col(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+
+		void* textureID = (void*)DataPool::GetTexture("file_icon.png")->GetID();
+
+		if (isItemType(item) == FileType::Texture)
+			textureID = (void*)DataPool::GetAssetTexture(item.path().string(), true)->GetID();
+
+		if (ImGui::ImageButton(textureID, ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0))
 			return true;
-		}
-		ImGui::PopStyleColor();
 	}
 	return false;
 }
@@ -122,7 +137,24 @@ void PELayer::AssetManagerPanel()
 			if (!item.is_directory() && ImGui::BeginDragDropSource())
 			{
 				const wchar_t* item_path = item.path().c_str();
-				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
+				switch (isItemType(item))
+				{
+				case FileType::Texture:
+					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM_TEXTURE", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
+					ImGui::Image((void*)DataPool::GetAssetTexture(item.path().string(), true)->GetID(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+					break;
+
+				case FileType::Font:
+					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM_FONT", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
+					ImGui::Text(DataPool::GetFont(item.path().string(), true)->GetFontName().c_str());
+					break;
+
+				case FileType::UNDEFINED:
+					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
+					break;
+				}
+
+				
 				ImGui::EndDragDropSource();
 			}
 

@@ -6,6 +6,8 @@
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
+#include "renderer/Font.h"
+
 static void FillNameCol(const std::string& name)
 {
 	ImGui::TableNextRow();
@@ -228,7 +230,7 @@ void PELayer::PropertiesPanel()
 
 		Draw3FloatControl("Position", tc.position);
 		Draw3FloatControl("Rotation", tc.rotation);
-		Draw3FloatControl("Scale", tc.scale);
+		Draw3FloatControl("Scale", tc.scale, glm::vec3(0), glm::vec3(0), glm::vec3(1), glm::vec3(1));
 
 	});
 
@@ -281,10 +283,12 @@ void PELayer::PropertiesPanel()
 
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_TEXTURE"))
 				{
 					const wchar_t* path = (const wchar_t*)payload->Data;
-					LOG_DEBUG(std::filesystem::path(path).string());
+					std::string file = std::filesystem::path(path).string();
+					
+					sc.texture = DataPool::GetAssetTexture(file, true);
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -315,7 +319,14 @@ void PELayer::PropertiesPanel()
 			}
 		}
 
-		ImGui::ColorPicker4("##picker4", &sc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+		{
+			ContentTable color_section(ImGui::CalcTextSize("Color").x);
+
+			FillNameCol("Color");
+
+			ImGui::ColorPicker4("##picker4", &sc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+		}
+		
 	});
 
 	DrawComponent<LineComponent>(this, "Line Component", true, [](LineComponent& ln, Entity entity)
@@ -325,7 +336,59 @@ void PELayer::PropertiesPanel()
 				DrawFloatControl("Thickness", ln.thickness, 0.1f, 10.0f, 0.05f, 1.0f, { "TH" });
 			}
 
-			ImGui::ColorPicker4("##picker4", &ln.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+			{
+				ContentTable color_section(ImGui::CalcTextSize("Color").x);
+
+				FillNameCol("Color");
+
+				ImGui::ColorPicker4("##picker4", &ln.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+			}
+		});
+
+	DrawComponent<TextComponent>(this, "Text Component", true, [](TextComponent& texc, Entity entity)
+		{
+			{
+				ContentTable text_section(ImGui::CalcTextSize("Text").x);
+				FillNameCol("Text");
+
+				ImGui::InputText(CONST_UI_ID, &texc.text);
+			}
+
+			{
+				std::string name = "RegisterAlphaPixels[temp]";
+				ContentTable pixelregister_section(ImGui::CalcTextSize(name.c_str()).x);
+				DrawCheckbox(name, texc.register_alpha_pixels_to_event);
+			}
+
+			{
+				ContentTable font_section(ImGui::CalcTextSize("Font").x);
+				FillNameCol("Font");
+
+				
+				ImGui::Button(texc.font->GetFontName().c_str());
+
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FONT"))
+					{
+						const wchar_t* path = (const wchar_t*)payload->Data;
+						std::string file = std::filesystem::path(path).string();
+
+						texc.font = DataPool::GetFont(file, true);
+					}
+					ImGui::EndDragDropTarget();
+				}
+			}
+
+			{
+				ContentTable color_section(ImGui::CalcTextSize("Color").x);
+
+				FillNameCol("Color");
+
+				ImGui::ColorPicker4("##picker4", &texc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+			}
+
+		
 		});
 
 	ImGui::End();

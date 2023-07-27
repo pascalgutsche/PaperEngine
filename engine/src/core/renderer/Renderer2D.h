@@ -68,7 +68,7 @@ namespace Paper {
         glm::vec4 color = DEFAULT_COLOR;
 
         std::string text = "";
-        Shr<Font> font = DataPool::GetFont("mononoki.ttf");
+        Shr<Font> font = DataPool::GetDefaultFont();
 
         ProjectionMode mode = ProjectionMode::PERSPECTIVE;
         entity_id enity_id = 0;

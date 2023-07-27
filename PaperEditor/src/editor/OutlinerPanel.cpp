@@ -43,9 +43,6 @@ void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 			ImGui::TreePop();
 		}
 
-
-
-
 		ImGui::TreePop();
 	}
 }

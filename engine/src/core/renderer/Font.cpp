@@ -45,15 +45,15 @@ namespace Paper
 		delete data;
 	}
 
-	Font::Font(std::string fileString)
-		: data(new MSDFData()), fontPath(fileString)
+	Font::Font(const std::filesystem::path& path)
+		: data(new MSDFData()), fontPath(path)
 	{
 		msdfgen::FreetypeHandle* ft = msdfgen::initializeFreetype();
 
-		msdfgen::FontHandle* font = msdfgen::loadFont(ft, fileString.c_str());
+		msdfgen::FontHandle* font = msdfgen::loadFont(ft, fontPath.string().c_str());
 		if (!font)
 		{
-			LOG_CORE_ERROR("Failed to load font: {0}", fileString);
+			LOG_CORE_ERROR("Failed to load font: {0}", fontPath.string());
 			return;
 		}
 

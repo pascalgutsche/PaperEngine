@@ -21,7 +21,8 @@ namespace Paper {
         static Shr<Texture> GetAssetTexture(std::string textureName, bool wholePath = false);
         static Shr<Texture> GetTexture(std::string textureName, bool wholePath = false);
 
-        static Shr<Font> GetFont(std::string fontName);
+        static Shr<Font> GetDefaultFont();
+        static Shr<Font> GetFont(std::string fontName, bool wholePath = false);
 
         static void ErasePool();
     };

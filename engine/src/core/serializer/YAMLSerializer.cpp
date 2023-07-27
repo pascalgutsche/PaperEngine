@@ -49,8 +49,9 @@ namespace Paper
 		std::string scene_path = scene->GetPath().string();
 		const std::string abs_path = std::filesystem::current_path().string() + "\\";
 		const size_t pos = scene_path.find(abs_path);
-		ASSERT(pos != std::string::npos, "")
-		const std::filesystem::path path(scene_path.erase(pos, abs_path.length()));
+		std::filesystem::path path(scene_path);
+		if (pos != std::string::npos)
+			path = std::filesystem::path(scene_path.erase(pos, abs_path.length()));
 
 		
 		out << YAML::Key << "Path" << YAML::Value << path.string();
@@ -102,10 +103,6 @@ namespace Paper
 
 		out << YAML::EndMap;
 		out << YAML::EndMap; // Entity
-
-		std::ofstream fout("lol.yaml");
-		fout << out.c_str();
-		fout.close();
 
 		return true;
 	}
@@ -163,7 +160,7 @@ namespace Paper
 				if (auto line_component = components["LineComponent"])
 					deserialized_entity.AddComponent<LineComponent>().Deserialize(line_component);
 				
-				if (auto text_component = entity["TextComponent"])
+				if (auto text_component = components["TextComponent"])
 					deserialized_entity.AddComponent<TextComponent>().Deserialize(text_component);
 			}
 		}
