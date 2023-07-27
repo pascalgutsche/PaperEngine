@@ -56,6 +56,7 @@ void PELayer::MainMenuBar()
 			if (ImGui::MenuItem("Open Project...", "Ctrl+O"))
 			{
 				ProjectManager::OpenFile("PaperEngine Project(*.peproj)\0 * .peproj\0");
+				//ProjectManager::OpenFile("Image Files (*.png, *.jpg)\0*.png;*.jpg;\0");
 			}
 
 			ImGui::Separator();

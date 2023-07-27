@@ -209,7 +209,7 @@ void PELayer::PropertiesPanel()
 				ImGui::InputText(("##" + std::to_string(i)).c_str(), &tag);
 				i++;
 			}
-			if (dc.tags.size() == 0)
+			if (dc.tags.empty())
 			{
 				ImGui::Text("No tags...");
 			}
@@ -278,6 +278,16 @@ void PELayer::PropertiesPanel()
 				ImGui::ImageButton((ImTextureID)sc.texture->GetID(), size, ImVec2(0, 1), ImVec2(1, 0));
 			else
 				ImGui::Button("null", size);
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					LOG_DEBUG(std::filesystem::path(path).string());
+				}
+				ImGui::EndDragDropTarget();
+			}
 		}
 
 		{
