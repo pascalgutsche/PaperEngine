@@ -5,7 +5,7 @@
 
 void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 {
-	if (ImGui::TreeNode("2D-Objects"))
+	if (ImGui::TreeNode("2D-Object"))
 	{
 		auto sprites_s = scene->Registry().view<SpriteComponent>();
 		if (!sprites_s.empty() && ImGui::TreeNode("Sprite"))

@@ -1,0 +1,6 @@
+D:\dev\C++\PaperEngine\PaperEditor\resources\scripts\ints\Debug\scriptcore.csproj.AssemblyReference.cache
+D:\dev\C++\PaperEngine\PaperEditor\resources\scripts\ints\Debug\scriptcore.csproj.CoreCompileInputs.cache
+D:\dev\C++\PaperEngine\PaperEditor\resources\scripts\ints\Debug\scriptcore.dll
+D:\dev\C++\PaperEngine\PaperEditor\resources\scripts\ints\Debug\scriptcore.pdb
+D:\dev\C++\PaperEngine\PaperEditor\resources\scripts\scriptcore.dll
+D:\dev\C++\PaperEngine\PaperEditor\resources\scripts\scriptcore.pdb

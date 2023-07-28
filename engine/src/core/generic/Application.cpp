@@ -3,15 +3,9 @@
 #include "generic/Application.h"
 
 #include "event/Input.h"
-#include "event/KeyCodes.h"
-#include "event/GameEvent.h"
-#include "event/MouseEvent.h"
-#include "renderer/RenderCommand.h"
-#include "renderer/Renderer2D.h"
-#include "renderer/Renderer3D.h"
 #include "imgui/ImGuiLayer.h"
-#include "utils/Core.h"
-
+#include "renderer/RenderCommand.h"
+#include "scripting/ScriptEngine.h"
 
 namespace Paper {
 
@@ -29,6 +23,7 @@ namespace Paper {
 		SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		RenderCommand::Init();
+		ScriptEngine::Init();
 
 		imguiLayer = new ImGuiLayer();
 	}

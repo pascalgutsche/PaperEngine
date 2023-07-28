@@ -35,13 +35,13 @@ project "engine"
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.STDUUID}",
 		"%{IncludeDir.ENTT}",
-		"%{IncludeDir.BOOST}"
+		"%{IncludeDir.BOOST}",
+		"%{IncludeDir.MONO}"
 	}
 
 	defines 
 	{
-		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE"
+		"_CRT_SECURE_NO_WARNIN_INCLUDE_NONE"
 		--"GLM_FORCE_XYZW_ONLY"
 	}
 
@@ -57,6 +57,7 @@ project "engine"
 		"spdlog",
 		"stb_image",
 		"yaml-cpp",
+		"%{Library.MONO}",
 		"opengl32.lib"
 	}
 
@@ -72,6 +73,14 @@ project "engine"
 	filter "system:windows"
 		cppdialect "C++20"
 		systemversion "latest"
+
+		links 
+		{
+			"%{Library.WINSOCK}",
+			"%{Library.WINMM}",
+			"%{Library.WINVERSION}",
+			"%{Library.BCRYPT}"
+		}
 
 		defines
 		{
