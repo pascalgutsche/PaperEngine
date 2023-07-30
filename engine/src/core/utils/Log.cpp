@@ -5,7 +5,8 @@
 
 namespace Paper {
 	std::shared_ptr<spdlog::logger> Log::coreLogger;
-	std::shared_ptr<spdlog::logger> Log::clientLogger;
+	std::shared_ptr<spdlog::logger> Log::editorLogger;
+	std::shared_ptr<spdlog::logger> Log::scriptingLogger;
 
 	void Log::Init() {
 		spdlog::set_pattern("%^[%T] %n: %v%$");
@@ -13,14 +14,18 @@ namespace Paper {
 		coreLogger = spdlog::stdout_color_mt("CORE");
 		coreLogger->set_level(spdlog::level::trace);
 	
-		clientLogger = spdlog::stdout_color_mt("GAME");
-		clientLogger->set_level(spdlog::level::trace);
+		editorLogger = spdlog::stdout_color_mt("EDITOR");
+		editorLogger->set_level(spdlog::level::trace);
+
+		scriptingLogger = spdlog::stdout_color_mt("SCRIPTING");
+		scriptingLogger->set_level(spdlog::level::trace);
 	}
 
 	void Log::Shutdown()
 	{
-		clientLogger.reset();
 		coreLogger.reset();
+		editorLogger.reset();
+		scriptingLogger.reset();
 		spdlog::drop_all();
 	}
 }

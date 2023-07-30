@@ -3,6 +3,8 @@
 
 #include "mono/jit/jit.h"
 #include "mono/metadata/assembly.h"
+#include <glm/gtx/string_cast.hpp>
+
 
 namespace Paper
 {
@@ -26,6 +28,7 @@ namespace Paper
 
 	void ScriptEngine::Shutdown()
 	{
+        ShutdownMono();
         delete data;
 	}
 
@@ -100,6 +103,33 @@ namespace Paper
         }
     }
 
+    static void NativeLog(MonoString* string, int level)
+    {
+        char* cstr = mono_string_to_utf8(string);
+        std::string str(cstr);
+        mono_free(cstr);
+
+        switch (level)
+        {
+            case 0: LOG_SCR_DEBUG(str);
+                break;
+            case 1: LOG_SCR_TRACE(str);
+                break;
+            case 2: LOG_SCR_WARN(str);
+                break;
+            case 3: LOG_SCR_ERROR(str);
+                break;
+        }
+    }
+    
+    static void NativeLog_Vector(glm::vec3* parameter, glm::vec3* outResult)
+    {
+        LOG_SCR_TRACE("Value: {0}", glm::to_string(*parameter));
+
+        //*outResult = glm::cross(*parameter, glm::vec3(parameter->x, parameter->y, -parameter->z));
+        *outResult = *parameter;
+    }
+
     void ScriptEngine::InitMono()
     {
         mono_set_assemblies_path("mono/lib");
@@ -116,6 +146,10 @@ namespace Paper
         data->app_domain = mono_domain_create_appdomain((char*)"PaperScriptRuntime", nullptr);
         mono_domain_set(data->app_domain, true);
 
+        mono_add_internal_call("Paper.Main::NativeLog", NativeLog);
+        mono_add_internal_call("Paper.Main::NativeLog_Vector", NativeLog_Vector);
+
+        ///GO AWAY
         data->core_assembly = LoadCSharpAssembly("resources/scripts/scriptcore.dll");
         PrintAssemblyTypes(data->core_assembly);
 
@@ -164,7 +198,9 @@ namespace Paper
 
     void ScriptEngine::ShutdownMono()
     {
+        data->app_domain = nullptr;
 
+        data->root_domain = nullptr;
     }
 
     
