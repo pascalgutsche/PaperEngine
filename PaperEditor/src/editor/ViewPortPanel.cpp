@@ -222,9 +222,10 @@ void PELayer::ViewPortDebugging()
 	{
 		ImGui::Text(viewport.name.c_str());
 		ImGui::Checkbox("is_visible", &viewport.is_visible);
-		ImGui::Checkbox("last_viewport_focused", &viewport.last_viewport_focused);
-		ImGui::Checkbox("viewport_hovered", &viewport.viewport_hovered);
+		ImGui::Checkbox("last_viewport_focused", &viewport.last_viewport_active);
 		ImGui::Checkbox("viewport_focused", &viewport.viewport_focused);
+		ImGui::Checkbox("viewport_hovered", &viewport.viewport_hovered);
+		ImGui::Checkbox("viewport_active", &viewport.viewport_active);
 
 		ImGui::InputFloat2("viewport_bounds[0]", &viewport.viewport_bounds[0].x);
 		ImGui::InputFloat2("viewport_bounds[1]", &viewport.viewport_bounds[1].x);

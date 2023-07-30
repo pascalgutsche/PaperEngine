@@ -4,6 +4,7 @@
 #include "generic/Entity.h"
 
 #include "Components.h"
+#include "component/CameraComponent.h"
 
 namespace Paper
 {
@@ -98,8 +99,14 @@ namespace Paper
 		if (entity.HasComponent<TextComponent>())
 			entity.GetComponent<TextComponent>().Serialize(out);
 
+		if (entity.HasComponent<ScriptComponent>())
+			entity.GetComponent<ScriptComponent>().Serialize(out);
+
 		if (entity.HasComponent<TransformComponent>())
 			entity.GetComponent<TransformComponent>().Serialize(out);
+
+		if (entity.HasComponent<CameraComponent>())
+			entity.GetComponent<CameraComponent>().Serialize(out);
 
 		out << YAML::EndMap;
 		out << YAML::EndMap; // Entity
@@ -162,6 +169,12 @@ namespace Paper
 				
 				if (auto text_component = components["TextComponent"])
 					deserialized_entity.AddComponent<TextComponent>().Deserialize(text_component);
+
+				if (auto script_component = components["ScriptComponent"])
+					deserialized_entity.AddComponent<ScriptComponent>().Deserialize(script_component);
+
+				if (auto camera_component = components["CameraComponent"])
+					deserialized_entity.AddComponent<CameraComponent>().Deserialize(camera_component);
 			}
 		}
 		//scene->SetClean();

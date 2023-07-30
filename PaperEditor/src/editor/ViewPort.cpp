@@ -65,7 +65,7 @@ void ViewPort::Panel(PELayer* peLayer)
 	Renderer2D::BeginRender(camera);
 	if (peLayer->scene)
 	{
-		peLayer->scene->Render(camera);
+		peLayer->scene->EditorRender(camera);
 		if (peLayer->active_entity)
 		{
 			Renderer2D::DrawLineRect(peLayer->active_entity.GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), peLayer->active_entity);
@@ -78,10 +78,10 @@ void ViewPort::Panel(PELayer* peLayer)
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
 
-	//viewport_focused = ImGui::IsWindowFocused();
+	viewport_focused = ImGui::IsWindowFocused();
 	viewport_hovered = ImGui::IsWindowHovered();
 
-	if (viewport_focused)
+	if (viewport_active)
 		CameraMovement(camera);
 
 	viewport_pos_abs = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };

@@ -122,11 +122,17 @@ void PELayer::MainMenuBar()
 
 			}
 
+
+			
+
 			ImGui::EndMenu();
 		}
 
 
-
+		bool active = scene->sceneActive;
+		ImGui::Checkbox("Scene Active", &active);
+		if (active != scene->sceneActive)
+			scene->SetSceneActive(active);
 
 
 		ImGui::EndMenuBar();

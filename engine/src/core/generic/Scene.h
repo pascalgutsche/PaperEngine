@@ -21,11 +21,11 @@ namespace Paper {
         Scene(const UUID& uuid, const std::string& name);
         ~Scene();
 
-        void Start();
+        void OnRuntimeStart();
+        void OnRuntimeStop();
+        //void OnRuntimeUpdate(float dt);
 
-        void Stop();
-
-        void Render(const Shr<EditorCamera>& camera);
+        void EditorRender(const Shr<EditorCamera>& camera);
 
         Entity CreateEntity(const std::string& name);
         Entity CreateEntity(const UUID& id, const std::string& name);
@@ -44,6 +44,10 @@ namespace Paper {
         bool IsDirty() const { return is_dirty; }
         void SetClean() { is_dirty = false; }
 
+        //temporary
+        void SetSceneActive(bool active);
+
+        bool sceneActive = false;
     private:
         UUID uuid;
         std::string name;

@@ -90,7 +90,6 @@ namespace Paper {
 		//set start scene
 		if (queuedScene) {
 			currentScene = queuedScene;
-			currentScene->Start();
 			queuedScene = nullptr;
 		}
 

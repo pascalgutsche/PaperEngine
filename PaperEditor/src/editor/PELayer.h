@@ -50,6 +50,7 @@ public:
 	int GetGuizmoType() const { return gizmo_type; }
 
 	bool AnyCameraActive() const;
+	bool AnyViewportFocused() const;
 
 	void DrawOutline(Entity entity);
 

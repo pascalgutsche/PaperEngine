@@ -1,7 +1,6 @@
 #pragma once
 #include "utility.h"
 
-#include "generic/Transform.h"
 #include "renderer/Texture.h"
 
 #include "renderer/Font.h"
@@ -12,7 +11,7 @@ namespace Paper {
 
     struct EdgeRenderData3D
     {
-        Transform transform = Transform();
+        //Transform transform = Transform();
         glm::vec4 color = DEFAULT_COLOR;
         int isLightSource = false;
 

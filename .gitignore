@@ -7,3 +7,4 @@ bin-int/**
 *.filters
 *.user
 imgui.ini
+PaperEditor/resources/scripts/ints/**

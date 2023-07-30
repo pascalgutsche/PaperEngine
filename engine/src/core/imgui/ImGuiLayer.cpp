@@ -7,7 +7,6 @@
 #include "renderer/RenderCommand.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/FrameBuffer.h"
-#include "ui/UIObject.h"
 
 #include <GLFW/glfw3.h>
 

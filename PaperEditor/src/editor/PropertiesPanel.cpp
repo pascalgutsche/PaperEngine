@@ -7,6 +7,7 @@
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
 #include "renderer/Font.h"
+#include "scripting/ScriptEngine.h"
 
 static void FillNameCol(const std::string& name)
 {
@@ -200,6 +201,7 @@ void PELayer::PropertiesPanel()
 		DrawComponentToAddPopup<SpriteComponent>(this, "Sprite Component");
 		DrawComponentToAddPopup<LineComponent>(this, "Line Component");
 		DrawComponentToAddPopup<TextComponent>(this, "Text Component");
+		DrawComponentToAddPopup<ScriptComponent>(this, "Script Component");
 		ImGui::EndPopup();
 	}
 
@@ -389,6 +391,24 @@ void PELayer::PropertiesPanel()
 			}
 
 		
+		});
+
+	DrawComponent<ScriptComponent>(this, "Script Component", true, [](ScriptComponent& scrc, Entity entity)
+		{
+			{
+				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
+				FillNameCol("C#-Class");
+
+				ImVec4 textColor;
+				if (ScriptEngine::EntityClassExists(scrc.name))
+					textColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+				else
+					textColor = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+				ImGui::PushStyleColor(ImGuiCol_Text, textColor);
+				ImGui::InputText(CONST_UI_ID, &scrc.name);
+				ImGui::PopStyleColor();
+			}
 		});
 
 	ImGui::End();

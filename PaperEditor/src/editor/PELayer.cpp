@@ -72,12 +72,12 @@ void PELayer::OnEvent(Event& event)
 				{
 					for (auto& port1 : viewports)
 					{
-						port1.viewport_focused = false;
-						port1.last_viewport_focused = false;
+						port1.viewport_active = false;
+						port1.last_viewport_active = false;
 					}
 					Application::GetWindow()->CursorEnabled(false);
 					ImGui::SetWindowFocus(port.name.c_str());
-					port.viewport_focused = true;
+					port.viewport_active = true;
 				}
 			}
 		}
@@ -103,8 +103,8 @@ void PELayer::OnEvent(Event& event)
 		{
 			for (auto& port1 : viewports)
 			{
-				port1.viewport_focused = false;
-				port1.last_viewport_focused = false;
+				port1.viewport_active = false;
+				port1.last_viewport_active = false;
 			}
 			Application::GetWindow()->CursorEnabled(true);
 		}
@@ -114,10 +114,10 @@ void PELayer::OnEvent(Event& event)
 	{
 		for (auto& port : viewports)
 		{
-			if (port.viewport_focused)
+			if (port.viewport_active)
 			{
-				port.camera->ControlCamera(e.GetX(), e.GetY(), port.last_viewport_focused != port.viewport_focused);
-				port.last_viewport_focused = true;
+				port.camera->ControlCamera(e.GetX(), e.GetY(), port.last_viewport_active != port.viewport_active);
+				port.last_viewport_active = true;
 				break;
 			}
 		}
@@ -138,25 +138,25 @@ void PELayer::OnEvent(Event& event)
 				// Gizmos
 				case KEY_Q:
 				{
-					if (!ImGuizmo::IsUsing())
+					if (AnyViewportFocused() && !ImGuizmo::IsUsing())
 						gizmo_type = -1;
 					break;
 				}
 				case KEY_W:
 				{
-					if (!ImGuizmo::IsUsing() && !AnyCameraActive())
+					if (AnyViewportFocused() && !ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::TRANSLATE;
 					break;
 				}
 				case KEY_E:
 				{
-					if (!ImGuizmo::IsUsing() && !AnyCameraActive())
+					if (AnyViewportFocused() && !ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::ROTATE;
 					break;
 				}
 				case KEY_R:
 				{
-					if (!ImGuizmo::IsUsing() && !AnyCameraActive())
+					if (AnyViewportFocused() && !ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::SCALE;
 					break;
 				}
@@ -279,6 +279,16 @@ void PELayer::DockPanel(std::string name, ImGuiID dock_id)
 }
 
 bool PELayer::AnyCameraActive() const
+{
+	for (const auto& viewPort : viewports)
+	{
+		if (viewPort.viewport_active)
+			return true;
+	}
+	return false;
+}
+
+bool PELayer::AnyViewportFocused() const
 {
 	for (const auto& viewPort : viewports)
 	{

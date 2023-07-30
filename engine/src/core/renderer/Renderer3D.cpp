@@ -256,7 +256,7 @@ namespace Paper {
     {
         const uint32_t cubeVertexCount = 24;
 
-        glm::mat4 transform = renderData.transform.GetMatrix();
+        //glm::mat4 transform = renderData.transform.GetMatrix();
 
         if (data.cubeElementCount >= data.MAX_ELEMENTS)
         {
@@ -288,7 +288,7 @@ namespace Paper {
 
         for (int i = 0; i < cubeVertexCount; i++)
         {
-            data.cubeVertexBufferPtr->position = transform * glm::vec4(data.cubePositionData[i], 1.0f);
+            //data.cubeVertexBufferPtr->position = transform * glm::vec4(data.cubePositionData[i], 1.0f);
             data.cubeVertexBufferPtr->color = renderData.color;
             data.cubeVertexBufferPtr->isLightSource = renderData.isLightSource;
             data.cubeVertexBufferPtr->normal = data.cubeNormalData[i];

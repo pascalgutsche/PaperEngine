@@ -6,10 +6,8 @@
 #include "generic/Application.h"
 #include "imgui/ImGuiLayer.h"
 #include "renderer/RenderCommand.h"
-#include "ui/Button.h"
 
 #include "GLFW/glfw3.h"
-#include "utils/Core.h"
 
 namespace Paper
 {

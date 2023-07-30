@@ -1,22 +1,22 @@
 Scene:
-  - c70ded8a-e618-493e-8276-cbf17be067ce
+  - ff84a6e2-69e7-40e9-9754-9f16b14b8a5b
 Name: "[Scene]"
 Path: assets\scenes\bunker.pescene
 Entities:
   - Components:
       DataComponent:
         UUID:
-          - f15c2e87-0156-4a1d-8eea-8984c5bdff7f
-        Name: Text Entity
+          - 8614edd3-2240-46c2-aa74-1311864921e1
+        Name: LineWhat
         Tags:
           []
-      TextComponent:
+      LineComponent:
         Color: [1, 1, 1, 1]
-        Text: THIS IS A SAMPLE TEXT
-        FontPath: resources/fonts/mononoki.ttf
-        RegisterAlphaPixels: false
+        Thickness: 10
+        PositionA: [-0.5, 0, 0]
+        PositionB: [0.5, 0, 0]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [2, 1, 3]
         Scale: [1, 1, 1]
         Rotation: [0, 0, 0]
   - Components:
@@ -34,6 +34,8 @@ Entities:
         RegisterAlphaPixels: false
         Thickness: 1
         Fade: 0.00499999989
+      ScriptComponent:
+        Name: Sandbox.Player
       TransformComponent:
         Position: [0, 1, 0]
         Scale: [1, 1, 1]
@@ -41,16 +43,16 @@ Entities:
   - Components:
       DataComponent:
         UUID:
-          - 8614edd3-2240-46c2-aa74-1311864921e1
-        Name: LineWhat
+          - f15c2e87-0156-4a1d-8eea-8984c5bdff7f
+        Name: Text Entity
         Tags:
           []
-      LineComponent:
+      TextComponent:
         Color: [1, 1, 1, 1]
-        Thickness: 10
-        PositionA: [-0.5, 0, 0]
-        PositionB: [0.5, 0, 0]
+        Text: THIS IS A SAMPLE TEXT
+        FontPath: resources/fonts/mononoki.ttf
+        RegisterAlphaPixels: false
       TransformComponent:
-        Position: [2, 1, 3]
+        Position: [0, 0, 0]
         Scale: [1, 1, 1]
         Rotation: [0, 0, 0]

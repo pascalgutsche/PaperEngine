@@ -15,7 +15,6 @@
 #include "core/generic/Application.h"
 #include "core/generic/Scene.h"
 #include "core/generic/EditorCamera.h"
-#include "core/generic/Transform.h"
 #include "core/generic/Entity.h"
 #include "core/generic/Sound.h"
 
@@ -30,12 +29,6 @@
 #include "core/renderer/RenderCommand.h"
 
 #include "core/serializer/YAMLSerializer.h"
-
-#include "core/ui/UIObject.h"
-#include "core/ui/Panel.h"
-#include "core/ui/Label.h"
-#include "core/ui/Button.h"
-#include "core/ui/PictureBox.h"
 
 #include "core/utils/Log.h"
 #include "core/utils/Utils.h"

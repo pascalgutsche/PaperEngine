@@ -304,6 +304,11 @@ namespace Paper {
 		StartBatch(ALL);
 	}
 
+	void Renderer2D::BeginRender(const EntityCamera& camera, glm::mat4 transform)
+	{
+
+	}
+
 	void Renderer2D::EndRender()
 	{
 		Render(ALL);

@@ -1,10 +1,10 @@
 #pragma once
 #include "utility.h"
 
-#include "generic/Transform.h"
 #include "renderer/Texture.h"
 #include "utils/DataPool.h"
 #include "generic/EditorCamera.h"
+#include "generic/EntityCamera.h"
 
 #include "renderer/Font.h"
 
@@ -91,6 +91,7 @@ namespace Paper {
         static void ResizeWindow(uint32_t width, uint32_t height);
 
         static void BeginRender(const Shr<EditorCamera>& camera);
+        static void BeginRender(const EntityCamera& camera, glm::mat4 transform);
         static void EndRender();
 
         static void Render(RenderTarget2D target);

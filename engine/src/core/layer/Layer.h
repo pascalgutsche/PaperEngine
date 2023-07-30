@@ -17,7 +17,7 @@ namespace Paper
 		Layer(const std::string& name = "Layer")
 			: name(name) { }
 
-		virtual ~Layer();
+		virtual ~Layer() = default;
 
 		void Attach();
 		void Detach();
@@ -30,37 +30,15 @@ namespace Paper
 
 		bool IsAttached() const { return attached; }
 
-		//std::vector<Entity*> GetEntitysByTag(std::initializer_list<std::string> tags);
-		//std::vector<Entity*> GetEntitysByTag(std::string tag);
-
-
 		void SetOverlayStatus(bool overlay) { this->overlay = overlay; }
 		bool GetOverlayStatus() { return this->overlay; }
 
 		bool GetOverlayStatus() const { return overlay; }
-		std::vector<Entity*>& GetEntitys() { return gameObjects; }
 		std::string GetName() { return name; }
-
-		//UI
-		friend class Scene;
-		void AddUIObject(UIObject* object, ProjectionMode mode);
-		void RemoveUIObject();
-		void RemoveUIObject(uint32_t index);
-		void RemoveUIObject(UIObject* object);
-
-		std::vector<UIObject*>& GetUIObjects();
 		
 	protected:
 		std::string name;
 		bool overlay = false;
 		bool attached = false;
-
-		std::vector<Entity*> gameObjects;
-
-	private:
-		std::vector<UIObject*> uiObjects;
-
-		void RenderUI();
-		void RenderObject(UIObject* object);
 	};
 }

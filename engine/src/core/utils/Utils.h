@@ -17,5 +17,7 @@ namespace Paper {
         };
 		Size CalculateAspectRatioFit(float srcWidth, float srcHeight, float maxWidth, float maxHeight);
 
+        char* ReadBytes(const std::filesystem::path& filepath, uint32_t* outSize);
+
 	}
 }

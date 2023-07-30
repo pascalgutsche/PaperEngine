@@ -42,7 +42,10 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\Entity.cs" />
+    <Compile Include="Source\InternalCalls.cs" />
     <Compile Include="Source\Main.cs" />
+    <Compile Include="Source\Player.cs" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

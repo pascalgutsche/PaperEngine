@@ -26,7 +26,7 @@ namespace Paper::UI
 		ScopedColour(const ScopedColour&) = delete;
 		ScopedColour& operator=(const ScopedColour&) = delete;
 		template<typename T>
-		ScopedColour(ImGuiCol colourId, T colour) { ImGui::PushStyleColor(colourId, ImColor(colour).Value); }
+		ScopedColour(ImGuiCol colourId, T colour) { ImGui::PushStyleColor(colourId, colour); }
 		~ScopedColour() { ImGui::PopStyleColor(); }
 	};
 

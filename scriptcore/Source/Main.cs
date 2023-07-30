@@ -56,19 +56,15 @@ namespace Paper
 
         public void Log(string text, int level = 0)
         {
-            NativeLog(text, level);
+            InternalCalls.NativeLog(text, level);
         }
         
         public Vector3 Log(Vector3 parameter)
         {
-            NativeLog_Vector(ref parameter, out Vector3 result);
+            InternalCalls.NativeLog_Vector(ref parameter, out Vector3 result);
             return result;
         }
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern static void NativeLog(string text, int level = 0);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern static void NativeLog_Vector(ref Vector3 parameter, out Vector3 result);
+        
     }
 }

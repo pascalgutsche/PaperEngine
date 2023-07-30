@@ -29,8 +29,9 @@ public:
 
 	bool viewport_focused = false;
 	bool viewport_hovered = false;
+	bool viewport_active = false;
 
-	bool last_viewport_focused = false;
+	bool last_viewport_active = false;
 
 	bool is_visible = false;
 };

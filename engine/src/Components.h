@@ -1,8 +1,10 @@
 ﻿#pragma once
+#include "core/component/CameraComponent.h.h"
 #include "core/component/CubeRenderer.h"
 #include "core/component/DataComponent.h"
 #include "core/component/LightComponent.h"
 #include "core/component/LineComponent.h"
+#include "core/component/ScriptComponent.h"
 #include "core/component/SpriteComponent.h"
 #include "core/component/TextComponent.h"
 #include "core/component/TransformComponent.h"
