@@ -14,10 +14,11 @@ namespace Paper {
 	{
 		glm::vec3 position;
 		glm::vec4 color;
+
 		glm::vec2 texCoords;
 		float tilingFactor;
 		int texIndex;
-		int projectionMode;
+
 		entity_id entity_id;
 		int uiID;
 		int alphaCoreID;
@@ -27,7 +28,7 @@ namespace Paper {
 	{
 		glm::vec3 position;
 		glm::vec4 color;
-		int projectionMode;
+
 		entity_id entity_id;
 		int uiID;
 	};
@@ -45,7 +46,6 @@ namespace Paper {
 		float thickness;
 		float fade;
 
-		int projectionMode;
 		entity_id entity_id;
 		int alphaCoreID;
 	};
@@ -56,7 +56,6 @@ namespace Paper {
 		glm::vec4 color;
 		glm::vec2 texCoord;
 
-		int projectionMode;
 		entity_id entity_id;
 		int uiID;
 		int alphaCoreID;
@@ -140,7 +139,6 @@ namespace Paper {
 			{ GLSLDataType::FLOAT , "aTilingFactor"},
 			{ GLSLDataType::INT , "aTexID" },
 
-			{ GLSLDataType::INT , "aProjectionMode" },
 			{ GLSLDataType::INT , "aCoreID" },
 			{ GLSLDataType::INT , "aUIID" },
 			{ GLSLDataType::INT , "aAlphaCoreID" }
@@ -150,7 +148,6 @@ namespace Paper {
 			{ GLSLDataType::FLOAT3, "aPos" },
 			{ GLSLDataType::FLOAT4, "aColor" },
 
-			{ GLSLDataType::INT , "aProjectionMode" },
 			{ GLSLDataType::INT , "aCoreID" },
 			{ GLSLDataType::INT , "aUIID" }
 		};
@@ -167,7 +164,6 @@ namespace Paper {
 			{ GLSLDataType::FLOAT,  "aThickness" },
 			{ GLSLDataType::FLOAT,  "aFade" },
 
-			{ GLSLDataType::INT , "aProjectionMode" },
 			{ GLSLDataType::INT, "aCoreID" },
 			{ GLSLDataType::INT , "aAlphaCoreID" }
 		};
@@ -178,7 +174,6 @@ namespace Paper {
 			{ GLSLDataType::FLOAT4, "aColor" },
 			{ GLSLDataType::FLOAT2, "aTexCoord" },
 
-			{ GLSLDataType::INT ,   "aProjectionMode" },
 			{ GLSLDataType::INT,    "aCoreID" },
 			{ GLSLDataType::INT , "aUIID" },
 			{ GLSLDataType::INT , "aAlphaCoreID" }
@@ -288,25 +283,24 @@ namespace Paper {
 		delete[] data.circleVertexBufferBase;
 		delete[] data.lineVertexBufferBase;
 		delete[] data.textVertexBufferBase;
-	 }
-
-	void Renderer2D::ResizeWindow(uint32_t width, uint32_t height)
-	{
-		
 	}
 
 	void Renderer2D::BeginRender(const Shr<EditorCamera>& camera)
 	{
-		camera->Update();
+		camera->Calculate();
 		RenderCommand::UploadCamera(camera);
-		RenderCommand::EnableDepthTesting(false);
+		RenderCommand::EnableDepthTesting(true);
 
 		StartBatch(ALL);
 	}
 
 	void Renderer2D::BeginRender(const EntityCamera& camera, glm::mat4 transform)
 	{
+		glm::mat4 viewMatrix = glm::inverse(transform);
+		RenderCommand::UploadCamera(camera, viewMatrix);
+		RenderCommand::EnableDepthTesting(true);
 
+		StartBatch(ALL);
 	}
 
 	void Renderer2D::EndRender()
@@ -496,7 +490,6 @@ namespace Paper {
 			data.rectangleVertexBufferPtr->texCoords = renderData.texCoords[i];
 			data.rectangleVertexBufferPtr->tilingFactor = renderData.tilingFactor;
 			data.rectangleVertexBufferPtr->texIndex = texIndex;
-			data.rectangleVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 			data.rectangleVertexBufferPtr->entity_id = renderData.enity_id;
 			data.rectangleVertexBufferPtr->alphaCoreID = renderData.coreIDToAlphaPixels;
 			data.rectangleVertexBufferPtr++;
@@ -554,7 +547,6 @@ namespace Paper {
 				data.triangleVertexBufferPtr->texCoords = renderData.texCoords[i];
 			data.triangleVertexBufferPtr->tilingFactor = renderData.tilingFactor;
 			data.triangleVertexBufferPtr->texIndex = texIndex;
-			data.triangleVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 			data.triangleVertexBufferPtr->entity_id = renderData.enity_id;
 			data.triangleVertexBufferPtr->alphaCoreID = renderData.coreIDToAlphaPixels;
 			data.triangleVertexBufferPtr++;
@@ -578,7 +570,6 @@ namespace Paper {
 
 		data.lineVertexBufferPtr->position = transform * pos0;
 		data.lineVertexBufferPtr->color = renderData.color;
-		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
 		data.lineVertexBufferPtr++;
 
@@ -586,7 +577,6 @@ namespace Paper {
 		
 		data.lineVertexBufferPtr->position = transform * pos1;
 		data.lineVertexBufferPtr->color = renderData.color;
-		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
 		data.lineVertexBufferPtr++;
 
@@ -605,7 +595,6 @@ namespace Paper {
 	{
 		data.lineVertexBufferPtr->position = renderData.point0;
 		data.lineVertexBufferPtr->color = renderData.color;
-		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
 		data.lineVertexBufferPtr++;
 
@@ -613,7 +602,6 @@ namespace Paper {
 
 		data.lineVertexBufferPtr->position = renderData.point1;
 		data.lineVertexBufferPtr->color = renderData.color;
-		data.lineVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 		data.lineVertexBufferPtr->entity_id = renderData.enity_id;
 		data.lineVertexBufferPtr++;
 
@@ -700,7 +688,6 @@ namespace Paper {
 			data.circleVertexBufferPtr->color = renderData.color;
 			data.circleVertexBufferPtr->thickness = renderData.thickness;
 			data.circleVertexBufferPtr->fade = renderData.fade;
-			data.circleVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 			data.circleVertexBufferPtr->entity_id = renderData.enity_id;
 			data.circleVertexBufferPtr->alphaCoreID = renderData.coreIDToAlphaPixels;
 			data.circleVertexBufferPtr++;
@@ -830,7 +817,6 @@ namespace Paper {
 			data.textVertexBufferPtr->position = transform * vertexData.at(i);
 			data.textVertexBufferPtr->color = renderData.color;
 			data.textVertexBufferPtr->texCoord = texCoordData.at(i);
-			data.textVertexBufferPtr->projectionMode = ProjectionModeToInt(renderData.mode);
 			data.textVertexBufferPtr->entity_id = renderData.enity_id;
 			data.textVertexBufferPtr->alphaCoreID = renderData.coreIDToAlphaPixels;
 			data.textVertexBufferPtr++;

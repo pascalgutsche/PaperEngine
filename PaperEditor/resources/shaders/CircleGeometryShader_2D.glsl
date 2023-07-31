@@ -8,16 +8,14 @@ layout(location = 4) in int aTexID;
 layout(location = 5) in vec4 aColor;
 layout(location = 6) in float aThickness;
 layout(location = 7) in float aFade;
-layout(location = 8) in int aProjectionMode;
-layout(location = 9) in int aCoreID;
-layout(location = 10) in int aAlphaCoreID;
+layout(location = 8) in int aCoreID;
+layout(location = 9) in int aAlphaCoreID;
 
 
 // camera variables
 layout(std140, binding = 0) uniform Camera
 {
-    mat4 uPerspective;
-    mat4 uOrthographic;
+    mat4 uProjection;
     mat4 uView;
 };
 
@@ -48,22 +46,7 @@ void main()
     CoreID = aCoreID;
     alphaCoreID = aAlphaCoreID;
 
-    vec4 position;
-    switch (aProjectionMode) {
-        case 0:
-            position = uPerspective * uView * vec4(aWorldPosition, 1.0f);
-            break;
-        case 1:
-            position = uOrthographic * uView * vec4(aWorldPosition, 1.0f);
-            break;
-        case 2:
-            position = vec4(aWorldPosition, 1.0f);
-            position.z = 0.0f;
-            break;
-        default:
-            break;
-    }
-    gl_Position = position;
+    gl_Position = uProjection * uView * vec4(aWorldPosition, 1.0f);
 }
 
 

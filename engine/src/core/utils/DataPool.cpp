@@ -113,19 +113,4 @@ namespace Paper {
         dataPool.clear();
     }
 
-
-    int ProjectionModeToInt(const ProjectionMode& mode)
-    {
-	    switch (mode)
-	    {
-	    case ProjectionMode::PERSPECTIVE:
-            return 0;
-	    case ProjectionMode::ORTHOGRAPHIC:
-            return 1;
-	    case ProjectionMode::SCREEN:
-            return 2;
-	    }
-        return -1;
-    }
-
 }

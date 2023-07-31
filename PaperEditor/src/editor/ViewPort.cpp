@@ -50,6 +50,7 @@ void ViewPort::Panel(PELayer* peLayer)
 		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
 
 		camera->aspect_ratio = viewport_size.x / viewport_size.y;
+		peLayer->scene->OnViewportResize(viewport_size.x, viewport_size.y);
 	}
 
 	RenderCommand::ClearColor(glm::vec4(0.0f));

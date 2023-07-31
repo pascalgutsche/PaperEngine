@@ -3,6 +3,8 @@
 
 #include "WindowsOpen.h"
 
+constexpr bool dynamicCameraCount = false;
+
 void PELayer::CameraMode()
 {
 	static bool active = true, previous_active = true;
@@ -36,7 +38,7 @@ void PELayer::CameraMode()
 				ImGui::SameLine();
 				ImGui::Text("Single");
 			}
-			if (mode == Split) {
+			if (mode == Split && dynamicCameraCount) {
 				bool pop = false;
 				if (mode == camera_mode)
 				{
@@ -53,7 +55,7 @@ void PELayer::CameraMode()
 				ImGui::SameLine();
 				ImGui::Text("Split");
 			}
-			if (mode == Triple) {
+			if (mode == Triple && dynamicCameraCount) {
 				bool pop = false;
 				if (mode == camera_mode)
 				{
@@ -70,7 +72,7 @@ void PELayer::CameraMode()
 				ImGui::SameLine();
 				ImGui::Text("Triple");
 			}
-			if (mode == Quadro) {
+			if (mode == Quadro && dynamicCameraCount) {
 				bool pop = false;
 				if (mode == camera_mode)
 				{

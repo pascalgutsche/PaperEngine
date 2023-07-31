@@ -12,8 +12,7 @@ layout(location = 7) in int aCoreID;
 // camera variables
 layout(std140, binding = 0) uniform Camera
 {
-    mat4 uPerspective;
-    mat4 uOrthographic;
+    mat4 uProjection;
     mat4 uView;
 };
 
@@ -40,7 +39,7 @@ void main()
     TexID = aTexID;
     CoreID = aCoreID;
 
-    gl_Position = uPerspective * uView * vec4(aPos, 1.0f);
+    gl_Position = uProjection * uView * vec4(aPos, 1.0f);
 }
 
 

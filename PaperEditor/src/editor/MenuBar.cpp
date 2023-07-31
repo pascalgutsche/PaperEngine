@@ -86,6 +86,8 @@ void PELayer::MainMenuBar()
 
 		if (ImGui::BeginMenu("Add"))
 		{
+			if (ImGui::MenuItem("Empty Entity"))
+				scene->CreateEntity("Entity");
 			if (ImGui::MenuItem("Sprite"))
 				scene->CreateEntity("Sprite").AddComponent<SpriteComponent>();
 			if (ImGui::MenuItem("Line"))

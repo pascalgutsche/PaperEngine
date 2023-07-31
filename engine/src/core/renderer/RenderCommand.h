@@ -4,7 +4,9 @@
 
 #include "renderer/VertexArray.h"
 #include "renderer/RenderAPI.h"
-#include "generic/EditorCamera.h"
+#include "camera/EditorCamera.h"
+#include "camera/EntityCamera.h"
+
 namespace Paper
 {
 	struct SharedRenderData
@@ -12,8 +14,7 @@ namespace Paper
 
 		struct CameraData
 		{
-			glm::mat4 uPerspective;
-			glm::mat4 uOrthographic;
+			glm::mat4 uProjection;
 			glm::mat4 uView;
 		};
 		CameraData cameraData;
@@ -42,6 +43,7 @@ namespace Paper
 		static void Shutdown();
 
 		static void UploadCamera(const Shr<EditorCamera>& camera);
+		static void UploadCamera(const EntityCamera& entityCamera, const glm::mat4& viewMatrix);
 		static SharedRenderData::Stats& GetStats();
 		static void ClearStats();
 

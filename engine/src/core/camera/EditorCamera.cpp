@@ -1,7 +1,7 @@
 ﻿#include "Engine.h"
 #include "EditorCamera.h"
 
-#include "Application.h"
+#include "generic/Application.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
@@ -16,8 +16,6 @@ namespace Paper
 		inline static float pitch = 0.0f;
 		inline static float yaw = 0.0f;
 		inline static float roll = 0.0f;
-
-		inline static glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
 
 		inline static float fov = 45.0f;
 		inline static float near_plane = 0.1f;
@@ -48,8 +46,6 @@ namespace Paper
 		yaw = DefaultValues::yaw;
 		roll = DefaultValues::roll;
 
-		//front = DefaultValues::front;
-
 		fov = DefaultValues::fov;
 		near_plane = DefaultValues::near_plane;
 		far_plane = DefaultValues::far_plane;
@@ -65,52 +61,28 @@ namespace Paper
 		return cameraViewMatrix;
 	}
 
-	glm::mat4 EditorCamera::GetProjectionMatrix() const
-	{
-		return glm::perspective(glm::radians(fov), aspect_ratio, near_plane, far_plane);
-	}
-
-	glm::mat4 EditorCamera::GetOrthographicMatrix() const
-	{
-		return glm::ortho(left_frostum, right_frostum, bottom_frostum, top_frostum, near_plane, far_plane);
-	}
-
 	glm::vec3 EditorCamera::GetFront() const
 	{
-		return glm::normalize(directionB);
+		return glm::normalize(direction);
 	}
 
-	void EditorCamera::Update()
+	void EditorCamera::Calculate()
 	{
 		this->target = glm::vec3(this->position.x, this->position.y, 0.0f);
 
-		//directionA.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
-		//directionA.y = glm::sin(glm::radians(pitch));
-		//directionA.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+		direction.y = glm::sin(glm::radians(pitch));
+		direction.x = glm::cos(glm::radians(yaw));
+		direction.z = glm::sin(glm::radians(yaw));
 
-		directionB.y = glm::sin(glm::radians(pitch));
-		directionB.x = glm::cos(glm::radians(yaw));
-		directionB.z = glm::sin(glm::radians(yaw));
-
-		//front = glm::normalize(directionA);
-
-		//// this is being used for pointing upwards (y globally, e.g. in the world)
-		//constexpr auto up = glm::vec3(0.0f, 1.0f, 0.0f);
-		//// declare z-axis
-		//cameraZ = glm::normalize(position - target);
-		//// declare x-axis by the cross-product
-		//cameraX = glm::normalize(glm::cross(up, cameraZ));
-		//// declare y-axis by the cross-product of z and x
-		//cameraY = glm::cross(cameraZ, cameraX);
-		//// make camera depend on position (who could have thought this)
-		//cameraViewMatrix = glm::lookAt(position, position + front, up);
-
-		//
-
-		glm::quat orientation = glm::quat(glm::vec3(glm::radians(pitch), -glm::radians(yaw), 0.0f));
+		const glm::quat orientation = glm::quat(glm::vec3(glm::radians(pitch), -glm::radians(yaw), 0.0f));
 
 		cameraViewMatrix = glm::translate(glm::mat4(1.0f), position) * glm::toMat4(orientation);
 		cameraViewMatrix = glm::inverse(cameraViewMatrix);
+
+		if (projectionMode == ProjectionMode::Perspective)
+			projectionMatrix = glm::perspective(glm::radians(fov), aspect_ratio, near_plane, far_plane);
+		else
+			projectionMatrix = glm::ortho(left_frostum, right_frostum, bottom_frostum, top_frostum, near_plane, far_plane);
 	}
 
 	void EditorCamera::ControlCamera(const float x, const float y, bool state)

@@ -116,15 +116,15 @@ template<typename ComponentType>
 using DrawComponentFn = std::function<void(ComponentType&, Entity)>;
 
 template<typename ComponentType>
-bool DrawRemoveButton(PELayer* _instance)
+bool DrawRemoveButton(PELayer* _instance, bool treeOpen)
 {
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
 	{
 		UI::ScopedStyle padding(ImGuiStyleVar_ItemInnerSpacing, ImVec2(2.0f, 2.0f));
-		if (ImGui::Button("Remove"))
+		if (ImGui::SmallButton("Remove"))
 		{
 			_instance->active_entity.RemoveComponent<ComponentType>();
-			ImGui::TreePop();
+			if (treeOpen) ImGui::TreePop();
 			return true;
 		}
 		return false;
@@ -138,7 +138,7 @@ void DrawComponent(PELayer* _instance, const std::string& name, bool canRemove, 
 
 	bool tree_open = ImGui::TreeNode(name.c_str());
 
-	if (canRemove && DrawRemoveButton<ComponentType>(_instance)) return;
+	if (canRemove && DrawRemoveButton<ComponentType>(_instance, tree_open)) return;
 
 	if (tree_open)
 	{
@@ -198,6 +198,7 @@ void PELayer::PropertiesPanel()
 
 	if (ImGui::BeginPopup("components_add_popup"))
 	{
+		DrawComponentToAddPopup<CameraComponent>(this, "Camera Component");
 		DrawComponentToAddPopup<SpriteComponent>(this, "Sprite Component");
 		DrawComponentToAddPopup<LineComponent>(this, "Line Component");
 		DrawComponentToAddPopup<TextComponent>(this, "Text Component");
@@ -227,12 +228,74 @@ void PELayer::PropertiesPanel()
 	DrawComponent<TransformComponent>(this, "Transform Component", false, 
 		[](TransformComponent& tc, Entity entity)
 	{
-		
 		ContentTable transform_section(100);
 
 		Draw3FloatControl("Position", tc.position);
 		Draw3FloatControl("Rotation", tc.rotation);
 		Draw3FloatControl("Scale", tc.scale, glm::vec3(0), glm::vec3(0), glm::vec3(1), glm::vec3(1));
+
+	});
+
+	DrawComponent<CameraComponent>(this, "Camera Component", true,
+		[](CameraComponent& cc, Entity entity)
+	{
+		EntityCamera& camera = cc.camera;
+		{
+			ContentTable projection_section(ImGui::CalcTextSize("Projection").x);
+			FillNameCol("Projection");
+
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+			if (ImGui::BeginCombo(CONST_UI_ID, ProjectionModeToString(camera.GetProjectionMode()).c_str()))
+			{
+				for (int i = 0; i <= (int)ProjectionMode::_LAST; i++)
+				{
+					if (ImGui::Selectable(ProjectionModeToString((ProjectionMode)i).c_str(), camera.GetProjectionMode() == (ProjectionMode)i))
+					{
+						camera.SetProjectionMode((ProjectionMode)i);
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+
+		if (camera.GetProjectionMode() == ProjectionMode::Perspective)
+		{
+			ContentTable projection_section(ImGui::CalcTextSize("Near Plane").x);
+
+			float fov = camera.GetPerspectiveFOV();
+			DrawFloatControl("FOV", fov, 0.001f, 360.0f, 1.0f, 45.0f, { "FV" });
+			if (fov != camera.GetPerspectiveFOV()) camera.SetPerspectiveFOV(fov);
+
+			float nearPlane = camera.GetPerspectiveNearClip();
+			DrawFloatControl("Near Plane", nearPlane, 0.01f, 0, 1.0f, 0.01, { "NP" });
+			if (nearPlane != camera.GetPerspectiveNearClip()) camera.SetPerspectiveNearClip(nearPlane);
+
+			float farPlane = camera.GetPerspectiveFarClip();
+			DrawFloatControl("Far Plane", farPlane, 0.02f, 0, 1.0f, 1000.0f, { "FP" });
+			if (farPlane != camera.GetPerspectiveFarClip()) camera.SetPerspectiveFarClip(farPlane);
+		}
+		else
+		{
+			ContentTable orthographic_section(ImGui::CalcTextSize("Near Plane").x);
+
+			float size = camera.GetOrthographicSize();
+			DrawFloatControl("Size", size, 0, 0, 1.0f, 10.0f, { "SI" });
+			if (size != camera.GetPerspectiveFOV()) camera.SetPerspectiveFOV(size);
+
+			float nearPlane = camera.GetOrthographicNearClip();
+			DrawFloatControl("Near Plane", nearPlane, 0, 0, 1.0f, -1.0f, { "NP" });
+			if (nearPlane != camera.GetOrthographicNearClip()) camera.SetOrthographicNearClip(nearPlane);
+
+			float farPlane = camera.GetOrthographicFarClip();
+			DrawFloatControl("Far Plane", farPlane, 0, 0, 1.0f, 1000.0f, { "FP" });
+			if (farPlane != camera.GetOrthographicFarClip()) camera.SetOrthographicFarClip(farPlane);
+		}
+
+		{
+			ContentTable component_section(ImGui::CalcTextSize("FixedAspectRatio").x);
+			DrawCheckbox("FixedAspectRatio", cc.fixedAspectRatio);
+			DrawCheckbox("Primary", cc.primary);
+		}
 
 	});
 

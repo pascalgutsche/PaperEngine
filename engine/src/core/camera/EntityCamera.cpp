@@ -5,12 +5,7 @@ namespace Paper
 {
 	EntityCamera::EntityCamera()
 	{
-		Calculate();
-	}
-
-	glm::mat4 EntityCamera::GetProjectionMatrix() const
-	{
-		return projection;
+		EntityCamera::Calculate();
 	}
 
 	void EntityCamera::SetPerspectiveFOV(float _perspectiveFOV)
@@ -49,12 +44,6 @@ namespace Paper
 		Calculate();
 	}
 
-	void EntityCamera::SetProjectionMode(ProjectionMode _mode)
-	{
-		projectionMode = _mode;
-		Calculate();
-	}
-
 	void EntityCamera::SetViewportSize(uint32_t width, uint32_t height)
 	{
 		CORE_ASSERT(width > 0 || height > 0, "Viewport has to be greater than 0");
@@ -66,14 +55,14 @@ namespace Paper
 	{
 		if (projectionMode == ProjectionMode::Perspective)
 		{
-			projection = glm::perspective(glm::radians(perspectiveFOV), aspectRatio, perspectiveNear, perspectiveFar);
+			projectionMatrix = glm::perspective(glm::radians(perspectiveFOV), aspectRatio, perspectiveNear, perspectiveFar);
 			return;
 		}
-		float orthoLeft = -orthographicSize * aspectRatio * 0.5f;
-		float orthoRight = orthographicSize * aspectRatio * 0.5f;
-		float orthoBottom = -orthographicSize * 0.5f;
-		float orthoTop = orthographicSize * 0.5f;
-		projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, orthographicNear, orthographicFar);
+		const float orthoLeft = -orthographicSize * aspectRatio * 0.5f;
+		const float orthoRight = orthographicSize * aspectRatio * 0.5f;
+		const float orthoBottom = -orthographicSize * 0.5f;
+		const float orthoTop = orthographicSize * 0.5f;
+		projectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, orthographicNear, orthographicFar);
 	}
 
 

@@ -3,6 +3,22 @@
 
 #include "WindowsOpen.h"
 
+void Entities(Shr<Scene>& scene, Entity& active_entity)
+{
+	if (ImGui::TreeNode("Entities"))
+	{
+		auto entities = scene->Registry().view<TransformComponent>();
+		for (auto entt : entities) {
+			Entity entity(entt, scene.get());
+			if (ImGui::Selectable(entity.GetName().c_str())) {
+				active_entity = entity;
+			}
+		}
+
+		ImGui::TreePop();
+	}
+}
+
 void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 {
 	if (ImGui::TreeNode("2D-Object"))
@@ -47,6 +63,22 @@ void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 	}
 }
 
+void Cameras(Shr<Scene>& scene, Entity& active_entity)
+{
+	if (ImGui::TreeNode("Cameras"))
+	{
+		auto cameras = scene->Registry().view<CameraComponent>();
+		for (auto entt : cameras) {
+			Entity entity(entt, scene.get());
+			if (ImGui::Selectable(entity.GetName().c_str())) {
+				active_entity = entity;
+			}
+		}
+
+		ImGui::TreePop();
+	}
+}
+
 void PELayer::OutlinerPanel()
 {
 	std::string name = "Outliner";
@@ -60,7 +92,9 @@ void PELayer::OutlinerPanel()
 
 	if (scene)
 	{
+		Entities(scene, active_entity);
 		TwoDObjects(scene, active_entity);
+		Cameras(scene, active_entity);
 	}
 
 

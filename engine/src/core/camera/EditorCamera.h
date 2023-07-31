@@ -1,23 +1,24 @@
 ﻿#pragma once
 #include "Engine.h"
 
+#include "Camera.h"
+
 namespace Paper
 {
-	class EditorCamera
+
+	class EditorCamera : public Camera
 	{
 	public:
 		EditorCamera();
-		~EditorCamera() = default;
+		~EditorCamera() override = default;
 
 		void ResetValues();
 
 		glm::mat4 GetViewMatrix() const;
-		glm::mat4 GetProjectionMatrix() const;
-		glm::mat4 GetOrthographicMatrix() const;
 
 		glm::vec3 GetFront() const;
 
-		void Update();
+		void Calculate() override;
 
 		void ControlCamera(float x, float y, bool state);
 
@@ -45,20 +46,9 @@ namespace Paper
 		float far_plane{};
 
 	private:
-		// X
-		glm::vec3 cameraX{};
-		// Y
-		glm::vec3 cameraY{};
-		// Z
-		glm::vec3 cameraZ{};
-
 		glm::mat4 cameraViewMatrix{};
 
-		//glm::vec3 front{};
-
-		glm::vec3 directionA{};
-		glm::vec3 directionB{};
-
+		glm::vec3 direction{};
 	};
 
 }

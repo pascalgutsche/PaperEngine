@@ -27,11 +27,17 @@ namespace Paper
 		Renderer3D::Shutdown();
 	}
 
-	void RenderCommand::UploadCamera(const Shr<EditorCamera>& camera)
+	void RenderCommand::UploadCamera(const Shr<EditorCamera>& editorCamera)
 	{
-		sharedData.cameraData.uOrthographic = camera->GetOrthographicMatrix();
-		sharedData.cameraData.uPerspective = camera->GetProjectionMatrix();
-		sharedData.cameraData.uView = camera->GetViewMatrix();
+		sharedData.cameraData.uProjection = editorCamera->GetProjectionMatrix();
+		sharedData.cameraData.uView = editorCamera->GetViewMatrix();
+		sharedData.cameraUniformBuffer->SetData(&sharedData.cameraData, sizeof(SharedRenderData::CameraData));
+	}
+
+	void RenderCommand::UploadCamera(const EntityCamera& entityCamera, const glm::mat4& viewMatrix)
+	{
+		sharedData.cameraData.uProjection = entityCamera.GetProjectionMatrix();
+		sharedData.cameraData.uView = viewMatrix;
 		sharedData.cameraUniformBuffer->SetData(&sharedData.cameraData, sizeof(SharedRenderData::CameraData));
 	}
 

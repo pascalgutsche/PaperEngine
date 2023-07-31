@@ -26,7 +26,4 @@ namespace Paper {
 
         static void ErasePool();
     };
-
-    enum class ProjectionMode { PERSPECTIVE, ORTHOGRAPHIC, SCREEN };
-    int ProjectionModeToInt(const ProjectionMode& mode);
 }

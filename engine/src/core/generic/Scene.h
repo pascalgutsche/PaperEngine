@@ -4,7 +4,7 @@
 
 #include "utils/UUID.h"
 
-#include "generic/EditorCamera.h"
+#include "camera/EditorCamera.h"
 
 namespace Paper {
 
@@ -21,10 +21,15 @@ namespace Paper {
         Scene(const UUID& uuid, const std::string& name);
         ~Scene();
 
+        void OnViewportResize(uint32_t width, uint32_t height);
+
         void OnRuntimeStart();
         void OnRuntimeStop();
-        //void OnRuntimeUpdate(float dt);
+        void OnRuntimeUpdate();
 
+        void OnEditorUpdate();
+
+        void RuntimeRender();
         void EditorRender(const Shr<EditorCamera>& camera);
 
         Entity CreateEntity(const std::string& name);

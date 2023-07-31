@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "core/component/CameraComponent.h.h"
+#include "core/component/CameraComponent.h"
 #include "core/component/CubeRenderer.h"
 #include "core/component/DataComponent.h"
 #include "core/component/LightComponent.h"

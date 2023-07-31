@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "generic/EntityCamera.h"
+#include "camera/EntityCamera.h"
 
 #include "serializer/Serializable.h"
 

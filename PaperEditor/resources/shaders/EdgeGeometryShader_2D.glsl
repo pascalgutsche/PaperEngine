@@ -5,16 +5,14 @@ layout(location = 1) in vec4 aColor; //the color of the vector
 layout(location = 2) in vec2 aTexCoord; //the coords of the texture
 layout(location = 3) in float aTilingFactor;
 layout(location = 4) in int aTexID; //The slot of the texture
-layout(location = 5) in int aProjectionMode;
-layout(location = 6) in int aCoreID;
-layout(location = 7) in int aUIID;
-layout(location = 8) in int aAlphaCoreID;
+layout(location = 5) in int aCoreID;
+layout(location = 6) in int aUIID;
+layout(location = 7) in int aAlphaCoreID;
 
 // camera variables
 layout(std140, binding = 0) uniform Camera
 {
-    mat4 uPerspective;
-    mat4 uOrthographic;
+    mat4 uProjection;
     mat4 uView;
 };
 
@@ -39,23 +37,7 @@ void main()
     CoreID = aCoreID;
     alphaCoreID = aAlphaCoreID;
 
-    vec4 position;
-    switch (aProjectionMode) {
-        case 0:
-            position = uPerspective * uView * vec4(aPos, 1.0f);
-            break;
-        case 1:
-            position = uOrthographic * uView * vec4(aPos, 1.0f);
-            break;
-        case 2:
-            position = vec4(aPos, 1.0f);
-            position.z = 0.0f;
-            break;
-        default:
-            break;
-    }
-    gl_Position = position;
-
+    gl_Position = uProjection * uView * vec4(aPos, 1.0f);
 }
 
 

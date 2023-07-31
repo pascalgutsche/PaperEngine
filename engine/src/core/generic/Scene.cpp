@@ -3,7 +3,7 @@
 #include "generic/Application.h"
 #include "generic/Scene.h"
 
-#include "EntityCamera.h"
+#include "camera/EntityCamera.h"
 #include "component/CameraComponent.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
@@ -36,6 +36,15 @@ namespace Paper {
 		registry.clear();
 	}
 
+	void Scene::OnViewportResize(uint32_t width, uint32_t height)
+	{
+		auto view = registry.view<CameraComponent>();
+		for (auto [entity, camera] : view.each()) {
+			if (!camera.fixedAspectRatio)
+				camera.camera.SetViewportSize(width, height);
+		}
+	}
+
 	void Scene::OnRuntimeStart()
 	{
 
@@ -55,12 +64,12 @@ namespace Paper {
 		ScriptEngine::OnRuntimeStop();
 	}
 
-	void Scene::OnRuntimeUpdate(float dt)
+	void Scene::OnRuntimeUpdate()
 	{
 		//Update Scripts
 		if (sceneActive)
 		{
-	
+			
 		}
 	}
 
@@ -95,7 +104,7 @@ namespace Paper {
 		}
 
 
-		Renderer2D::BeginRender()
+		//Renderer2D::BeginRender()
 		//Render scene
 		{
 			auto view = registry.view<TransformComponent, SpriteComponent>();

@@ -3,16 +3,14 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec4 aColor;
 layout(location = 2) in vec2 aTexCoord;
-layout(location = 3) in int aProjectionMode;
-layout(location = 4) in int aCoreID;
-layout(location = 5) in int aUIID;
-layout(location = 6) in int aAlphaCoreID;
+layout(location = 3) in int aCoreID;
+layout(location = 4) in int aUIID;
+layout(location = 5) in int aAlphaCoreID;
 
 // camera variables
 layout(std140, binding = 0) uniform Camera
 {
-    mat4 uPerspective;
-    mat4 uOrthographic;
+    mat4 uProjection;
     mat4 uView;
 };
 
@@ -35,22 +33,7 @@ void main()
     alphaCoreID = aAlphaCoreID;
     
 
-    vec4 position;
-    switch (aProjectionMode) {
-        case 0:
-            position = uPerspective * uView * vec4(aPos, 1.0f);
-            break;
-        case 1:
-            position = uOrthographic * uView * vec4(aPos, 1.0f);
-            break;
-        case 2:
-            position = vec4(aPos, 1.0f);
-            position.z = 0.0f;
-            break;
-        default:
-            break;
-    }
-	gl_Position = position;
+	gl_Position = uProjection * uView * vec4(aPos, 1.0f);
 }
 
 #type fragment

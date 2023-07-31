@@ -46,8 +46,8 @@ namespace Paper
 	{
 		try
 		{
-			fixedAspectRatio = data["FixedAspectRatio"].as<float>();
-			primary = data["Primary"].as<float>();
+			fixedAspectRatio = data["FixedAspectRatio"].as<bool>();
+			primary = data["Primary"].as<bool>();
 
 
 			auto entityCameraNode = data["EntityCamera"];
