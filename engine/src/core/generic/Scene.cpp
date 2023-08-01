@@ -91,7 +91,6 @@ namespace Paper {
 
 	void Scene::OnRuntimeStart()
 	{
-
 		//Scripting
 		{
 			ScriptEngine::OnRuntimeStart(this);
@@ -110,15 +109,19 @@ namespace Paper {
 
 	void Scene::OnRuntimeUpdate()
 	{
-	}
+		//Update rotation in transform component
+		{
+			auto view = registry.view<TransformComponent>();
+			for (auto [entity, transform] : view.each()) {
+				transform.UpdateRotation();
+			}
+		}
 
-	void Scene::OnEditorUpdate()
-	{
-		
-	}
+		//TODO: Update scripts
 
-	void Scene::RuntimeRender()
-	{
+		//TODO: update physics
+
+		//get primary camera
 		EntityCamera* entityCamera = nullptr;
 		glm::mat4 cameraTransform;
 
@@ -134,87 +137,21 @@ namespace Paper {
 			}
 		}
 
-		//Update rotation in transform component
-		{
-			auto view = registry.view<TransformComponent>();
-			for (auto [entity, transform] : view.each()) {
-				transform.UpdateRotation();
-			}
-		}
-
-
-		//Renderer2D::BeginRender()
-		//Render scene
-		{
-			auto view = registry.view<TransformComponent, SpriteComponent>();
-			for (auto [entity, transform, sprite] : view.each()) {
-				if (sprite.geometry == Geometry::CIRCLE)
-				{
-					CircleRenderData data;
-					data.transform = transform.GetTransform();
-					data.color = sprite.color;
-					data.texture = sprite.texture;
-					data.tilingFactor = sprite.tiling_factor;
-					data.texCoords = sprite.tex_coords;
-					data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
-					data.enity_id = (entity_id)entity;
-
-					data.thickness = sprite.thickness;
-					data.fade = sprite.fade;
-
-					Renderer2D::DrawCircle(data);
-				}
-				else
-				{
-					EdgeRenderData data;
-					data.transform = transform.GetTransform();
-					data.color = sprite.color;
-					data.texture = sprite.texture;
-					data.tilingFactor = sprite.tiling_factor;
-					data.texCoords = sprite.tex_coords;
-					data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
-					data.enity_id = (entity_id)entity;
-
-					if (sprite.geometry == Geometry::RECTANGLE)
-						Renderer2D::DrawRectangle(data);
-					else if (sprite.geometry == Geometry::TRIANGLE)
-						Renderer2D::DrawTriangle(data);
-				}
-			}
-		}
-
-		{
-			auto view = registry.view<TransformComponent, LineComponent>();
-			for (auto [entity, transform, line] : view.each())
-			{
-				LineRenderData data;
-				data.transform = transform.GetTransform();
-				data.color = line.color;
-				data.thickness = line.thickness;
-				data.enity_id = (entity_id)entity;
-
-				Renderer2D::DrawLine(data);
-			}
-		}
-
-		{
-			auto view = registry.view<TransformComponent, TextComponent>();
-			for (auto [entity, transform, text] : view.each()) {
-
-				TextRenderData data;
-				data.transform = transform.GetTransform();
-				data.color = text.color;
-				data.text = text.text;
-				data.font = text.font;
-				data.coreIDToAlphaPixels = text.register_alpha_pixels_to_event;
-				data.enity_id = (entity_id)entity;
-
-				Renderer2D::DrawString(data);
-			}
-		}
+		//Render
+		Renderer2D::BeginRender(*entityCamera, cameraTransform);
+		Render();
+		Renderer2D::EndRender();
 	}
 
-	void Scene::EditorRender(const Shr<EditorCamera>& camera)
+	void Scene::OnSimulationStart()
+	{
+	}
+
+	void Scene::OnSimulationStop()
+	{
+	}
+
+	void Scene::OnSimulationUpdate(const Shr<EditorCamera>& camera)
 	{
 		//Update rotation in transform component
 		{
@@ -224,7 +161,48 @@ namespace Paper {
 			}
 		}
 
-		//Render scene
+		//TODO: update physics
+
+		//render
+		Renderer2D::BeginRender(camera);
+		Render();
+		Renderer2D::EndRender();
+	}
+
+	void Scene::OnEditorUpdate(const Shr<EditorCamera>& camera)
+	{
+		//render
+		EditorRender(camera);
+	}
+
+	void Scene::EditorRender(const Shr<EditorCamera>& camera)
+	{
+		Renderer2D::BeginRender(camera);
+		Render();
+
+		//camera icons
+		{
+			auto view = registry.view<TransformComponent, CameraComponent>();
+			for (auto [entity, transform, line] : view.each())
+			{
+				EdgeRenderData data;
+				data.texture = DataPool::GetTexture("resources/editor/world/camera_symbol.png", true);
+				data.color = glm::vec4(1.0f);
+				data.transform = transform.GetTransform() * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.0f, -90.0f, 0.0f))));
+				LOG_DEBUG(data.transform[2].x);
+				LOG_WARN(glm::radians(90.0f));
+				data.enity_id = (entity_id)entity;
+
+				Renderer2D::DrawRectangle(data);
+			}
+		}
+
+		Renderer2D::EndRender();
+	}
+
+	void Scene::Render()
+	{
+		//Sprites
 		{
 			auto view = registry.view<TransformComponent, SpriteComponent>();
 			for (auto [entity, transform, sprite] : view.each()) {
@@ -263,6 +241,7 @@ namespace Paper {
 			}
 		}
 
+		//lines
 		{
 			auto view = registry.view<TransformComponent, LineComponent>();
 			for (auto [entity, transform, line] : view.each()) 
@@ -277,6 +256,7 @@ namespace Paper {
 			}
 		}
 
+		//text
 		{
 			auto view = registry.view<TransformComponent, TextComponent>();
 			for (auto [entity, transform, text] : view.each()) {

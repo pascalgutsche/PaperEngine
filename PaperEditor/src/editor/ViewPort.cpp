@@ -63,17 +63,28 @@ void ViewPort::Panel(PaperLayer* peLayer)
 	framebuffer->ClearAttachment(1, -1);
 
 	RenderCommand::ClearStats();
-	Renderer2D::BeginRender(camera);
+
 	if (peLayer->activeScene)
 	{
-		peLayer->activeScene->EditorRender(camera);
-		if (peLayer->active_entity)
+		switch (peLayer->sceneState)
 		{
-			Renderer2D::DrawLineRect(peLayer->active_entity.GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), peLayer->active_entity);
+		case SceneState::Edit:
+			peLayer->activeScene->OnEditorUpdate(camera);
+			Renderer2D::BeginRender(camera);
+			if (peLayer->active_entity)
+			{
+				Renderer2D::DrawLineRect(peLayer->active_entity.GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), peLayer->active_entity);
+			}
+			Renderer2D::EndRender();
+			break;
+		case SceneState::Play:
+			peLayer->activeScene->OnRuntimeUpdate();
+			break;
+		case SceneState::Simulate:
+			peLayer->activeScene->OnSimulationUpdate(camera);
+			break;
 		}
 	}
-	Renderer2D::EndRender();
-
 
 	if (peLayer->lastFocusedViewPort == this)
 	{

@@ -56,7 +56,6 @@ void PaperLayer::Update(const float dt)
 {
 	CheckSceneChange();
 
-
 }
 
 void PaperLayer::OnEvent(Event& event)
@@ -374,6 +373,14 @@ void HoverImageButton(std::string text)
 	}
 }
 
+bool ToolTipButton(const Shr<Texture>& tex, float size, std::string tooltip = std::string())
+{
+	bool state = ImGui::ImageButton((void*)tex->GetID(), ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0);
+	std::string texName = tooltip.empty() ? tex->GetFilePath().stem().string() : tooltip;
+	HoverImageButton(texName);
+	return state;
+}
+
 void PaperLayer::ToolbarPanel()
 {
 	static bool first = true;
@@ -391,76 +398,77 @@ void PaperLayer::ToolbarPanel()
 
 	ImGui::Begin(name, nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-	void* runtimePlayButton = (void*)DataPool::GetTexture("resources/editor/viewport/RuntimePlay.png", true)->GetID();
-	void* simulatePlayButton = (void*)DataPool::GetTexture("resources/editor/viewport/SimulatePlay.png", true)->GetID();
-	void* pauseButton = (void*)DataPool::GetTexture("resources/editor/viewport/Pause.png", true)->GetID();
-	void* stopButton = (void*)DataPool::GetTexture("resources/editor/viewport/Stop.png", true)->GetID();
+	Shr<Texture> playButton = DataPool::GetTexture("resources/editor/viewport/Play.png", true);
+	Shr<Texture> simulateButton = DataPool::GetTexture("resources/editor/viewport/Simulate.png", true);
+	Shr<Texture> pauseButton = DataPool::GetTexture("resources/editor/viewport/Pause.png", true);
+	Shr<Texture> stopButton = DataPool::GetTexture("resources/editor/viewport/Stop.png", true);
+	Shr<Texture> stepButton = DataPool::GetTexture("resources/editor/viewport/Step.png", true);
 
+	const bool play = sceneState != SceneState::Simulate;
+	const bool simulate = sceneState != SceneState::Play;
+	const bool pause = sceneState != SceneState::Edit;
 
-
-	float size = ImGui::GetWindowHeight() - 4;
-	ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5) - (size + (ImGui::GetStyle().ItemSpacing.x * 0.5)));
-
-	bool (*imageButton)(void* image, std::string tooltip) = [](void* image, std::string tooltip)
+	const int countButtons = pause && activeScene->IsPaused() ? 3 : 2;
+	const float size = ImGui::GetWindowHeight() - 4;
+	ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5) - (((size * countButtons) + (ImGui::GetStyle().ItemSpacing.x * countButtons)) * 0.5));
+#
+	if (pause)
 	{
-		float size = ImGui::GetWindowHeight() - 4;
-		bool state =  ImGui::ImageButton(image, ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0);
-		HoverImageButton(tooltip);
-		return state;
-	};
+		if (activeScene->IsPaused())
+		{
+			if (ToolTipButton(playButton, size, "Resume"))
+				activeScene->SetPaused(false);
+		}
+		else
+		{
 
-	switch(sceneState)
-	{
-	case SceneState::Edit:
-		if (imageButton(runtimePlayButton, "Play"))
-			OnScenePlay();
-
-		ImGui::SameLine();
-
-		if (imageButton(simulatePlayButton, "Simulate"))
-			OnSceneSimulate();
-
-		break;
-	case SceneState::RuntimePlay:
-		if (imageButton(pauseButton, "Pause"))
-			sceneState = SceneState::RuntimePause;
-		
-		ImGui::SameLine();
-
-		if (imageButton(stopButton, "Stop"))
-			OnSceneStop();
-
-		break;
-	case SceneState::RuntimePause:
-		if (imageButton(runtimePlayButton, "Resume"))
-			sceneState = SceneState::RuntimePlay;
-
-		ImGui::SameLine();
-
-		if (imageButton(stopButton, "Stop"))
-			OnSceneStop();
-
-		break;
-	case SceneState::SimulatePlay:
-		if (imageButton(pauseButton, "Pause"))
-			sceneState = SceneState::SimulatePause;
-
-		ImGui::SameLine();
-		if (imageButton(stopButton, "Stop"))
-			OnSceneStop();
-
-		break;
-	case SceneState::SimulatePause:
-		if (imageButton(simulatePlayButton, "Resume"))
-			sceneState = SceneState::SimulatePlay;
-
-		ImGui::SameLine();
-		if (imageButton(stopButton, "Stop"))
-			OnSceneStop();
-
-		break;
+			if (ToolTipButton(pauseButton, size))
+				activeScene->SetPaused(true);
+		}
 	}
 
+	if (play)
+	{
+		if (pause)
+			ImGui::SameLine();
+
+		if (sceneState == SceneState::Edit)
+		{
+			if (ToolTipButton(playButton, size))
+				OnScenePlay();
+		}
+		else
+		{
+
+			if (ToolTipButton(stopButton, size))
+				OnSceneStop();
+		}
+	}
+
+	if (simulate)
+	{
+		if (play || sceneState != SceneState::Edit)
+			ImGui::SameLine();
+
+		if (sceneState == SceneState::Edit)
+		{
+			if (ToolTipButton(simulateButton, size))
+				OnSceneSimulate();
+		}
+		else
+		{
+			if (ToolTipButton(stopButton, size))
+				OnSceneStop();
+		}
+	}
+
+	if (pause && activeScene->IsPaused())
+	{
+		ImGui::SameLine();
+
+		if (ToolTipButton(stepButton, size))
+			activeScene->StepFrames();
+	}
 
 	ImGui::PopStyleVar(2);
 	ImGui::PopStyleColor(3);
@@ -473,26 +481,25 @@ void PaperLayer::ToolbarPanel()
 
 void PaperLayer::OnScenePlay()
 {
-	sceneState = SceneState::RuntimePlay;
+	sceneState = SceneState::Play;
 	SwitchScene(editorScene->Copy());
+	activeScene->OnRuntimeStart();
 }
 
 void PaperLayer::OnSceneSimulate()
 {
-	sceneState = SceneState::SimulatePlay;
-}
-
-void PaperLayer::OnScenePause()
-{
-	if (sceneState == SceneState::RuntimePlay)
-		sceneState = SceneState::RuntimePause;
-
-	if (sceneState == SceneState::SimulatePlay)
-		sceneState = SceneState::SimulatePause;
+	sceneState = SceneState::Simulate;
+	SwitchScene(editorScene->Copy());
+	activeScene->OnSimulationStart();
 }
 
 void PaperLayer::OnSceneStop()
 {
+	if (sceneState == SceneState::Play)
+		activeScene->OnRuntimeStop();
+	else if (sceneState == SceneState::Simulate)
+		activeScene->OnSimulationStop();
+
 	sceneState = SceneState::Edit;
 	SwitchScene(editorScene);
 }

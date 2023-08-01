@@ -30,7 +30,7 @@ namespace Paper {
         virtual uint32_t GetID() const = 0;
         virtual int GetWidth() = 0;
         virtual int GetHeight() = 0;
-        virtual std::string GetFilePath() = 0;
+        virtual std::filesystem::path GetFilePath() = 0;
         virtual std::string GetName() = 0;
 
         virtual void SetData(void* data, uint32_t size) = 0;
@@ -41,7 +41,7 @@ namespace Paper {
 
         virtual ~Texture() = default;
 
-        static Shr<Texture> CreateTexture(std::string filePath, std::string name);
+        static Shr<Texture> CreateTexture(std::filesystem::path filePath, std::string name);
 
         static Shr<Texture> CreateTexture(TextureSpecification specification);
     };

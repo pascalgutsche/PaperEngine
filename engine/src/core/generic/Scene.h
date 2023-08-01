@@ -29,10 +29,14 @@ namespace Paper {
         void OnRuntimeStop();
         void OnRuntimeUpdate();
 
-        void OnEditorUpdate();
+    	void OnSimulationStart();
+        void OnSimulationStop();
+        void OnSimulationUpdate(const Shr<EditorCamera>& camera);
 
-        void RuntimeRender();
+        void OnEditorUpdate(const Shr<EditorCamera>& camera);
+
         void EditorRender(const Shr<EditorCamera>& camera);
+        void Render();
 
         Entity CreateEntity(const std::string& name);
         Entity CreateEntity(const UUID& id, const std::string& name);
@@ -51,6 +55,11 @@ namespace Paper {
         bool IsDirty() const { return is_dirty; }
         void SetClean() { is_dirty = false; }
 
+        //runtime
+        bool IsPaused() const { return isPaused; }
+        void SetPaused(const bool paused) { isPaused = paused; }
+
+        void StepFrames(const int frames = 1) { framesToStep = frames; }
     private:
         UUID uuid;
         std::string name;
@@ -61,6 +70,10 @@ namespace Paper {
 
         entt::registry registry;
         std::unordered_map<UUID, entt::entity> entity_map;
+
+        //runtime
+        bool isPaused = false;
+        int framesToStep = 0;
     };
 
     

@@ -22,10 +22,8 @@ inline std::string CameraModesToString(CameraModes mode)
 enum class SceneState
 {
 	Edit,
-	RuntimePlay,
-	RuntimePause,
-	SimulatePlay,
-	SimulatePause
+	Play,
+	Simulate
 };
 
 class PaperLayer : public Layer
@@ -118,7 +116,6 @@ private:
 
 	void OnScenePlay();
 	void OnSceneSimulate();
-	void OnScenePause();
 	void OnSceneStop();
 };
 

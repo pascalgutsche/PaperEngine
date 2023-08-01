@@ -13,7 +13,7 @@ namespace Paper
 
 			out << YAML::Key << "Color" << YAML::Value << color;
 			if (texture)
-				out << YAML::Key << "TexturePath" << YAML::Value << texture->GetFilePath();
+				out << YAML::Key << "TexturePath" << YAML::Value << texture->GetFilePath().string();
 			out << YAML::Key << "TilingFactor" << YAML::Value << tiling_factor;
 			out << YAML::Key << "TexCoords" << YAML::Value << tex_coords;
 			out << YAML::Key << "RegisterAlphaPixels" << YAML::Value << register_alpha_pixels_to_event;

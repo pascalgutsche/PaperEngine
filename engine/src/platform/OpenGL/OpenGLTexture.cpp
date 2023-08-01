@@ -33,7 +33,7 @@ namespace Paper
 		CORE_ASSERT("", false);
 		return 0;
 	}
-	OpenGLTexture::OpenGLTexture(std::string filePath, std::string name)
+	OpenGLTexture::OpenGLTexture(std::filesystem::path filePath, std::string name)
 	{
 		this->filePath = filePath;
 		this->name = name;
@@ -115,7 +115,7 @@ namespace Paper
 		return texID == other.GetID();
 	}
 
-	std::string OpenGLTexture::GetFilePath()
+	std::filesystem::path OpenGLTexture::GetFilePath()
 	{
 		return this->filePath;
 	}
@@ -125,7 +125,7 @@ namespace Paper
 		return this->name;
 	}
 
-	bool OpenGLTexture::Init(std::string path)
+	bool OpenGLTexture::Init(std::filesystem::path path)
 	{
 		glGenTextures(1, &texID);
 		// use texture (everything that is called from now will be set to the current texture)
@@ -142,7 +142,7 @@ namespace Paper
 
 		stbi_set_flip_vertically_on_load(true);
 		// load texture and save formats to the variables (4 == RGBA format)
-		localBuffer = stbi_load(path.c_str(), &width, &height, &channels, 0);
+		localBuffer = stbi_load(path.string().c_str(), &width, &height, &channels, 0);
 
 		// free memory if path is invalid
 		if (localBuffer)
@@ -155,14 +155,14 @@ namespace Paper
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
 			}
 			else {
-				LOG_CORE_ERROR("Unknown number of channel '" + std::to_string(channels) + "' by texture '" + path + "'");
+				LOG_CORE_ERROR("Unknown number of channel '" + std::to_string(channels) + "' by texture '" + path.string() + "'");
 				return false;
 			}
 			glGenerateMipmap(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 		else {
-			LOG_CORE_ERROR("Could not load image '" + path + "'");
+			LOG_CORE_ERROR("Could not load image '" + path.string() + "'");
 			return false;
 		}
 

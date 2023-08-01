@@ -11,7 +11,7 @@ namespace Paper
 	class OpenGLTexture : public Texture
 	{
 	public:
-		OpenGLTexture(std::string filePath, std::string name);
+		OpenGLTexture(std::filesystem::path filePath, std::string name);
 		OpenGLTexture(TextureSpecification specification);
 		~OpenGLTexture() override;
 
@@ -28,7 +28,7 @@ namespace Paper
 
 		bool operator==(const Texture& other) const override;
 
-		std::string GetFilePath() override;
+		std::filesystem::path GetFilePath() override;
 		std::string GetName() override;
 
 	private:
@@ -37,7 +37,7 @@ namespace Paper
 		GLenum internalFormat;
 		GLenum dataFormat;
 
-		std::string filePath;
+		std::filesystem::path filePath;
 		std::string name;
 
 		unsigned char* localBuffer;
@@ -48,6 +48,6 @@ namespace Paper
 
 		uint32_t texID;
 
-		bool Init(std::string path);
+		bool Init(std::filesystem::path path);
 	};
 }

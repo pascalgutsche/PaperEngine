@@ -57,7 +57,7 @@ namespace Paper {
 
     Shr<Texture> DataPool::GetTexture(std::string textureName, bool wholePath) {
         // set default path
-        const std::string path = wholePath ? textureName : "resources/textures/" + textureName;
+        const std::filesystem::path path = wholePath ? textureName : "resources/textures/" + textureName;
 
         std::string texture_id = "recourcetexture_" + textureName;
 
