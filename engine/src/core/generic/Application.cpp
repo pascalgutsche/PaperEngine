@@ -116,8 +116,6 @@ namespace Paper {
 				layer->Imgui(dt);
 			}
 
-			Input::ProcessInput();
-
 			imguiLayer->End();
 
 			window->SwapBuffers();

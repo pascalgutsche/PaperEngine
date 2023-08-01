@@ -4,25 +4,27 @@
 
 #include "event/Event.h"
 
+#include "ButtonCodes.h"
+
 //MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 
 namespace Paper {
 	class MouseButtonPressedEvent final : public Event {
 	private:
-		int button;
+		MouseButton button;
 		int mods;
 
 	public:
-		MouseButtonPressedEvent(int button, int mods)
+		MouseButtonPressedEvent(MouseButton button, const int mods)
 			:button(button), mods(mods) { }
 
-		inline int GetButton() const { return button; }
-		inline bool IsModPressed(const int mod) const { return mods & mod; }
+		inline MouseButton GetButton() const { return button; }
+		inline bool IsModPressed(Mod mod) const { return mods & (int)mod; }
 
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "MouseButtonPressedEvent: " << button;
+			string << "MouseButtonPressedEvent: " << (int)button;
 			return string.str();
 		}
 
@@ -34,18 +36,18 @@ namespace Paper {
 
 	class MouseButtonReleasedEvent final : public Event {
 	private:
-		int button;
+		MouseButton button;
 		int mods;
 	public:
-		MouseButtonReleasedEvent(const int button, const int mods)
+		MouseButtonReleasedEvent(MouseButton button, const int mods)
 			:button(button), mods(mods) { }
 
-		inline int GetButton() const { return button; }
-		inline bool IsModPressed(const int mod) const { return mods & mod; }
+		inline MouseButton GetButton() const { return button; }
+		inline bool IsModPressed(Mod mod) const { return mods & (int)mod; }
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "MouseButtonReleasedEvent: " << button;
+			string << "MouseButtonReleasedEvent: " << (int)button;
 			return string.str();
 		}
 

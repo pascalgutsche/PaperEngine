@@ -118,19 +118,19 @@ namespace Paper
         {
         case GLFW_PRESS:
         {
-            KeyPressedEvent event(key, false, mods);
+            KeyPressedEvent event((Key)key, false, mods);
             data.callback(event);
             break;
         }
         case GLFW_RELEASE:
         {
-            KeyReleasedEvent event(key, mods);
+            KeyReleasedEvent event((Key)key, mods);
             data.callback(event);
             break;
         }
         case GLFW_REPEAT:
         {
-            KeyPressedEvent event(key, true, mods);
+            KeyPressedEvent event((Key)key, true, mods);
             data.callback(event);
             break;
         }
@@ -141,8 +141,8 @@ namespace Paper
         glfwSetCharCallback(glfwWindow, [](GLFWwindow* window, unsigned int key_code)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-        KeyTypedEvent event(key_code);
-        data.callback(event);
+				KeyTypedEvent event((Key)key_code);
+				data.callback(event);
             });
 
         glfwSetMouseButtonCallback(glfwWindow, [](GLFWwindow* window, int button, int action, int mods)
@@ -153,13 +153,13 @@ namespace Paper
         {
         case GLFW_PRESS:
         {
-            MouseButtonPressedEvent event(button, mods);
+            MouseButtonPressedEvent event((MouseButton)button, mods);
             data.callback(event);
             break;
         }
         case GLFW_RELEASE:
         {
-            MouseButtonReleasedEvent event(button, mods);
+            MouseButtonReleasedEvent event((MouseButton)button, mods);
             data.callback(event);
             break;
         }

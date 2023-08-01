@@ -1,29 +1,32 @@
 ﻿#pragma once
 #include "Engine.h"
 
-#include <boost/uuid/uuid.hpp>
-
 namespace Paper
 {
-	class UUID {
+	class UUID
+	{
 	public:
 		UUID();
+		UUID(uint64_t uuid);
+		UUID(std::string uuid);
+		UUID(const UUID&) = default;
 
-		UUID(const std::string& uuidStr);
+		void Set(std::string id);
+		void Set(uint64_t id);
 
+		uint64_t toUInt64() const;
 		std::string toString() const;
 
-		void Set(const std::string& id) const;
-
-		bool operator==(const UUID& other) const;
-
-		bool operator!=(const UUID& other) const;
-
+		operator uint64_t() const { return uuid; }
+		operator std::string() const
+		{
+			std::ostringstream ss;
+			ss << std::setfill('0') << std::setw(16) << std::hex << uuid;
+			return ss.str();
+		}
 	private:
-		mutable boost::uuids::uuid uuid;
+		uint64_t uuid;
 	};
-
-	std::ostream& operator<<(std::ostream& os, const UUID& uuid);
 
 }
 
@@ -33,9 +36,9 @@ namespace std {
 	template<>
 	struct hash<Paper::UUID>
 	{
-		size_t operator()(const Paper::UUID& uuid) const noexcept
+		std::size_t operator()(const Paper::UUID& uuid) const
 		{
-			return std::hash<std::string_view>{}(uuid.toString());
+			return (uint64_t)uuid;
 		}
 	};
 

@@ -4,11 +4,11 @@ using System.Runtime.Remoting.Messaging;
 
 namespace Paper
 {
-    public struct Vector3
+    public struct Vec3
     {
         public float X, Y, Z;
 
-        public Vector3(float _X, float _Y, float _Z)
+        public Vec3(float _X, float _Y, float _Z)
         {
             X = _X; 
             Y = _Y; 
@@ -29,8 +29,8 @@ namespace Paper
             Log("BunkerGamer", 3);
             Log("BunkerGamerDEBUG");
 
-            Vector3 pos = new Vector3(88.759834f, 42.2f, 69.007f);
-            Vector3 returnVal = Log(pos);
+            Vec3 pos = new Vec3(88.759834f, 42.2f, 69.007f);
+            Vec3 returnVal = Log(pos);
             Log($"C# VECTOR: {returnVal.X}, {returnVal.Y}, {returnVal.Z}", 3);
         }
 
@@ -59,9 +59,9 @@ namespace Paper
             InternalCalls.NativeLog(text, level);
         }
         
-        public Vector3 Log(Vector3 parameter)
+        public Vec3 Log(Vec3 parameter)
         {
-            InternalCalls.NativeLog_Vector(ref parameter, out Vector3 result);
+            InternalCalls.NativeLog_Vector(ref parameter, out Vec3 result);
             return result;
         }
 

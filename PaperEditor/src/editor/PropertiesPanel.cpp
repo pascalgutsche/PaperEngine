@@ -185,16 +185,7 @@ void PaperLayer::PropertiesPanel()
 	ImGui::InputText(("##" + active_entity.GetUUID().toString()).c_str(), &name);
 	active_entity.SetName(name);
 
-	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
-	{
-		UI::ScopedStyle padding(ImGuiStyleVar_ItemInnerSpacing, ImVec2(2.0f, 2.0f));
-		if (ImGui::Button("Add"))
-		{
-			ImGui::OpenPopup("components_add_popup");
-		}
-	}
-
-	
+	ImGui::Text(("UUID: " + std::to_string(active_entity.GetUUID())).c_str());
 
 	if (ImGui::BeginPopup("components_add_popup"))
 	{
@@ -473,6 +464,14 @@ void PaperLayer::PropertiesPanel()
 				ImGui::PopStyleColor();
 			}
 		});
+
+	{
+		UI::ScopedStyle padding(ImGuiStyleVar_ItemInnerSpacing, ImVec2(2.0f, 2.0f));
+		if (ImGui::Button("Add"))
+		{
+			ImGui::OpenPopup("components_add_popup");
+		}
+	}
 
 	ImGui::End();
 

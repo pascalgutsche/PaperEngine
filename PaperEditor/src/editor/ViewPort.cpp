@@ -14,29 +14,29 @@
 static void CameraMovement(const Shr<EditorCamera>& camera)
 {
 	const float dt = Application::GetDT();
-	if (Input::IsKeyPressed(KEY_W))
+	if (Input::IsKeyPressed(Key::W))
 	{
 		camera->position.x += 5 * dt * camera->GetFront().z;
 		camera->position.z -= 5 * dt * camera->GetFront().x;
 	}
-	if (Input::IsKeyPressed(KEY_A))
+	if (Input::IsKeyPressed(Key::A))
 	{
 		camera->position.x -= 5 * dt * camera->GetFront().x;
 		camera->position.z -= 5 * dt * camera->GetFront().z;
 	}
-	if (Input::IsKeyPressed(KEY_S))
+	if (Input::IsKeyPressed(Key::S))
 	{
 		camera->position.x -= 5 * dt * camera->GetFront().z;
 		camera->position.z += 5 * dt * camera->GetFront().x;
 	}
-	if (Input::IsKeyPressed(KEY_D))
+	if (Input::IsKeyPressed(Key::D))
 	{
 		camera->position.x += 5 * dt * camera->GetFront().x;
 		camera->position.z += 5 * dt * camera->GetFront().z;
 	}
-	if (Input::IsKeyPressed(KEY_E))
+	if (Input::IsKeyPressed(Key::E))
 		camera->position.y += 5 * dt;
-	if (Input::IsKeyPressed(KEY_Q))
+	if (Input::IsKeyPressed(Key::Q))
 		camera->position.y -= 5 * dt;
 }
 
@@ -50,7 +50,8 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
 
 		camera->aspect_ratio = viewport_size.x / viewport_size.y;
-		peLayer->activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
+		if (peLayer->activeScene)
+			peLayer->activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
 	}
 
 	RenderCommand::ClearColor(glm::vec4(0.0f));
@@ -149,7 +150,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		glm::mat4 transform = tc.GetTransform();
 
 		// Snapping
-		bool snap = Input::IsKeyPressed(KEY_LEFT_CONTROL);
+		bool snap = Input::IsKeyPressed(Key::LEFT_CONTROL);
 		float snapValue = 0.5f; // Snap to 0.5m for translation/scale
 		// Snap to 45 degrees for rotation
 		if (peLayer->GetGuizmoType() == ImGuizmo::OPERATION::ROTATE)

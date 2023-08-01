@@ -1,42 +1,49 @@
 ﻿#include "Engine.h"
 #include "UUID.h"
 
-#include <boost/uuid/uuid_io.hpp>
-#include <boost/uuid/random_generator.hpp>
-#include <boost/lexical_cast.hpp>
-
 
 namespace Paper
 {
-    UUID::UUID()
+	static std::random_device randomDevice;
+	static std::mt19937_64 engine(randomDevice());
+	static std::uniform_int_distribution<uint64_t> distribution;
+
+	UUID::UUID()
+		: uuid(distribution(engine))
 	{
-        boost::uuids::random_generator generator;
-        uuid = generator();
-    }
+	}
 
-    UUID::UUID(const std::string& uuidStr) {
-        uuid = boost::lexical_cast<boost::uuids::uuid>(uuidStr);
-    }
+	UUID::UUID(uint64_t uuid)
+		: uuid(uuid)
+	{
+	}
 
-    std::string UUID::toString() const {
-        return boost::uuids::to_string(uuid);
-    }
+	UUID::UUID(std::string id)
+	{
+		std::stringstream ss;
+		ss << std::hex << id;
+		ss >> uuid;
+	}
 
-    void UUID::Set(const std::string& id) const
-    {
-        uuid = boost::lexical_cast<boost::uuids::uuid>(id);
-    }
+	void UUID::Set(std::string id)
+	{
+		std::stringstream ss;
+		ss << std::hex << id;
+		ss >> uuid;
+	}
 
-    bool UUID::operator==(const UUID& other) const {
-        return uuid == other.uuid;
-    }
+	void UUID::Set(uint64_t id)
+	{
+		uuid = id;
+	}
 
-    bool UUID::operator!=(const UUID& other) const {
-        return uuid != other.uuid;
-    }
+	uint64_t UUID::toUInt64() const
+	{
+		return operator uint64_t();
+	}
 
-    std::ostream& operator<<(std::ostream& os, const UUID& uuid)
-    {
-        return os << uuid.toString();
-    }
+	std::string UUID::toString() const
+	{
+		return operator std::string();
+	}
 }

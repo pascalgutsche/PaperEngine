@@ -2,9 +2,14 @@
 #include "ScriptGlue.h"
 
 #include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
 
 #include <glm/gtx/string_cast.hpp>
+
+#include "ScriptEngine.h"
+#include "generic/Scene.h"
+
+#include "Components.h"
+#include "event/Input.h"
 
 namespace Paper
 {
@@ -37,10 +42,60 @@ namespace Paper
         *outResult = *parameter;
     }
 
+    static void IsKeyPressed(int code, bool* pressed)
+    {
+        *pressed = Input::IsKeyPressed((Key)code);
+    }
+
+    static void Entity_GetPosition(UUID entityUUID, glm::vec3* outPosition)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        *outPosition = scene->GetEntity(entityUUID).GetComponent<TransformComponent>().position;
+    }
+
+    static void Entity_SetPosition(UUID entityUUID, glm::vec3* inPosition)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        scene->GetEntity(entityUUID).GetComponent<TransformComponent>().position = *inPosition;
+    }
+
+    static void Entity_GetRotation(UUID entityUUID, glm::vec3* outRotation)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        *outRotation = scene->GetEntity(entityUUID).GetComponent<TransformComponent>().rotation;
+    }
+
+    static void Entity_SetRotation(UUID entityUUID, glm::vec3* inRotation)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        scene->GetEntity(entityUUID).GetComponent<TransformComponent>().rotation = *inRotation;
+    }
+
+    static void Entity_GetScale(UUID entityUUID, glm::vec3* outScale)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        *outScale = scene->GetEntity(entityUUID).GetComponent<TransformComponent>().scale;
+    }
+
+    static void Entity_SetScale(UUID entityUUID, glm::vec3* inScale)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        scene->GetEntity(entityUUID).GetComponent<TransformComponent>().scale = *inScale;
+    }
+
 	void ScriptGlue::RegisterFunctions()
 	{
         SCR_ADD_INTRERNAL_CALL(NativeLog);
         SCR_ADD_INTRERNAL_CALL(NativeLog_Vector);
+
+        SCR_ADD_INTRERNAL_CALL(IsKeyPressed);
+
+        SCR_ADD_INTRERNAL_CALL(Entity_GetPosition);
+        SCR_ADD_INTRERNAL_CALL(Entity_SetPosition);
+        SCR_ADD_INTRERNAL_CALL(Entity_GetRotation);
+        SCR_ADD_INTRERNAL_CALL(Entity_SetRotation);
+        SCR_ADD_INTRERNAL_CALL(Entity_GetScale);
+        SCR_ADD_INTRERNAL_CALL(Entity_SetScale);
 	}
 }
 

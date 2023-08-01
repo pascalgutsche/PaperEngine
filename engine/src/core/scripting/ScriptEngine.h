@@ -36,21 +36,20 @@ namespace Paper
 	class EntityInstance
 	{
 	public:
-		EntityInstance(const Shr<ScriptClass>& scriptClass);
+		EntityInstance(const Shr<ScriptClass>& scriptClass, Entity entity);
 
 		void InvokeOnCreate() const;
 		void InvokeOnDestroy() const;
 		void InvokeOnUpdate(float dt) const;
-		void InvokeOnEvent() const;
 
 	private:
 		Shr <ScriptClass> scriptClass;
 		MonoObject* monoInstance = nullptr;
 
+		MonoMethod* constructor = nullptr;
 		MonoMethod* onCreateMethod = nullptr;
 		MonoMethod* onDestroyMethod = nullptr;
 		MonoMethod* onUpdateMethod = nullptr;
-		MonoMethod* onEventMethod = nullptr;
 	};
 
 	class ScriptEngine
@@ -70,6 +69,7 @@ namespace Paper
 
 		static bool EntityClassExists(const std::string& fullClassName);
 
+		static Scene* GetSceneContext();
 		static std::unordered_map<std::string, Shr<ScriptClass>>& GetEntityClasses();
 		static std::unordered_map<UUID, Shr<EntityInstance>>& GetEntityInstances();
 	private:

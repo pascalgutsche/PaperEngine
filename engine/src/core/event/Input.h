@@ -1,14 +1,15 @@
 #pragma once
 #include "Engine.h"
-#include "utility.h"
+
+#include "ButtonCodes.h"
 
 namespace Paper {
 
 	class Input
 	{
 	public:
-		static bool IsKeyPressed(int key_code);
-		static bool IsMouseButtonPressed(int button);
+		static bool IsKeyPressed(Key code);
+		static bool IsMouseButtonPressed(MouseButton button);
 		static glm::vec2 GetMousPos();
 
 	private:
@@ -17,8 +18,6 @@ namespace Paper {
 		inline static int mouseHoverID[2] = { 0, 0 };
 		inline static int mouseClickedID[2] = { 0, 0 };
 		inline static bool pressed = false;
-
-		static void ProcessInput();
 	};
 
 }

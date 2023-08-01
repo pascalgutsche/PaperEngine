@@ -152,10 +152,11 @@ namespace Paper
 
     void ScriptEngine::OnCreateEntity(Entity entity)
     {
+        CORE_ASSERT(!script_data->entityInstances.contains(entity.GetUUID()), "")
         const auto& scrc = entity.GetComponent<ScriptComponent>();
         if (EntityClassExists(scrc.name))
         {
-            Shr<EntityInstance> instance = MakeShr<EntityInstance>(script_data->entityClasses[scrc.name]);
+            Shr<EntityInstance> instance = MakeShr<EntityInstance>(script_data->entityClasses[scrc.name], entity);
             script_data->entityInstances[entity.GetUUID()] = instance;
 
             instance->InvokeOnCreate();
@@ -181,6 +182,11 @@ namespace Paper
     bool ScriptEngine::EntityClassExists(const std::string& fullClassName)
     {
         return script_data->entityClasses.contains(fullClassName);
+    }
+
+    Scene* ScriptEngine::GetSceneContext()
+    {
+        return script_data->sceneContext;
     }
 
     std::unordered_map<std::string, Shr<ScriptClass>>& ScriptEngine::GetEntityClasses()
@@ -281,17 +287,22 @@ namespace Paper
     //
     //  ScriptInstance
     //
-    EntityInstance::EntityInstance(const Shr<ScriptClass>& scriptClass)
+    EntityInstance::EntityInstance(const Shr<ScriptClass>& scriptClass, Entity entity)
 	    : scriptClass(scriptClass)
     {
         CORE_ASSERT(scriptClass->IsSubclassOf(script_data->entityClass), "Class must be a subclass of entity");
 
         monoInstance = scriptClass->Instantiate();
 
+        constructor = script_data->entityClass->GetMethod(".ctor", 1);
         onCreateMethod = scriptClass->GetMethod("OnCreate", 0);
         onDestroyMethod = scriptClass->GetMethod("OnDestroy", 0);
         onUpdateMethod = scriptClass->GetMethod("OnUpdate", 1);
-        onEventMethod = scriptClass->GetMethod("OnEvent", 0);
+
+        //constructor
+        UUID entityUUID = entity.GetUUID();
+        void* param = &entityUUID;
+        scriptClass->InvokeMethod(monoInstance, constructor, &param);
     }
 
     void EntityInstance::InvokeOnCreate() const
@@ -308,10 +319,5 @@ namespace Paper
     {
         void* param = &dt;
         scriptClass->InvokeMethod(monoInstance, onUpdateMethod, &param);
-    }
-
-    void EntityInstance::InvokeOnEvent() const
-    {
-        scriptClass->InvokeMethod(monoInstance, onEventMethod);
     }
 }

@@ -104,6 +104,13 @@ namespace Paper {
 
 	void Scene::OnRuntimeStop()
 	{
+		{
+			auto view = registry.view<ScriptComponent>();
+			for (auto [e, script] : view.each()) {
+				Entity entity(e, this);
+				ScriptEngine::OnDestroyEntity(entity);
+			}
+		}
 		ScriptEngine::OnRuntimeStop();
 	}
 
@@ -117,10 +124,22 @@ namespace Paper {
 			}
 		}
 
-		//TODO: Update scripts
+		if (!isPaused || framesToStep-- > 0)
+		{
 
-		//TODO: update physics
+			//Scripting
+			float dt = Application::GetDT();
+			{
+				auto view = registry.view<ScriptComponent>();
+				for (auto [e, script] : view.each()) {
+					Entity entity(e, this);
+					ScriptEngine::OnUpdateEntity(entity, dt);
+				}
+			}
 
+			//TODO: update physics
+
+		}
 		//get primary camera
 		EntityCamera* entityCamera = nullptr;
 		glm::mat4 cameraTransform;
@@ -145,6 +164,7 @@ namespace Paper {
 
 	void Scene::OnSimulationStart()
 	{
+		
 	}
 
 	void Scene::OnSimulationStop()
@@ -161,7 +181,11 @@ namespace Paper {
 			}
 		}
 
-		//TODO: update physics
+		if (!isPaused || framesToStep-- > 0)
+		{
+			//TODO: update physics
+
+		}
 
 		//render
 		Renderer2D::BeginRender(camera);
@@ -189,8 +213,6 @@ namespace Paper {
 				data.texture = DataPool::GetTexture("resources/editor/world/camera_symbol.png", true);
 				data.color = glm::vec4(1.0f);
 				data.transform = transform.GetTransform() * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.0f, -90.0f, 0.0f))));
-				LOG_DEBUG(data.transform[2].x);
-				LOG_WARN(glm::radians(90.0f));
 				data.enity_id = (entity_id)entity;
 
 				Renderer2D::DrawRectangle(data);
@@ -292,6 +314,9 @@ namespace Paper {
 	bool Scene::DestroyEntity(Entity entity)
 	{
 		if (!entity_map.contains(entity.GetUUID())) return false;
+
+		if (entity.HasComponent<ScriptComponent>())
+			ScriptEngine::OnDestroyEntity(entity);
 
 		is_dirty = true;
 

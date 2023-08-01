@@ -33,7 +33,7 @@ void PaperLayer::MousePicking()
 
 	bool pressed = false;
 
-	if (Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	if (Input::IsMouseButtonPressed(MouseButton::BUTTON_LEFT))
 	{
 		if (frames_past == 0)
 		{

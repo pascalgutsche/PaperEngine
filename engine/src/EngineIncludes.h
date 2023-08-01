@@ -9,8 +9,7 @@
 #include "core/event/ApplicationEvent.h"
 #include "core/event/GameEvent.h"
 #include "core/event/Input.h"
-#include "core/event/KeyCodes.h"
-#include "core/event/MouseCodes.h"
+#include "core/event/ButtonCodes.h"
 
 #include "core/generic/Application.h"
 #include "core/generic/Scene.h"

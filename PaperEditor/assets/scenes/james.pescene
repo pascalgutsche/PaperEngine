@@ -1,12 +1,12 @@
 Scene:
-  - 2d20c733-b833-4f1b-bced-ef0e2365ec9d
+  - 81746288395453bd
 Name: "[Scene]"
 Path: assets\scenes\james.pescene
 Entities:
   - Components:
       DataComponent:
         UUID:
-          - e826dd79-1057-4941-9e99-f03f373b92ba
+          - d4ca5aa4aaa45a16
         Name: lol
         Tags:
           []

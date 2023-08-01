@@ -63,7 +63,7 @@ void PaperLayer::OnEvent(Event& event)
 	EventDispatcher dispatcher(event);
 	dispatcher.dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent& e)
 	{
-		if (e.GetButton() == MOUSE_BUTTON_RIGHT)
+		if (e.GetButton() == MouseButton::BUTTON_RIGHT)
 		{
 			for (auto& port : viewports)
 			{
@@ -80,7 +80,7 @@ void PaperLayer::OnEvent(Event& event)
 				}
 			}
 		}
-		if (e.GetButton() == MOUSE_BUTTON_LEFT && false)
+		if (e.GetButton() == MouseButton::BUTTON_LEFT && false)
 		{
 			if (hovered_entity == active_entity && gizmo_type == -1) 
 			{
@@ -98,7 +98,7 @@ void PaperLayer::OnEvent(Event& event)
 	});
 	dispatcher.dispatch<MouseButtonReleasedEvent>([this](MouseButtonReleasedEvent& e)
 	{
-		if (e.GetButton() == MOUSE_BUTTON_RIGHT)
+		if (e.GetButton() == MouseButton::BUTTON_RIGHT)
 		{
 			for (auto& port1 : viewports)
 			{
@@ -126,40 +126,40 @@ void PaperLayer::OnEvent(Event& event)
 		{
 
 			// Shortcuts
-			if (e.getRepeated())
+			if (e.GetRepeated())
 				return false;
 
-			bool control = Input::IsKeyPressed(KEY_LEFT_CONTROL) || Input::IsKeyPressed(KEY_RIGHT_CONTROL);
-			bool shift = Input::IsKeyPressed(KEY_LEFT_SHIFT) || Input::IsKeyPressed(KEY_RIGHT_SHIFT);
+			bool control = Input::IsKeyPressed(Key::LEFT_CONTROL) || Input::IsKeyPressed(Key::RIGHT_CONTROL);
+			bool shift = Input::IsKeyPressed(Key::LEFT_SHIFT) || Input::IsKeyPressed(Key::RIGHT_SHIFT);
 
-			switch (e.getKeyCode())
+			switch (e.GetKeyCode())
 			{
 				// Gizmos
-				case KEY_Q:
+				case Key::Q:
 				{
 					if (GetViewportFocused() && !ImGuizmo::IsUsing())
 						gizmo_type = -1;
 					break;
 				}
-				case KEY_W:
+				case Key::W:
 				{
 					if (GetViewportFocused() && !ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::TRANSLATE;
 					break;
 				}
-				case KEY_E:
+				case Key::E:
 				{
 					if (GetViewportFocused() && !ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::ROTATE;
 					break;
 				}
-				case KEY_R:
+				case Key::R:
 				{
 					if (GetViewportFocused() && !ImGuizmo::IsUsing() && !AnyCameraActive())
 						gizmo_type = ImGuizmo::OPERATION::SCALE;
 					break;
 				}
-				case KEY_DELETE:
+				case Key::DELETEKEY:
 				{
 					if (active_entity)
 					{
@@ -214,10 +214,10 @@ void PaperLayer::Imgui(const float dt)
 
 		dock_id_main = dockspace_id;
 
-		dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main,       ImGuiDir_Right, 0.15f, nullptr, &dock_id_main);
+		dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main,       ImGuiDir_Right, 0.2f, nullptr, &dock_id_main);
 		dock_id_right_bottom = ImGui::DockBuilderSplitNode(dock_id_right,ImGuiDir_Down, 0.5f, nullptr, &dock_id_right);
 		dock_id_left = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Left, 0.2f, nullptr, &dock_id_main);
-		dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Down, 0.15f, nullptr, &dock_id_main);
+		dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Down, 0.2f, nullptr, &dock_id_main);
 		dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right,     ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
 		dock_id_left_bottom = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
 		dock_id_up = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Up, 0.04f, nullptr, &dock_id_main);
