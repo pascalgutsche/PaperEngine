@@ -1,7 +1,7 @@
 ﻿#include "Editor.h"
 #include "ViewPort.h"
 
-#include "PELayer.h"
+#include "PaperLayer.h"
 
 #include "util/Math.h"
 
@@ -41,7 +41,7 @@ static void CameraMovement(const Shr<EditorCamera>& camera)
 }
 
 #include "renderer/Renderer2D.h"
-void ViewPort::Panel(PELayer* peLayer)
+void ViewPort::Panel(PaperLayer* peLayer)
 {
 	if (FramebufferSpecification spec = framebuffer->GetSpecification();
 		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
@@ -50,7 +50,7 @@ void ViewPort::Panel(PELayer* peLayer)
 		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
 
 		camera->aspect_ratio = viewport_size.x / viewport_size.y;
-		peLayer->scene->OnViewportResize(viewport_size.x, viewport_size.y);
+		peLayer->activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
 	}
 
 	RenderCommand::ClearColor(glm::vec4(0.0f));
@@ -64,9 +64,9 @@ void ViewPort::Panel(PELayer* peLayer)
 
 	RenderCommand::ClearStats();
 	Renderer2D::BeginRender(camera);
-	if (peLayer->scene)
+	if (peLayer->activeScene)
 	{
-		peLayer->scene->EditorRender(camera);
+		peLayer->activeScene->EditorRender(camera);
 		if (peLayer->active_entity)
 		{
 			Renderer2D::DrawLineRect(peLayer->active_entity.GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), peLayer->active_entity);
@@ -75,11 +75,23 @@ void ViewPort::Panel(PELayer* peLayer)
 	Renderer2D::EndRender();
 
 
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	if (peLayer->lastFocusedViewPort == this)
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(2, 2));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.6f, 0.6f, 1.0f, 1.0f));
+	}
+	else
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	
+	
 	ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
 
+	ImGui::PopStyleVar();
+	if (peLayer->lastFocusedViewPort == this)
+		ImGui::PopStyleColor();
+
 	viewport_focused = ImGui::IsWindowFocused();
+	if (viewport_focused) peLayer->lastFocusedViewPort = this;
 	viewport_hovered = ImGui::IsWindowHovered();
 
 	if (viewport_active)
@@ -151,7 +163,7 @@ void ViewPort::Panel(PELayer* peLayer)
 	}
 
 	ImGui::End();
-	ImGui::PopStyleVar();
+
 
 
 	framebuffer->Unbind();

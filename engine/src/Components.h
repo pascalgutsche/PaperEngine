@@ -9,3 +9,17 @@
 #include "core/component/TextComponent.h"
 #include "core/component/TransformComponent.h"
 #include "core/component/2D/SpriteSheet.h"
+
+namespace Paper {
+
+    template<typename... Component>
+    struct ComponentGroup
+    {
+    };
+
+    using AllComponents =
+        ComponentGroup<TransformComponent,
+        SpriteComponent, LineComponent, TextComponent,
+        CameraComponent, ScriptComponent>;
+
+}

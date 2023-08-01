@@ -1,7 +1,7 @@
 ﻿#include "Editor.h"
 #include "WindowsOpen.h"
 
-#include "PELayer.h"
+#include "PaperLayer.h"
 #include "renderer/Font.h"
 
 enum FileType
@@ -55,7 +55,7 @@ static void displayText(std::vector<std::string>& filenames)
 	}
 }
 
-void PELayer::AssetManagerPanel()
+void PaperLayer::AssetManagerPanel()
 {
 	static float size = 120.0f;
 	static std::filesystem::path path = "assets/";

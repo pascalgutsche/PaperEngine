@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-class PELayer;
+class PaperLayer;
 
 struct ViewPort
 {
@@ -20,7 +20,7 @@ public:
 		framebuffer = Framebuffer::CreateBuffer(spec);
 	}
 
-	void Panel(PELayer* peLayer);
+	void Panel(PaperLayer* peLayer);
 
 	glm::vec2 viewport_pos_abs{};
 

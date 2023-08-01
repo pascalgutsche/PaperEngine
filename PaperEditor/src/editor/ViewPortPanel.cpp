@@ -1,11 +1,11 @@
 ﻿#include "Editor.h"
-#include "PELayer.h"
+#include "PaperLayer.h"
 
 #include "WindowsOpen.h"
 
-constexpr bool dynamicCameraCount = false;
+constexpr bool dynamicCameraCount = true;
 
-void PELayer::CameraMode()
+void PaperLayer::CameraMode()
 {
 	static bool active = true, previous_active = true;
 	if (active != previous_active)
@@ -95,7 +95,7 @@ void PELayer::CameraMode()
 	}
 }
 
-void PELayer::DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size)
+void PaperLayer::DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size)
 {
 	ImGuiID top_id;
 	ImGuiID bottom_id;
@@ -152,7 +152,7 @@ void PELayer::DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& d
 
 }
 
-void PELayer::EnableCamera(CameraModes mode)
+void PaperLayer::EnableCamera(CameraModes mode)
 {
 	for (auto& port : viewports)
 		port.is_visible = false;
@@ -163,7 +163,7 @@ void PELayer::EnableCamera(CameraModes mode)
 	}
 }
 
-void PELayer::ViewPortPanel()
+void PaperLayer::ViewPortPanel()
 {
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 	window_flags |= ImGuiWindowFlags_NoBackground;// | ImGuiWindowFlags_NoDocking;
@@ -180,7 +180,7 @@ void PELayer::ViewPortPanel()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
 	ImGui::Begin(name, &show_viewport_panel, window_flags);
-	const ImVec2 dockspace_size = ImGui::GetItemRectSize();
+	const ImVec2 dockspace_size = ImGui::GetWindowSize();
 	ImGui::PopStyleVar(3);
 
 	if (ImGui::BeginMenuBar())
@@ -214,27 +214,4 @@ void PELayer::ViewPortPanel()
 	}
 
 	viewport_panel_first = false;
-}
-
-void PELayer::ViewPortDebugging()
-{
-	ImGui::Begin("Viewporting", &show_viewport_debug_panel);
-
-	for (auto& viewport : viewports)
-	{
-		ImGui::Text(viewport.name.c_str());
-		ImGui::Checkbox("is_visible", &viewport.is_visible);
-		ImGui::Checkbox("last_viewport_focused", &viewport.last_viewport_active);
-		ImGui::Checkbox("viewport_focused", &viewport.viewport_focused);
-		ImGui::Checkbox("viewport_hovered", &viewport.viewport_hovered);
-		ImGui::Checkbox("viewport_active", &viewport.viewport_active);
-
-		ImGui::InputFloat2("viewport_bounds[0]", &viewport.viewport_bounds[0].x);
-		ImGui::InputFloat2("viewport_bounds[1]", &viewport.viewport_bounds[1].x);
-		ImGui::InputFloat2("viewport_size", &viewport.viewport_size.x);
-		ImGui::InputFloat2("viewport_pos_abs", &viewport.viewport_pos_abs.x);
-
-	}
-
-	ImGui::End();
 }

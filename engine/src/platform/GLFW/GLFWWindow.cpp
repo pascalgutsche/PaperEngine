@@ -70,7 +70,7 @@ namespace Paper
         {
             GLFWimage icon;
             int channels;
-            icon.pixels = stbi_load("resources/editor/paper.png", &icon.width, &icon.height, &channels, 4);
+            icon.pixels = stbi_load("resources/editor/icons/paper.png", &icon.width, &icon.height, &channels, 4);
             glfwSetWindowIcon(glfwWindow, 1, &icon);
             stbi_image_free(icon.pixels);
         }

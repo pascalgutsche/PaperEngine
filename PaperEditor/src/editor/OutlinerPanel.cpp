@@ -1,15 +1,15 @@
 ﻿#include "Editor.h"
-#include "PELayer.h"
+#include "PaperLayer.h"
 
 #include "WindowsOpen.h"
 
-void Entities(Shr<Scene>& scene, Entity& active_entity)
+void Entities(Shr<Scene>& activeScene, Entity& active_entity)
 {
 	if (ImGui::TreeNode("Entities"))
 	{
-		auto entities = scene->Registry().view<TransformComponent>();
+		auto entities = activeScene->Registry().view<TransformComponent>();
 		for (auto entt : entities) {
-			Entity entity(entt, scene.get());
+			Entity entity(entt, activeScene.get());
 			if (ImGui::Selectable(entity.GetName().c_str())) {
 				active_entity = entity;
 			}
@@ -19,15 +19,15 @@ void Entities(Shr<Scene>& scene, Entity& active_entity)
 	}
 }
 
-void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
+void TwoDObjects(Shr<Scene>& activeScene, Entity& active_entity)
 {
 	if (ImGui::TreeNode("2D-Object"))
 	{
-		auto sprites_s = scene->Registry().view<SpriteComponent>();
+		auto sprites_s = activeScene->Registry().view<SpriteComponent>();
 		if (!sprites_s.empty() && ImGui::TreeNode("Sprite"))
 		{
 			for (auto [entt, sprite] : sprites_s.each()) {
-				Entity entity(entt, scene.get());
+				Entity entity(entt, activeScene.get());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
 					active_entity = entity;
 				}
@@ -35,11 +35,11 @@ void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 			ImGui::TreePop();
 		}
 
-		auto lines = scene->Registry().view<LineComponent>();
+		auto lines = activeScene->Registry().view<LineComponent>();
 		if (lines.size() && ImGui::TreeNode("Line"))
 		{
 			for (auto [entt, line] : lines.each()) {
-				Entity entity(entt, scene.get());
+				Entity entity(entt, activeScene.get());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
 					active_entity = entity;
 				}
@@ -47,11 +47,11 @@ void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 			ImGui::TreePop();
 		}
 
-		auto text = scene->Registry().view<TextComponent>();
+		auto text = activeScene->Registry().view<TextComponent>();
 		if (text.size() && ImGui::TreeNode("Text"))
 		{
 			for (auto [entt, text] : text.each()) {
-				Entity entity(entt, scene.get());
+				Entity entity(entt, activeScene.get());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
 					active_entity = entity;
 				}
@@ -63,13 +63,13 @@ void TwoDObjects(Shr<Scene>& scene, Entity& active_entity)
 	}
 }
 
-void Cameras(Shr<Scene>& scene, Entity& active_entity)
+void Cameras(Shr<Scene>& activeScene, Entity& active_entity)
 {
 	if (ImGui::TreeNode("Cameras"))
 	{
-		auto cameras = scene->Registry().view<CameraComponent>();
+		auto cameras = activeScene->Registry().view<CameraComponent>();
 		for (auto entt : cameras) {
-			Entity entity(entt, scene.get());
+			Entity entity(entt, activeScene.get());
 			if (ImGui::Selectable(entity.GetName().c_str())) {
 				active_entity = entity;
 			}
@@ -79,7 +79,7 @@ void Cameras(Shr<Scene>& scene, Entity& active_entity)
 	}
 }
 
-void PELayer::OutlinerPanel()
+void PaperLayer::OutlinerPanel()
 {
 	std::string name = "Outliner";
 
@@ -90,11 +90,11 @@ void PELayer::OutlinerPanel()
 
 	ImGui::Begin(name.c_str(), &show_outliner_panel);
 
-	if (scene)
+	if (activeScene)
 	{
-		Entities(scene, active_entity);
-		TwoDObjects(scene, active_entity);
-		Cameras(scene, active_entity);
+		Entities(activeScene, active_entity);
+		TwoDObjects(activeScene, active_entity);
+		Cameras(activeScene, active_entity);
 	}
 
 

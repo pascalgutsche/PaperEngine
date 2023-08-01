@@ -21,6 +21,8 @@ namespace Paper {
         Scene(const UUID& uuid, const std::string& name);
         ~Scene();
 
+        Shr<Scene> Copy();
+
         void OnViewportResize(uint32_t width, uint32_t height);
 
         void OnRuntimeStart();
@@ -49,10 +51,6 @@ namespace Paper {
         bool IsDirty() const { return is_dirty; }
         void SetClean() { is_dirty = false; }
 
-        //temporary
-        void SetSceneActive(bool active);
-
-        bool sceneActive = false;
     private:
         UUID uuid;
         std::string name;
@@ -64,5 +62,7 @@ namespace Paper {
         entt::registry registry;
         std::unordered_map<UUID, entt::entity> entity_map;
     };
+
+    
 
 }

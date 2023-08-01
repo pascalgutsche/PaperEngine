@@ -4,17 +4,12 @@
 #include "generic/Scene.h"
 
 #include "camera/EntityCamera.h"
-#include "component/CameraComponent.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
 
-
-#include "component/TransformComponent.h"
-#include "component/SpriteComponent.h"
-#include "component/LineComponent.h"
-#include "component/TextComponent.h"
-#include "component/ScriptComponent.h"
 #include "scripting/ScriptEngine.h"
+
+#include "Components.h"
 
 
 namespace Paper {
@@ -34,6 +29,55 @@ namespace Paper {
 	Scene::~Scene()
 	{
 		registry.clear();
+	}
+
+	template <typename... Component>
+	static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& dstEntityMap)
+	{
+		([&]()
+		{
+			auto view = src.view<Component>();
+			for (auto [e, component] : view.each())
+			{
+				UUID srcUUID = src.get<DataComponent>(e).uuid;
+				entt::entity dstEntity = dstEntityMap.at(srcUUID);
+
+				dst.emplace_or_replace<Component>(dstEntity, component);
+			}
+		}(), ...);
+	}
+
+	template<typename... Component>
+	static void CopyComponent(ComponentGroup<Component...>, entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& dstEntityMap)
+	{
+		CopyComponent<Component...>(dst, src, dstEntityMap);
+	}
+
+	Shr<Scene> Scene::Copy()
+	{
+		Shr<Scene> newScene = MakeShr<Scene>();
+
+		auto& dstSceneRegistry = newScene->registry;
+
+		auto dataView = registry.view<DataComponent>();
+		for (auto e : dataView)
+		{
+			UUID uuid = registry.get<DataComponent>(e).uuid;
+			std::string name = registry.get<DataComponent>(e).name;
+			auto tags = registry.get<DataComponent>(e).tags;
+
+			Entity entity = newScene->CreateEntity(uuid, name);
+			entity.GetComponent<DataComponent>().tags = tags;
+		}
+
+		CopyComponent(AllComponents{},dstSceneRegistry, registry, newScene->entity_map);
+
+		newScene->name = name;
+		newScene->path = path;
+		newScene->is_dirty = false;
+		newScene->uuid = uuid;
+
+		return newScene;
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)
@@ -66,11 +110,6 @@ namespace Paper {
 
 	void Scene::OnRuntimeUpdate()
 	{
-		//Update Scripts
-		if (sceneActive)
-		{
-			
-		}
 	}
 
 	void Scene::OnEditorUpdate()
@@ -288,12 +327,4 @@ namespace Paper {
 		return {entity_map.at(id), this};
 	}
 
-	void Scene::SetSceneActive(bool active)
-	{
-		if (active)
-			OnRuntimeStart();
-		else
-			OnRuntimeStop();
-		sceneActive = active;
-	}
 }

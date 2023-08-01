@@ -1,5 +1,5 @@
 ﻿#include "Editor.h"
-#include "PELayer.h"
+#include "PaperLayer.h"
 
 
 #include "WindowsOpen.h"
@@ -98,7 +98,7 @@ template<typename ComponentType>
 using AddedComponentCallbackFn = std::function<void(Entity, ComponentType&)>;
 
 template<typename ComponentType>
-void DrawComponentToAddPopup(PELayer* _instance, const std::string& name, AddedComponentCallbackFn<ComponentType> on_added_component = nullptr)
+void DrawComponentToAddPopup(PaperLayer* _instance, const std::string& name, AddedComponentCallbackFn<ComponentType> on_added_component = nullptr)
 {
 	if (_instance->active_entity.HasComponent<ComponentType>()) return;
 
@@ -116,7 +116,7 @@ template<typename ComponentType>
 using DrawComponentFn = std::function<void(ComponentType&, Entity)>;
 
 template<typename ComponentType>
-bool DrawRemoveButton(PELayer* _instance, bool treeOpen)
+bool DrawRemoveButton(PaperLayer* _instance, bool treeOpen)
 {
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
 	{
@@ -132,7 +132,7 @@ bool DrawRemoveButton(PELayer* _instance, bool treeOpen)
 }
 
 template<typename ComponentType>
-void DrawComponent(PELayer* _instance, const std::string& name, bool canRemove, DrawComponentFn<ComponentType> draw_components_fn)
+void DrawComponent(PaperLayer* _instance, const std::string& name, bool canRemove, DrawComponentFn<ComponentType> draw_components_fn)
 {
 	if (!_instance->active_entity.HasComponent<ComponentType>()) return;
 
@@ -170,7 +170,7 @@ struct ContentTable
 };
 
 
-void PELayer::PropertiesPanel()
+void PaperLayer::PropertiesPanel()
 {
 	if (!active_entity) return;
 	if (properties_panel_first)

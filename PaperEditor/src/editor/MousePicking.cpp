@@ -1,9 +1,9 @@
 ﻿#include "Editor.h"
-#include "PELayer.h"
+#include "PaperLayer.h"
 
 #include <ImGuizmo/ImGuizmo.h>
 
-void PELayer::MousePicking()
+void PaperLayer::MousePicking()
 {
 	hovered_entity = Entity();
 	ViewPort* port = nullptr;
@@ -27,7 +27,7 @@ void PELayer::MousePicking()
 	int pixelID = viewPort.framebuffer->ReadPixel(1, mouse_pos);
 	viewPort.framebuffer->Unbind();
 
-	pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, scene.get()) : Entity();
+	pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, activeScene.get()) : Entity();
 
 	static int frames_past = 0;
 

@@ -2,7 +2,7 @@
 
 #include "WindowsOpen.h"
 
-#include "PELayer.h"
+#include "PaperLayer.h"
 #include "project/ProjectManager.h"
 
 void MenuItemPanel(const char* name, const char* shortcut, bool* p_open)
@@ -42,7 +42,7 @@ void MenuTabView()
 	}
 }
 
-void PELayer::MainMenuBar()
+void PaperLayer::MainMenuBar()
 {
 	if (ImGui::BeginMenuBar())
 	{
@@ -87,13 +87,13 @@ void PELayer::MainMenuBar()
 		if (ImGui::BeginMenu("Add"))
 		{
 			if (ImGui::MenuItem("Empty Entity"))
-				scene->CreateEntity("Entity");
+				activeScene->CreateEntity("Entity");
 			if (ImGui::MenuItem("Sprite"))
-				scene->CreateEntity("Sprite").AddComponent<SpriteComponent>();
+				activeScene->CreateEntity("Sprite").AddComponent<SpriteComponent>();
 			if (ImGui::MenuItem("Line"))
-				scene->CreateEntity("Line").AddComponent<LineComponent>();
+				activeScene->CreateEntity("Line").AddComponent<LineComponent>();
 			if (ImGui::MenuItem("Text"))
-				scene->CreateEntity("Text").AddComponent<TextComponent>();
+				activeScene->CreateEntity("Text").AddComponent<TextComponent>();
 			ImGui::EndMenu();
 		}
 
@@ -101,7 +101,7 @@ void PELayer::MainMenuBar()
 		{
 			if (ImGui::MenuItem("New Scene"))
 			{
-				scene = MakeShr<Scene>();
+				activeScene = MakeShr<Scene>();
 			}
 
 			if (ImGui::MenuItem("Open Scene"))
@@ -116,7 +116,7 @@ void PELayer::MainMenuBar()
 
 			if (ImGui::MenuItem("Save Scene"))
 			{
-				YAMLSerializer::SceneSerialize(scene->GetPath(), scene);
+				YAMLSerializer::SceneSerialize(activeScene->GetPath(), activeScene);
 			}
 
 			if (ImGui::MenuItem("Save Scene As..."))
@@ -129,13 +129,6 @@ void PELayer::MainMenuBar()
 
 			ImGui::EndMenu();
 		}
-
-
-		bool active = scene->sceneActive;
-		ImGui::Checkbox("Scene Active", &active);
-		if (active != scene->sceneActive)
-			scene->SetSceneActive(active);
-
 
 		ImGui::EndMenuBar();
 	}

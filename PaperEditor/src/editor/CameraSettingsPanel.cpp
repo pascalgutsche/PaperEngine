@@ -1,9 +1,9 @@
 ﻿#include "Editor.h"
-#include "PELayer.h"
+#include "PaperLayer.h"
 
 #include "WindowsOpen.h"
 
-void PELayer::CameraSettingsPanel()
+void PaperLayer::CameraSettingsPanel()
 {
 	ImGui::Begin("Camera Settings", &show_camera_settings_panel, ImGuiWindowFlags_AlwaysAutoResize);
 

@@ -19,12 +19,21 @@ inline std::string CameraModesToString(CameraModes mode)
 	}
 }
 
-class PELayer : public Layer
+enum class SceneState
+{
+	Edit,
+	RuntimePlay,
+	RuntimePause,
+	SimulatePlay,
+	SimulatePause
+};
+
+class PaperLayer : public Layer
 {
 	friend struct ViewPort;
 public:
-	PELayer();
-	~PELayer() override;
+	PaperLayer();
+	~PaperLayer() override;
 
 	void OnAttach() override;
 	void OnDetach() override;
@@ -36,13 +45,13 @@ public:
 
 	ImGuiID dockspace_id = 0;
 	ImGuiID dock_id_main = 0;
-	ImGuiID dock_id_top = 0;
 	ImGuiID dock_id_down = 0;
 	ImGuiID dock_id_left = 0;
 	ImGuiID dock_id_right = 0;
 	ImGuiID dock_id_right_bottom = 0;
 	ImGuiID dock_id_right2 = 0;
 	ImGuiID dock_id_left_bottom = 0;
+	ImGuiID dock_id_up = 0;
 
 	Entity hovered_entity;
 	Entity active_entity;
@@ -50,15 +59,16 @@ public:
 	int GetGuizmoType() const { return gizmo_type; }
 
 	bool AnyCameraActive() const;
-	bool AnyViewportFocused() const;
+	const ViewPort* GetViewportFocused() const;
 
-	void DrawOutline(Entity entity);
+	void SwitchScene(const Shr<Scene>& scene);
 
 private:
 
 	std::unordered_map<std::string, ImGuiID> dockPanelQueue;
 
-	Shr<Scene> scene = nullptr;
+	Shr<Scene> activeScene = nullptr;
+	Shr<Scene> editorScene = nullptr;
 
 	void CheckSceneChange();
 	Shr<Scene> new_scene = nullptr;
@@ -73,6 +83,8 @@ private:
 	void AssetManagerPanel();
 	void OutlinerPanel();
 	void PropertiesPanel();
+
+	void ToolbarPanel();
 
 	void CameraSettingsPanel();
 
@@ -93,11 +105,20 @@ private:
 	bool camera_settings_panel_first = true;
 	bool viewport_debugging_panel_first = true;
 
+	ViewPort* viewPortCurrentlySimulating = nullptr;
+	ViewPort* lastFocusedViewPort = nullptr;
 
 	int gizmo_type = -1;
 
 	CameraModes camera_mode = Single;
 	bool camera_mode_changed = true;
 	std::vector<ViewPort> viewports;
+
+	SceneState sceneState = SceneState::Edit;
+
+	void OnScenePlay();
+	void OnSceneSimulate();
+	void OnScenePause();
+	void OnSceneStop();
 };
 
