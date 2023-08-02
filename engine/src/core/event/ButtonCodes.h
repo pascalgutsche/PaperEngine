@@ -148,3 +148,10 @@ enum class Key
 	RIGHT_WINDOWS  =    347,
 	MENU           =    348
 };
+
+enum class KeyState
+{
+	Pressed,
+	Hold,
+	Released
+};

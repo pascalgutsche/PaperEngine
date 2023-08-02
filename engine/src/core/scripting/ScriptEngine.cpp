@@ -92,6 +92,7 @@ namespace Paper
 
         LoadAssemblyClasses(script_data->core_assembly);
 
+        ScriptGlue::RegisterComponents();
         ScriptGlue::RegisterFunctions();
 
 
@@ -189,6 +190,11 @@ namespace Paper
         return script_data->sceneContext;
     }
 
+    MonoDomain* ScriptEngine::GetDomain()
+    {
+        return script_data->app_domain;
+    }
+
     std::unordered_map<std::string, Shr<ScriptClass>>& ScriptEngine::GetEntityClasses()
     {
         return script_data->entityClasses;
@@ -251,6 +257,11 @@ namespace Paper
         script_data->app_domain = nullptr;
 
         script_data->root_domain = nullptr;
+    }
+
+    MonoImage* ScriptEngine::GetCoreAssemblyImage()
+    {
+        return script_data->core_assembly_image;
     }
 
     //

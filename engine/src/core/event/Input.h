@@ -9,15 +9,19 @@ namespace Paper {
 	{
 	public:
 		static bool IsKeyPressed(Key code);
+		static bool IsKeyHeld(Key code);
+		static bool IsKeyDown(Key code);
+		static bool IsKeyReleased(Key code);
 		static bool IsMouseButtonPressed(MouseButton button);
 		static glm::vec2 GetMousPos();
 
+		static void UpdateKeyState(Key key, KeyState keyState);
 	private:
 		friend class Application;
 
-		inline static int mouseHoverID[2] = { 0, 0 };
-		inline static int mouseClickedID[2] = { 0, 0 };
-		inline static bool pressed = false;
+		static void Update();
+
+		static std::unordered_map<Key, KeyState> keyStates;
 	};
 
 }

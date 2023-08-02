@@ -9,6 +9,7 @@
 #include <glfw/glfw3.h>
 
 #include "stb_image.h"
+#include "event/Input.h"
 
 
 namespace Paper
@@ -118,18 +119,21 @@ namespace Paper
         {
         case GLFW_PRESS:
         {
+            Input::UpdateKeyState((Key)key, KeyState::Pressed);
             KeyPressedEvent event((Key)key, false, mods);
             data.callback(event);
             break;
         }
         case GLFW_RELEASE:
         {
+            Input::UpdateKeyState((Key)key, KeyState::Released);
             KeyReleasedEvent event((Key)key, mods);
             data.callback(event);
             break;
         }
         case GLFW_REPEAT:
         {
+            Input::UpdateKeyState((Key)key, KeyState::Hold);
             KeyPressedEvent event((Key)key, true, mods);
             data.callback(event);
             break;

@@ -7,7 +7,7 @@
     <ProjectGuid>{838D2DE8-6F45-6F35-D84C-4891C4230A26}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>scriptcore</RootNamespace>
+    <RootNamespace>Paper</RootNamespace>
     <AssemblyName>scriptcore</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -44,15 +44,18 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Entity.cs" />
-    <Compile Include="Source\Input.cs" />
-    <Compile Include="Source\InternalCalls.cs" />
-    <Compile Include="Source\KeyCode.cs" />
-    <Compile Include="Source\Main.cs" />
+    <Compile Include="Source\Paper\Core\Components.cs" />
+    <Compile Include="Source\Paper\Core\Entity.cs" />
+    <Compile Include="Source\Paper\Core\Input.cs" />
+    <Compile Include="Source\Paper\Core\InternalCalls.cs" />
+    <Compile Include="Source\Paper\Core\KeyCode.cs" />
+    <Compile Include="Source\Paper\Math\Transform.cs" />
+    <Compile Include="Source\Paper\Render\Texture.cs" />
+    <Compile Include="Source\Paper\Core\UUID.cs" />
+    <Compile Include="Source\Paper\Math\Vec.cs" />
     <Compile Include="Source\Player.cs" />
   </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -6,6 +6,7 @@ namespace Paper
 	{
 	public:
 		static void RegisterFunctions();
+		static void RegisterComponents();
 	};
 }
 

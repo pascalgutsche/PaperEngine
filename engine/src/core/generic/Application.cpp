@@ -120,6 +120,8 @@ namespace Paper {
 
 			window->SwapBuffers();
 
+			Input::Update();
+
 			resizing = false;
 			starting = false;
 

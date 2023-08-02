@@ -9,6 +9,8 @@ extern "C"
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoAssembly MonoAssembly;
 	typedef struct _MonoMethod MonoMethod;
+	typedef struct _MonoDomain MonoDomain;
+	typedef struct _MonoImage MonoImage;
 }
 
 namespace Paper
@@ -70,11 +72,14 @@ namespace Paper
 		static bool EntityClassExists(const std::string& fullClassName);
 
 		static Scene* GetSceneContext();
+		static MonoDomain* GetDomain();
+		static MonoImage* GetCoreAssemblyImage();
 		static std::unordered_map<std::string, Shr<ScriptClass>>& GetEntityClasses();
 		static std::unordered_map<UUID, Shr<EntityInstance>>& GetEntityInstances();
 	private:
 		static void InitMono();
 		static void ShutdownMono();
+
 
 		static void LoadAssemblyClasses(MonoAssembly* monoAssembly);
 	};
