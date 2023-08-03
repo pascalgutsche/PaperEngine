@@ -97,21 +97,25 @@ namespace Paper
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void SpriteComponent_SetUV0(ulong _UUID, ref Vec2 _UV0);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void SpriteComponent_GetUV1(ulong _UUID, out Vec2 _UV1);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void SpriteComponent_SetUV1(ulong _UUID, ref Vec2 _UV1);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern int SpriteComponent_GetGeometry(ulong _UUID);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void SpriteComponent_SetGeometry(ulong _UUID, int _Geometry);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern float SpriteComponent_GetThickness(ulong _UUID);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void SpriteComponent_SetThickness(ulong _UUID, float _Thickness);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern float SpriteComponent_GetFade(ulong _UUID);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

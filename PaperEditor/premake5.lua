@@ -46,8 +46,7 @@ project "PaperEditor"
 
 	links
 	{
-		"engine",
-		"scriptcore"
+		"engine"
 	}
 
 	disablewarnings

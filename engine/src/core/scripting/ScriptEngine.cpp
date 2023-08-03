@@ -68,6 +68,9 @@ namespace Paper
         MonoAssembly* core_assembly = nullptr;
         MonoImage* core_assembly_image = nullptr;
 
+    	MonoAssembly* appAssembly = nullptr;
+        MonoImage*  appAssemblyImage = nullptr;
+
         Shr<ScriptClass> entityClass = nullptr;
 
         std::unordered_map<std::string, Shr<ScriptClass>> entityClasses;
@@ -88,9 +91,10 @@ namespace Paper
         InitMono();
 
         LoadAssembly("resources/scripts/scriptcore.dll");
-        script_data->entityClass = MakeShr<ScriptClass>("Paper", "Entity");
+        LoadAppAssembly("SandboxProject/assets/scripts/bin/Sandbox.dll");
+        script_data->entityClass = MakeShr<ScriptClass>("Paper", "Entity", script_data->core_assembly_image);
 
-        LoadAssemblyClasses(script_data->core_assembly);
+        LoadAssemblyClasses(script_data->appAssembly);
 
         ScriptGlue::RegisterComponents();
         ScriptGlue::RegisterFunctions();
@@ -137,6 +141,12 @@ namespace Paper
 
         script_data->core_assembly = Utils::LoadMonoAssembly(filepath);
         script_data->core_assembly_image = mono_assembly_get_image(script_data->core_assembly);
+    }
+
+    void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
+    {
+        script_data->appAssembly = Utils::LoadMonoAssembly(filepath);
+        script_data->appAssemblyImage = mono_assembly_get_image(script_data->appAssembly);
     }
 
     void ScriptEngine::OnRuntimeStart(Scene* scene)
@@ -213,8 +223,6 @@ namespace Paper
         const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
         int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
 
-        MonoClass* entityClass = mono_class_from_name(script_data->core_assembly_image, "Paper", "Entity");
-
 		for (int32_t i = 0; i < numTypes; i++)
         {
             uint32_t cols[MONO_TYPEDEF_SIZE];
@@ -229,8 +237,8 @@ namespace Paper
             else
                 fullName = name;
 
-            MonoClass* monoClass = mono_class_from_name(script_data->core_assembly_image, nameSpace, name);
-            bool isEntity = mono_class_is_subclass_of(monoClass, entityClass, false);
+            MonoClass* monoClass = mono_class_from_name(script_data->appAssemblyImage, nameSpace, name);
+            bool isEntity = mono_class_is_subclass_of(monoClass, script_data->entityClass->monoClass, false);
 
             if (isEntity && fullName != "Paper.Entity")
             {
@@ -259,6 +267,11 @@ namespace Paper
         script_data->root_domain = nullptr;
     }
 
+    MonoImage* ScriptEngine::GetAppAssemblyImage()
+    {
+        return script_data->appAssemblyImage;
+    }
+
     MonoImage* ScriptEngine::GetCoreAssemblyImage()
     {
         return script_data->core_assembly_image;
@@ -267,10 +280,11 @@ namespace Paper
     //
     //  ScriptClass
     //
-    ScriptClass::ScriptClass(const std::string& classNameSpace, const std::string& className)
+    ScriptClass::ScriptClass(const std::string& classNameSpace, const std::string& className, MonoImage* monoImage)
 	    : classNameSpace(classNameSpace), className(className)
     {
-        monoClass = mono_class_from_name(script_data->core_assembly_image, classNameSpace.c_str(), className.c_str());
+        if (!monoImage) monoImage = script_data->appAssemblyImage;
+        monoClass = mono_class_from_name(monoImage, classNameSpace.c_str(), className.c_str());
     }
 
     MonoObject* ScriptClass::Instantiate() const

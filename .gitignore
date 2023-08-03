@@ -8,3 +8,4 @@ bin-int/**
 *.user
 imgui.ini
 PaperEditor/resources/scripts/ints/**
+PaperEditor/SandboxProject/assets/scripts/int/**

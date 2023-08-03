@@ -20,7 +20,7 @@ namespace Paper
 	class ScriptClass
 	{
 	public:
-		ScriptClass(const std::string& classNameSpace, const std::string& className);
+		ScriptClass(const std::string& classNameSpace, const std::string& className, MonoImage* monoImage = nullptr);
 
 		MonoObject* Instantiate() const;
 		MonoMethod* GetMethod(const std::string& methodName, uint32_t paramCount) const;
@@ -33,6 +33,8 @@ namespace Paper
 		std::string className;
 
 		MonoClass* monoClass = nullptr;
+
+		friend class ScriptEngine;
 	};
 
 	class EntityInstance
@@ -61,6 +63,7 @@ namespace Paper
 		static void Shutdown();
 
 		static void LoadAssembly(const std::filesystem::path& filepath);
+		static void LoadAppAssembly(const std::filesystem::path& filepath);
 
 		static void OnRuntimeStart(Scene* scene);
 		static void OnRuntimeStop();
@@ -73,6 +76,7 @@ namespace Paper
 
 		static Scene* GetSceneContext();
 		static MonoDomain* GetDomain();
+		static MonoImage* GetAppAssemblyImage();
 		static MonoImage* GetCoreAssemblyImage();
 		static std::unordered_map<std::string, Shr<ScriptClass>>& GetEntityClasses();
 		static std::unordered_map<UUID, Shr<EntityInstance>>& GetEntityInstances();

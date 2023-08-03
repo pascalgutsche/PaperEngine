@@ -1,3 +1,5 @@
+include "premake/premake_customization/solution_items.lua"
+
 workspace "PaperEngine"
 	architecture "x64"
 	startproject "PaperEditor"
@@ -7,6 +9,11 @@ workspace "PaperEngine"
 	{
 		"Debug",
 		"Release"
+	}
+
+	flags
+	{
+		"MultiProcessorCompile"
 	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -48,7 +55,7 @@ Binaries = {}
 Binaries["Assimp_Debug"] = "%{wks.location}/engine/lib/assimp/bin/Debug/assimp-vc143-mtd.dll"
 Binaries["Assimp_Release"] = "%{wks.location}/engine/lib/assimp/assimp/bin/Release/assimp-vc143-mt.dll"
 
-
+include "PaperEditor/resources/lua-buildsystem/PaperScripting.lua"
 
 group "dependencies"
 include "engine/lib/glad"
@@ -61,6 +68,7 @@ include "engine/lib/msdf-atlas-gen"
 include "engine/lib/spdlog"
 include "engine/lib/stb_image"
 include "engine/lib/yaml-cpp"
+include "premake"
 group ""
 
 group "engine"

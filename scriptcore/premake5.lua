@@ -2,26 +2,25 @@ project "scriptcore"
 	kind "SharedLib"
 	language "C#"
 	dotnetframework "4.7.2"
+	
+	linkAppReferences(false)
 
-	targetdir ("%{wks.location}/PaperEditor/resources/scripts")
-	objdir ("%{wks.location}/PaperEditor/resources/scripts/ints")
-
-	pchheader "Engine.h"
-	pchsource "%{wks.location}/engine/src/Engine.cpp"
-
+	targetdir ("../PaperEditor/resources/scripts")
+	objdir ("../PaperEditor/resources/scripts/ints")
+	
 	files
 	{
-		"Source/**.cs",
-		"Properties/**.cs"
+		"Source/**.cs"
 	}
 
 	filter "configurations:Debug"
-		optimize "Off"
-		symbols "Default"
+	optimize "Off"
+	symbols "Default"
 
 	filter "configurations:Release"
-		optimize "On"
-		symbols "Default"
+	optimize "On"
+	symbols "Default"
+
 		
 		
  

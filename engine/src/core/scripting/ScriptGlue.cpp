@@ -473,7 +473,7 @@ namespace Paper
             MonoType* managedType = mono_reflection_type_from_name(csStructName.data(), ScriptEngine::GetCoreAssemblyImage());
             if (!managedType)
             {
-                LOG_SCR_CRITICAL("Could not find Component '{}' in scriptcore", csStructName);
+                LOG_SCR_CRITICAL("Could not find Component '{}'", csStructName);
                 return;
             }
             entityHasComponentFns[managedType] = [](Entity entity) { return entity.HasComponent<Component>(); };

@@ -7,7 +7,7 @@
     <ProjectGuid>{838D2DE8-6F45-6F35-D84C-4891C4230A26}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Paper</RootNamespace>
+    <RootNamespace>scriptcore</RootNamespace>
     <AssemblyName>scriptcore</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -21,8 +21,7 @@
     <OutputPath>..\PaperEditor\resources\scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\PaperEditor\resources\scripts\ints\Debug\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -34,8 +33,7 @@
     <OutputPath>..\PaperEditor\resources\scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\PaperEditor\resources\scripts\ints\Release\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -49,13 +47,13 @@
     <Compile Include="Source\Paper\Core\Input.cs" />
     <Compile Include="Source\Paper\Core\InternalCalls.cs" />
     <Compile Include="Source\Paper\Core\KeyCode.cs" />
-    <Compile Include="Source\Paper\Math\Transform.cs" />
-    <Compile Include="Source\Paper\Render\Texture.cs" />
     <Compile Include="Source\Paper\Core\UUID.cs" />
+    <Compile Include="Source\Paper\Math\Transform.cs" />
     <Compile Include="Source\Paper\Math\Vec.cs" />
-    <Compile Include="Source\Player.cs" />
+    <Compile Include="Source\Paper\Render\Texture.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
