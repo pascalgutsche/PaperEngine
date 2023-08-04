@@ -1,21 +1,46 @@
 #pragma once
 #include "Engine.h"
 
-#include "generic/Entity.h"
+#include "ScriptUtils.h"
 
-extern "C"
-{
-	typedef struct _MonoClass MonoClass;
-	typedef struct _MonoObject MonoObject;
-	typedef struct _MonoAssembly MonoAssembly;
-	typedef struct _MonoMethod MonoMethod;
-	typedef struct _MonoDomain MonoDomain;
-	typedef struct _MonoImage MonoImage;
-}
+#include "generic/Entity.h"
 
 namespace Paper
 {
-	class Scene;
+	using ScriptFieldVisibilityBitMap = uint32_t;
+
+	enum class ScriptFieldType
+	{
+		None = 0, Invalid, Not_Supported,
+		Bool,
+		Char, UChar,        // 1 byte
+		Short, UShort,      // 2 byte
+		Int, UInt,          // 4 byte
+		Long, ULong,        // 8 byte
+		Float, Double,      // 4, 8 byte
+		String,
+		Vec2, Vec3, Vec4,
+		Entity
+	};
+
+	enum class ScriptFieldVisibility
+	{
+		None = 0,
+		Private = (1 << 0),
+		Internal = (1 << 1),
+		Protected = (1 << 2),
+		Public = (1 << 3)
+	};
+	
+
+	struct ScriptField
+	{
+		std::string name;
+		ScriptFieldType type;
+		ScriptFieldVisibilityBitMap visibility;
+
+		MonoClassField* monoField;
+	};
 
 	class ScriptClass
 	{
@@ -26,11 +51,15 @@ namespace Paper
 		MonoMethod* GetMethod(const std::string& methodName, uint32_t paramCount) const;
 		void InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params = nullptr) const;
 
+		const std::vector<ScriptField>& GetFields() { return fields; }
+
 		bool IsSubclassOf(const Shr<ScriptClass>& scriptClass) const;
 
 	private:
 		std::string classNameSpace;
 		std::string className;
+
+		std::vector<ScriptField> fields;
 
 		MonoClass* monoClass = nullptr;
 
@@ -46,6 +75,23 @@ namespace Paper
 		void InvokeOnDestroy() const;
 		void InvokeOnUpdate(float dt) const;
 
+		template <typename T>
+		T GetFieldValue(const std::string& fieldName)
+		{
+			char* buffer[sizeof(T)];
+			if (GetFieldValueVoid(fieldName, buffer))
+				return *(T*)buffer;
+			return T();
+		};
+
+		template <typename T>
+		void SetFieldValue(const std::string& fieldName, T& val)
+		{
+			SetFieldValueVoid(fieldName, &val);
+		};
+
+		Shr<ScriptClass> GetScriptClass() const { return scriptClass; }
+
 	private:
 		Shr <ScriptClass> scriptClass;
 		MonoObject* monoInstance = nullptr;
@@ -54,6 +100,9 @@ namespace Paper
 		MonoMethod* onCreateMethod = nullptr;
 		MonoMethod* onDestroyMethod = nullptr;
 		MonoMethod* onUpdateMethod = nullptr;
+
+		bool GetFieldValueVoid(const std::string& fieldName, void* buffer);
+		void SetFieldValueVoid(const std::string& fieldName, void* val);
 	};
 
 	class ScriptEngine
@@ -73,8 +122,10 @@ namespace Paper
 		static void OnUpdateEntity(Entity entity, float dt);
 
 		static bool EntityClassExists(const std::string& fullClassName);
+		static Shr<ScriptClass> GetEntityClass(const std::string& fullClassName);
 
 		static Scene* GetSceneContext();
+		static Shr<EntityInstance> GetEntityScriptInstance(UUID entityUUID);
 		static MonoDomain* GetDomain();
 		static MonoImage* GetAppAssemblyImage();
 		static MonoImage* GetCoreAssemblyImage();

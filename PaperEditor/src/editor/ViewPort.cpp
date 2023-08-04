@@ -14,29 +14,29 @@
 static void CameraMovement(const Shr<EditorCamera>& camera)
 {
 	const float dt = Application::GetDT();
-	if (Input::IsKeyPressed(Key::W))
+	if (Input::IsKeyDown(Key::W))
 	{
 		camera->position.x += 5 * dt * camera->GetFront().z;
 		camera->position.z -= 5 * dt * camera->GetFront().x;
 	}
-	if (Input::IsKeyPressed(Key::A))
+	if (Input::IsKeyDown(Key::A))
 	{
 		camera->position.x -= 5 * dt * camera->GetFront().x;
 		camera->position.z -= 5 * dt * camera->GetFront().z;
 	}
-	if (Input::IsKeyPressed(Key::S))
+	if (Input::IsKeyDown(Key::S))
 	{
 		camera->position.x -= 5 * dt * camera->GetFront().z;
 		camera->position.z += 5 * dt * camera->GetFront().x;
 	}
-	if (Input::IsKeyPressed(Key::D))
+	if (Input::IsKeyDown(Key::D))
 	{
 		camera->position.x += 5 * dt * camera->GetFront().x;
 		camera->position.z += 5 * dt * camera->GetFront().z;
 	}
-	if (Input::IsKeyPressed(Key::E))
+	if (Input::IsKeyDown(Key::E))
 		camera->position.y += 5 * dt;
-	if (Input::IsKeyPressed(Key::Q))
+	if (Input::IsKeyDown(Key::Q))
 		camera->position.y -= 5 * dt;
 }
 
@@ -150,7 +150,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		glm::mat4 transform = tc.GetTransform();
 
 		// Snapping
-		bool snap = Input::IsKeyPressed(Key::LEFT_CONTROL);
+		bool snap = Input::IsKeyDown(Key::LEFT_CONTROL);
 		float snapValue = 0.5f; // Snap to 0.5m for translation/scale
 		// Snap to 45 degrees for rotation
 		if (peLayer->GetGuizmoType() == ImGuizmo::OPERATION::ROTATE)

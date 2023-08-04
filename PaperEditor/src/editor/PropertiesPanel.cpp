@@ -18,7 +18,7 @@ static void FillNameCol(const std::string& name)
 	ImGui::TableSetColumnIndex(1);
 }
 
-static void SingleFloatControl(const std::string& label, float& value, float min, float max, float speed, float resetValue, float content_avail_x, int count)
+static bool SingleFloatControl(const std::string& label, float& value, float min, float max, float speed, float resetValue, float content_avail_x, int count)
 {
 	float padding = 3.0f;
 	float line_height = GImGui->Font->FontSize + padding * 2;
@@ -33,7 +33,7 @@ static void SingleFloatControl(const std::string& label, float& value, float min
 	};
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(input_item_width);
-	ImGui::DragFloat(("##" + label).c_str(), &value, 0.1f, min, max, "%.2f", 0);
+	return ImGui::DragFloat(("##" + label).c_str(), &value, 0.1f, min, max, "%.2f", 0);
 }
 
 static void Draw3FloatControl(const std::string& name, glm::vec3& val, glm::vec3 min = glm::vec3(0.0f), glm::vec3 max = glm::vec3(0.0f), glm::vec3 speed = glm::vec3(1.0f), glm::vec3 reset_value = glm::vec3(0.0f), std::initializer_list<std::string> format = { "X", "Y", "Z" })
@@ -70,7 +70,7 @@ static void Draw2FloatControl(const std::string& name, glm::vec2& val, glm::vec2
 	SingleFloatControl(*(format.begin() + 1), val.y, min.y, max.y, speed.y,  reset_value.y, content_avail_x, 2);
 }
 
-static void DrawFloatControl(const std::string& name, float& val, float min = 0.0f, float max = 0.0f, float speed = 1.0f, float reset_value = 0.0f, std::initializer_list<std::string> format = { "X" })
+static bool DrawFloatControl(const std::string& name, float& val, float min = 0.0f, float max = 0.0f, float speed = 1.0f, float reset_value = 0.0f, std::initializer_list<std::string> format = { "X" })
 {
 	FillNameCol(name);
 
@@ -81,7 +81,7 @@ static void DrawFloatControl(const std::string& name, float& val, float min = 0.
 
 	ASSERT(format.size() == 1, "")
 
-	SingleFloatControl(*(format.begin() + 0), val, min, max, speed, reset_value, content_avail_x, 1);
+	return SingleFloatControl(*(format.begin() + 0), val, min, max, speed, reset_value, content_avail_x, 1);
 }
 
 static void DrawCheckbox(const std::string& name, bool& val)
@@ -449,12 +449,13 @@ void PaperLayer::PropertiesPanel()
 
 	DrawComponent<ScriptComponent>(this, "Script Component", true, [](ScriptComponent& scrc, Entity entity)
 		{
+			Shr<ScriptClass> entityScriptClass = ScriptEngine::GetEntityClass(scrc.name);
 			{
 				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
 				FillNameCol("C#-Class");
 
 				ImVec4 textColor;
-				if (ScriptEngine::EntityClassExists(scrc.name))
+				if (entityScriptClass)
 					textColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
 				else
 					textColor = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -462,6 +463,31 @@ void PaperLayer::PropertiesPanel()
 				ImGui::PushStyleColor(ImGuiCol_Text, textColor);
 				ImGui::InputText(CONST_UI_ID, &scrc.name);
 				ImGui::PopStyleColor();
+			}
+			{
+				
+				//Fields
+				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
+				if (entityScriptClass)
+				{
+					const auto& fields = entityScriptClass->GetFields();
+					for (const auto& [name, type, visibility, field] : fields)
+					{
+						std::string varName = std::format("{} {}", Utils::ScriptFieldTypeToString(type), name);
+						ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
+						if (visibility == ScriptFieldVisibility::Public)
+						{
+							
+							if (entityInstance && type != ScriptFieldType::Invalid) {
+								float data = entityInstance->GetFieldValue<float>(name);
+								if (DrawFloatControl(varName, data))
+								{
+									entityInstance->SetFieldValue(name, data);
+								};
+							}
+						}
+					}
+				}
 			}
 		});
 

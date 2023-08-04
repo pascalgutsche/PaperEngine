@@ -129,8 +129,8 @@ void PaperLayer::OnEvent(Event& event)
 			if (e.GetRepeated())
 				return false;
 
-			bool control = Input::IsKeyPressed(Key::LEFT_CONTROL) || Input::IsKeyPressed(Key::RIGHT_CONTROL);
-			bool shift = Input::IsKeyPressed(Key::LEFT_SHIFT) || Input::IsKeyPressed(Key::RIGHT_SHIFT);
+			bool control = Input::IsKeyDown(Key::LEFT_CONTROL) || Input::IsKeyDown(Key::RIGHT_CONTROL);
+			bool shift = Input::IsKeyDown(Key::LEFT_SHIFT) || Input::IsKeyDown(Key::RIGHT_SHIFT);
 
 			switch (e.GetKeyCode())
 			{
