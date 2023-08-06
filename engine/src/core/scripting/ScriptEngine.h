@@ -2,12 +2,13 @@
 #include "Engine.h"
 
 #include "ScriptUtils.h"
+#include "generic/Buffer.h"
 
 #include "generic/Entity.h"
 
 namespace Paper
 {
-	using ScriptFieldVisibilityBitMap = uint32_t;
+	using ScriptFieldFlags = uint32_t;
 
 	enum class ScriptFieldType
 	{
@@ -23,13 +24,15 @@ namespace Paper
 		Entity
 	};
 
-	enum class ScriptFieldVisibility
+	enum class ScriptFieldFlag
 	{
-		None = 0,
-		Private = (1 << 0),
-		Internal = (1 << 1),
-		Protected = (1 << 2),
-		Public = (1 << 3)
+		None = -1,
+		Static = BIT(0),
+		Readonly = BIT(1),
+		Private = BIT(2),
+		Internal = BIT(3),
+		Protected = BIT(4),
+		Public = BIT(5)
 	};
 	
 
@@ -37,9 +40,16 @@ namespace Paper
 	{
 		std::string name;
 		ScriptFieldType type;
-		ScriptFieldVisibilityBitMap visibility;
+		ScriptFieldFlags flags;
+
+		uint32_t typeSize;
+		Buffer InitialFieldVal;
 
 		MonoClassField* monoField;
+
+		bool HasFlag(ScriptFieldFlag flag) const { return flags & (uint32_t)flag; }
+
+		bool IsWritable() const { return !HasFlag(ScriptFieldFlag::Readonly) && HasFlag(ScriptFieldFlag::Public); }
 	};
 
 	class ScriptClass
@@ -51,22 +61,63 @@ namespace Paper
 		MonoMethod* GetMethod(const std::string& methodName, uint32_t paramCount) const;
 		void InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params = nullptr) const;
 
-		const std::vector<ScriptField>& GetFields() { return fields; }
+		const std::unordered_map<std::string, ScriptField>& GetFields() { return fields; }
 
 		bool IsSubclassOf(const Shr<ScriptClass>& scriptClass) const;
 
+		static Shr<ScriptClass> Create(const std::string& classNameSpace, const std::string& className, MonoImage* monoImage = nullptr);
 	private:
 		std::string classNameSpace;
 		std::string className;
 
-		std::vector<ScriptField> fields;
+		std::unordered_map<std::string, ScriptField> fields;
 
 		MonoClass* monoClass = nullptr;
+
+		void InitFieldMap();
 
 		friend class ScriptEngine;
 	};
 
-	class EntityInstance
+	class ScriptInstance
+	{
+	public:
+		ScriptInstance(const Shr<ScriptClass>& scriptClass);
+		ScriptInstance(MonoObject* monoObject);
+
+		template <typename T>
+		T GetFieldValue(const std::string& fieldName)
+		{
+			char* buffer[sizeof(T)];
+			if (GetFieldValueInternal(fieldName, buffer))
+				return *(T*)buffer;
+			return T();
+		};
+
+		template <typename T>
+		void SetFieldValue(const std::string& fieldName, T& val)
+		{
+			SetFieldValueInternal(fieldName, &val);
+		};
+
+		Shr<ScriptClass> GetScriptClass() const { return scriptClass; }
+
+	protected:
+		Shr <ScriptClass> scriptClass;
+		MonoObject* monoInstance = nullptr;
+
+	private:
+		void GetFieldValueInternal(const ScriptField& field, void* buffer) const;
+		bool GetFieldValueInternal(const std::string& fieldName, void* buffer) const;
+
+		void SetFieldValueInternal(const ScriptField& field, void* val) const;
+		void SetFieldValueInternal(const std::string& fieldName, void* val) const;
+
+
+		friend class ScriptClass;
+	};
+
+	class EntityInstance : public ScriptInstance
 	{
 	public:
 		EntityInstance(const Shr<ScriptClass>& scriptClass, Entity entity);
@@ -75,34 +126,11 @@ namespace Paper
 		void InvokeOnDestroy() const;
 		void InvokeOnUpdate(float dt) const;
 
-		template <typename T>
-		T GetFieldValue(const std::string& fieldName)
-		{
-			char* buffer[sizeof(T)];
-			if (GetFieldValueVoid(fieldName, buffer))
-				return *(T*)buffer;
-			return T();
-		};
-
-		template <typename T>
-		void SetFieldValue(const std::string& fieldName, T& val)
-		{
-			SetFieldValueVoid(fieldName, &val);
-		};
-
-		Shr<ScriptClass> GetScriptClass() const { return scriptClass; }
-
 	private:
-		Shr <ScriptClass> scriptClass;
-		MonoObject* monoInstance = nullptr;
-
 		MonoMethod* constructor = nullptr;
 		MonoMethod* onCreateMethod = nullptr;
 		MonoMethod* onDestroyMethod = nullptr;
 		MonoMethod* onUpdateMethod = nullptr;
-
-		bool GetFieldValueVoid(const std::string& fieldName, void* buffer);
-		void SetFieldValueVoid(const std::string& fieldName, void* val);
 	};
 
 	class ScriptEngine

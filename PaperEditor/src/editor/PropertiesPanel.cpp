@@ -471,20 +471,20 @@ void PaperLayer::PropertiesPanel()
 				if (entityScriptClass)
 				{
 					const auto& fields = entityScriptClass->GetFields();
-					for (const auto& [name, type, visibility, field] : fields)
+					for (const auto& fieldPair : fields)
 					{
-						std::string varName = std::format("{} {}", Utils::ScriptFieldTypeToString(type), name);
+						const auto& field = fieldPair.second;
+						if (!field.HasFlag(ScriptFieldFlag::Public)) continue;
+
+						std::string varName = std::format("{} {}", Utils::ScriptFieldTypeToString(field.type), field.name);
 						ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
-						if (visibility == ScriptFieldVisibility::Public)
-						{
-							
-							if (entityInstance && type != ScriptFieldType::Invalid) {
-								float data = entityInstance->GetFieldValue<float>(name);
-								if (DrawFloatControl(varName, data))
-								{
-									entityInstance->SetFieldValue(name, data);
-								};
-							}
+
+						if (field.type != ScriptFieldType::Invalid) {
+							float data = field.InitialFieldVal.Read<float>();
+							if (DrawFloatControl(varName, data) && field.IsWritable())
+							{
+								//entityInstance->SetFieldValue(field.name, data);
+							};
 						}
 					}
 				}

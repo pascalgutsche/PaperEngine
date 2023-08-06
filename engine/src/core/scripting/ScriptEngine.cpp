@@ -37,33 +37,7 @@ namespace Paper
     static ScriptEngineData* script_data;
 
 
-    bool EntityInstance::GetFieldValueVoid(const std::string& fieldName, void* buffer)
-    {
-        const auto& fields = scriptClass->GetFields();
-
-		for (const auto& field : fields)
-		{
-            if (field.name != fieldName) continue;
-
-            mono_field_get_value(monoInstance, field.monoField, buffer);
-            return true;
-		}
-
-        return false;
-    }
-
-    void EntityInstance::SetFieldValueVoid(const std::string& fieldName, void* val)
-    {
-        const auto& fields = scriptClass->GetFields();
-
-        for (const auto& field : fields)
-        {
-            if (field.name != fieldName) continue;
-
-            mono_field_set_value(monoInstance, field.monoField, val);
-        }
-
-    }
+    
 
     void ScriptEngine::Init()
 	{
@@ -73,13 +47,13 @@ namespace Paper
 
         LoadAssembly("resources/scripts/scriptcore.dll");
         LoadAppAssembly("SandboxProject/assets/scripts/bin/Sandbox.dll");
-        script_data->entityClass = MakeShr<ScriptClass>("Paper", "Entity", script_data->core_assembly_image);
-
-        LoadAssemblyClasses(script_data->appAssembly);
 
         ScriptGlue::RegisterComponents();
         ScriptGlue::RegisterFunctions();
 
+        script_data->entityClass = ScriptClass::Create("Paper", "Entity", script_data->core_assembly_image);
+
+        LoadAssemblyClasses(script_data->appAssembly);
 
 #if 0
 		ScriptClass mainClass("Paper", "Main");
@@ -223,32 +197,24 @@ namespace Paper
             uint32_t cols[MONO_TYPEDEF_SIZE];
             mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-            const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
-            const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+            std::string nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+            std::string name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+
+            if (name == "<Module>") continue;
 
             std::string fullName;
-            if (strlen(nameSpace) != 0)
+            if (!nameSpace.empty())
                 fullName = fmt::format("{}.{}", nameSpace, name);
             else
                 fullName = name;
 
-            MonoClass* monoClass = mono_class_from_name(script_data->appAssemblyImage, nameSpace, name);
+            MonoClass* monoClass = mono_class_from_name(script_data->appAssemblyImage, nameSpace.c_str(), name.c_str());
             bool isEntity = mono_class_is_subclass_of(monoClass, script_data->entityClass->monoClass, false);
 
-            Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name);
+            Shr<ScriptClass> scriptClass = ScriptClass::Create(nameSpace, name);
 
             if (isEntity && fullName != "Paper.Entity")
 				script_data->entityClasses[fullName] = scriptClass;
-
-
-            void* iterator = nullptr;
-            while (MonoClassField* field = mono_class_get_fields(scriptClass->monoClass, &iterator))
-            {
-                std::string fieldName = mono_field_get_name(field);
-                ScriptFieldType fieldType = Utils::MonoTypeToScriptFieldType(mono_field_get_type(field));
-                ScriptFieldVisibilityBitMap fieldVisibility = Utils::GetFieldVisibility(mono_field_get_flags(field));
-                scriptClass->fields.emplace_back<ScriptField>({ fieldName, fieldType, fieldVisibility, field });
-            }
         }
     }
 
@@ -312,15 +278,96 @@ namespace Paper
         return mono_class_is_subclass_of(monoClass, scriptClass->monoClass, false);
     }
 
+    Shr<ScriptClass> ScriptClass::Create(const std::string& classNameSpace, const std::string& className,
+	    MonoImage* monoImage)
+    {
+        Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(classNameSpace, className, monoImage);
+        scriptClass->InitFieldMap();
+        return scriptClass;
+    }
+
+    void ScriptClass::InitFieldMap()
+    {
+	    const ScriptInstance tempInstance(Instantiate());
+
+        void* iterator = nullptr;
+        while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
+        {
+            MonoType* monoType = mono_field_get_type(field);
+            ScriptField scriptField;
+            scriptField.name = mono_field_get_name(field);
+			scriptField.type = Utils::MonoTypeToScriptFieldType(monoType);
+            scriptField.flags = Utils::GetFieldFlags(mono_field_get_flags(field));
+            int align;
+            scriptField.typeSize = mono_type_size(monoType, &align);
+            scriptField.monoField = field;
+            Buffer& fieldValBuf = scriptField.InitialFieldVal;
+            fieldValBuf.Allocate(scriptField.typeSize);
+            fieldValBuf.Nullify();
+            tempInstance.GetFieldValueInternal(scriptField, fieldValBuf.data);
+            fields[scriptField.name] = scriptField;
+        }
+    }
+
+
     //
     //  ScriptInstance
     //
+    ScriptInstance::ScriptInstance(const Shr<ScriptClass>& scriptClass)
+    {
+        monoInstance = scriptClass->Instantiate();
+    }
+
+    ScriptInstance::ScriptInstance(MonoObject* monoObject)
+    {
+        monoInstance = monoObject;
+    }
+
+    void ScriptInstance::GetFieldValueInternal(const ScriptField& field, void* buffer) const
+    {
+        mono_field_get_value(monoInstance, field.monoField, buffer);
+    }
+
+    bool ScriptInstance::GetFieldValueInternal(const std::string& fieldName, void* buffer) const
+    {
+        const auto& fields = scriptClass->GetFields();
+
+        for (const auto& field : fields)
+        {
+            if (field.first != fieldName) continue;
+
+            GetFieldValueInternal(field.second, buffer);
+            return true;
+        }
+
+        return false;
+    }
+
+    void ScriptInstance::SetFieldValueInternal(const ScriptField& field, void* val) const
+    {
+        mono_field_set_value(monoInstance, field.monoField, val);
+    }
+
+
+    void ScriptInstance::SetFieldValueInternal(const std::string& fieldName, void* val) const
+    {
+        const auto& fields = scriptClass->GetFields();
+
+        for (const auto& field : fields)
+        {
+            if (field.first != fieldName) continue;
+
+            SetFieldValueInternal(field.second, val);
+        }
+
+    }
+
+    //
+    //  EntityInstance
     EntityInstance::EntityInstance(const Shr<ScriptClass>& scriptClass, Entity entity)
-	    : scriptClass(scriptClass)
+	    : ScriptInstance(scriptClass)
     {
         CORE_ASSERT(scriptClass->IsSubclassOf(script_data->entityClass), "Class must be a subclass of entity");
-
-        monoInstance = scriptClass->Instantiate();
 
         constructor = script_data->entityClass->GetMethod(".ctor", 1);
         onCreateMethod = scriptClass->GetMethod("OnCreate", 0);

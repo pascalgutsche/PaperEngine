@@ -2,7 +2,7 @@
 #include "Engine.h"
 #include "utility.h"
 
-#include "core/renderer/Buffer.h"
+#include "core/renderer/RenderBuffer.h"
 
 namespace Paper
 {

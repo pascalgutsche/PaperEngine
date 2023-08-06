@@ -109,53 +109,53 @@ namespace Paper
             }
         }
 
-        ScriptFieldVisibilityBitMap GetFieldVisibility(uint32_t fieldFlags)
+        ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags)
         {
-            ScriptFieldVisibilityBitMap accessibility = (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::None;
+            ScriptFieldFlags fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::None;
             uint32_t accessFlag = fieldFlags & FIELD_ATTRIBUTE_FIELD_ACCESS_MASK;
 
             switch (accessFlag)
             {
                 case FIELD_ATTRIBUTE_PRIVATE:
                 {
-                    accessibility = (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::Private;
+                    fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::Private;
                     break;
                 }
                 case FIELD_ATTRIBUTE_FAM_AND_ASSEM:
                 {
-                    accessibility |= (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::Protected;
-                    accessibility |= (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::Internal;
+                    fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::Protected;
+                    fieldFlags |= (ScriptFieldFlags)ScriptFieldFlag::Internal;
                     break;
                 }
                 case FIELD_ATTRIBUTE_ASSEMBLY:
                 {
-                    accessibility = (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::Internal;
+                    fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::Internal;
                     break;
                 }
                 case FIELD_ATTRIBUTE_FAMILY:
                 {
-                    accessibility = (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::Protected;
+                    fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::Protected;
                     break;
                 }
                 case FIELD_ATTRIBUTE_FAM_OR_ASSEM:
                 {
-                    accessibility |= (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::Private;
-                    accessibility |= (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::Protected;
+                    fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::Private;
+                    fieldFlags |= (ScriptFieldFlags)ScriptFieldFlag::Protected;
                     break;
                 }
                 case FIELD_ATTRIBUTE_PUBLIC:
                 {
-                    accessibility = (ScriptFieldVisibilityBitMap)ScriptFieldVisibility::Public;
+                    fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::Public;
                     break;
                 }
+				case FIELD_ATTRIBUTE_COMPILER_CONTROLLED:
+	            {
+                    fieldFlags |= (ScriptFieldFlags)ScriptFieldFlag::Readonly;
+                    break;
+	            }
             }
 
-            return accessibility;
+            return fieldFlags;
         }
-    }
-
-    bool operator==(ScriptFieldVisibilityBitMap val, ScriptFieldVisibility visibility)
-    {
-        return val & (ScriptFieldVisibilityBitMap)visibility;
     }
 }

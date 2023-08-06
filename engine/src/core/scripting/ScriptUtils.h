@@ -14,8 +14,8 @@ extern "C"
 
 namespace Paper
 {
-	using ScriptFieldVisibilityBitMap = uint32_t;
-	enum class ScriptFieldVisibility;
+	using ScriptFieldFlags = uint32_t;
+	enum class ScriptFieldFlag;
     enum class ScriptFieldType;
 
 
@@ -29,8 +29,6 @@ namespace Paper
 
         std::string ScriptFieldTypeToString(ScriptFieldType type);
 
-        ScriptFieldVisibilityBitMap GetFieldVisibility(uint32_t fieldFlags);
+        ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags);
 	}
-
-	bool operator==(const ScriptFieldVisibilityBitMap val, ScriptFieldVisibility visibility);
 }

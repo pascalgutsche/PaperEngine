@@ -7,10 +7,10 @@ namespace Sandbox
     public class Player : Entity
     {
         private TransformComponent transformComponent;
-        public SpriteComponent spriteComponent;
+        private SpriteComponent spriteComponent;
         private int count = 1;
 
-        public float speed;
+        public float speed = 345.045437684f;
 
         public override void OnCreate()
         {
