@@ -3,9 +3,9 @@
 
 namespace Paper
 {
+	using byte = uint8_t;
 	struct Buffer
 	{
-		using byte = uint8_t;
 		void* data;
 		uint64_t size;
 
@@ -17,6 +17,13 @@ namespace Paper
 		Buffer(const void* data, uint64_t size = 0)
 			: data((void*)data), size(size)
 		{
+		}
+
+		Buffer(const Buffer& other)
+		{
+			data = nullptr;
+			Allocate(other.size);
+			memcpy(data, other.data, other.size);
 		}
 
 		static Buffer Copy(const Buffer& other)
@@ -49,12 +56,13 @@ namespace Paper
 
 		void Release()
 		{
+			if (!data) return;
 			delete[](byte*)data;
 			data = nullptr;
 			size = 0;
 		}
 
-		void Nullify()
+		void Nullify() const
 		{
 			if (data)
 				memset(data, 0, size);
@@ -74,7 +82,7 @@ namespace Paper
 
 		byte* ReadBytes(uint64_t size, uint64_t offset) const
 		{
-			CORE_ASSERT(offset + size <= size, "Buffer overflow!");
+			CORE_ASSERT(offset + size <= this->size, "Buffer overflow!");
 			byte* buffer = new byte[size];
 			memcpy(buffer, (byte*)data + offset, size);
 			return buffer;
@@ -82,8 +90,8 @@ namespace Paper
 
 		void Write(const void* data, uint64_t size, uint64_t offset = 0)
 		{
-			CORE_ASSERT(offset + size <= size, "Buffer overflow!");
-			memcpy((byte*)data + offset, data, size);
+			CORE_ASSERT(offset + size <= this->size, "Buffer overflow!");
+			memcpy((byte*)this->data + offset, data, size);
 		}
 
 		operator bool() const
@@ -110,20 +118,25 @@ namespace Paper
 		inline uint64_t GetSize() const { return size; }
 	};
 
-	struct BufferSafe : public Buffer
-	{
-		~BufferSafe()
-		{
-			Release();
-		}
-
-		static BufferSafe Copy(const void* data, uint64_t size)
-		{
-			BufferSafe buffer;
-			buffer.Allocate(size);
-			memcpy(buffer.data, data, size);
-			return buffer;
-		}
-	};
+	//struct BufferSafe : public Buffer
+	//{
+	//	BufferSafe(BufferSafe& other)
+	//		: data(other.data), size(other.size)
+	//	{
+	//	}
+	//
+	//	~BufferSafe()
+	//	{
+	//		Release();
+	//	}
+	//
+	//	static BufferSafe Copy(const void* data, uint64_t size)
+	//	{
+	//		BufferSafe buffer;
+	//		buffer.Allocate(size);
+	//		memcpy(buffer.data, data, size);
+	//		return buffer;
+	//	}
+	//};
 }
 

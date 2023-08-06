@@ -30,6 +30,8 @@ namespace Paper
         std::unordered_map<std::string, Shr<ScriptClass>> entityClasses;
         std::unordered_map<UUID, Shr<EntityInstance>> entityInstances;
 
+        std::unordered_map<UUID, EntityFieldStorage> entityFieldStorage;
+
         //Runtime
     	Scene* sceneContext = nullptr;
     };
@@ -51,7 +53,7 @@ namespace Paper
         ScriptGlue::RegisterComponents();
         ScriptGlue::RegisterFunctions();
 
-        script_data->entityClass = ScriptClass::Create("Paper", "Entity", script_data->core_assembly_image);
+        script_data->entityClass = MakeShr<ScriptClass>("Paper", "Entity", script_data->core_assembly_image);
 
         LoadAssemblyClasses(script_data->appAssembly);
 
@@ -101,7 +103,10 @@ namespace Paper
     void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
     {
         script_data->appAssembly = Utils::LoadMonoAssembly(filepath);
-        script_data->appAssemblyImage = mono_assembly_get_image(script_data->appAssembly);
+        if (script_data->appAssembly)
+            script_data->appAssemblyImage = mono_assembly_get_image(script_data->appAssembly);
+        else
+            LOG_CORE_ERROR("Could not find app assembly '{}'", filepath.string());
     }
 
     void ScriptEngine::OnRuntimeStart(Scene* scene)
@@ -116,6 +121,42 @@ namespace Paper
         script_data->entityInstances.clear();
     }
 
+    void ScriptEngine::CreateScriptEntity(Entity entity)
+    {
+        LOG_CORE_DEBUG("CreateScriptEntity()");
+        if (!entity.HasComponent<ScriptComponent>()) return;
+        
+        ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
+        
+        if (!EntityClassExists(sc.name)) 
+        {
+            LOG_CORE_ERROR("tried to create script entity with entity '{}' and script '{}'", entity.GetUUID(), sc.name);
+            return;
+        }
+        script_data->entityFieldStorage.erase(entity.GetUUID());
+
+        const auto& scriptFields = GetEntityClass(sc.name)->GetFields();
+        for (auto& field : scriptFields)
+        {
+            script_data->entityFieldStorage[entity.GetUUID()].push_back(MakeShr<ScriptFieldStorage>(&field));
+        }
+    }
+
+    void ScriptEngine::DestroyScriptEntity(Entity entity)
+    {
+        LOG_CORE_DEBUG("DestroyScriptEntity()");
+        if (!entity.HasComponent<ScriptComponent>()) return;
+        
+        ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
+        
+        if (!EntityClassExists(sc.name))
+        {
+            LOG_CORE_ERROR("tried to destroy script entity with entity '{}' and script '{}'", entity.GetUUID(), sc.name);
+            return;
+        }
+        script_data->entityFieldStorage.erase(entity.GetUUID());
+    }
+
     void ScriptEngine::OnCreateEntity(Entity entity)
     {
         CORE_ASSERT(!script_data->entityInstances.contains(entity.GetUUID()), "")
@@ -124,6 +165,11 @@ namespace Paper
         {
             Shr<EntityInstance> instance = MakeShr<EntityInstance>(script_data->entityClasses[scrc.name], entity);
             script_data->entityInstances[entity.GetUUID()] = instance;
+
+            //apply class variables defined in editor
+            if (script_data->entityFieldStorage.contains(entity.GetUUID()))
+                for (const auto& fieldStorage : script_data->entityFieldStorage.at(entity.GetUUID()))
+					fieldStorage->SetRuntimeInstance(instance);
 
             instance->InvokeOnCreate();
         }
@@ -135,6 +181,12 @@ namespace Paper
 
         auto it = script_data->entityInstances.find(entity.GetUUID());
         (*it).second->InvokeOnDestroy();
+
+        //remove runtime instance of field storages
+        if (script_data->entityFieldStorage.contains(entity.GetUUID()))
+            for (const auto& fieldStorage : script_data->entityFieldStorage.at(entity.GetUUID()))
+                fieldStorage->RemoveRuntimeInstance();
+
         script_data->entityInstances.erase(it);
     }
 
@@ -167,6 +219,16 @@ namespace Paper
         return script_data->entityInstances.at(entityUUID);
     }
 
+    const EntityFieldStorage& ScriptEngine::GetEntityFieldStorage(UUID entityUUID)
+    {
+        if (!script_data->entityFieldStorage.contains(entityUUID)) 
+        {
+            LOG_CORE_ERROR("Does not have field storage for entity '{}'", entityUUID.toString());
+            return EntityFieldStorage();
+        }
+        return script_data->entityFieldStorage.at(entityUUID);
+    }
+
     MonoDomain* ScriptEngine::GetDomain()
     {
         return script_data->app_domain;
@@ -181,8 +243,6 @@ namespace Paper
     {
         return script_data->entityInstances;
     }
-
-    
 
     void ScriptEngine::LoadAssemblyClasses(MonoAssembly* monoAssembly)
     {
@@ -211,7 +271,7 @@ namespace Paper
             MonoClass* monoClass = mono_class_from_name(script_data->appAssemblyImage, nameSpace.c_str(), name.c_str());
             bool isEntity = mono_class_is_subclass_of(monoClass, script_data->entityClass->monoClass, false);
 
-            Shr<ScriptClass> scriptClass = ScriptClass::Create(nameSpace, name);
+            Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name);
 
             if (isEntity && fullName != "Paper.Entity")
 				script_data->entityClasses[fullName] = scriptClass;
@@ -250,10 +310,12 @@ namespace Paper
     //  ScriptClass
     //
     ScriptClass::ScriptClass(const std::string& classNameSpace, const std::string& className, MonoImage* monoImage)
-	    : classNameSpace(classNameSpace), className(className)
+	    : classNameSpace(classNameSpace), className(className), fields(std::vector<ScriptField>())
     {
         if (!monoImage) monoImage = script_data->appAssemblyImage;
         monoClass = mono_class_from_name(monoImage, classNameSpace.c_str(), className.c_str());
+
+        InitFieldMap();
     }
 
     MonoObject* ScriptClass::Instantiate() const
@@ -278,34 +340,24 @@ namespace Paper
         return mono_class_is_subclass_of(monoClass, scriptClass->monoClass, false);
     }
 
-    Shr<ScriptClass> ScriptClass::Create(const std::string& classNameSpace, const std::string& className,
-	    MonoImage* monoImage)
-    {
-        Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(classNameSpace, className, monoImage);
-        scriptClass->InitFieldMap();
-        return scriptClass;
-    }
-
     void ScriptClass::InitFieldMap()
     {
 	    const ScriptInstance tempInstance(Instantiate());
+
+        fields.reserve(mono_class_num_fields(monoClass));
 
         void* iterator = nullptr;
         while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
         {
             MonoType* monoType = mono_field_get_type(field);
-            ScriptField scriptField;
+            ScriptField& scriptField = fields.emplace_back();
             scriptField.name = mono_field_get_name(field);
 			scriptField.type = Utils::MonoTypeToScriptFieldType(monoType);
             scriptField.flags = Utils::GetFieldFlags(mono_field_get_flags(field));
             int align;
             scriptField.typeSize = mono_type_size(monoType, &align);
             scriptField.monoField = field;
-            Buffer& fieldValBuf = scriptField.InitialFieldVal;
-            fieldValBuf.Allocate(scriptField.typeSize);
-            fieldValBuf.Nullify();
-            tempInstance.GetFieldValueInternal(scriptField, fieldValBuf.data);
-            fields[scriptField.name] = scriptField;
+            scriptField.initialFieldVal = tempInstance.GetFieldValueInternal(scriptField, this);
         }
     }
 
@@ -314,8 +366,22 @@ namespace Paper
     //  ScriptInstance
     //
     ScriptInstance::ScriptInstance(const Shr<ScriptClass>& scriptClass)
+	    : scriptClass(scriptClass)
     {
         monoInstance = scriptClass->Instantiate();
+    }
+
+    const Buffer& ScriptInstance::GetFieldValue(const ScriptField& scriptField) const
+    {
+        const auto& classFields = scriptClass->GetFields();
+        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return Buffer();
+
+        Buffer valBuffer;
+        valBuffer.Allocate(scriptField.typeSize);
+        valBuffer.Nullify();
+
+        mono_field_get_value(monoInstance, scriptField.monoField, valBuffer.data);
+        return valBuffer;
     }
 
     ScriptInstance::ScriptInstance(MonoObject* monoObject)
@@ -323,43 +389,25 @@ namespace Paper
         monoInstance = monoObject;
     }
 
-    void ScriptInstance::GetFieldValueInternal(const ScriptField& field, void* buffer) const
+    const Buffer& ScriptInstance::GetFieldValueInternal(const ScriptField& scriptField, ScriptClass* scriptClass) const
     {
-        mono_field_get_value(monoInstance, field.monoField, buffer);
+        const auto& classFields = scriptClass->GetFields();
+        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return Buffer();
+
+        Buffer valBuffer;
+        valBuffer.Allocate(scriptField.typeSize);
+        valBuffer.Nullify();
+
+        mono_field_get_value(monoInstance, scriptField.monoField, valBuffer.data);
+        return valBuffer;
     }
 
-    bool ScriptInstance::GetFieldValueInternal(const std::string& fieldName, void* buffer) const
+    void ScriptInstance::SetFieldValueVoidPtr(const ScriptField& scriptField, const void* val) const
     {
-        const auto& fields = scriptClass->GetFields();
+        const auto& classFields = scriptClass->GetFields();
+        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
 
-        for (const auto& field : fields)
-        {
-            if (field.first != fieldName) continue;
-
-            GetFieldValueInternal(field.second, buffer);
-            return true;
-        }
-
-        return false;
-    }
-
-    void ScriptInstance::SetFieldValueInternal(const ScriptField& field, void* val) const
-    {
-        mono_field_set_value(monoInstance, field.monoField, val);
-    }
-
-
-    void ScriptInstance::SetFieldValueInternal(const std::string& fieldName, void* val) const
-    {
-        const auto& fields = scriptClass->GetFields();
-
-        for (const auto& field : fields)
-        {
-            if (field.first != fieldName) continue;
-
-            SetFieldValueInternal(field.second, val);
-        }
-
+        mono_field_set_value(monoInstance, scriptField.monoField, (void*)val);
     }
 
     //

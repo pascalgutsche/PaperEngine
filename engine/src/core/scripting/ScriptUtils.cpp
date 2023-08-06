@@ -1,7 +1,7 @@
 ﻿#include "Engine.h"
 #include "ScriptUtils.h"
 
-#include "ScriptEngine.h"
+#include "ScriptField.h"
 #include "utils/Utils.h"
 
 #include <mono/jit/jit.h>
@@ -112,7 +112,7 @@ namespace Paper
         ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags)
         {
             ScriptFieldFlags fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::None;
-            uint32_t accessFlag = fieldFlags & FIELD_ATTRIBUTE_FIELD_ACCESS_MASK;
+            uint32_t accessFlag = monoFieldFlags & FIELD_ATTRIBUTE_FIELD_ACCESS_MASK;
 
             switch (accessFlag)
             {
@@ -148,7 +148,7 @@ namespace Paper
                     fieldFlags = (ScriptFieldFlags)ScriptFieldFlag::Public;
                     break;
                 }
-				case FIELD_ATTRIBUTE_COMPILER_CONTROLLED:
+				case FIELD_ATTRIBUTE_INIT_ONLY:
 	            {
                     fieldFlags |= (ScriptFieldFlags)ScriptFieldFlag::Readonly;
                     break;

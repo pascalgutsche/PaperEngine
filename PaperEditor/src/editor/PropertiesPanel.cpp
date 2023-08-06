@@ -461,7 +461,19 @@ void PaperLayer::PropertiesPanel()
 					textColor = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 				ImGui::PushStyleColor(ImGuiCol_Text, textColor);
-				ImGui::InputText(CONST_UI_ID, &scrc.name);
+				std::string buf = scrc.name;
+				if (ImGui::InputText(CONST_UI_ID, &buf))
+				{
+					if (ScriptEngine::EntityClassExists(buf))
+					{
+						scrc.name = buf;
+						ScriptEngine::CreateScriptEntity(entity);
+					}
+					else
+						ScriptEngine::DestroyScriptEntity(entity);
+
+					scrc.name = buf;
+				};
 				ImGui::PopStyleColor();
 			}
 			{
@@ -470,22 +482,27 @@ void PaperLayer::PropertiesPanel()
 				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
 				if (entityScriptClass)
 				{
-					const auto& fields = entityScriptClass->GetFields();
-					for (const auto& fieldPair : fields)
+					const auto& storageFields = ScriptEngine::GetEntityFieldStorage(entity.GetUUID());
+					for (const auto& fieldStorage : storageFields)
 					{
-						const auto& field = fieldPair.second;
+						const auto& field = fieldStorage->GetField();
 						if (!field.HasFlag(ScriptFieldFlag::Public)) continue;
+						if (field.type == ScriptFieldType::Invalid) continue;
 
 						std::string varName = std::format("{} {}", Utils::ScriptFieldTypeToString(field.type), field.name);
 						ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
 
-						if (field.type != ScriptFieldType::Invalid) {
-							float data = field.InitialFieldVal.Read<float>();
+						switch (field.type)
+						{
+						case ScriptFieldType::Float:
+							float data = fieldStorage->GetValue<float>();
 							if (DrawFloatControl(varName, data) && field.IsWritable())
 							{
-								//entityInstance->SetFieldValue(field.name, data);
+								fieldStorage->SetValue(data);
 							};
+							break;
 						}
+						
 					}
 				}
 			}

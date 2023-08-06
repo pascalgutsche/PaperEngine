@@ -56,10 +56,10 @@ project "Sandbox"
 
 	linkAppReferences()
 
-	--links 
-	--{
-	--	"scriptcore"
-	--}
+	links 
+	{
+		"scriptcore"
+	}
 
 	filter "configurations:Debug"
 		optimize "Off"

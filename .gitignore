@@ -4,6 +4,7 @@ bin/**
 bin-int/**
 *.sln
 *.vcxproj
+*.csproj
 *.filters
 *.user
 imgui.ini

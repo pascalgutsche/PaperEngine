@@ -16,7 +16,6 @@ namespace Sandbox
         {
             transformComponent = GetComponent<TransformComponent>();
             spriteComponent = GetComponent<SpriteComponent>();
-            speed = 10.0f / 3.0f;
         }
 
         public override void OnDestroy()
