@@ -30,7 +30,7 @@ namespace Paper
         std::unordered_map<std::string, Shr<ScriptClass>> entityClasses;
         std::unordered_map<UUID, Shr<EntityInstance>> entityInstances;
 
-        std::unordered_map<UUID, EntityFieldStorage> entityFieldStorage;
+        std::unordered_map<UUID, std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>> entityFieldStorage;
 
         //Runtime
     	Scene* sceneContext = nullptr;
@@ -128,17 +128,27 @@ namespace Paper
         
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
         
-        if (!EntityClassExists(sc.name)) 
+        if (!sc.scriptClass)
         {
-            LOG_CORE_ERROR("tried to create script entity with entity '{}' and script '{}'", entity.GetUUID(), sc.name);
+            LOG_CORE_ERROR("tried to destroy script entity with entity '{}' because script was null", entity.GetUUID());
             return;
         }
-        script_data->entityFieldStorage.erase(entity.GetUUID());
 
-        const auto& scriptFields = GetEntityClass(sc.name)->GetFields();
+        auto& entityFieldStorages = GetActiveEntityFieldStorageInternal(entity);
+
+		
+        const auto& scriptFields = sc.scriptClass->GetFields();
         for (auto& field : scriptFields)
         {
-            script_data->entityFieldStorage[entity.GetUUID()].push_back(MakeShr<ScriptFieldStorage>(&field));
+            bool found = false;
+            for (auto& fieldStorage : entityFieldStorages)
+            {
+                if (fieldStorage->GetField() == field)
+                    found = true;
+            }
+
+            if (!found)
+                entityFieldStorages.push_back(MakeShr<ScriptFieldStorage>(&field));
         }
     }
 
@@ -149,9 +159,9 @@ namespace Paper
         
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
         
-        if (!EntityClassExists(sc.name))
+        if (!sc.scriptClass)
         {
-            LOG_CORE_ERROR("tried to destroy script entity with entity '{}' and script '{}'", entity.GetUUID(), sc.name);
+            LOG_CORE_ERROR("tried to destroy script entity with entity '{}' because script was null", entity.GetUUID());
             return;
         }
         script_data->entityFieldStorage.erase(entity.GetUUID());
@@ -161,14 +171,14 @@ namespace Paper
     {
         CORE_ASSERT(!script_data->entityInstances.contains(entity.GetUUID()), "")
         const auto& scrc = entity.GetComponent<ScriptComponent>();
-        if (EntityClassExists(scrc.name))
+        if (scrc.scriptClass)
         {
-            Shr<EntityInstance> instance = MakeShr<EntityInstance>(script_data->entityClasses[scrc.name], entity);
+            Shr<EntityInstance> instance = MakeShr<EntityInstance>(scrc.scriptClass, entity);
             script_data->entityInstances[entity.GetUUID()] = instance;
 
             //apply class variables defined in editor
             if (script_data->entityFieldStorage.contains(entity.GetUUID()))
-                for (const auto& fieldStorage : script_data->entityFieldStorage.at(entity.GetUUID()))
+                for (const auto& fieldStorage : GetActiveEntityFieldStorage(entity))
 					fieldStorage->SetRuntimeInstance(instance);
 
             instance->InvokeOnCreate();
@@ -184,7 +194,7 @@ namespace Paper
 
         //remove runtime instance of field storages
         if (script_data->entityFieldStorage.contains(entity.GetUUID()))
-            for (const auto& fieldStorage : script_data->entityFieldStorage.at(entity.GetUUID()))
+            for (const auto& fieldStorage : GetActiveEntityFieldStorage(entity))
                 fieldStorage->RemoveRuntimeInstance();
 
         script_data->entityInstances.erase(it);
@@ -219,14 +229,15 @@ namespace Paper
         return script_data->entityInstances.at(entityUUID);
     }
 
-    const EntityFieldStorage& ScriptEngine::GetEntityFieldStorage(UUID entityUUID)
+    const EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorage(Entity entity)
     {
-        if (!script_data->entityFieldStorage.contains(entityUUID)) 
+        ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
+        if (!script_data->entityFieldStorage.contains(entity.GetUUID()) || !script_data->entityFieldStorage.at(entity.GetUUID()).contains(sc.scriptClass))
         {
-            LOG_CORE_ERROR("Does not have field storage for entity '{}'", entityUUID.toString());
+            LOG_CORE_ERROR("Does not have field storage for entity '{}'", entity.GetUUID().toString());
             return EntityFieldStorage();
         }
-        return script_data->entityFieldStorage.at(entityUUID);
+        return script_data->entityFieldStorage.at(entity.GetUUID()).at(sc.scriptClass);
     }
 
     MonoDomain* ScriptEngine::GetDomain()
@@ -262,17 +273,12 @@ namespace Paper
 
             if (name == "<Module>") continue;
 
-            std::string fullName;
-            if (!nameSpace.empty())
-                fullName = fmt::format("{}.{}", nameSpace, name);
-            else
-                fullName = name;
+            Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name);
 
             MonoClass* monoClass = mono_class_from_name(script_data->appAssemblyImage, nameSpace.c_str(), name.c_str());
             bool isEntity = mono_class_is_subclass_of(monoClass, script_data->entityClass->monoClass, false);
 
-            Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name);
-
+            std::string fullName = scriptClass->GetFullClassName();
             if (isEntity && fullName != "Paper.Entity")
 				script_data->entityClasses[fullName] = scriptClass;
         }
@@ -294,6 +300,12 @@ namespace Paper
         script_data->app_domain = nullptr;
 
         script_data->root_domain = nullptr;
+    }
+
+    EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorageInternal(Entity entity)
+    {
+        ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
+        return script_data->entityFieldStorage[entity.GetUUID()][sc.scriptClass];
     }
 
     MonoImage* ScriptEngine::GetAppAssemblyImage()
@@ -333,6 +345,13 @@ namespace Paper
     void ScriptClass::InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params) const
     {
         mono_runtime_invoke(monoMethod, monoObject, params, nullptr);
+    }
+
+    std::string ScriptClass::GetFullClassName() const
+    {
+        if (!classNameSpace.empty())
+            return fmt::format("{}.{}", classNameSpace, className);
+        return className;
     }
 
     bool ScriptClass::IsSubclassOf(const Shr<ScriptClass>& scriptClass) const

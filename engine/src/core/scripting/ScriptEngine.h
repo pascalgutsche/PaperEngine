@@ -9,6 +9,7 @@
 
 namespace Paper
 {
+	class ScriptClass;
 	using EntityFieldStorage = std::vector<Shr<ScriptFieldStorage>>;
 
 	class ScriptClass
@@ -20,6 +21,7 @@ namespace Paper
 		MonoMethod* GetMethod(const std::string& methodName, uint32_t paramCount) const;
 		void InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params = nullptr) const;
 
+		std::string GetFullClassName() const;
 		const std::vector<ScriptField>& GetFields() { return fields; }
 
 		bool IsSubclassOf(const Shr<ScriptClass>& scriptClass) const;
@@ -107,7 +109,7 @@ namespace Paper
 
 		static Scene* GetSceneContext();
 		static Shr<EntityInstance> GetEntityScriptInstance(UUID entityUUID);
-		static const EntityFieldStorage& GetEntityFieldStorage(UUID entityUUID);
+		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
 		static MonoImage* GetAppAssemblyImage();
 		static MonoImage* GetCoreAssemblyImage();
@@ -117,6 +119,7 @@ namespace Paper
 		static void InitMono();
 		static void ShutdownMono();
 
+		static EntityFieldStorage& GetActiveEntityFieldStorageInternal(Entity entity);
 
 		static void LoadAssemblyClasses(MonoAssembly* monoAssembly);
 	};

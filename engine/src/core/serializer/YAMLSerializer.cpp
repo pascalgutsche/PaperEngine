@@ -5,6 +5,7 @@
 
 #include "Components.h"
 #include "component/CameraComponent.h"
+#include "scripting/ScriptEngine.h"
 
 namespace Paper
 {
@@ -171,7 +172,10 @@ namespace Paper
 					deserialized_entity.AddComponent<TextComponent>().Deserialize(text_component);
 
 				if (auto script_component = components["ScriptComponent"])
+				{
 					deserialized_entity.AddComponent<ScriptComponent>().Deserialize(script_component);
+					ScriptEngine::CreateScriptEntity(deserialized_entity);
+				}
 
 				if (auto camera_component = components["CameraComponent"])
 					deserialized_entity.AddComponent<CameraComponent>().Deserialize(camera_component);

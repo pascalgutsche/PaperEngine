@@ -449,49 +449,46 @@ void PaperLayer::PropertiesPanel()
 
 	DrawComponent<ScriptComponent>(this, "Script Component", true, [](ScriptComponent& scrc, Entity entity)
 		{
-			Shr<ScriptClass> entityScriptClass = ScriptEngine::GetEntityClass(scrc.name);
 			{
 				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
 				FillNameCol("C#-Class");
 
-				ImVec4 textColor;
-				if (entityScriptClass)
-					textColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
-				else
-					textColor = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-				ImGui::PushStyleColor(ImGuiCol_Text, textColor);
-				std::string buf = scrc.name;
-				if (ImGui::InputText(CONST_UI_ID, &buf))
+				if (ImGui::Button((scrc.scriptClass->GetFullClassName() + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
-					if (ScriptEngine::EntityClassExists(buf))
-					{
-						scrc.name = buf;
-						ScriptEngine::CreateScriptEntity(entity);
-					}
-					else
-						ScriptEngine::DestroyScriptEntity(entity);
+					ImGui::OpenPopup("select_entity_scriptclass");
+				}
 
-					scrc.name = buf;
-				};
-				ImGui::PopStyleColor();
+				if (ImGui::BeginPopup("select_entity_scriptclass"))
+				{
+					const auto& classList = ScriptEngine::GetEntityClasses();
+					for (const auto [name, scriptClass] : classList)
+					{
+						if (ImGui::Selectable(name.c_str(), scrc.scriptClass == scriptClass) && scrc.scriptClass != scriptClass)
+						{
+							scrc.scriptClass = scriptClass;
+							ScriptEngine::CreateScriptEntity(entity);
+						}
+					}
+					ImGui::EndPopup();
+				}
 			}
 			{
 				
 				//Fields
 				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
-				if (entityScriptClass)
+				if (scrc.scriptClass)
 				{
-					const auto& storageFields = ScriptEngine::GetEntityFieldStorage(entity.GetUUID());
+					const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);
 					for (const auto& fieldStorage : storageFields)
 					{
 						const auto& field = fieldStorage->GetField();
 						if (!field.HasFlag(ScriptFieldFlag::Public)) continue;
 						if (field.type == ScriptFieldType::Invalid) continue;
-
+					
 						std::string varName = std::format("{} {}", Utils::ScriptFieldTypeToString(field.type), field.name);
 						ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
-
+					
 						switch (field.type)
 						{
 						case ScriptFieldType::Float:

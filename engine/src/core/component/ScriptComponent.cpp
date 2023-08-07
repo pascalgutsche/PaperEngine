@@ -1,6 +1,8 @@
 ﻿#include "Engine.h"
 #include "ScriptComponent.h"
 
+#include "scripting/ScriptEngine.h"
+
 
 namespace Paper
 {
@@ -11,7 +13,7 @@ namespace Paper
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap; // SpriteComponent
 
-			out << YAML::Key << "Name" << YAML::Value << name;
+			out << YAML::Key << "Name" << YAML::Value << scriptClass->GetFullClassName();
 
 			out << YAML::EndMap; // SpriteComponent
 			return true;
@@ -27,7 +29,7 @@ namespace Paper
 	{
 		try
 		{
-			name = data["Name"].as<std::string>();
+			scriptClass = ScriptEngine::GetEntityClass(data["Name"].as<std::string>());
 		}
 		catch (YAML::EmitterException& e)
 		{
