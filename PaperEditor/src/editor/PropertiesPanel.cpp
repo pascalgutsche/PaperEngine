@@ -185,7 +185,7 @@ void PaperLayer::PropertiesPanel()
 	ImGui::InputText(("##" + active_entity.GetUUID().toString()).c_str(), &name);
 	active_entity.SetName(name);
 
-	ImGui::Text(("UUID: " + std::to_string(active_entity.GetUUID())).c_str());
+	ImGui::Text(("UUID: " + active_entity.GetUUID().toString()).c_str());
 
 	if (ImGui::BeginPopup("components_add_popup"))
 	{

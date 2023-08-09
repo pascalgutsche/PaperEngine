@@ -10,7 +10,7 @@ namespace Sandbox
         private SpriteComponent spriteComponent;
         private int count = 1;
 
-        public float speed = 345.045437684f;
+        public float speed = 3.004f;
 
         public override void OnCreate()
         {

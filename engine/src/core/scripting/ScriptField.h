@@ -83,9 +83,9 @@ namespace Paper
 		void RemoveRuntimeInstance();
 
 		template <typename T>
-		T& GetValue()
+		T& GetValue(bool onlyBuffer = false)
 		{
-			if (runtimeInstance)
+			if (runtimeInstance && !onlyBuffer)
 			{
 				Buffer valueBuffer = GetRuntimeFieldValue();
 				T value = T();
@@ -98,9 +98,9 @@ namespace Paper
 		}
 
 		template <typename T>
-		void SetValue(const T& value)
+		void SetValue(const T& value, bool onlyBuffer = false)
 		{
-			if (runtimeInstance)
+			if (runtimeInstance && !onlyBuffer)
 			{
 				SetRuntimeFieldValue(&value);
 				return;

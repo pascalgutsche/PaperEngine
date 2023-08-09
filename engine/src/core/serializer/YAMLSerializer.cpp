@@ -101,7 +101,94 @@ namespace Paper
 			entity.GetComponent<TextComponent>().Serialize(out);
 
 		if (entity.HasComponent<ScriptComponent>())
+		{
 			entity.GetComponent<ScriptComponent>().Serialize(out);
+
+			const auto& entityFieldStorage = ScriptEngine::GetEntityFieldStorage(entity);
+
+			out << YAML::Key << "ScriptFields";
+			out << YAML::BeginMap;
+
+			for (const auto& scriptClass : entityFieldStorage)
+			{
+				out << YAML::Key << scriptClass.first->GetFullClassName();
+				out << YAML::BeginMap;
+
+				for (const auto& classFieldStorage : scriptClass.second)
+				{
+					ScriptFieldType type = classFieldStorage->GetField().type;
+
+					out << YAML::Key << classFieldStorage->GetField().name;
+					out << YAML::BeginMap;
+
+					out << YAML::Key << "FieldType" << YAML::Value << (int)type;
+					out << YAML::Key << "Value" << YAML::Value;
+
+					switch (type)
+					{
+					case ScriptFieldType::Bool: 
+						out << classFieldStorage->GetValue<bool>(true);
+						break;
+					//case ScriptFieldType::Char: 
+					//	out << classFieldStorage->GetValue<char>(true); //TODO: needs fixing
+					//	break;
+					//case ScriptFieldType::UChar: 
+					//	out << classFieldStorage->GetValue<char>(true); //TODO: needs fixing
+						break;
+					case ScriptFieldType::Short: 
+						out << classFieldStorage->GetValue<int16_t>(true);
+						break;
+					case ScriptFieldType::UShort: 
+						out << classFieldStorage->GetValue<uint16_t>(true);
+						break; 
+					case ScriptFieldType::Int: 
+						out << classFieldStorage->GetValue<int32_t>(true);
+						break;
+					case ScriptFieldType::UInt: 
+						out << classFieldStorage->GetValue<uint32_t>(true);
+						break;
+					case ScriptFieldType::Long: 
+						out << classFieldStorage->GetValue<int64_t>(true);
+						break;
+					case ScriptFieldType::ULong: 
+						out << classFieldStorage->GetValue<uint64_t>(true);
+						break;
+					case ScriptFieldType::Float: 
+						out << classFieldStorage->GetValue<float>(true);
+						break;
+					case ScriptFieldType::Double: 
+						out << classFieldStorage->GetValue<double>(true);
+						break;
+					case ScriptFieldType::String: 
+						out << classFieldStorage->GetValue<std::string>(true);
+						break;
+					case ScriptFieldType::Vec2: 
+						out << classFieldStorage->GetValue<glm::vec2>(true);
+						break;
+					case ScriptFieldType::Vec3: 
+						out << classFieldStorage->GetValue<glm::vec3>(true);
+						break;
+					case ScriptFieldType::Vec4: 
+						out << classFieldStorage->GetValue<glm::vec4>(true);
+						break;
+					//case ScriptFieldType::Entity: 
+					//	out << classFieldStorage->GetValue<UUID>(true);
+						break;
+					default: 
+						out << 0;
+						break;
+					}
+
+					out << YAML::EndMap;
+
+				}
+				
+				out << YAML::EndMap;
+			}
+
+			out << YAML::EndMap;
+			out << YAML::EndMap; // SpriteComponent
+		}
 
 		if (entity.HasComponent<TransformComponent>())
 			entity.GetComponent<TransformComponent>().Serialize(out);
@@ -113,6 +200,13 @@ namespace Paper
 		out << YAML::EndMap; // Entity
 
 		return true;
+	}
+
+	template <typename T>
+	void SetFieldStorage(YAML::Node& yamlScriptField, Shr<ScriptFieldStorage>& storage)
+	{
+		T value = yamlScriptField["Value"].as<T>();
+		storage->SetValue(value, true);
 	}
 
 	Shr<Scene> YAMLSerializer::SceneDeserialize(const std::filesystem::path& filePath)
@@ -174,6 +268,96 @@ namespace Paper
 				if (auto script_component = components["ScriptComponent"])
 				{
 					deserialized_entity.AddComponent<ScriptComponent>().Deserialize(script_component);
+
+					auto yamlScriptFields = script_component["ScriptFields"];
+
+					for (YAML::const_iterator yamlScriptClass = yamlScriptFields.begin(); yamlScriptClass != yamlScriptFields.end(); ++yamlScriptClass) {
+						std::string scriptClassName = yamlScriptClass->first.as<std::string>();
+
+						Shr<ScriptClass> scriptClass = ScriptEngine::GetEntityClass(scriptClassName);
+						if (!scriptClass) continue;
+
+						auto yamlScriptClassFields = yamlScriptFields[scriptClassName];
+						for (YAML::const_iterator yamlScriptClassFieldsIT = yamlScriptClassFields.begin(); yamlScriptClassFieldsIT != yamlScriptClassFields.end(); ++yamlScriptClassFieldsIT)
+						{
+							std::string scriptFieldName = yamlScriptClassFieldsIT->first.as<std::string>();
+							ScriptField* scriptField = scriptClass->GetField(scriptFieldName);
+							if (!scriptField) continue;
+
+							auto yamlScriptField = yamlScriptClassFields[scriptFieldName];
+							auto& entityFieldStorage = ScriptEngine::GetEntityFieldStorage(deserialized_entity);
+
+							auto& scriptClassFieldStorages = entityFieldStorage[scriptClass];
+
+							int index = 0;
+							for ( ; index < scriptClassFieldStorages.size(); index++)
+								if (scriptClassFieldStorages[index]->GetField() == *scriptField) break;
+
+							Shr<ScriptFieldStorage> fieldStorage = MakeShr<ScriptFieldStorage>(scriptField);
+
+							ScriptFieldType type = (ScriptFieldType)yamlScriptField["FieldType"].as<int>();
+
+							switch (type)
+							{
+							case ScriptFieldType::Bool: 
+								SetFieldStorage<bool>(yamlScriptField, fieldStorage);
+								break;
+							//case ScriptFieldType::Char: 
+							//	char value = yamlScriptField["Value"].as<char>();
+							//	fieldStorage->SetValue(value, true); //TODO: needs fixing
+							//	break;
+							//case ScriptFieldType::UChar: 
+							//	char value = yamlScriptField["Value"].as<char>();
+							//	fieldStorage->SetValue(value, true); //TODO: needs fixing
+							//	break;
+							case ScriptFieldType::Short:
+								SetFieldStorage<int16_t>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::UShort:
+								SetFieldStorage<uint16_t>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::Int:
+								SetFieldStorage<int32_t>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::UInt:
+								SetFieldStorage<uint32_t>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::Long:
+								SetFieldStorage<int64_t>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::ULong:
+								SetFieldStorage<uint64_t>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::Float:
+								SetFieldStorage<float>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::Double:
+								SetFieldStorage<double>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::String:
+								SetFieldStorage<std::string>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::Vec2:
+								SetFieldStorage<glm::vec2>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::Vec3:
+								SetFieldStorage<glm::vec3>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::Vec4:
+								SetFieldStorage<glm::vec4>(yamlScriptField, fieldStorage);
+								break;
+									//case ScriptFieldType::Entity: 
+									//	out << classFieldStorage->GetValue<UUID>(true);
+									break;
+								default:
+									fieldStorage->SetValue(0, true);
+									break;
+							}
+
+							scriptClassFieldStorages.emplace(scriptClassFieldStorages.begin() + index, fieldStorage);
+						}
+					}
+
 					ScriptEngine::CreateScriptEntity(deserialized_entity);
 				}
 

@@ -240,6 +240,11 @@ namespace Paper
         return script_data->entityFieldStorage.at(entity.GetUUID()).at(sc.scriptClass);
     }
 
+    std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& ScriptEngine::GetEntityFieldStorage(Entity entity)
+    {
+        return script_data->entityFieldStorage[entity.GetUUID()];
+    }
+
     MonoDomain* ScriptEngine::GetDomain()
     {
         return script_data->app_domain;
@@ -352,6 +357,14 @@ namespace Paper
         if (!classNameSpace.empty())
             return fmt::format("{}.{}", classNameSpace, className);
         return className;
+    }
+
+    ScriptField* ScriptClass::GetField(const std::string& fieldName)
+    {
+        ScriptField* scriptField = nullptr;
+        for (ScriptField& field : fields)
+            if (field.name == fieldName) scriptField = &field;
+	    return scriptField;
     }
 
     bool ScriptClass::IsSubclassOf(const Shr<ScriptClass>& scriptClass) const

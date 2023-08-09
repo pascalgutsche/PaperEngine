@@ -1,5 +1,5 @@
 Scene:
-  - 9a84cecb5ccc92e2
+  - 3aa21a74e800dddf
 Name: "[Scene]"
 Path: assets\scenes\bunker.pescene
 Entities:
@@ -57,7 +57,25 @@ Entities:
         Thickness: 1
         Fade: 0.00499999989
       ScriptComponent:
-        Name: Sandbox.Player
+        Name: Sandbox.Enemy
+        ScriptFields:
+          Sandbox.Player:
+            transformComponent:
+              FieldType: 1
+              Value: 0
+            spriteComponent:
+              FieldType: 1
+              Value: 0
+            count:
+              FieldType: 8
+              Value: 1
+            speed:
+              FieldType: 12
+              Value: -1.20000005
+          Sandbox.Enemy:
+            bunker:
+              FieldType: 12
+              Value: -1.20000005
       TransformComponent:
         Position: [0, 1, 0]
         Scale: [1, 1, 1]

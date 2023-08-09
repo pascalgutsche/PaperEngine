@@ -23,6 +23,7 @@ namespace Paper
 
 		std::string GetFullClassName() const;
 		const std::vector<ScriptField>& GetFields() { return fields; }
+		ScriptField* GetField(const std::string& fieldName);
 
 		bool IsSubclassOf(const Shr<ScriptClass>& scriptClass) const;
 
@@ -110,6 +111,7 @@ namespace Paper
 		static Scene* GetSceneContext();
 		static Shr<EntityInstance> GetEntityScriptInstance(UUID entityUUID);
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
+		static std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
 		static MonoImage* GetAppAssemblyImage();
 		static MonoImage* GetCoreAssemblyImage();

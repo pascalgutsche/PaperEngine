@@ -15,7 +15,7 @@ namespace Paper
 
 			out << YAML::Key << "Name" << YAML::Value << scriptClass->GetFullClassName();
 
-			out << YAML::EndMap; // SpriteComponent
+
 			return true;
 		}
 		catch (YAML::EmitterException& e)
