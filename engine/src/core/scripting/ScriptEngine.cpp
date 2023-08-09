@@ -427,10 +427,21 @@ namespace Paper
         if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return Buffer();
 
         Buffer valBuffer;
-        valBuffer.Allocate(scriptField.typeSize);
-        valBuffer.Nullify();
 
-        mono_field_get_value(monoInstance, scriptField.monoField, valBuffer.data);
+        if (scriptField.type == ScriptFieldType::String)
+        {
+	        MonoString* string = (MonoString*)mono_field_get_value_object(mono_domain_get(), scriptField.monoField, monoInstance);
+            std::string valueStr = Utils::MonoStringToStdString(string);
+            valBuffer.Allocate(valueStr.size() + 1);
+            valBuffer.Nullify();
+            valBuffer.Write(valueStr.data(), valueStr.size());
+        }
+        else
+        {
+            valBuffer.Allocate(scriptField.typeSize);
+            valBuffer.Nullify();
+            mono_field_get_value(monoInstance, scriptField.monoField, valBuffer.data);
+        }
         return valBuffer;
     }
 

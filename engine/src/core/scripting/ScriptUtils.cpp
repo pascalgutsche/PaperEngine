@@ -157,5 +157,13 @@ namespace Paper
 
             return fieldFlags;
         }
+
+        std::string MonoStringToStdString(MonoString* monoString)
+        {
+            char* text = mono_string_to_utf8(monoString);
+            std::string value = std::string(text);
+            mono_free(text);
+            return value;
+        }
     }
 }

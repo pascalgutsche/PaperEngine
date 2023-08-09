@@ -83,7 +83,7 @@ namespace Paper
 		void RemoveRuntimeInstance();
 
 		template <typename T>
-		T& GetValue(bool onlyBuffer = false)
+		T GetValue(bool onlyBuffer = false) const
 		{
 			if (runtimeInstance && !onlyBuffer)
 			{
@@ -97,6 +97,9 @@ namespace Paper
 			return data.Read<T>();
 		}
 
+		template<>
+		std::string GetValue(bool onlyBuffer) const;
+
 		template <typename T>
 		void SetValue(const T& value, bool onlyBuffer = false)
 		{
@@ -108,6 +111,9 @@ namespace Paper
 
 			data.Write(&value, sizeof(T));
 		}
+
+		template<>
+		void SetValue<std::string>(const std::string& value, bool onlyBuffer);
 
 		const ScriptField& GetField() const { return *scriptField; }
 

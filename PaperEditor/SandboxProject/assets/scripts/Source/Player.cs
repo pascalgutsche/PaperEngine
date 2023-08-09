@@ -12,6 +12,8 @@ namespace Sandbox
 
         public float speed = 3.004f;
 
+        public string bunker = "bunker123";
+
         public override void OnCreate()
         {
             transformComponent = GetComponent<TransformComponent>();
@@ -26,6 +28,8 @@ namespace Sandbox
 
         public override void OnUpdate(float dt)
         {
+            Console.WriteLine(bunker);
+
             Vec3 pos = transformComponent.Position;
 
             if (Input.IsKeyDown(Key.W))

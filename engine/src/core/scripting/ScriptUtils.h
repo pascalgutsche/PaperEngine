@@ -10,6 +10,7 @@ extern "C"
     typedef struct _MonoImage MonoImage;
     typedef struct _MonoType MonoType;
     typedef struct _MonoClassField MonoClassField;
+    typedef struct _MonoString MonoString;
 }
 
 namespace Paper
@@ -30,5 +31,7 @@ namespace Paper
         std::string ScriptFieldTypeToString(ScriptFieldType type);
 
         ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags);
+
+        std::string MonoStringToStdString(MonoString* monoString);
 	}
 }

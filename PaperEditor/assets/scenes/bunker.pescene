@@ -57,7 +57,7 @@ Entities:
         Thickness: 1
         Fade: 0.00499999989
       ScriptComponent:
-        Name: Sandbox.Enemy
+        Name: Sandbox.Player
         ScriptFields:
           Sandbox.Player:
             transformComponent:

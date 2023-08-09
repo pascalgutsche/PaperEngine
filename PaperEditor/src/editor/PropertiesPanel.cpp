@@ -491,13 +491,26 @@ void PaperLayer::PropertiesPanel()
 					
 						switch (field.type)
 						{
-						case ScriptFieldType::Float:
-							float data = fieldStorage->GetValue<float>();
-							if (DrawFloatControl(varName, data) && field.IsWritable())
+							case ScriptFieldType::String:
 							{
-								fieldStorage->SetValue(data);
-							};
-							break;
+								std::string dataString = fieldStorage->GetValue<std::string>();
+								FillNameCol(varName);
+								if (ImGui::InputText(CONST_UI_ID, &dataString) && field.IsWritable())
+								{
+									fieldStorage->SetValue(dataString);
+								};
+								break;
+							}
+
+							case ScriptFieldType::Float:
+							{
+								float dataFloat = fieldStorage->GetValue<float>();
+								if (DrawFloatControl(varName, dataFloat) && field.IsWritable())
+								{
+									fieldStorage->SetValue(dataFloat);
+								};
+								break;
+							}
 						}
 						
 					}

@@ -20,23 +20,6 @@ namespace Paper
 
 #define MONO_STRING(Value) mono_string_new(mono_domain_get(), Value)
 
-    struct CSString
-    {
-        std::string value;
-        CSString(MonoString* monoString)
-        {
-            text = mono_string_to_utf8(monoString);
-            value = std::string(text);
-        }
-
-        ~CSString()
-        {
-            mono_free(text);
-        }
-    private:
-        char* text;
-    };
-
 	//Input
     static bool IsKeyPressed(int code)
     {
@@ -227,8 +210,7 @@ namespace Paper
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
-        CSString filePath(inTextureFilePath);
-        sc.texture = DataPool::GetAssetTexture(filePath.value, true);
+        sc.texture = DataPool::GetAssetTexture(Utils::MonoStringToStdString(inTextureFilePath), true);
     }
 
     static float SpriteComponent_GetTilingFactor(UUID entityUUID)
@@ -384,8 +366,7 @@ namespace Paper
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
-        CSString string(text);
-        tc.text = string.value;
+        tc.text = Utils::MonoStringToStdString(text);
     }
 
     static MonoString* TextComponent_GetFontPath(UUID entityUUID)
@@ -399,8 +380,7 @@ namespace Paper
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
-        CSString path(fontPath);
-        tc.font = DataPool::GetFont(path.value, true);
+        tc.font = DataPool::GetFont(Utils::MonoStringToStdString(fontPath), true);
     }
 
 	void ScriptGlue::RegisterFunctions()
