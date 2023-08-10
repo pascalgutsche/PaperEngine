@@ -135,22 +135,22 @@ namespace Paper
 					//case ScriptFieldType::UChar: 
 					//	out << classFieldStorage->GetValue<char>(true); //TODO: needs fixing
 						break;
-					case ScriptFieldType::Short: 
+					case ScriptFieldType::Int16: 
 						out << classFieldStorage->GetValue<int16_t>(true);
 						break;
-					case ScriptFieldType::UShort: 
+					case ScriptFieldType::UInt16: 
 						out << classFieldStorage->GetValue<uint16_t>(true);
 						break; 
-					case ScriptFieldType::Int: 
+					case ScriptFieldType::Int32: 
 						out << classFieldStorage->GetValue<int32_t>(true);
 						break;
-					case ScriptFieldType::UInt: 
+					case ScriptFieldType::UInt32: 
 						out << classFieldStorage->GetValue<uint32_t>(true);
 						break;
-					case ScriptFieldType::Long: 
+					case ScriptFieldType::Int64: 
 						out << classFieldStorage->GetValue<int64_t>(true);
 						break;
-					case ScriptFieldType::ULong: 
+					case ScriptFieldType::UInt64: 
 						out << classFieldStorage->GetValue<uint64_t>(true);
 						break;
 					case ScriptFieldType::Float: 
@@ -310,22 +310,22 @@ namespace Paper
 							//	char value = yamlScriptField["Value"].as<char>();
 							//	fieldStorage->SetValue(value, true); //TODO: needs fixing
 							//	break;
-							case ScriptFieldType::Short:
+							case ScriptFieldType::Int16:
 								SetFieldStorage<int16_t>(yamlScriptField, fieldStorage);
 								break;
-							case ScriptFieldType::UShort:
+							case ScriptFieldType::UInt16:
 								SetFieldStorage<uint16_t>(yamlScriptField, fieldStorage);
 								break;
-							case ScriptFieldType::Int:
+							case ScriptFieldType::Int32:
 								SetFieldStorage<int32_t>(yamlScriptField, fieldStorage);
 								break;
-							case ScriptFieldType::UInt:
+							case ScriptFieldType::UInt32:
 								SetFieldStorage<uint32_t>(yamlScriptField, fieldStorage);
 								break;
-							case ScriptFieldType::Long:
+							case ScriptFieldType::Int64:
 								SetFieldStorage<int64_t>(yamlScriptField, fieldStorage);
 								break;
-							case ScriptFieldType::ULong:
+							case ScriptFieldType::UInt64:
 								SetFieldStorage<uint64_t>(yamlScriptField, fieldStorage);
 								break;
 							case ScriptFieldType::Float:
@@ -348,9 +348,6 @@ namespace Paper
 								break;
 									//case ScriptFieldType::Entity: 
 									//	out << classFieldStorage->GetValue<UUID>(true);
-									break;
-								default:
-									fieldStorage->SetValue(0, true);
 									break;
 							}
 

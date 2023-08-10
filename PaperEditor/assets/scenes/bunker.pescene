@@ -1,5 +1,5 @@
 Scene:
-  - 3aa21a74e800dddf
+  - 8f7cb21027ba9c5f
 Name: "[Scene]"
 Path: assets\scenes\bunker.pescene
 Entities:
@@ -72,6 +72,9 @@ Entities:
             speed:
               FieldType: 12
               Value: -1.20000005
+            bunker:
+              FieldType: 14
+              Value: Les go!\0
           Sandbox.Enemy:
             bunker:
               FieldType: 12

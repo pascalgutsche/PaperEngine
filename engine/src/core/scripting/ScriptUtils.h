@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "generic/Buffer.h"
 
 extern "C"
 {
@@ -30,8 +31,18 @@ namespace Paper
 
         std::string ScriptFieldTypeToString(ScriptFieldType type);
 
+        uint32_t ScriptFieldTypeSize(ScriptFieldType type);
+
         ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags);
 
+        Buffer& MonoObjectToValue(ScriptFieldType type, MonoObject* object);
+
         std::string MonoStringToStdString(MonoString* monoString);
+
+        MonoString* StdStringToMonoString(const std::string& stdString);
+
+        MonoObject* DataToMonoObject(ScriptFieldType type, void* data);
+        
+        bool IsPrimitive(ScriptFieldType type);
 	}
 }

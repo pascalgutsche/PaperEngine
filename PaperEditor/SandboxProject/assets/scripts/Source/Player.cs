@@ -55,7 +55,10 @@ namespace Sandbox
 
             transformComponent.Position = pos;
 
-            
+            if (Input.IsKeyPressed(Key.G))
+            {
+                bunker = bunker.Replace("123", "456");
+            }
 
             if (Input.IsKeyReleased(Key.P))
             {

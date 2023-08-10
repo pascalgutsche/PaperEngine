@@ -2,6 +2,7 @@
 #include "ScriptUtils.h"
 
 #include "generic/Buffer.h"
+#include "utils/UUID.h"
 
 
 namespace Paper
@@ -13,9 +14,9 @@ namespace Paper
 		None = 0, Invalid, Not_Supported,
 		Bool,
 		Char, UChar,        // 1 byte
-		Short, UShort,      // 2 byte
-		Int, UInt,          // 4 byte
-		Long, ULong,        // 8 byte
+		Int16, UInt16,      // 2 byte
+		Int32, UInt32,          // 4 byte
+		Int64, UInt64,        // 8 byte
 		Float, Double,      // 4, 8 byte
 		String,
 		Vec2, Vec3, Vec4,
@@ -44,6 +45,7 @@ namespace Paper
 		Buffer initialFieldVal;
 
 		MonoClassField* monoField;
+
 
 		ScriptField() = default;
 
@@ -87,7 +89,8 @@ namespace Paper
 		{
 			if (runtimeInstance && !onlyBuffer)
 			{
-				Buffer valueBuffer = GetRuntimeFieldValue();
+				Buffer valueBuffer;
+				GetRuntimeFieldValue(valueBuffer);
 				T value = T();
 				memcpy(&value, valueBuffer.data, valueBuffer.size);
 				valueBuffer.Release();
@@ -121,8 +124,8 @@ namespace Paper
 		const ScriptField* scriptField = nullptr;
 		Buffer data = Buffer::Copy(scriptField->initialFieldVal);
 
-		const Buffer& GetRuntimeFieldValue() const;
-		void SetRuntimeFieldValue(const void* value) const;
+		void GetRuntimeFieldValue(Buffer& outBuffer) const;
+		void SetRuntimeFieldValue(const Buffer& value) const;
 
 		Shr<EntityInstance> runtimeInstance = nullptr;
 	};

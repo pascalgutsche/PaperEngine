@@ -7,6 +7,15 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/tabledefs.h>
+#include <mono/metadata/appdomain.h>
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/class.h>
+#include <mono/metadata/object.h>
+#include <mono/metadata/reflection.h>
+#include <mono/metadata/attrdefs.h>
+#include <mono/metadata/tokentype.h>
+
+#include "utils/UUID.h"
 
 namespace Paper
 {
@@ -15,12 +24,12 @@ namespace Paper
         { "System.SByte", ScriptFieldType::Not_Supported },
         { "System.Byte", ScriptFieldType::Not_Supported },
         { "System.Boolean", ScriptFieldType::Bool },
-        { "System.Int16", ScriptFieldType::Short },
-        { "System.UInt16", ScriptFieldType::UShort },
-        { "System.Int32", ScriptFieldType::Int },
-        { "System.UInt32", ScriptFieldType::UInt },
-        { "System.Int64", ScriptFieldType::Long },
-        { "System.UInt64", ScriptFieldType::ULong },
+        { "System.Int16", ScriptFieldType::Int16 },
+        { "System.UInt16", ScriptFieldType::UInt16 },
+        { "System.Int32", ScriptFieldType::Int32 },
+        { "System.UInt32", ScriptFieldType::UInt32 },
+        { "System.Int64", ScriptFieldType::Int64 },
+        { "System.UInt64", ScriptFieldType::UInt64 },
         { "System.Single", ScriptFieldType::Float },
         { "System.Double", ScriptFieldType::Double },
         { "System.String", ScriptFieldType::String },
@@ -42,7 +51,7 @@ namespace Paper
             MonoImageOpenStatus status;
             MonoImage* image = mono_image_open_from_data_full(fileData, fileSize, 1, &status, 0);
 
-            if (status != MONO_IMAGE_OK)
+        	if (status != MONO_IMAGE_OK)
             {
                 const char* errorMessage = mono_image_strerror(status);
                 LOG_CORE_ERROR("[SCRIPTCORE]: {}", errorMessage);
@@ -92,12 +101,12 @@ namespace Paper
                 case ScriptFieldType::Bool:     return "Bool";
                 case ScriptFieldType::Char:     return "Char";
                 case ScriptFieldType::UChar:    return "Unsigned Char";
-                case ScriptFieldType::Short:    return "Short";
-                case ScriptFieldType::UShort:   return "Unsigned Short";
-                case ScriptFieldType::Int:      return "Int";
-                case ScriptFieldType::UInt:     return "Unsigned Int";
-                case ScriptFieldType::Long:     return "Long";
-                case ScriptFieldType::ULong:    return "Unsigned Long";
+                case ScriptFieldType::Int16:    return "Short";
+                case ScriptFieldType::UInt16:   return "Unsigned Short";
+                case ScriptFieldType::Int32:      return "Int";
+                case ScriptFieldType::UInt32:     return "Unsigned Int";
+                case ScriptFieldType::Int64:     return "Long";
+                case ScriptFieldType::UInt64:    return "Unsigned Long";
                 case ScriptFieldType::Float:    return "Float";
                 case ScriptFieldType::Double:   return "Double";
                 case ScriptFieldType::String:   return "String";
@@ -107,6 +116,31 @@ namespace Paper
                 case ScriptFieldType::Entity:   return "Entity";
                 default: return "<Invalid>";
             }
+        }
+
+        uint32_t ScriptFieldTypeSize(ScriptFieldType type)
+        {
+            switch (type)
+            {
+                case ScriptFieldType::Bool:     return sizeof(bool);
+                case ScriptFieldType::Char:     return sizeof(char);
+                case ScriptFieldType::UChar:    return sizeof(unsigned char);
+                case ScriptFieldType::Int16:    return sizeof(int16_t);
+                case ScriptFieldType::UInt16:   return sizeof(uint16_t);
+				case ScriptFieldType::Int32:    return sizeof(int32_t);
+                case ScriptFieldType::UInt32:   return sizeof(uint32_t);
+                case ScriptFieldType::Int64:    return sizeof(int64_t);
+                case ScriptFieldType::UInt64:   return sizeof(uint64_t);
+                case ScriptFieldType::Float:    return sizeof(float);
+                case ScriptFieldType::Double:   return sizeof(double);
+                case ScriptFieldType::String:   return sizeof(char);
+                case ScriptFieldType::Vec2:     return sizeof(glm::vec2);
+                case ScriptFieldType::Vec3:     return sizeof(glm::vec3);
+                case ScriptFieldType::Vec4:     return sizeof(glm::vec4);
+                case ScriptFieldType::Entity:   return sizeof(UUID);
+            }
+            LOG_CORE_ERROR("No ScriptFieldType size for '{}'", Utils::ScriptFieldTypeToString(type));
+        	return 0;
         }
 
         ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags)
@@ -158,12 +192,108 @@ namespace Paper
             return fieldFlags;
         }
 
+        template<typename T>
+        static T Unbox(MonoObject* obj) { return *(T*)mono_object_unbox(obj); }
+
+        template<typename T>
+        static Buffer& WriteToBuffer(Buffer& writeBuffer, MonoObject* obj)
+        {
+            T value = Unbox<T>(obj);
+            writeBuffer.Write(&value, sizeof(T));
+            return writeBuffer;
+        }
+
+        Buffer& MonoObjectToValue(ScriptFieldType type, MonoObject* object)
+        {
+            Buffer valBuffer;
+            valBuffer.Allocate(Utils::ScriptFieldTypeSize(type));
+            valBuffer.Nullify();
+
+            switch (type)
+            {
+            case ScriptFieldType::None: 
+            case ScriptFieldType::Invalid:
+            case ScriptFieldType::Not_Supported:
+                return valBuffer;
+
+            case ScriptFieldType::Bool:
+                return WriteToBuffer<bool>(valBuffer, object);
+            case ScriptFieldType::Char:
+                return WriteToBuffer<int8_t>(valBuffer, object);
+            case ScriptFieldType::UChar:
+                return WriteToBuffer<uint8_t>(valBuffer, object);
+            case ScriptFieldType::Int16:
+                return WriteToBuffer<int16_t>(valBuffer, object);
+            case ScriptFieldType::UInt16:
+                return WriteToBuffer<uint16_t>(valBuffer, object);
+            case ScriptFieldType::Int32:
+                return WriteToBuffer<int32_t>(valBuffer, object);
+            case ScriptFieldType::UInt32:
+                return WriteToBuffer<uint32_t>(valBuffer, object);
+            case ScriptFieldType::Int64:
+                return WriteToBuffer<int64_t>(valBuffer, object);
+            case ScriptFieldType::UInt64:
+                return WriteToBuffer<uint64_t>(valBuffer, object);
+            case ScriptFieldType::Float:
+                return WriteToBuffer<float>(valBuffer, object);
+            case ScriptFieldType::Double:
+                return WriteToBuffer<double>(valBuffer, object);
+            case ScriptFieldType::String:
+            {
+                std::string stdString = Utils::MonoStringToStdString((MonoString*)object);
+                valBuffer.Allocate(stdString.size() + 1);
+                valBuffer.Nullify();
+                valBuffer.Write(stdString.data(), stdString.size());
+                return valBuffer;
+            }
+            case ScriptFieldType::Vec2:
+                return WriteToBuffer<glm::vec2>(valBuffer, object);
+            case ScriptFieldType::Vec3:
+                return WriteToBuffer<glm::vec3>(valBuffer, object);
+            case ScriptFieldType::Vec4:
+                return WriteToBuffer<glm::vec4>(valBuffer, object);
+            case ScriptFieldType::Entity:
+                return WriteToBuffer<UUID>(valBuffer, object);
+            }
+            CORE_ASSERT(false, "");
+            return valBuffer;
+        }
+
         std::string MonoStringToStdString(MonoString* monoString)
         {
+            if (!monoString) return "";
+
             char* text = mono_string_to_utf8(monoString);
             std::string value = std::string(text);
             mono_free(text);
             return value;
+        }
+
+        MonoString* StdStringToMonoString(const std::string& stdString)
+        {
+            return mono_string_new(mono_domain_get(), stdString.c_str());
+        }
+
+        MonoObject* DataToMonoObject(ScriptFieldType type, void* data)
+        {
+            switch (type)
+            {
+            case ScriptFieldType::String: return (MonoObject*)Utils::StdStringToMonoString(std::string((char*)data));
+            default:
+                return nullptr;
+            }
+        }
+
+        bool IsPrimitive(ScriptFieldType type)
+        {
+	        switch (type) {
+	        case ScriptFieldType::String: 
+	        case ScriptFieldType::Vec2: 
+	        case ScriptFieldType::Vec3: 
+	        case ScriptFieldType::Vec4: 
+	        case ScriptFieldType::Entity: return false;
+	        default: return true;
+	        }
         }
     }
 }

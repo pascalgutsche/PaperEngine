@@ -13,7 +13,7 @@ namespace Paper
 	void ScriptFieldStorage::SetRuntimeInstance(Shr<EntityInstance> instance)
 	{
 		runtimeInstance = instance;
-		runtimeInstance->SetFieldValueVoidPtr(*scriptField, data.data);
+		SetRuntimeFieldValue(data);
 	}
 
 	void ScriptFieldStorage::RemoveRuntimeInstance()
@@ -26,13 +26,14 @@ namespace Paper
 	{
 		if (runtimeInstance != nullptr)
 		{
-			Buffer valueBuffer = GetRuntimeFieldValue();
+			Buffer valueBuffer;
+			GetRuntimeFieldValue(valueBuffer);
 
 			std::string value((char*)valueBuffer.data, valueBuffer.size / sizeof(char));
 			valueBuffer.Release();
 			return value;
 		}
-		std::string val = std::string((char*)data.data, data.size / sizeof(char));
+		std::string val = std::string((const char*)data.data);
 		return val;
 	}
 
@@ -41,11 +42,16 @@ namespace Paper
 	{
 		if (runtimeInstance && !onlyBuffer)
 		{
-			SetRuntimeFieldValue(&value);
+			Buffer valueBuffer;
+			valueBuffer.Allocate(value.size() + 1);
+			valueBuffer.Nullify();
+			valueBuffer.Write(value.data(), value.size());
+			SetRuntimeFieldValue(valueBuffer);
+			valueBuffer.Release();
 			return;
 		}
 
-		if (data.size <= value.length() * sizeof(char))
+		if (data.size <= value.size() * sizeof(char))
 		{
 			data.Release();
 			data.Allocate((value.length() * 2) * sizeof(char));
@@ -55,13 +61,13 @@ namespace Paper
 		memcpy(data.data, value.c_str(), value.length() * sizeof(char));
 	}
 
-	const Buffer& ScriptFieldStorage::GetRuntimeFieldValue() const
+	void ScriptFieldStorage::GetRuntimeFieldValue(Buffer& outBuffer) const
 	{
-		return runtimeInstance->GetFieldValue(*scriptField);
+		outBuffer = runtimeInstance->GetFieldValue(*scriptField);
 	}
 
-	void ScriptFieldStorage::SetRuntimeFieldValue(const void* value) const
+	void ScriptFieldStorage::SetRuntimeFieldValue(const Buffer& value) const
 	{
-		runtimeInstance->SetFieldValueVoidPtr(*scriptField, value);
+		runtimeInstance->SetFieldValue(*scriptField, value);
 	}
 }

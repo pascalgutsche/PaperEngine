@@ -447,7 +447,7 @@ void PaperLayer::PropertiesPanel()
 		
 		});
 
-	DrawComponent<ScriptComponent>(this, "Script Component", true, [](ScriptComponent& scrc, Entity entity)
+	DrawComponent<ScriptComponent>(this, "Script Component", true, [this](ScriptComponent& scrc, Entity entity)
 		{
 			{
 				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);

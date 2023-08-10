@@ -279,12 +279,10 @@ namespace Paper
             if (name == "<Module>") continue;
 
             Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name);
-
-            MonoClass* monoClass = mono_class_from_name(script_data->appAssemblyImage, nameSpace.c_str(), name.c_str());
-            bool isEntity = mono_class_is_subclass_of(monoClass, script_data->entityClass->monoClass, false);
+            scriptClass->InitFieldMap();
 
             std::string fullName = scriptClass->GetFullClassName();
-            if (isEntity && fullName != "Paper.Entity")
+            if (scriptClass->IsSubclassOf(script_data->entityClass) && fullName != "Paper.Entity")
 				script_data->entityClasses[fullName] = scriptClass;
         }
     }
@@ -331,8 +329,6 @@ namespace Paper
     {
         if (!monoImage) monoImage = script_data->appAssemblyImage;
         monoClass = mono_class_from_name(monoImage, classNameSpace.c_str(), className.c_str());
-
-        InitFieldMap();
     }
 
     MonoObject* ScriptClass::Instantiate() const
@@ -359,6 +355,11 @@ namespace Paper
         return className;
     }
 
+    MonoClass* ScriptClass::GetMonoClass() const
+    {
+        return monoClass;
+    }
+
     ScriptField* ScriptClass::GetField(const std::string& fieldName)
     {
         ScriptField* scriptField = nullptr;
@@ -374,7 +375,7 @@ namespace Paper
 
     void ScriptClass::InitFieldMap()
     {
-	    const ScriptInstance tempInstance(Instantiate());
+	    const ScriptInstance tempInstance(shared_from_this());
 
         fields.reserve(mono_class_num_fields(monoClass));
 
@@ -389,7 +390,7 @@ namespace Paper
             int align;
             scriptField.typeSize = mono_type_size(monoType, &align);
             scriptField.monoField = field;
-            scriptField.initialFieldVal = tempInstance.GetFieldValueInternal(scriptField, this);
+            scriptField.initialFieldVal = tempInstance.GetFieldValue(scriptField);
         }
     }
 
@@ -403,58 +404,52 @@ namespace Paper
         monoInstance = scriptClass->Instantiate();
     }
 
-    const Buffer& ScriptInstance::GetFieldValue(const ScriptField& scriptField) const
+    Buffer& ScriptInstance::GetFieldValue(const ScriptField& scriptField) const
     {
-        const auto& classFields = scriptClass->GetFields();
-        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return Buffer();
-
         Buffer valBuffer;
-        valBuffer.Allocate(scriptField.typeSize);
-        valBuffer.Nullify();
+        const auto& classFields = scriptClass->GetFields();
+        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return valBuffer;
 
-        mono_field_get_value(monoInstance, scriptField.monoField, valBuffer.data);
+        MonoObject* object = mono_field_get_value_object(mono_domain_get(), scriptField.monoField, monoInstance);
+
+        valBuffer = Utils::MonoObjectToValue(scriptField.type, object);
+
+        MonoClassField* lol = mono_class_get_field_from_name(scriptClass->GetMonoClass(), "UUID");
+
+        //if (scriptField.type == ScriptFieldType::String)
+        //{
+        //    MonoString* string = (MonoString*)
+        //    std::string valueStr = Utils::MonoStringToStdString(string);
+        //    valBuffer.Allocate(valueStr.size() + 1);
+        //    valBuffer.Nullify();
+        //    valBuffer.Write(valueStr.data(), valueStr.size());
+        //}
+        //else
+        //{
+        //    valBuffer.Allocate(scriptField.typeSize);
+        //    valBuffer.Nullify();
+        //    mono_field_get_value(monoInstance, scriptField.monoField, valBuffer.data);
+        //}
         return valBuffer;
     }
 
-    ScriptInstance::ScriptInstance(MonoObject* monoObject)
-    {
-        monoInstance = monoObject;
-    }
-
-    const Buffer& ScriptInstance::GetFieldValueInternal(const ScriptField& scriptField, ScriptClass* scriptClass) const
-    {
-        const auto& classFields = scriptClass->GetFields();
-        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return Buffer();
-
-        Buffer valBuffer;
-
-        if (scriptField.type == ScriptFieldType::String)
-        {
-	        MonoString* string = (MonoString*)mono_field_get_value_object(mono_domain_get(), scriptField.monoField, monoInstance);
-            std::string valueStr = Utils::MonoStringToStdString(string);
-            valBuffer.Allocate(valueStr.size() + 1);
-            valBuffer.Nullify();
-            valBuffer.Write(valueStr.data(), valueStr.size());
-        }
-        else
-        {
-            valBuffer.Allocate(scriptField.typeSize);
-            valBuffer.Nullify();
-            mono_field_get_value(monoInstance, scriptField.monoField, valBuffer.data);
-        }
-        return valBuffer;
-    }
-
-    void ScriptInstance::SetFieldValueVoidPtr(const ScriptField& scriptField, const void* val) const
+    void ScriptInstance::SetFieldValue(const ScriptField& scriptField, const Buffer& value) const
     {
         const auto& classFields = scriptClass->GetFields();
         if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
 
-        mono_field_set_value(monoInstance, scriptField.monoField, (void*)val);
+        void* data = nullptr;
+        if (Utils::IsPrimitive(scriptField.type))
+            data = value.data;
+        else
+            data = Utils::DataToMonoObject(scriptField.type, value.data);
+
+        mono_field_set_value(monoInstance, scriptField.monoField, data);
     }
 
     //
     //  EntityInstance
+    //
     EntityInstance::EntityInstance(const Shr<ScriptClass>& scriptClass, Entity entity)
 	    : ScriptInstance(scriptClass)
     {
@@ -473,17 +468,20 @@ namespace Paper
 
     void EntityInstance::InvokeOnCreate() const
     {
-        scriptClass->InvokeMethod(monoInstance, onCreateMethod);
+        if (onCreateMethod)
+			scriptClass->InvokeMethod(monoInstance, onCreateMethod);
     }
 
     void EntityInstance::InvokeOnDestroy() const
     {
-        scriptClass->InvokeMethod(monoInstance, onDestroyMethod);
+        if (onDestroyMethod)
+			scriptClass->InvokeMethod(monoInstance, onDestroyMethod);
     }
 
     void EntityInstance::InvokeOnUpdate(float dt) const
     {
         void* param = &dt;
-        scriptClass->InvokeMethod(monoInstance, onUpdateMethod, &param);
+        if (onUpdateMethod)
+			scriptClass->InvokeMethod(monoInstance, onUpdateMethod, &param);
     }
 }

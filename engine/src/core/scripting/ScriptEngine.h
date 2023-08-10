@@ -9,10 +9,10 @@
 
 namespace Paper
 {
-	class ScriptClass;
 	using EntityFieldStorage = std::vector<Shr<ScriptFieldStorage>>;
 
 	class ScriptClass
+		: public std::enable_shared_from_this<ScriptClass>
 	{
 	public:
 		ScriptClass(const std::string& classNameSpace, const std::string& className, MonoImage* monoImage = nullptr);
@@ -22,6 +22,7 @@ namespace Paper
 		void InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params = nullptr) const;
 
 		std::string GetFullClassName() const;
+		MonoClass* GetMonoClass() const;
 		const std::vector<ScriptField>& GetFields() { return fields; }
 		ScriptField* GetField(const std::string& fieldName);
 
@@ -45,27 +46,14 @@ namespace Paper
 	public:
 		ScriptInstance(const Shr<ScriptClass>& scriptClass);
 
-		const Buffer& GetFieldValue(const ScriptField& scriptField) const;
-
-		template <typename T>
-		void SetFieldValue(const ScriptField& scriptField, T& val)
-		{
-			SetFieldValueVoidPtr(scriptField, &val);
-		};
-		void SetFieldValueVoidPtr(const ScriptField& scriptField, const void* val) const;
+		Buffer& GetFieldValue(const ScriptField& scriptField) const;
+		void SetFieldValue(const ScriptField& scriptField, const Buffer& value) const;
 
 		Shr<ScriptClass> GetScriptClass() const { return scriptClass; }
 
 	protected:
 		Shr <ScriptClass> scriptClass;
 		MonoObject* monoInstance = nullptr;
-
-	private:
-		ScriptInstance(MonoObject* monoObject);
-		const Buffer& GetFieldValueInternal(const ScriptField& scriptField, ScriptClass* scriptClass) const;
-
-
-		
 
 		friend class ScriptClass;
 	};
