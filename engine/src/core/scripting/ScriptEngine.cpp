@@ -444,6 +444,13 @@ namespace Paper
         else
             data = Utils::DataToMonoObject(scriptField.type, value.data);
 
+        /// convert char to wchar because c# char is wchar
+        if (scriptField.type == ScriptFieldType::Char)
+        {
+            wchar_t temp = *(char*)data;
+            data = &temp;
+        }
+
         mono_field_set_value(monoInstance, scriptField.monoField, data);
     }
 

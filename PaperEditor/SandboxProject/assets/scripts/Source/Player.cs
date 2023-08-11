@@ -14,6 +14,8 @@ namespace Sandbox
 
         public string bunker = "bunker123";
 
+        public char charVar = 'b';
+
         public override void OnCreate()
         {
             transformComponent = GetComponent<TransformComponent>();
@@ -28,7 +30,7 @@ namespace Sandbox
 
         public override void OnUpdate(float dt)
         {
-            Console.WriteLine(bunker);
+            Console.WriteLine(charVar);
 
             Vec3 pos = transformComponent.Position;
 

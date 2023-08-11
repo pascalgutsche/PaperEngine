@@ -511,8 +511,19 @@ void PaperLayer::PropertiesPanel()
 								};
 								break;
 							}
+
+							case ScriptFieldType::Char:
+							{
+								char dataChar = fieldStorage->GetValue<char>();
+								char data[] = { dataChar, 0 };
+								FillNameCol(varName);
+								if (ImGui::InputText(CONST_UI_ID, data, 2) && field.IsWritable())
+								{
+									fieldStorage->SetValue(data[0]);
+								};
+								break;
+							}
 						}
-						
 					}
 				}
 			}

@@ -20,7 +20,7 @@
 namespace Paper
 {
     std::unordered_map<std::string, ScriptFieldType> scriptFieldTypeMap {
-        { "System.Char", ScriptFieldType::Not_Supported },
+        { "System.Char", ScriptFieldType::Char },
         { "System.SByte", ScriptFieldType::Not_Supported },
         { "System.Byte", ScriptFieldType::Not_Supported },
         { "System.Boolean", ScriptFieldType::Bool },
