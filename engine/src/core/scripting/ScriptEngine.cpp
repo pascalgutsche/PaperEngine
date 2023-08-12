@@ -360,11 +360,11 @@ namespace Paper
         return monoClass;
     }
 
-    ScriptField* ScriptClass::GetField(const std::string& fieldName)
+    ScriptField* ScriptClass::GetField(const std::string& fieldName) const
     {
         ScriptField* scriptField = nullptr;
-        for (ScriptField& field : fields)
-            if (field.name == fieldName) scriptField = &field;
+        for (const ScriptField& field : fields)
+            if (field.name == fieldName) scriptField = (ScriptField*)&field;
 	    return scriptField;
     }
 

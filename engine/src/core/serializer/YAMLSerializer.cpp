@@ -129,11 +129,11 @@ namespace Paper
 					case ScriptFieldType::Bool: 
 						out << classFieldStorage->GetValue<bool>(true);
 						break;
-					//case ScriptFieldType::Char: 
-					//	out << classFieldStorage->GetValue<char>(true); //TODO: needs fixing
-					//	break;
-					//case ScriptFieldType::UChar: 
-					//	out << classFieldStorage->GetValue<char>(true); //TODO: needs fixing
+					case ScriptFieldType::Char: 
+						out << classFieldStorage->GetValue<char>(true);
+						break;
+					case ScriptFieldType::UChar: 
+						out << classFieldStorage->GetValue<unsigned char>(true);
 						break;
 					case ScriptFieldType::Int16: 
 						out << classFieldStorage->GetValue<int16_t>(true);
@@ -302,14 +302,12 @@ namespace Paper
 							case ScriptFieldType::Bool: 
 								SetFieldStorage<bool>(yamlScriptField, fieldStorage);
 								break;
-							//case ScriptFieldType::Char: 
-							//	char value = yamlScriptField["Value"].as<char>();
-							//	fieldStorage->SetValue(value, true); //TODO: needs fixing
-							//	break;
-							//case ScriptFieldType::UChar: 
-							//	char value = yamlScriptField["Value"].as<char>();
-							//	fieldStorage->SetValue(value, true); //TODO: needs fixing
-							//	break;
+							case ScriptFieldType::Char: 
+								SetFieldStorage<char>(yamlScriptField, fieldStorage);
+								break;
+							case ScriptFieldType::UChar: 
+								SetFieldStorage<unsigned char>(yamlScriptField, fieldStorage);
+								break;
 							case ScriptFieldType::Int16:
 								SetFieldStorage<int16_t>(yamlScriptField, fieldStorage);
 								break;

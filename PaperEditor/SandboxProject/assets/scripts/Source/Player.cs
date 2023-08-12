@@ -12,7 +12,7 @@ namespace Sandbox
 
         public float speed = 3.004f;
 
-        public string bunker = "bunker123";
+        //public string bunker = "bunker123";
 
         public char charVar = 'b';
 
@@ -56,11 +56,6 @@ namespace Sandbox
                 pos.Y -= speed * dt;
 
             transformComponent.Position = pos;
-
-            if (Input.IsKeyPressed(Key.G))
-            {
-                bunker = bunker.Replace("123", "456");
-            }
 
             if (Input.IsKeyReleased(Key.P))
             {
