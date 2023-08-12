@@ -30,9 +30,8 @@ namespace Sandbox
 
         public override void OnUpdate(float dt)
         {
-            Console.WriteLine(charVar);
-
-            Vec3 pos = transformComponent.Position;
+            TransformComponent tc = GetEntityByName("Camer").GetComponent<TransformComponent>();
+            Vec3 pos = tc.Position;
 
             if (Input.IsKeyDown(Key.W))
             {
@@ -55,7 +54,7 @@ namespace Sandbox
             if (Input.IsKeyDown(Key.Q))
                 pos.Y -= speed * dt;
 
-            transformComponent.Position = pos;
+            tc.Position = pos;
 
             if (Input.IsKeyReleased(Key.P))
             {

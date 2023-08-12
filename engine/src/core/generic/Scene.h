@@ -43,6 +43,8 @@ namespace Paper {
         bool DestroyEntity(Entity entity);
 
         Entity GetEntity(const UUID& id);
+        Entity GetEntityByName(const std::string& name);
+
         UUID GetUUID() const { return uuid; }
         std::string GetName() const { return name; }
 

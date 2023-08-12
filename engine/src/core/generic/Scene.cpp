@@ -3,6 +3,8 @@
 #include "generic/Application.h"
 #include "generic/Scene.h"
 
+#include <ranges>
+
 #include "camera/EntityCamera.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
@@ -332,4 +334,14 @@ namespace Paper {
 		return {entity_map.at(id), this};
 	}
 
+	Entity Scene::GetEntityByName(const std::string& name)
+	{
+		for (auto& entt : entity_map | std::views::values)
+		{
+			Entity entity{ entt, this };
+			if (entity.GetName() == name)
+				return entity;
+		}
+		return Entity();
+	}
 }

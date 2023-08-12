@@ -88,6 +88,18 @@ namespace Paper
 
     }
 
+    static uint64_t Entity_GetEntityByName(MonoString* name)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        std::string entityName = Utils::MonoStringToStdString(name);
+
+        Entity entity = scene->GetEntityByName(entityName);
+        if (entity)
+			return entity.GetUUID().toUInt64();
+        return 0;
+    }
+
     //Components
     static void TransformComponent_GetPosition(UUID entityUUID, glm::vec3* outPosition)
     {
@@ -396,6 +408,7 @@ namespace Paper
 
         //Entity
         SCR_ADD_INTRERNAL_CALL(Entity_HasComponent);
+        SCR_ADD_INTRERNAL_CALL(Entity_GetEntityByName);
 
     	//Components
         SCR_ADD_INTRERNAL_CALL(TransformComponent_GetPosition);

@@ -31,6 +31,9 @@ namespace Paper
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern bool Entity_HasComponent(ulong _UUID, Type _ComponentType);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern ulong Entity_GetEntityByName(string _Name);
+
         #region Components
 
         #region TransformCompoonent
