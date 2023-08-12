@@ -25,7 +25,6 @@ namespace Paper
 		MonoClass* GetMonoClass() const;
 		const std::vector<ScriptField>& GetFields() const { return fields; }
 		ScriptField* GetField(const std::string& fieldName) const;
-		//bool HasField(const ScriptField& field) const {return fields.}
 
 		bool IsSubclassOf(const Shr<ScriptClass>& scriptClass) const;
 
