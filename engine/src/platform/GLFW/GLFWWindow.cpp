@@ -133,7 +133,6 @@ namespace Paper
         }
         case GLFW_REPEAT:
         {
-            Input::UpdateKeyState((Key)key, KeyState::Hold);
             KeyPressedEvent event((Key)key, true, mods);
             data.callback(event);
             break;
@@ -157,12 +156,14 @@ namespace Paper
         {
         case GLFW_PRESS:
         {
+            Input::UpdateMouseButtonState((MouseButton)button, KeyState::Pressed);
             MouseButtonPressedEvent event((MouseButton)button, mods);
             data.callback(event);
             break;
         }
         case GLFW_RELEASE:
         {
+            Input::UpdateMouseButtonState((MouseButton)button, KeyState::Released);
             MouseButtonReleasedEvent event((MouseButton)button, mods);
             data.callback(event);
             break;

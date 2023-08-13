@@ -9,6 +9,7 @@
 namespace Paper
 {
 	std::unordered_map<Key, KeyState> Input::keyStates;
+	std::unordered_map<MouseButton, KeyState> Input::mouseButtonStates;
 
 	bool Input::IsKeyPressed(Key code)
 	{
@@ -33,8 +34,23 @@ namespace Paper
 
 	bool Input::IsMouseButtonPressed(MouseButton button)
 	{
+		return mouseButtonStates.contains(button) && mouseButtonStates[button] == KeyState::Pressed;
+	}
+
+	bool Input::IsMouseButtonHeld(MouseButton button)
+	{
+		return !IsMouseButtonPressed(button) && IsMouseButtonDown(button);
+	}
+
+	bool Input::IsMouseButtonDown(MouseButton button)
+	{
 		auto state = glfwGetMouseButton((GLFWwindow*)Application::GetWindow()->GetNativeWindow(), (int)button);
 		return state == GLFW_PRESS;
+	}
+
+	bool Input::IsMouseButtonReleased(MouseButton button)
+	{
+		return mouseButtonStates.contains(button) && mouseButtonStates[button] == KeyState::Released;
 	}
 
 	glm::vec2 Input::GetMousPos()
@@ -49,8 +65,15 @@ namespace Paper
 		keyStates[key] = keyState;
 	}
 
+
+	void Input::UpdateMouseButtonState(MouseButton button, KeyState keyState)
+	{
+		mouseButtonStates[button] = keyState;
+	}
+
 	void Input::Update()
 	{
 		keyStates.clear();
+		mouseButtonStates.clear();
 	}
 }

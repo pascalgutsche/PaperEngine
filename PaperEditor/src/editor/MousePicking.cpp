@@ -29,29 +29,26 @@ void PaperLayer::MousePicking()
 
 	pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, activeScene.get()) : Entity();
 
-	static int frames_past = 0;
+	///TODO: MOVE SOMWHERE ELSE
 
-	bool pressed = false;
+	static Entity pressedEntity;
 
 	if (Input::IsMouseButtonPressed(MouseButton::BUTTON_LEFT))
 	{
-		if (frames_past == 0)
-		{
-			pressed = true;
-		}
-		frames_past++;
+		pressedEntity = hovered_entity;
 	}
-	else frames_past = 0;
 
-	if (pressed)
+	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && hovered_entity == active_entity && pressedEntity == hovered_entity && !drag_entity)
 	{
-		if (hovered_entity == active_entity) 
-		{
-			active_entity = Entity();
-		}
-		else if (!ImGuizmo::IsUsing())
-		{
-			active_entity = hovered_entity;
-		}
+		active_entity = Entity();
+	}
+	else if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && !ImGuizmo::IsUsing() && pressedEntity == hovered_entity && !drag_entity)
+	{
+		active_entity = hovered_entity;
+	}
+
+	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT))
+	{
+		pressedEntity = Entity();
 	}
 }

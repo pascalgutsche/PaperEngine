@@ -288,7 +288,10 @@ namespace Paper
     {
         switch (type)
         {
-        case ScriptFieldType::String: return (MonoObject*)StdStringToMonoString(std::string((char*)data));
+        case ScriptFieldType::String: 
+            return (MonoObject*)StdStringToMonoString(std::string((char*)data));
+        case ScriptFieldType::Entity:
+            return ScriptClass("Paper", "Entity", ScriptEngine::GetCoreAssemblyImage()).InstantiateParams(*(UUID*)data);
         default:
             return nullptr;
         }
@@ -336,5 +339,12 @@ namespace Paper
         scriptField.typeSize = mono_type_size(monoType, &align);
         scriptField.monoField = monoField;
     	scriptInstance.GetFieldValue(scriptField, scriptField.initialFieldVal);
+
+        // allocate memory to the buffer for later SetData when an entity field contains no entity.
+        if (scriptField.type == ScriptFieldType::Entity)
+        {
+            scriptField.initialFieldVal.Allocate(sizeof(UUID));
+            scriptField.initialFieldVal.Nullify();
+        }
     }
 }

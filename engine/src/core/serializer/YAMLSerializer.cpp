@@ -171,8 +171,8 @@ namespace Paper
 					case ScriptFieldType::Vec4: 
 						out << classFieldStorage->GetValue<glm::vec4>(true);
 						break;
-					//case ScriptFieldType::Entity: 
-					//	out << classFieldStorage->GetValue<UUID>(true);
+					case ScriptFieldType::Entity: 
+						out << classFieldStorage->GetValue<UUID>(true).toString();
 						break;
 					default: 
 						out << 0;
@@ -344,9 +344,12 @@ namespace Paper
 							case ScriptFieldType::Vec4:
 								SetFieldStorage<glm::vec4>(yamlScriptField, fieldStorage);
 								break;
-									//case ScriptFieldType::Entity: 
-									//	out << classFieldStorage->GetValue<UUID>(true);
-									break;
+							case ScriptFieldType::Entity:
+							{
+								UUID entityUUID = yamlScriptField["Value"].as<std::string>();
+								fieldStorage->SetValue(entityUUID.toUInt64(), true);
+								break;
+							}
 							}
 
 							scriptClassFieldStorages.emplace(scriptClassFieldStorages.begin() + index, fieldStorage);

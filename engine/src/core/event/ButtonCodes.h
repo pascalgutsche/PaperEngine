@@ -152,6 +152,5 @@ enum class Key
 enum class KeyState
 {
 	Pressed,
-	Hold,
 	Released
 };

@@ -37,6 +37,7 @@ public:
 	void OnDetach() override;
 	void Update(const float dt) override;
 	void OnEvent(Event& event) override;
+	void EntityDragging();
 	void Imgui(const float dt) override;
 
 	void DockPanel(std::string name, ImGuiID dock_id);
@@ -51,6 +52,7 @@ public:
 	ImGuiID dock_id_left_bottom = 0;
 	ImGuiID dock_id_up = 0;
 
+	Entity drag_entity;
 	Entity hovered_entity;
 	Entity active_entity;
 

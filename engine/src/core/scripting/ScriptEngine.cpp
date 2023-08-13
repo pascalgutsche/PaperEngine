@@ -329,6 +329,7 @@ namespace Paper
     {
         if (!monoImage) monoImage = script_data->appAssemblyImage;
         monoClass = mono_class_from_name(monoImage, classNameSpace.c_str(), className.c_str());
+        CORE_ASSERT(monoClass, "")
     }
 
     MonoObject* ScriptClass::Instantiate() const

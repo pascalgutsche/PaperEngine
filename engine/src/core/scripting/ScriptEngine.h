@@ -18,6 +18,30 @@ namespace Paper
 		ScriptClass(const std::string& classNameSpace, const std::string& className, MonoImage* monoImage = nullptr);
 
 		MonoObject* Instantiate() const;
+
+		template <typename... ConstructorArgs>
+		MonoObject* InstantiateParams(ConstructorArgs&&... args) const
+		{
+			MonoObject* monoInstance = Instantiate();
+
+			constexpr size_t argsCount = sizeof...(args);
+			MonoMethod* ctor = GetMethod(".ctor", argsCount);
+
+			if constexpr (argsCount > 0)
+			{
+				if (!ctor)
+				{
+					LOG_CORE_ERROR("Could not find a constructor with {} parameters from class {}.", argsCount, GetFullClassName());
+					return monoInstance;
+				}
+
+				void* data[] = { &args... };
+				InvokeMethod(monoInstance, ctor, data);
+			}
+
+			return monoInstance;
+		};
+
 		MonoMethod* GetMethod(const std::string& methodName, uint32_t paramCount) const;
 		void InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params = nullptr) const;
 

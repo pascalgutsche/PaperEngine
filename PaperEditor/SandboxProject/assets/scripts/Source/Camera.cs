@@ -15,7 +15,7 @@ namespace Sandbox
         public Entity focusedEntity;
         public override void OnCreate()
         {
-            focusedEntity = GetEntityByName("PlayerSprite");
+            //focusedEntity = GetEntityByName("PlayerSprite");
             TC = GetComponent<TransformComponent>();
         }
 

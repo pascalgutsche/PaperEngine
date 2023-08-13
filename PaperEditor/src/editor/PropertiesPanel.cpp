@@ -9,6 +9,13 @@
 #include "renderer/Font.h"
 #include "scripting/ScriptEngine.h"
 
+static ImVec2 GetButtonSize()
+{
+	float padding = 3.0f;
+	float line_height = GImGui->Font->FontSize + padding * 2;
+	return { line_height + 3.0f, line_height };
+}
+
 static void FillNameCol(const std::string& name)
 {
 	ImGui::TableNextRow();
@@ -20,9 +27,7 @@ static void FillNameCol(const std::string& name)
 
 static bool SingleFloatControl(const std::string& label, float& value, float min, float max, float speed, float resetValue, float content_avail_x, int count)
 {
-	float padding = 3.0f;
-	float line_height = GImGui->Font->FontSize + padding * 2;
-	ImVec2 button_size = { line_height + 3.0f, line_height };
+	ImVec2 button_size = GetButtonSize();
 	float input_item_width = (content_avail_x - 5.0f) / (float)count - button_size.x;
 
 	UI::ScopedID id(ImGui::TableGetRowIndex());
@@ -533,6 +538,25 @@ void PaperLayer::PropertiesPanel()
 									ImGui::Button(activeScene->GetEntity(entityUUID).GetName().c_str());
 								else
 									ImGui::Button("null");
+
+								if (ImGui::BeginDragDropTarget())
+								{
+									if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+									{
+										UUID entityUUID = *(uint64_t*)payload->Data;
+										fieldStorage->SetValue(entityUUID.toUInt64());
+
+										drag_entity = Entity();
+									}
+									ImGui::EndDragDropTarget();
+								}
+
+								ImGui::SameLine();
+								if (ImGui::Button("X", GetButtonSize()))
+								{
+									fieldStorage->SetValue((uint64_t)0);
+								};
+
 								break;
 							}
 						}

@@ -183,6 +183,44 @@ void PaperLayer::OnEvent(Event& event)
 	//}
 }
 
+void PaperLayer::EntityDragging()
+{
+	glm::vec2 mousePos = Input::GetMousPos();
+	static glm::vec2 previousMousePos = mousePos;
+
+	static Entity pressedEntity;
+
+	if (Input::IsMouseButtonPressed(MouseButton::BUTTON_LEFT))
+	{
+		pressedEntity = hovered_entity;
+	}
+
+	//drag drop entity
+	if (Input::IsMouseButtonDown(MouseButton::BUTTON_LEFT) && mousePos != previousMousePos && hovered_entity == pressedEntity && !drag_entity)
+	{
+		drag_entity = hovered_entity;
+	}
+
+	if (drag_entity && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceExtern))
+	{
+		uint64_t entityUUID = drag_entity.GetUUID().toUInt64();
+
+		ImGui::SetDragDropPayload("ENTITY_DRAG", &entityUUID, sizeof(uint64_t));
+		ImGui::Text(drag_entity.GetName().c_str());
+
+		ImGui::EndDragDropSource();
+	}
+
+	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT))
+	{
+		ImGui::ClearDragDrop();
+		drag_entity = Entity();
+		pressedEntity = Entity();
+	}
+
+	previousMousePos = mousePos;
+}
+
 void PaperLayer::Imgui(const float dt)
 {
 	ImGuiDockNodeFlags dockflags = ImGuiDockNodeFlags_PassthruCentralNode;
@@ -246,7 +284,6 @@ void PaperLayer::Imgui(const float dt)
 	if (show_imgui_demo)
 		ImGui::ShowDemoWindow(&show_imgui_demo);
 
-
 	if (show_asset_manager_panel)
 		AssetManagerPanel();
 
@@ -272,6 +309,8 @@ void PaperLayer::Imgui(const float dt)
 	ViewPortPanel();
 
 	MousePicking();
+
+	EntityDragging();
 
 }
 
