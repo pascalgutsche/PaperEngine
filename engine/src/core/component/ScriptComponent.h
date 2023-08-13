@@ -10,7 +10,7 @@ namespace Paper
 		ScriptComponent() = default;
 		ScriptComponent(const ScriptComponent&) = default;
 
-		Shr<ScriptClass> scriptClass = nullptr;
+		std::string scriptClassName;
 
 		bool Serialize(YAML::Emitter& out) override;
 		bool Deserialize(YAML::Node& data) override;

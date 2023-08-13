@@ -129,5 +129,7 @@ namespace Paper
 		void SetRuntimeFieldValue(const Buffer& value) const;
 
 		Shr<EntityInstance> runtimeInstance = nullptr;
+
+		friend class ScriptEngine;
 	};
 }

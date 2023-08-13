@@ -454,12 +454,13 @@ void PaperLayer::PropertiesPanel()
 
 	DrawComponent<ScriptComponent>(this, "Script Component", true, [this](ScriptComponent& scrc, Entity entity)
 		{
+			Shr<ScriptClass> scriptClass = ScriptEngine::GetEntityClass(scrc.scriptClassName);
 			{
 				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
 				FillNameCol("C#-Class");
 
 
-				if (ImGui::Button(((scrc.scriptClass ? scrc.scriptClass->GetFullClassName() : "") + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+				if (ImGui::Button(((scriptClass ? scriptClass->GetFullClassName() : "") + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
 					ImGui::OpenPopup("select_entity_scriptclass");
 				}
@@ -467,11 +468,11 @@ void PaperLayer::PropertiesPanel()
 				if (ImGui::BeginPopup("select_entity_scriptclass"))
 				{
 					const auto& classList = ScriptEngine::GetEntityClasses();
-					for (const auto [name, scriptClass] : classList)
+					for (const auto [name, lscriptClass] : classList)
 					{
-						if (ImGui::Selectable(name.c_str(), scrc.scriptClass == scriptClass) && scrc.scriptClass != scriptClass)
+						if (ImGui::Selectable(name.c_str(), scriptClass == lscriptClass) && scriptClass != lscriptClass)
 						{
-							scrc.scriptClass = scriptClass;
+							scrc.scriptClassName = lscriptClass->GetFullClassName();
 							ScriptEngine::CreateScriptEntity(entity);
 						}
 					}
@@ -482,7 +483,7 @@ void PaperLayer::PropertiesPanel()
 				
 				//Fields
 				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
-				if (scrc.scriptClass)
+				if (scriptClass)
 				{
 					const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);
 					for (const auto& fieldStorage : storageFields)

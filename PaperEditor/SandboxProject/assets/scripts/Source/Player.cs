@@ -35,19 +35,19 @@ namespace Sandbox
 
             if (Input.IsKeyDown(Key.W))
             {
-                pos.Z -= speed * dt;
+                pos.Z += speed * dt;
             }
             if (Input.IsKeyDown(Key.A))
             {
-                pos.X -= speed * dt;
+                pos.X += speed * dt;
             }
             if (Input.IsKeyDown(Key.S))
             {
-                pos.Z += speed * dt;
+                pos.Z -= speed * dt;
             }
             if (Input.IsKeyDown(Key.D))
             {
-                pos.X += speed * dt;
+                pos.X -= speed * dt;
             }
             if (Input.IsKeyDown(Key.E))
                 pos.Y += speed * dt;

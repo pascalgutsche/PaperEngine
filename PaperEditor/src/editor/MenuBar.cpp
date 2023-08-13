@@ -4,6 +4,7 @@
 
 #include "PaperLayer.h"
 #include "project/ProjectManager.h"
+#include "scripting/ScriptEngine.h"
 
 void MenuItemPanel(const char* name, const char* shortcut, bool* p_open)
 {
@@ -22,7 +23,7 @@ void MenuTabView()
 		MenuItemPanel("Application", nullptr, &show_application_panel);
 
 		MenuItemPanel("ViewPort", nullptr, &show_viewport_panel);
-#
+
 		MenuItemPanel("Camera Settings", nullptr, &show_camera_settings_panel);
 
 		MenuItemPanel("Outliner", nullptr, &show_outliner_panel);
@@ -83,6 +84,18 @@ void PaperLayer::MainMenuBar()
 		}
 
 		MenuTabView();
+
+		if (ImGui::BeginMenu("Scripting"))
+		{
+			if (ImGui::MenuItem("Reload C# Assembly"))
+			{
+				if (sceneState != SceneState::Edit)
+					OnSceneStop();
+				ScriptEngine::ReloadAppAssembly();
+			}
+
+			ImGui::EndMenu();
+		}
 
 		if (ImGui::BeginMenu("Add"))
 		{

@@ -30,6 +30,7 @@ namespace Paper {
 
 	Application::~Application()
 	{
+		ScriptEngine::Shutdown();
 		RenderCommand::Shutdown();
 		DataPool::ErasePool();
 		Log::Shutdown();

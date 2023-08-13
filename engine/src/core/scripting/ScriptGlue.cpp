@@ -520,8 +520,8 @@ namespace Paper
 
 	void ScriptGlue::RegisterComponents()
 	{
+        entityHasComponentFns.clear();
         RegisterComponent(AllComponents{});
-
 	}
 }
 

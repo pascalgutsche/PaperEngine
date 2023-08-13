@@ -13,7 +13,7 @@ namespace Paper
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap; // SpriteComponent
 
-			out << YAML::Key << "Name" << YAML::Value << scriptClass->GetFullClassName();
+			out << YAML::Key << "Name" << YAML::Value << ScriptEngine::GetEntityClass(scriptClassName)->GetFullClassName();
 
 
 			return true;
@@ -29,7 +29,7 @@ namespace Paper
 	{
 		try
 		{
-			scriptClass = ScriptEngine::GetEntityClass(data["Name"].as<std::string>());
+			scriptClassName = data["Name"].as<std::string>();
 		}
 		catch (YAML::EmitterException& e)
 		{

@@ -16,16 +16,19 @@ namespace Paper
 {
     struct ScriptEngineData
     {
-        MonoDomain* root_domain = nullptr;
-        MonoDomain* app_domain = nullptr;
+        MonoDomain* rootDomain = nullptr;
+        MonoDomain* appDomain = nullptr;
 
-        MonoAssembly* core_assembly = nullptr;
-        MonoImage* core_assembly_image = nullptr;
+        MonoAssembly* coreAssembly = nullptr;
+        MonoImage* coreAssemblyImage = nullptr;
 
     	MonoAssembly* appAssembly = nullptr;
         MonoImage*  appAssemblyImage = nullptr;
 
         Shr<ScriptClass> entityClass = nullptr;
+
+        std::filesystem::path coreAssemblyPath;
+        std::filesystem::path appAssemblyPath;
 
         std::unordered_map<std::string, Shr<ScriptClass>> entityClasses;
         std::unordered_map<UUID, Shr<EntityInstance>> entityInstances;
@@ -53,7 +56,7 @@ namespace Paper
         ScriptGlue::RegisterComponents();
         ScriptGlue::RegisterFunctions();
 
-        script_data->entityClass = MakeShr<ScriptClass>("Paper", "Entity", script_data->core_assembly_image);
+        script_data->entityClass = MakeShr<ScriptClass>("Paper", "Entity", script_data->coreAssemblyImage);
 
         LoadAssemblyClasses(script_data->appAssembly);
 
@@ -93,20 +96,59 @@ namespace Paper
 
     void ScriptEngine::LoadAssembly(const std::filesystem::path& filepath)
     {
-        script_data->app_domain = mono_domain_create_appdomain((char*)"PaperScriptRuntime", nullptr);
-        mono_domain_set(script_data->app_domain, true);
+        script_data->appDomain = mono_domain_create_appdomain((char*)"PaperScriptRuntime", nullptr);
+        mono_domain_set(script_data->appDomain, true);
 
-        script_data->core_assembly = ScriptUtils::LoadMonoAssembly(filepath);
-        script_data->core_assembly_image = mono_assembly_get_image(script_data->core_assembly);
+        script_data->coreAssemblyPath = filepath;
+
+        script_data->coreAssembly = ScriptUtils::LoadMonoAssembly(filepath);
+        script_data->coreAssemblyImage = mono_assembly_get_image(script_data->coreAssembly);
     }
 
     void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
     {
+        script_data->appAssemblyPath = filepath;
+
         script_data->appAssembly = ScriptUtils::LoadMonoAssembly(filepath);
         if (script_data->appAssembly)
             script_data->appAssemblyImage = mono_assembly_get_image(script_data->appAssembly);
         else
             LOG_CORE_ERROR("Could not find app assembly '{}'", filepath.string());
+    }
+
+    void ScriptEngine::ReloadAppAssembly()
+    {
+        //cache scriptfieldstorage and restore it later
+        std::unordered_map<UUID, std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>> oldEntityFieldStorage = script_data->entityFieldStorage;
+        script_data->entityFieldStorage.clear();
+
+        mono_domain_set(script_data->rootDomain, false);
+
+        mono_domain_unload(script_data->appDomain);
+
+        LoadAssembly(script_data->coreAssemblyPath);
+        LoadAppAssembly(script_data->appAssemblyPath);
+
+        script_data->entityClass = MakeShr<ScriptClass>("Paper", "Entity", script_data->coreAssemblyImage);
+        LoadAssemblyClasses(script_data->appAssembly);
+
+        ScriptGlue::RegisterComponents();
+
+        for (auto& [entityUUID, classStorage] : oldEntityFieldStorage)
+        {
+            for (auto& [oldScriptClass, fields] : classStorage)
+            {
+                Shr<ScriptClass> newScriptClass = GetEntityClass(oldScriptClass->GetFullClassName());
+                if (!newScriptClass) continue;
+                for (auto& fieldStorage : fields)
+                {
+                    ScriptField* newScriptField = newScriptClass->GetField(fieldStorage->scriptField->name);
+                    if (!newScriptField) continue;
+                    fieldStorage->scriptField = newScriptField;
+                    script_data->entityFieldStorage[entityUUID][newScriptClass].push_back(fieldStorage);
+                }
+            }
+        }
     }
 
     void ScriptEngine::OnRuntimeStart(Scene* scene)
@@ -128,7 +170,7 @@ namespace Paper
         
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
         
-        if (!sc.scriptClass)
+        if (!GetEntityClass(sc.scriptClassName))
         {
             LOG_CORE_ERROR("tried to destroy script entity with entity '{}' because script was null", entity.GetUUID());
             return;
@@ -137,7 +179,7 @@ namespace Paper
         auto& entityFieldStorages = GetActiveEntityFieldStorageInternal(entity);
 
 		
-        const auto& scriptFields = sc.scriptClass->GetFields();
+        const auto& scriptFields = GetEntityClass(sc.scriptClassName)->GetFields();
         for (auto& field : scriptFields)
         {
             bool found = false;
@@ -159,7 +201,7 @@ namespace Paper
         
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
         
-        if (!sc.scriptClass)
+        if (!GetEntityClass(sc.scriptClassName))
         {
             LOG_CORE_ERROR("tried to destroy script entity with entity '{}' because script was null", entity.GetUUID());
             return;
@@ -171,9 +213,9 @@ namespace Paper
     {
         CORE_ASSERT(!script_data->entityInstances.contains(entity.GetUUID()), "")
         const auto& scrc = entity.GetComponent<ScriptComponent>();
-        if (scrc.scriptClass)
+        if (GetEntityClass(scrc.scriptClassName))
         {
-            Shr<EntityInstance> instance = MakeShr<EntityInstance>(scrc.scriptClass, entity);
+            Shr<EntityInstance> instance = MakeShr<EntityInstance>(GetEntityClass(scrc.scriptClassName), entity);
             script_data->entityInstances[entity.GetUUID()] = instance;
 
             //apply class variables defined in editor
@@ -232,12 +274,12 @@ namespace Paper
     const EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorage(Entity entity)
     {
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
-        if (!script_data->entityFieldStorage.contains(entity.GetUUID()) || !script_data->entityFieldStorage.at(entity.GetUUID()).contains(sc.scriptClass))
+        if (!script_data->entityFieldStorage.contains(entity.GetUUID()) || !script_data->entityFieldStorage.at(entity.GetUUID()).contains(GetEntityClass(sc.scriptClassName)))
         {
             LOG_CORE_ERROR("Does not have field storage for entity '{}'", entity.GetUUID().toString());
             return EntityFieldStorage();
         }
-        return script_data->entityFieldStorage.at(entity.GetUUID()).at(sc.scriptClass);
+        return script_data->entityFieldStorage.at(entity.GetUUID()).at(GetEntityClass(sc.scriptClassName));
     }
 
     std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& ScriptEngine::GetEntityFieldStorage(Entity entity)
@@ -247,7 +289,7 @@ namespace Paper
 
     MonoDomain* ScriptEngine::GetDomain()
     {
-        return script_data->app_domain;
+        return script_data->appDomain;
     }
 
     std::unordered_map<std::string, Shr<ScriptClass>>& ScriptEngine::GetEntityClasses()
@@ -295,20 +337,24 @@ namespace Paper
         ASSERT(rootDomain, "");
 
         // Store the root domain pointer
-        script_data->root_domain = rootDomain;
+        script_data->rootDomain = rootDomain;
     }
 
     void ScriptEngine::ShutdownMono()
     {
-        script_data->app_domain = nullptr;
+        mono_domain_set(script_data->rootDomain, false);
 
-        script_data->root_domain = nullptr;
+        mono_domain_unload(script_data->appDomain);
+        script_data->appDomain = nullptr;
+
+        mono_jit_cleanup(script_data->rootDomain);
+        script_data->rootDomain = nullptr;
     }
 
     EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorageInternal(Entity entity)
     {
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
-        return script_data->entityFieldStorage[entity.GetUUID()][sc.scriptClass];
+        return script_data->entityFieldStorage[entity.GetUUID()][GetEntityClass(sc.scriptClassName)];
     }
 
     MonoImage* ScriptEngine::GetAppAssemblyImage()
@@ -318,7 +364,7 @@ namespace Paper
 
     MonoImage* ScriptEngine::GetCoreAssemblyImage()
     {
-        return script_data->core_assembly_image;
+        return script_data->coreAssemblyImage;
     }
 
     //
@@ -334,7 +380,7 @@ namespace Paper
 
     MonoObject* ScriptClass::Instantiate() const
     {
-        MonoObject* monoObject = mono_object_new(script_data->app_domain, monoClass);
+        MonoObject* monoObject = mono_object_new(script_data->appDomain, monoClass);
         mono_runtime_object_init(monoObject);
         return monoObject;
     }
