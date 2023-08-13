@@ -41,6 +41,26 @@ namespace Paper
         return Input::IsKeyReleased((Key)code);
     }
 
+    static bool IsMouseButtonPressed(int button)
+    {
+        return Input::IsMouseButtonPressed((MouseButton)button);
+    }
+
+    static bool IsMouseButtonHeld(int button)
+    {
+        return Input::IsMouseButtonHeld((MouseButton)button);
+    }
+
+    static bool IsMouseButtonDown(int button)
+    {
+        return Input::IsMouseButtonDown((MouseButton)button);
+    }
+
+    static bool IsMouseButtonReleased(int button)
+    {
+        return Input::IsMouseButtonReleased((MouseButton)button);
+    }
+
     //Render
     struct TextureData
     {
@@ -415,6 +435,10 @@ namespace Paper
         SCR_ADD_INTRERNAL_CALL(IsKeyHeld);
         SCR_ADD_INTRERNAL_CALL(IsKeyDown);
         SCR_ADD_INTRERNAL_CALL(IsKeyReleased);
+        SCR_ADD_INTRERNAL_CALL(IsMouseButtonPressed);
+        SCR_ADD_INTRERNAL_CALL(IsMouseButtonHeld);
+        SCR_ADD_INTRERNAL_CALL(IsMouseButtonDown);
+        SCR_ADD_INTRERNAL_CALL(IsMouseButtonReleased);
 
         //Render
         SCR_ADD_INTRERNAL_CALL(GetTexture);

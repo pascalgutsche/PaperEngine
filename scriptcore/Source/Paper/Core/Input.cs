@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Forms;
 using Paper;
 
 namespace Paper
@@ -24,6 +25,26 @@ namespace Paper
         public static bool IsKeyReleased(Key _Code)
         {
             return InternalCalls.IsKeyReleased((int)_Code);
+        }
+
+        public static bool IsMouseButtonPressed(MouseButton _Button)
+        {
+            return InternalCalls.IsMouseButtonPressed((int)_Button);
+        }
+
+        public static bool IsMouseButtonHeld(MouseButton _Button)
+        {
+            return InternalCalls.IsMouseButtonHeld((int)_Button);
+        }
+
+        public static bool IsMouseButtonDown(MouseButton _Button)
+        {
+            return InternalCalls.IsMouseButtonDown((int)_Button);
+        }
+
+        public static bool IsMouseButtonReleased(MouseButton _Button)
+        {
+            return InternalCalls.IsMouseButtonReleased((int)_Button);
         }
     }
 }

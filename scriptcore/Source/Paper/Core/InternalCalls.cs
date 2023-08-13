@@ -19,6 +19,18 @@ namespace Paper
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern bool IsKeyReleased(int _Code);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern bool IsMouseButtonPressed(int _Button);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern bool IsMouseButtonHeld(int _Button);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern bool IsMouseButtonDown(int _Button);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern bool IsMouseButtonReleased(int _Button);
+
         #endregion
 
         #region Render
