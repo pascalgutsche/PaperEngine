@@ -1,5 +1,5 @@
 Scene:
-  - 5d8ba92a510ac5ec
+  - 441988fc6f2aeee6
 Name: "[Scene]"
 Path: assets\scenes\bunker.pescene
 Entities:
@@ -10,6 +10,19 @@ Entities:
         Name: Camera
         Tags:
           []
+      ScriptComponent:
+        Name: Sandbox.Camera
+        ScriptFields:
+          Sandbox.Camera:
+            distanceFromFocusedEntity:
+              FieldType: 12
+              Value: 5
+            TC:
+              FieldType: 1
+              Value: 0
+            focusedEntityTC:
+              FieldType: 1
+              Value: 0
       TransformComponent:
         Position: [0, 0, 6.30000019]
         Scale: [1, 1, 1]
@@ -45,7 +58,7 @@ Entities:
       DataComponent:
         UUID:
           - 38572d50362d94f7
-        Name: lol
+        Name: PlayerSprite
         Tags:
           []
       SpriteComponent:
@@ -75,10 +88,6 @@ Entities:
             charVar:
               FieldType: 4
               Value: b
-          Sandbox.Enemy:
-            bunker:
-              FieldType: 12
-              Value: -1.20000005
       TransformComponent:
         Position: [0, 1, 0]
         Scale: [1, 1, 1]

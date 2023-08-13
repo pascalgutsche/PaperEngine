@@ -30,8 +30,8 @@ namespace Sandbox
 
         public override void OnUpdate(float dt)
         {
-            TransformComponent tc = GetEntityByName("Camer").GetComponent<TransformComponent>();
-            Vec3 pos = tc.Position;
+            //TransformComponent tc = GetEntityByName("Camera").GetComponent<TransformComponent>();
+            Vec3 pos = transformComponent.Position;
 
             if (Input.IsKeyDown(Key.W))
             {
@@ -54,7 +54,20 @@ namespace Sandbox
             if (Input.IsKeyDown(Key.Q))
                 pos.Y -= speed * dt;
 
-            tc.Position = pos;
+            transformComponent.Position = pos;
+
+            Camera camera = GetEntityByName("Camera").As<Camera>();
+            if (camera != null)
+            {
+                if (Input.IsKeyDown(Key.F))
+                {
+                    camera.distanceFromFocusedEntity -= speed * dt;
+                }
+                if (Input.IsKeyDown(Key.G))
+                {
+                    camera.distanceFromFocusedEntity += speed * dt;
+                }
+            }
 
             if (Input.IsKeyReleased(Key.P))
             {

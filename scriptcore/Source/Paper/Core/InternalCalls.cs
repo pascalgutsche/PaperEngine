@@ -34,6 +34,9 @@ namespace Paper
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern ulong Entity_GetEntityByName(string _Name);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern object Entity_GetScriptInstance(ulong _UUID);
+
         #region Components
 
         #region TransformCompoonent

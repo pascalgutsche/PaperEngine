@@ -2,9 +2,11 @@
 #include "ScriptField.h"
 #include "ScriptEngine.h"
 
+#include "ScriptUtils.h"
 
 namespace Paper
 {
+
 	ScriptFieldStorage::ScriptFieldStorage(const ScriptField* scriptField)
 		: scriptField(scriptField)
 	{
@@ -63,7 +65,7 @@ namespace Paper
 
 	void ScriptFieldStorage::GetRuntimeFieldValue(Buffer& outBuffer) const
 	{
-		outBuffer = runtimeInstance->GetFieldValue(*scriptField);
+		runtimeInstance->GetFieldValue(*scriptField, outBuffer);
 	}
 
 	void ScriptFieldStorage::SetRuntimeFieldValue(const Buffer& value) const

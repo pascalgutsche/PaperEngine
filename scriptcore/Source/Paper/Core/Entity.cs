@@ -4,9 +4,9 @@ namespace Paper
 {
     public class Entity
     {
-        public readonly UUID UUID;
+        public readonly ulong UUID;
 
-        protected Entity()
+        public Entity()
         {
             UUID = 0;
         }
@@ -37,6 +37,12 @@ namespace Paper
             if (entityUUID == 0)
                 return null;
             return new Entity(entityUUID);
+        }
+
+        public T As<T>() where T : Entity, new()
+        {
+            object instance = InternalCalls.Entity_GetScriptInstance(UUID);
+            return instance as T;
         }
 
         public virtual void OnCreate() { }

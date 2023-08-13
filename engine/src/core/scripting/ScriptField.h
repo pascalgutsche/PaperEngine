@@ -97,6 +97,7 @@ namespace Paper
 				return value;
 			}
 
+			if (!data) return T();
 			return data.Read<T>();
 		}
 

@@ -96,13 +96,13 @@ namespace Paper
         script_data->app_domain = mono_domain_create_appdomain((char*)"PaperScriptRuntime", nullptr);
         mono_domain_set(script_data->app_domain, true);
 
-        script_data->core_assembly = Utils::LoadMonoAssembly(filepath);
+        script_data->core_assembly = ScriptUtils::LoadMonoAssembly(filepath);
         script_data->core_assembly_image = mono_assembly_get_image(script_data->core_assembly);
     }
 
     void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
     {
-        script_data->appAssembly = Utils::LoadMonoAssembly(filepath);
+        script_data->appAssembly = ScriptUtils::LoadMonoAssembly(filepath);
         if (script_data->appAssembly)
             script_data->appAssemblyImage = mono_assembly_get_image(script_data->appAssembly);
         else
@@ -382,15 +382,18 @@ namespace Paper
         void* iterator = nullptr;
         while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
         {
-            MonoType* monoType = mono_field_get_type(field);
+            std::string fieldName = mono_field_get_name(field);
             ScriptField& scriptField = fields.emplace_back();
-            scriptField.name = mono_field_get_name(field);
-			scriptField.type = Utils::MonoTypeToScriptFieldType(monoType);
-            scriptField.flags = Utils::GetFieldFlags(mono_field_get_flags(field));
-            int align;
-            scriptField.typeSize = mono_type_size(monoType, &align);
-            scriptField.monoField = field;
-            scriptField.initialFieldVal = tempInstance.GetFieldValue(scriptField);
+            ScriptUtils::CreateScriptField(scriptField, fieldName, tempInstance.GetMonoInstance());
+
+        	//MonoType* monoType = mono_field_get_type(field);
+            //scriptField.name = 
+			//scriptField.type = Utils::MonoTypeToScriptFieldType(monoType);
+            //scriptField.flags = Utils::GetFieldFlags(mono_field_get_flags(field));
+            //int align;
+            //scriptField.typeSize = mono_type_size(monoType, &align);
+            //scriptField.monoField = field;
+            //scriptField.initialFieldVal = tempInstance.GetFieldValue(scriptField);
         }
     }
 
@@ -404,33 +407,16 @@ namespace Paper
         monoInstance = scriptClass->Instantiate();
     }
 
-    Buffer& ScriptInstance::GetFieldValue(const ScriptField& scriptField) const
+    void ScriptInstance::GetFieldValue(const ScriptField& scriptField, Buffer& outBuffer) const
     {
-        Buffer valBuffer;
-        const auto& classFields = scriptClass->GetFields();
-        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return valBuffer;
+        if (scriptClass)
+        {
+			const auto& classFields = scriptClass->GetFields();
+			if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
+        }
 
-        MonoObject* object = mono_field_get_value_object(mono_domain_get(), scriptField.monoField, monoInstance);
-
-        valBuffer = Utils::MonoObjectToValue(scriptField.type, object);
-
-        MonoClassField* lol = mono_class_get_field_from_name(scriptClass->GetMonoClass(), "UUID");
-
-        //if (scriptField.type == ScriptFieldType::String)
-        //{
-        //    MonoString* string = (MonoString*)
-        //    std::string valueStr = Utils::MonoStringToStdString(string);
-        //    valBuffer.Allocate(valueStr.size() + 1);
-        //    valBuffer.Nullify();
-        //    valBuffer.Write(valueStr.data(), valueStr.size());
-        //}
-        //else
-        //{
-        //    valBuffer.Allocate(scriptField.typeSize);
-        //    valBuffer.Nullify();
-        //    mono_field_get_value(monoInstance, scriptField.monoField, valBuffer.data);
-        //}
-        return valBuffer;
+        MonoObject* object = ScriptUtils::GetScriptFieldValueObject(scriptField, monoInstance);
+        return ScriptUtils::MonoObjectToValue(scriptField, object, outBuffer);
     }
 
     void ScriptInstance::SetFieldValue(const ScriptField& scriptField, const Buffer& value) const
@@ -439,10 +425,10 @@ namespace Paper
         if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
 
         void* data = nullptr;
-        if (Utils::IsPrimitive(scriptField.type))
+        if (ScriptUtils::IsPrimitive(scriptField.type))
             data = value.data;
         else
-            data = Utils::DataToMonoObject(scriptField.type, value.data);
+            data = ScriptUtils::DataToMonoObject(scriptField.type, value.data);
 
         /// convert char to wchar because c# char is wchar
         if (scriptField.type == ScriptFieldType::Char)
@@ -453,6 +439,9 @@ namespace Paper
 
         mono_field_set_value(monoInstance, scriptField.monoField, data);
     }
+
+    ScriptInstance::ScriptInstance(MonoObject* instance)
+        : monoInstance(instance) { }
 
     //
     //  EntityInstance

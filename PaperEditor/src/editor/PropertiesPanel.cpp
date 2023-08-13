@@ -454,7 +454,7 @@ void PaperLayer::PropertiesPanel()
 				FillNameCol("C#-Class");
 
 
-				if (ImGui::Button((scrc.scriptClass->GetFullClassName() + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+				if (ImGui::Button(((scrc.scriptClass ? scrc.scriptClass->GetFullClassName() : "") + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
 					ImGui::OpenPopup("select_entity_scriptclass");
 				}
@@ -486,7 +486,7 @@ void PaperLayer::PropertiesPanel()
 						if (!field.HasFlag(ScriptFieldFlag::Public)) continue;
 						if (field.type == ScriptFieldType::Invalid) continue;
 					
-						std::string varName = std::format("{} {}", Utils::ScriptFieldTypeToString(field.type), field.name);
+						std::string varName = std::format("{} {}", ScriptUtils::ScriptFieldTypeToString(field.type), field.name);
 						ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
 					
 						switch (field.type)
@@ -521,6 +521,18 @@ void PaperLayer::PropertiesPanel()
 								{
 									fieldStorage->SetValue(data[0]);
 								};
+								break;
+							}
+
+							case ScriptFieldType::Entity:
+							{
+								UUID entityUUID = fieldStorage->GetValue<uint64_t>();
+								FillNameCol(varName);
+
+								if (entityUUID)
+									ImGui::Button(activeScene->GetEntity(entityUUID).GetName().c_str());
+								else
+									ImGui::Button("null");
 								break;
 							}
 						}

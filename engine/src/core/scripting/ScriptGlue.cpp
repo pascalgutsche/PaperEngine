@@ -92,12 +92,25 @@ namespace Paper
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         CORE_ASSERT(scene, "");
-        std::string entityName = Utils::MonoStringToStdString(name);
+        std::string entityName = ScriptUtils::MonoStringToStdString(name);
 
         Entity entity = scene->GetEntityByName(entityName);
         if (entity)
 			return entity.GetUUID().toUInt64();
         return 0;
+    }
+
+    static MonoObject* Entity_GetScriptInstance(UUID entityUUID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityUUID);
+        CORE_ASSERT(entity, "");
+
+        MonoObject* instance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID())->GetMonoInstance();
+
+        return instance;
+
     }
 
     //Components
@@ -222,7 +235,7 @@ namespace Paper
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
-        sc.texture = DataPool::GetAssetTexture(Utils::MonoStringToStdString(inTextureFilePath), true);
+        sc.texture = DataPool::GetAssetTexture(ScriptUtils::MonoStringToStdString(inTextureFilePath), true);
     }
 
     static float SpriteComponent_GetTilingFactor(UUID entityUUID)
@@ -378,7 +391,7 @@ namespace Paper
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
-        tc.text = Utils::MonoStringToStdString(text);
+        tc.text = ScriptUtils::MonoStringToStdString(text);
     }
 
     static MonoString* TextComponent_GetFontPath(UUID entityUUID)
@@ -392,7 +405,7 @@ namespace Paper
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
-        tc.font = DataPool::GetFont(Utils::MonoStringToStdString(fontPath), true);
+        tc.font = DataPool::GetFont(ScriptUtils::MonoStringToStdString(fontPath), true);
     }
 
 	void ScriptGlue::RegisterFunctions()
@@ -409,6 +422,7 @@ namespace Paper
         //Entity
         SCR_ADD_INTRERNAL_CALL(Entity_HasComponent);
         SCR_ADD_INTRERNAL_CALL(Entity_GetEntityByName);
+        SCR_ADD_INTRERNAL_CALL(Entity_GetScriptInstance);
 
     	//Components
         SCR_ADD_INTRERNAL_CALL(TransformComponent_GetPosition);

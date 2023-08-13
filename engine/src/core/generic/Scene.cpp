@@ -336,7 +336,7 @@ namespace Paper {
 
 	Entity Scene::GetEntityByName(const std::string& name)
 	{
-		for (auto& entt : entity_map | std::views::values)
+		for (const auto& entt : entity_map | std::views::values)
 		{
 			Entity entity{ entt, this };
 			if (entity.GetName() == name)

@@ -16,33 +16,39 @@ extern "C"
 
 namespace Paper
 {
+	struct ScriptField;
 	using ScriptFieldFlags = uint32_t;
 	enum class ScriptFieldFlag;
     enum class ScriptFieldType;
 
 
-	namespace Utils
-	{
-        MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath);
+    class ScriptUtils
+    {
+    public:
+        static MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath);
 
-        void PrintAssemblyTypes(MonoAssembly* assembly);
+        static void PrintAssemblyTypes(MonoAssembly* assembly);
 
-        ScriptFieldType MonoTypeToScriptFieldType(MonoType* monoType);
+        static ScriptFieldType MonoTypeToScriptFieldType(MonoType* monoType);
 
-        std::string ScriptFieldTypeToString(ScriptFieldType type);
+        static std::string ScriptFieldTypeToString(ScriptFieldType type);
 
-        uint32_t ScriptFieldTypeSize(ScriptFieldType type);
+        static uint32_t ScriptFieldTypeSize(ScriptFieldType type);
 
-        ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags);
+        static ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags);
 
-        Buffer& MonoObjectToValue(ScriptFieldType type, MonoObject* object);
+        static void MonoObjectToValue(const ScriptField& scriptField, MonoObject* object, Buffer& outBuffer);
 
-        std::string MonoStringToStdString(MonoString* monoString);
+        static std::string MonoStringToStdString(MonoString* monoString);
 
-        MonoString* StdStringToMonoString(const std::string& stdString);
+        static MonoString* StdStringToMonoString(const std::string& stdString);
 
-        MonoObject* DataToMonoObject(ScriptFieldType type, void* data);
-        
-        bool IsPrimitive(ScriptFieldType type);
-	}
+        static MonoObject* DataToMonoObject(ScriptFieldType type, void* data);
+
+        static bool IsPrimitive(ScriptFieldType type);
+
+        static MonoObject* GetScriptFieldValueObject(const ScriptField& scriptField, MonoObject* monoInstance);
+
+        static void CreateScriptField(ScriptField& scriptField, const std::string& name, MonoObject* reference);
+    };
 }

@@ -46,15 +46,19 @@ namespace Paper
 	public:
 		ScriptInstance(const Shr<ScriptClass>& scriptClass);
 
-		Buffer& GetFieldValue(const ScriptField& scriptField) const;
+		void GetFieldValue(const ScriptField& scriptField, Buffer& outBuffer) const;
 		void SetFieldValue(const ScriptField& scriptField, const Buffer& value) const;
 
 		Shr<ScriptClass> GetScriptClass() const { return scriptClass; }
-
+		MonoObject* GetMonoInstance() const { return monoInstance; }
 	protected:
-		Shr <ScriptClass> scriptClass;
+		Shr <ScriptClass> scriptClass = nullptr;
 		MonoObject* monoInstance = nullptr;
 
+	private:
+		ScriptInstance(MonoObject* instance);
+
+		friend class ScriptUtils;
 		friend class ScriptClass;
 	};
 
