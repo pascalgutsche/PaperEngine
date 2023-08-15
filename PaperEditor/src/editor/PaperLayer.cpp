@@ -10,6 +10,7 @@
 #include "ImGuizmo/ImGuizmo.h"
 
 #include "renderer/Renderer2D.h"
+#include "scripting/ScriptEngine.h"
 
 
 PaperLayer::PaperLayer()
@@ -54,6 +55,13 @@ void PaperLayer::OnDetach()
 
 void PaperLayer::Update(const float dt)
 {
+	if (ScriptEngine::ShouldReloadAppAssembly())
+	{
+		if (sceneState != SceneState::Edit)
+			OnSceneStop();
+		ScriptEngine::ReloadAppAssembly();
+	}
+
 	CheckSceneChange();
 
 }

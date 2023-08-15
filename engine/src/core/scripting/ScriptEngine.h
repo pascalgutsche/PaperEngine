@@ -110,8 +110,9 @@ namespace Paper
 
 		static void LoadAssembly(const std::filesystem::path& filepath);
 		static void LoadAppAssembly(const std::filesystem::path& filepath);
-		static void ReloadAppAssembly();
+		static void ReloadAppAssembly(bool pendReload = false);
 
+		static bool ShouldReloadAppAssembly();
 
 		static void OnRuntimeStart(Scene* scene);
 		static void OnRuntimeStop();

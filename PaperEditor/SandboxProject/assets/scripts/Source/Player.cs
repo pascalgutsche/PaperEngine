@@ -52,7 +52,7 @@ namespace Sandbox
             if (Input.IsKeyDown(Key.E))
                 pos.Y += speed * dt;
             if (Input.IsKeyDown(Key.Q))
-                pos.Y -= speed * dt;
+                pos.Y -= speed * dt * 2;
 
             transformComponent.Position = pos;
 

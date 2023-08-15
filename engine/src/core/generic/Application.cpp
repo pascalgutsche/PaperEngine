@@ -36,11 +36,6 @@ namespace Paper {
 		Log::Shutdown();
 	}
 
-	void Application::QueueEvents(Event* event)
-	{
-		GetInstance()->eventQueue.emplace(GetInstance()->eventQueue.begin(), event);
-	}
-
 
 	void Application::OnEvent(Event& event)
 	{
@@ -69,15 +64,13 @@ namespace Paper {
 		return false;
 	}
 
-	void Application::ProcessQueues()
+	void Application::ExecuteMainThreadQueues()
 	{
-
-		for (Event* event : eventQueue)
+		for (std::function<void()> func : mainThreadQueue)
 		{
-			OnEvent(*event);
-			delete event;
+			func();
 		}
-		eventQueue.clear();
+		mainThreadQueue.clear();
 	}
 
 	void Application::Run() 
@@ -85,14 +78,6 @@ namespace Paper {
 		restart = false;
 		AddOverlay(imguiLayer);
 		Init();
-
-
-
-		//set start scene
-		if (queuedScene) {
-			currentScene = queuedScene;
-			queuedScene = nullptr;
-		}
 
 		// start of the calculations
 		float begin_time = window->GetTime();
@@ -103,7 +88,8 @@ namespace Paper {
 		{
 			if (!starting) {}
 				window->PollEvents();
-			ProcessQueues();
+
+			ExecuteMainThreadQueues();
 			
 			imguiLayer->Begin(dt);
 
@@ -174,5 +160,11 @@ namespace Paper {
 	{
 		layer->Detach();
 		layerStack.RemoveOverlay(layer);
+	}
+
+	void Application::SubmitToMainThread(const std::function<void()>& func)
+	{
+		std::scoped_lock<std::mutex> lock(GetInstance()->mainThreadQueueMutex);
+		GetInstance()->mainThreadQueue.push_back(func);
 	}
 }

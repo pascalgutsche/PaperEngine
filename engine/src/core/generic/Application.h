@@ -44,7 +44,8 @@ namespace Paper {
 		void RemoveLayer(Layer* layer);
 		void RemoveOverlay(Layer* layer);
 
-		static void QueueEvents(Event* event);
+		static void SubmitToMainThread(const std::function<void()>& func);
+
 		static Application* GetInstance() { return instance; }
 
 		static float GetDT() { return GetInstance()->dt; }
@@ -67,15 +68,17 @@ namespace Paper {
 		ImGuiLayer* imguiLayer = nullptr;
 		Scene* currentScene = nullptr;
 		Scene* queuedScene = nullptr;
-		std::vector<Event*> eventQueue;
 		float dt;
 		bool gameRunning = true;
 		bool resizing = false;
 
+		std::vector<std::function<void()>> mainThreadQueue;
+		std::mutex mainThreadQueueMutex;
+
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
-		void ProcessQueues();
+		void ExecuteMainThreadQueues();
 
 		friend class Scene;
 

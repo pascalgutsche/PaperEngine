@@ -36,8 +36,7 @@ project "engine"
 		"%{IncludeDir.STDUUID}",
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.BOOST}",
-		"%{IncludeDir.MONO}",
-		"%{IncludeDir.FILEWATCH}"
+		"%{IncludeDir.MONO}"
 	}
 
 	defines 

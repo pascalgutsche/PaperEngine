@@ -16,12 +16,6 @@
 
 namespace Paper {
 
-	enum STATE
-	{
-		ON,
-		OFF
-	};
-
 	template<typename T>
 	using Shr = std::shared_ptr<T>;
 

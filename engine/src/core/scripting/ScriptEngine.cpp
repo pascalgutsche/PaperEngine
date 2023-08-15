@@ -5,6 +5,8 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/tabledefs.h>
 
+#include <filewatch/FileWatch.h>
+
 #include "ScriptGlue.h"
 #include "component/ScriptComponent.h"
 #include "generic/Application.h"
@@ -34,6 +36,11 @@ namespace Paper
         std::unordered_map<UUID, Shr<EntityInstance>> entityInstances;
 
         std::unordered_map<UUID, std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>> entityFieldStorage;
+
+        Scope<filewatch::FileWatch<std::string>> appAssemblyFileWatcher;
+
+        bool assemblyReloadPending = false;
+
 
         //Runtime
     	Scene* sceneContext = nullptr;
@@ -86,6 +93,8 @@ namespace Paper
         void* string_param = mono_string;
         mainClass.CallMethod(main_instance, "PrintCustomMessage", 1, &string_param);
 #endif
+
+
 	}
 
 	void ScriptEngine::Shutdown()
@@ -105,6 +114,15 @@ namespace Paper
         script_data->coreAssemblyImage = mono_assembly_get_image(script_data->coreAssembly);
     }
 
+    static void OnAppAssemblyFileEvent(const std::string& path, const filewatch::Event change_type)
+    {
+        if (change_type == filewatch::Event::modified)
+        {
+            Application::SubmitToMainThread([]() {ScriptEngine::ReloadAppAssembly(true); });
+        }
+        LOG_CORE_DEBUG("FILEWATCH - Path: {} Event: {}", path, (int)change_type);
+    }
+
     void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
     {
         script_data->appAssemblyPath = filepath;
@@ -113,11 +131,23 @@ namespace Paper
         if (script_data->appAssembly)
             script_data->appAssemblyImage = mono_assembly_get_image(script_data->appAssembly);
         else
+        {
             LOG_CORE_ERROR("Could not find app assembly '{}'", filepath.string());
+            return;
+        }
+
+         script_data->appAssemblyFileWatcher = MakeScoped<filewatch::FileWatch<std::string>>(filepath.string(), OnAppAssemblyFileEvent);
     }
 
-    void ScriptEngine::ReloadAppAssembly()
+    void ScriptEngine::ReloadAppAssembly(bool pendReload)
     {
+        if (pendReload)
+        {
+            script_data->assemblyReloadPending = pendReload;
+            return;
+        }
+        script_data->assemblyReloadPending = false;
+        LOG_CORE_WARN("RELOADING ASSEMBLY");
         //cache scriptfieldstorage and restore it later
         std::unordered_map<UUID, std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>> oldEntityFieldStorage = script_data->entityFieldStorage;
         script_data->entityFieldStorage.clear();
@@ -149,6 +179,11 @@ namespace Paper
                 }
             }
         }
+    }
+
+    bool ScriptEngine::ShouldReloadAppAssembly()
+    {
+        return script_data->assemblyReloadPending;
     }
 
     void ScriptEngine::OnRuntimeStart(Scene* scene)
