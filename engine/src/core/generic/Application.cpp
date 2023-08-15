@@ -66,6 +66,7 @@ namespace Paper {
 
 	void Application::ExecuteMainThreadQueues()
 	{
+		std::scoped_lock<std::mutex> lock(GetInstance()->mainThreadQueueMutex);
 		for (std::function<void()> func : mainThreadQueue)
 		{
 			func();
