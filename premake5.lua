@@ -33,8 +33,8 @@ IncludeDir["SPDLOG"] = "%{wks.location}/engine/lib/spdlog/include"
 IncludeDir["STB_IMAGE"] = "%{wks.location}/engine/lib/stb_image"
 IncludeDir["YAMLCPP"] = "%{wks.location}/engine/lib/yaml-cpp/include"
 IncludeDir["ENTT"] = "%{wks.location}/engine/lib/entt/src"
-IncludeDir["BOOST"] = "%{wks.location}/<engine/lib"
 IncludeDir["MONO"] = "%{wks.location}/engine/lib/mono/include"
+IncludeDir["FILEWATCH"] = "%{wks.location}/engine/lib/filewatch"
 
 LibraryDir = {}
 LibraryDir["MONO"] = "%{wks.location}/engine/lib/mono/lib/%{cfg.buildcfg}"

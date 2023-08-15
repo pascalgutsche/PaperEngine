@@ -34,8 +34,7 @@ project "PaperEditor"
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.STB_IMAGE}",
 		"%{IncludeDir.YAMLCPP}",
-		"%{IncludeDir.ENTT}",
-		"%{IncludeDir.BOOST}"
+		"%{IncludeDir.ENTT}"
 	}
 
 	defines 
