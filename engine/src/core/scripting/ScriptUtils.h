@@ -25,7 +25,7 @@ namespace Paper
     class ScriptUtils
     {
     public:
-        static MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath);
+        static MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath, bool loadPDB = false);
 
         static void PrintAssemblyTypes(MonoAssembly* assembly);
 

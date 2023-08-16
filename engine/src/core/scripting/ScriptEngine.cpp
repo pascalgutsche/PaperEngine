@@ -1,9 +1,12 @@
 #include "Engine.h"
 #include "ScriptEngine.h"
 
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-#include <mono/metadata/tabledefs.h>
+#include "mono/jit/jit.h"
+#include "mono/metadata/assembly.h"
+#include "mono/metadata/object.h"
+#include "mono/metadata/tabledefs.h"
+#include "mono/metadata/mono-debug.h"
+#include "mono/metadata/threads.h"
 
 #include <filewatch/FileWatch.h>
 
@@ -40,6 +43,8 @@ namespace Paper
         Scope<filewatch::FileWatch<std::string>> appAssemblyFileWatcher;
 
         bool assemblyReloadPending = false;
+
+        bool debugEnabled = false;
 
 
         //Runtime
@@ -110,7 +115,7 @@ namespace Paper
 
         script_data->coreAssemblyPath = filepath;
 
-        script_data->coreAssembly = ScriptUtils::LoadMonoAssembly(filepath);
+        script_data->coreAssembly = ScriptUtils::LoadMonoAssembly(filepath, script_data->debugEnabled);
         script_data->coreAssemblyImage = mono_assembly_get_image(script_data->coreAssembly);
     }
 
@@ -127,7 +132,7 @@ namespace Paper
     {
         script_data->appAssemblyPath = filepath;
 
-        script_data->appAssembly = ScriptUtils::LoadMonoAssembly(filepath);
+        script_data->appAssembly = ScriptUtils::LoadMonoAssembly(filepath, script_data->debugEnabled);
         if (script_data->appAssembly)
             script_data->appAssemblyImage = mono_assembly_get_image(script_data->appAssembly);
         else
@@ -368,11 +373,27 @@ namespace Paper
     {
         mono_set_assemblies_path("mono/lib");
 
+        if (script_data->debugEnabled)
+        {
+            const char* argv[2] = {
+                "--debugger-agent=transport=dt_socket,address=127.0.0.1:2550,server=y,suspend=n,loglevel=3,logfile=MonoDebugger.log",
+                "--soft-breakpoints"
+            };
+
+            mono_jit_parse_options(2, (char**)argv);
+            mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+        }
+
         MonoDomain* rootDomain = mono_jit_init("PaperJITRuntime");
         ASSERT(rootDomain, "");
 
         // Store the root domain pointer
         script_data->rootDomain = rootDomain;
+
+        if (script_data->debugEnabled)
+            mono_debug_domain_create(script_data->rootDomain);
+
+        mono_thread_set_main(mono_thread_current());
     }
 
     void ScriptEngine::ShutdownMono()
@@ -381,6 +402,8 @@ namespace Paper
 
         mono_domain_unload(script_data->appDomain);
         script_data->appDomain = nullptr;
+
+
 
         mono_jit_cleanup(script_data->rootDomain);
         script_data->rootDomain = nullptr;

@@ -15,6 +15,7 @@
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/attrdefs.h>
 #include <mono/metadata/tokentype.h>
+#include <mono/metadata/mono-debug.h>
 
 #include "utils/UUID.h"
 
@@ -42,7 +43,7 @@ namespace Paper
     };
 
 
-    MonoAssembly* ScriptUtils::LoadMonoAssembly(const std::filesystem::path& assemblyPath)
+    MonoAssembly* ScriptUtils::LoadMonoAssembly(const std::filesystem::path& assemblyPath, bool loadPDB)
     {
         uint32_t fileSize = 0;
         char* fileData = Utils::ReadBytes(assemblyPath, &fileSize);
@@ -57,11 +58,28 @@ namespace Paper
             LOG_CORE_ERROR("[SCRIPTCORE]: {}", errorMessage);
             return nullptr;
         }
+        LOG_CORE_TRACE("Loaded assembly file: {}", assemblyPath);
+
+        if (loadPDB)
+        {
+            std::filesystem::path pdbPath = assemblyPath;
+            pdbPath.replace_extension(".pdb");
+
+            if (std::filesystem::exists(pdbPath))
+            {
+                uint32_t pdbFileSize = 0;
+                const char* pdbData = Utils::ReadBytes(pdbPath, &pdbFileSize);
+                mono_debug_open_image_from_memory(image, (const mono_byte*)pdbData, pdbFileSize);
+                LOG_CORE_TRACE("Loaded PDB file '{}' for assembly: '{}'", pdbPath, assemblyPath);
+                delete[] pdbData;
+            }
+            else
+                LOG_CORE_WARN("Could not find PDB file for assembly: '{}'", assemblyPath);
+        }
 
         MonoAssembly* assembly = mono_assembly_load_from_full(image, assemblyPath.string().c_str(), &status, 0);
         mono_image_close(image);
 
-        // Don't forget to free the file data
         delete[] fileData;
 
         return assembly;
