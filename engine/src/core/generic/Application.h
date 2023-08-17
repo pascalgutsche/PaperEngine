@@ -31,11 +31,7 @@ namespace Paper {
 
 		static void ChangeScene(Scene* new_scene);
 
-		void Exit(bool _restart = false)
-		{
-			gameRunning = false;
-			restart = _restart;
-		}
+		void Exit(bool restart = false);
 
 		void RemoveAllLayers();
 

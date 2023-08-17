@@ -30,7 +30,7 @@ namespace Paper {
 
 	Application::~Application()
 	{
-		ScriptEngine::Shutdown();
+		ScriptEngine::Shutdown(!this->restart);
 		RenderCommand::Shutdown();
 		DataPool::ErasePool();
 		Log::Shutdown();
@@ -123,6 +123,12 @@ namespace Paper {
 	void Application::ChangeScene(Scene* new_scene)
 	{
 		GetInstance()->queuedScene = new_scene;
+	}
+
+	void Application::Exit(bool restart)
+	{
+		this->gameRunning = false;
+		this->restart = restart;
 	}
 
 	void Application::RemoveAllLayers()

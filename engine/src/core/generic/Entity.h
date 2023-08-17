@@ -14,7 +14,7 @@ namespace Paper {
         Entity() = default;
         Entity(entt::entity entity, Scene* scene);
         Entity(entt::entity entity, std::string name, Scene* scene);
-        Entity(entt::entity entity, const UUID& id, std::string name, Scene* scene);
+        Entity(entt::entity entity, const EntityID& id, std::string name, Scene* scene);
 
         ~Entity() = default;
 
@@ -42,7 +42,7 @@ namespace Paper {
         bool RemoveTag(std::string tag);
         bool HasTag(std::string tag);
 
-    	UUID& GetUUID();
+    	EntityID& GetEntityID();
         Scene* GetScene() const { return scene; }
 
         std::string GetName();

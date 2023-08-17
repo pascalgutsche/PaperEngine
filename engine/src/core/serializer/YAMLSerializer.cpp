@@ -45,7 +45,7 @@ namespace Paper
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << scene->GetUUID();
+		out << YAML::Key << "Scene" << YAML::Value << scene->GetEntityID();
 		out << YAML::Key << "Name" << YAML::Value << scene->GetName();
 
 		std::string scene_path = scene->GetPath().string();
@@ -82,7 +82,7 @@ namespace Paper
 		CORE_ASSERT(entity.HasComponent<DataComponent>(), "")
 
 		out << YAML::BeginMap; // Entity
-		//out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
+		//out << YAML::Key << "Entity" << YAML::Value << entity.GetEntityID();
 		//out << YAML::Key << "Name" << YAML::Value << entity.GetName();
 
 		out << YAML::Key << "Components";
@@ -172,7 +172,7 @@ namespace Paper
 						out << classFieldStorage->GetValue<glm::vec4>(true);
 						break;
 					case ScriptFieldType::Entity: 
-						out << classFieldStorage->GetValue<UUID>(true).toString();
+						out << classFieldStorage->GetValue<EntityID>(true).toString();
 						break;
 					default: 
 						out << 0;
@@ -241,11 +241,11 @@ namespace Paper
 				CORE_ASSERT(entity["Components"], "")
 				auto components = entity["Components"];
 
-				UUID uuid;
+				EntityID uuid;
 				std::string entity_name;
 				if (auto data_component = components["DataComponent"])
 				{
-					uuid = data_component["UUID"].as<UUID>();
+					uuid = data_component["EntityID"].as<EntityID>();
 					entity_name = data_component["Name"].as<std::string>();
 				}
 				
@@ -346,7 +346,7 @@ namespace Paper
 								break;
 							case ScriptFieldType::Entity:
 							{
-								UUID entityUUID = yamlScriptField["Value"].as<std::string>();
+								EntityID entityUUID = yamlScriptField["Value"].as<std::string>();
 								fieldStorage->SetValue(entityUUID.toUInt64(), true);
 								break;
 							}

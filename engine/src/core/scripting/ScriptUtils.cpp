@@ -17,7 +17,7 @@
 #include <mono/metadata/tokentype.h>
 #include <mono/metadata/mono-debug.h>
 
-#include "utils/UUID.h"
+#include "utils/EntityID.h"
 
 namespace Paper
 {
@@ -155,7 +155,7 @@ namespace Paper
             case ScriptFieldType::Vec2:     return sizeof(glm::vec2);
             case ScriptFieldType::Vec3:     return sizeof(glm::vec3);
             case ScriptFieldType::Vec4:     return sizeof(glm::vec4);
-            case ScriptFieldType::Entity:   return sizeof(UUID);
+            case ScriptFieldType::Entity:   return sizeof(EntityID);
         }
         LOG_CORE_ERROR("No ScriptFieldType size for '{}'", ScriptFieldTypeToString(type));
         return 0;
@@ -274,11 +274,11 @@ namespace Paper
         case ScriptFieldType::Entity:
         {
             ScriptField scriptFieldUUID;
-            CreateScriptField(scriptFieldUUID, "UUID", object);
+            CreateScriptField(scriptFieldUUID, "EntityID", object);
 
             Buffer uuidBuffer;
             MonoObjectToValue(scriptFieldUUID, GetScriptFieldValueObject(scriptFieldUUID, object), uuidBuffer);
-            outBuffer.Write(uuidBuffer.data, sizeof(UUID));
+            outBuffer.Write(uuidBuffer.data, sizeof(EntityID));
             uuidBuffer.Release();
             return;
         }
@@ -309,7 +309,7 @@ namespace Paper
         case ScriptFieldType::String: 
             return (MonoObject*)StdStringToMonoString(std::string((char*)data));
         case ScriptFieldType::Entity:
-            return ScriptClass("Paper", "Entity", ScriptEngine::GetCoreAssemblyImage()).InstantiateParams(*(UUID*)data);
+            return ScriptClass("Paper", "Entity", ScriptEngine::GetCoreAssemblyImage()).InstantiateParams(*(EntityID*)data);
         default:
             return nullptr;
         }
@@ -361,7 +361,7 @@ namespace Paper
         // allocate memory to the buffer for later SetData when an entity field contains no entity.
         if (scriptField.type == ScriptFieldType::Entity)
         {
-            scriptField.initialFieldVal.Allocate(sizeof(UUID));
+            scriptField.initialFieldVal.Allocate(sizeof(EntityID));
             scriptField.initialFieldVal.Nullify();
         }
     }

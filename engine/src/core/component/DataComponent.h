@@ -1,14 +1,14 @@
 ﻿#pragma once
 #include "Engine.h"
 
-#include "utils/UUID.h"
+#include "utils/EntityID.h"
 #include "serializer/Serializable.h"
 
 namespace Paper
 {
 	struct DataComponent : Serializable
 	{
-		UUID uuid = UUID();
+		EntityID uuid = EntityID();
 		std::string name = "[Entity]";
 
 		std::vector<std::string> tags;
@@ -16,13 +16,13 @@ namespace Paper
 		DataComponent() = default;
 		~DataComponent() override = default;
 
-		DataComponent(const UUID& uuid)
+		DataComponent(const EntityID& uuid)
 			: uuid(uuid) { }
 
 		DataComponent(const std::string& name)
 			: name(name) { }
 
-		DataComponent(const UUID& uuid, const std::string& name)
+		DataComponent(const EntityID& uuid, const std::string& name)
 			: uuid(uuid), name(name) { }
 
 		bool Serialize(YAML::Emitter& out) override;

@@ -211,7 +211,7 @@ void PaperLayer::EntityDragging()
 
 	if (drag_entity && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceExtern))
 	{
-		uint64_t entityUUID = drag_entity.GetUUID().toUInt64();
+		uint64_t entityUUID = drag_entity.GetEntityID().toUInt64();
 
 		ImGui::SetDragDropPayload("ENTITY_DRAG", &entityUUID, sizeof(uint64_t));
 		ImGui::Text(drag_entity.GetName().c_str());
@@ -355,10 +355,10 @@ const ViewPort* PaperLayer::GetViewportFocused() const
 void PaperLayer::SwitchScene(const Shr<Scene>& scene)
 {
 	if (active_entity)
-		active_entity = scene->GetEntity(active_entity.GetUUID());
+		active_entity = scene->GetEntity(active_entity.GetEntityID());
 
 	if (hovered_entity)
-		hovered_entity = scene->GetEntity(hovered_entity.GetUUID());
+		hovered_entity = scene->GetEntity(hovered_entity.GetEntityID());
 
 	activeScene = scene;
 }

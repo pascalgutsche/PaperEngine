@@ -21,7 +21,7 @@ namespace Paper
 
 		inline std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityEvent: Name: " << entity->GetComponent<DataComponent>().name << " | CoreID: " << entity->GetUUID();
+			string << "EntityEvent: Name: " << entity->GetComponent<DataComponent>().name << " | CoreID: " << entity->GetEntityID();
 			return string.str();
 		}
 
@@ -42,7 +42,7 @@ namespace Paper
 
 		inline std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityPressedEvent: Name: " << entity->GetName() << " | ID: " << entity->GetUUID();
+			string << "EntityPressedEvent: Name: " << entity->GetName() << " | ID: " << entity->GetEntityID();
 			return string.str();
 		}
 
@@ -59,7 +59,7 @@ namespace Paper
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityReleasedEvent: Name: " << entity << " | ID: " << entity->GetUUID();
+			string << "EntityReleasedEvent: Name: " << entity << " | ID: " << entity->GetEntityID();
 			return string.str();
 		}
 
@@ -76,7 +76,7 @@ namespace Paper
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityHoverBeginEvent: Name: " << entity->GetName() << " | ID: " << entity->GetUUID();
+			string << "EntityHoverBeginEvent: Name: " << entity->GetName() << " | ID: " << entity->GetEntityID();
 			return string.str();
 		}
 
@@ -93,7 +93,7 @@ namespace Paper
 
 		std::string ToString() const override {
 			std::stringstream string;
-			string << "EntityHoverEndEvent: Name: " << entity->GetName() << " | ID: " << entity->GetUUID();
+			string << "EntityHoverEndEvent: Name: " << entity->GetName() << " | ID: " << entity->GetEntityID();
 			return string.str();
 		}
 

@@ -2,7 +2,7 @@
 #include "ScriptUtils.h"
 
 #include "generic/Buffer.h"
-#include "utils/UUID.h"
+#include "utils/EntityID.h"
 
 
 namespace Paper

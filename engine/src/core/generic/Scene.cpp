@@ -17,15 +17,15 @@
 namespace Paper {
 
 	Scene::Scene()
-		: uuid(UUID()), name("[Scene]"), is_dirty(true) { }
+		: uuid(EntityID()), name("[Scene]"), is_dirty(true) { }
 
-	Scene::Scene(const UUID& uuid)
+	Scene::Scene(const EntityID& uuid)
 		: uuid(uuid), name("[Scene]"), is_dirty(true) { }
 
 	Scene::Scene(const std::string& name)
-		: uuid(UUID()), name(name), is_dirty(true) { }
+		: uuid(EntityID()), name(name), is_dirty(true) { }
 
-	Scene::Scene(const UUID& uuid, const std::string& name)
+	Scene::Scene(const EntityID& uuid, const std::string& name)
 		: uuid(uuid), name(name), is_dirty(true) { }
 
 	Scene::~Scene()
@@ -34,14 +34,14 @@ namespace Paper {
 	}
 
 	template <typename... Component>
-	static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& dstEntityMap)
+	static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<EntityID, entt::entity>& dstEntityMap)
 	{
 		([&]()
 		{
 			auto view = src.view<Component>();
 			for (auto [e, component] : view.each())
 			{
-				UUID srcUUID = src.get<DataComponent>(e).uuid;
+				EntityID srcUUID = src.get<DataComponent>(e).uuid;
 				entt::entity dstEntity = dstEntityMap.at(srcUUID);
 
 				dst.emplace_or_replace<Component>(dstEntity, component);
@@ -50,7 +50,7 @@ namespace Paper {
 	}
 
 	template<typename... Component>
-	static void CopyComponent(ComponentGroup<Component...>, entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& dstEntityMap)
+	static void CopyComponent(ComponentGroup<Component...>, entt::registry& dst, entt::registry& src, const std::unordered_map<EntityID, entt::entity>& dstEntityMap)
 	{
 		CopyComponent<Component...>(dst, src, dstEntityMap);
 	}
@@ -64,7 +64,7 @@ namespace Paper {
 		auto dataView = registry.view<DataComponent>();
 		for (auto e : dataView)
 		{
-			UUID uuid = registry.get<DataComponent>(e).uuid;
+			EntityID uuid = registry.get<DataComponent>(e).uuid;
 			std::string name = registry.get<DataComponent>(e).name;
 			auto tags = registry.get<DataComponent>(e).tags;
 
@@ -301,10 +301,10 @@ namespace Paper {
 	Entity Scene::CreateEntity(const std::string& name)
 	{
 		is_dirty = true;
-		return CreateEntity(UUID(), name);
+		return CreateEntity(EntityID(), name);
 	}
 
-	Entity Scene::CreateEntity(const UUID& id, const std::string& name)
+	Entity Scene::CreateEntity(const EntityID& id, const std::string& name)
 	{
 		is_dirty = true;
 		Entity entity(registry.create(), id, name, this);
@@ -315,19 +315,19 @@ namespace Paper {
 
 	bool Scene::DestroyEntity(Entity entity)
 	{
-		if (!entity_map.contains(entity.GetUUID())) return false;
+		if (!entity_map.contains(entity.GetEntityID())) return false;
 
 		if (entity.HasComponent<ScriptComponent>())
 			ScriptEngine::OnDestroyEntity(entity);
 
 		is_dirty = true;
 
-		entity_map.erase(entity.GetUUID());
+		entity_map.erase(entity.GetEntityID());
 		registry.destroy(entity);
 		return true;
 	}
 
-	Entity Scene::GetEntity(const UUID& id)
+	Entity Scene::GetEntity(const EntityID& id)
 	{
 		CORE_ASSERT(entity_map.contains(id), "Entity does not exists");
 		

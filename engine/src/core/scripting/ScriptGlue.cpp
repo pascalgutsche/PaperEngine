@@ -95,7 +95,7 @@ namespace Paper
         *data = localData;
     }
 
-    static bool Entity_HasComponent(UUID entityUUID, MonoReflectionType* componentType)
+    static bool Entity_HasComponent(EntityID entityUUID, MonoReflectionType* componentType)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         CORE_ASSERT(scene, "");
@@ -116,68 +116,68 @@ namespace Paper
 
         Entity entity = scene->GetEntityByName(entityName);
         if (entity)
-			return entity.GetUUID().toUInt64();
+			return entity.GetEntityID().toUInt64();
         return 0;
     }
 
-    static MonoObject* Entity_GetScriptInstance(UUID entityUUID)
+    static MonoObject* Entity_GetScriptInstance(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         CORE_ASSERT(scene, "");
         Entity entity = scene->GetEntity(entityUUID);
         CORE_ASSERT(entity, "");
 
-        MonoObject* instance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID())->GetMonoInstance();
+        MonoObject* instance = ScriptEngine::GetEntityScriptInstance(entity.GetEntityID())->GetMonoInstance();
 
         return instance;
 
     }
 
     //Components
-    static void TransformComponent_GetPosition(UUID entityUUID, glm::vec3* outPosition)
+    static void TransformComponent_GetPosition(EntityID entityUUID, glm::vec3* outPosition)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         *outPosition = scene->GetEntity(entityUUID).GetComponent<TransformComponent>().position;
     }
 
-    static void TransformComponent_SetPosition(UUID entityUUID, glm::vec3* inPosition)
+    static void TransformComponent_SetPosition(EntityID entityUUID, glm::vec3* inPosition)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         scene->GetEntity(entityUUID).GetComponent<TransformComponent>().position = *inPosition;
     }
 
-    static void TransformComponent_GetRotation(UUID entityUUID, glm::vec3* outRotation)
+    static void TransformComponent_GetRotation(EntityID entityUUID, glm::vec3* outRotation)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         *outRotation = scene->GetEntity(entityUUID).GetComponent<TransformComponent>().rotation;
     }
 
-    static void TransformComponent_SetRotation(UUID entityUUID, glm::vec3* inRotation)
+    static void TransformComponent_SetRotation(EntityID entityUUID, glm::vec3* inRotation)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         scene->GetEntity(entityUUID).GetComponent<TransformComponent>().rotation = *inRotation;
     }
 
-    static void TransformComponent_GetScale(UUID entityUUID, glm::vec3* outScale)
+    static void TransformComponent_GetScale(EntityID entityUUID, glm::vec3* outScale)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         *outScale = scene->GetEntity(entityUUID).GetComponent<TransformComponent>().scale;
     }
 
-    static void TransformComponent_SetScale(UUID entityUUID, glm::vec3* inScale)
+    static void TransformComponent_SetScale(EntityID entityUUID, glm::vec3* inScale)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         scene->GetEntity(entityUUID).GetComponent<TransformComponent>().scale = *inScale;
     }
 
-    static MonoString* DataComponent_GetName(UUID entityUUID)
+    static MonoString* DataComponent_GetName(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& dc = scene->GetEntity(entityUUID).GetComponent<DataComponent>();
         return mono_string_new(mono_domain_get(), dc.name.c_str());
     }
 
-    static void DataComponent_SetName(UUID entityUUID, MonoString* name)
+    static void DataComponent_SetName(EntityID entityUUID, MonoString* name)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& dc = scene->GetEntity(entityUUID).GetComponent<DataComponent>();
@@ -186,7 +186,7 @@ namespace Paper
         mono_free(name_c);
     }
 
-    static MonoString* DataComponent_GetTags(UUID entityUUID)
+    static MonoString* DataComponent_GetTags(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& dc = scene->GetEntity(entityUUID).GetComponent<DataComponent>();
@@ -201,7 +201,7 @@ namespace Paper
         return mono_string_new(mono_domain_get(), tagList.c_str());
     }
 
-    static void DataComponent_SetTags(UUID entityUUID, MonoString* name)
+    static void DataComponent_SetTags(EntityID entityUUID, MonoString* name)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& dc = scene->GetEntity(entityUUID).GetComponent<DataComponent>();
@@ -215,21 +215,21 @@ namespace Paper
         }
     }
 
-    static void SpriteComponent_GetColor(UUID entityUUID, glm::vec4* outColor)
+    static void SpriteComponent_GetColor(EntityID entityUUID, glm::vec4* outColor)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
         *outColor = sc.color;
     }
 
-    static void SpriteComponent_SetColor(UUID entityUUID, glm::vec4* inColor)
+    static void SpriteComponent_SetColor(EntityID entityUUID, glm::vec4* inColor)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
         sc.color = *inColor;
     }
 
-    static void SpriteComponent_GetTexture(UUID entityUUID, TextureData* outTextureData)
+    static void SpriteComponent_GetTexture(EntityID entityUUID, TextureData* outTextureData)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -251,28 +251,28 @@ namespace Paper
         *outTextureData = data;
     }
 
-    static void SpriteComponent_SetTexture(UUID entityUUID, MonoString* inTextureFilePath)
+    static void SpriteComponent_SetTexture(EntityID entityUUID, MonoString* inTextureFilePath)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
         sc.texture = DataPool::GetAssetTexture(ScriptUtils::MonoStringToStdString(inTextureFilePath), true);
     }
 
-    static float SpriteComponent_GetTilingFactor(UUID entityUUID)
+    static float SpriteComponent_GetTilingFactor(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
         return sc.tiling_factor;
     }
 
-    static void SpriteComponent_SetTilingFactor(UUID entityUUID, float tilingFactor)
+    static void SpriteComponent_SetTilingFactor(EntityID entityUUID, float tilingFactor)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
         sc.tiling_factor = tilingFactor;
     }
 
-    static void SpriteComponent_GetUV0(UUID entityUUID, glm::vec2* outUV0)
+    static void SpriteComponent_GetUV0(EntityID entityUUID, glm::vec2* outUV0)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -280,7 +280,7 @@ namespace Paper
         *outUV0 = sc.tex_coords[0];
     }
 
-    static void SpriteComponent_SetUV0(UUID entityUUID, glm::vec2* inUV0)
+    static void SpriteComponent_SetUV0(EntityID entityUUID, glm::vec2* inUV0)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -290,7 +290,7 @@ namespace Paper
         sc.tex_coords[3].x = (*inUV0).x;
     }
 
-    static void SpriteComponent_GetUV1(UUID entityUUID, glm::vec2* outUV1)
+    static void SpriteComponent_GetUV1(EntityID entityUUID, glm::vec2* outUV1)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -298,7 +298,7 @@ namespace Paper
         *outUV1 = sc.tex_coords[2];
     }
 
-    static void SpriteComponent_SetUV1(UUID entityUUID, glm::vec2* inUV1)
+    static void SpriteComponent_SetUV1(EntityID entityUUID, glm::vec2* inUV1)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -308,7 +308,7 @@ namespace Paper
         sc.tex_coords[3].y = (*inUV1).y;
     }
 
-    static int SpriteComponent_GetGeometry(UUID entityUUID)
+    static int SpriteComponent_GetGeometry(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -316,7 +316,7 @@ namespace Paper
         return (int)sc.geometry;
     }
 
-    static void SpriteComponent_SetGeometry(UUID entityUUID, int geometry)
+    static void SpriteComponent_SetGeometry(EntityID entityUUID, int geometry)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -324,7 +324,7 @@ namespace Paper
         sc.geometry = (Geometry)geometry;
     }
 
-    static float SpriteComponent_GetThickness(UUID entityUUID)
+    static float SpriteComponent_GetThickness(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -332,7 +332,7 @@ namespace Paper
         return sc.thickness;
     }
 
-    static void SpriteComponent_SetThickness(UUID entityUUID, float thickness)
+    static void SpriteComponent_SetThickness(EntityID entityUUID, float thickness)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -340,7 +340,7 @@ namespace Paper
         sc.thickness = thickness;
     }
 
-    static float SpriteComponent_GetFade(UUID entityUUID)
+    static float SpriteComponent_GetFade(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -348,7 +348,7 @@ namespace Paper
         return sc.fade;
     }
 
-    static void SpriteComponent_SetFade(UUID entityUUID, float fade)
+    static void SpriteComponent_SetFade(EntityID entityUUID, float fade)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityUUID).GetComponent<SpriteComponent>();
@@ -356,21 +356,21 @@ namespace Paper
         sc.fade = fade;
     }
 
-    static void LineComponent_GetColor(UUID entityUUID, glm::vec4* outColor)
+    static void LineComponent_GetColor(EntityID entityUUID, glm::vec4* outColor)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& lc = scene->GetEntity(entityUUID).GetComponent<LineComponent>();
         *outColor = lc.color;
     }
 
-    static void LineComponent_SetColor(UUID entityUUID, glm::vec4* inColor)
+    static void LineComponent_SetColor(EntityID entityUUID, glm::vec4* inColor)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& lc = scene->GetEntity(entityUUID).GetComponent<LineComponent>();
         lc.color = *inColor;
     }
 
-    static float LineComponent_GetThickness(UUID entityUUID)
+    static float LineComponent_GetThickness(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& lc = scene->GetEntity(entityUUID).GetComponent<LineComponent>();
@@ -378,7 +378,7 @@ namespace Paper
         return lc.thickness;
     }
 
-    static void LineComponent_SetThickness(UUID entityUUID, float thickness)
+    static void LineComponent_SetThickness(EntityID entityUUID, float thickness)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& lc = scene->GetEntity(entityUUID).GetComponent<LineComponent>();
@@ -386,42 +386,42 @@ namespace Paper
         lc.thickness = thickness;
     }
 
-    static void TextComponent_GetColor(UUID entityUUID, glm::vec4* outColor)
+    static void TextComponent_GetColor(EntityID entityUUID, glm::vec4* outColor)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
         *outColor = tc.color;
     }
 
-    static void TextComponent_SetColor(UUID entityUUID, glm::vec4* inColor)
+    static void TextComponent_SetColor(EntityID entityUUID, glm::vec4* inColor)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
         tc.color = *inColor;
     }
 
-    static MonoString* TextComponent_GetText(UUID entityUUID)
+    static MonoString* TextComponent_GetText(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
         return MONO_STRING(tc.text.c_str());
     }
 
-    static void TextComponent_SetText(UUID entityUUID, MonoString* text)
+    static void TextComponent_SetText(EntityID entityUUID, MonoString* text)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
         tc.text = ScriptUtils::MonoStringToStdString(text);
     }
 
-    static MonoString* TextComponent_GetFontPath(UUID entityUUID)
+    static MonoString* TextComponent_GetFontPath(EntityID entityUUID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();
         return MONO_STRING(tc.font->GetFilePath().c_str());
     }
 
-    static void TextComponent_SetFontPath(UUID entityUUID, MonoString* fontPath)
+    static void TextComponent_SetFontPath(EntityID entityUUID, MonoString* fontPath)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& tc = scene->GetEntity(entityUUID).GetComponent<TextComponent>();

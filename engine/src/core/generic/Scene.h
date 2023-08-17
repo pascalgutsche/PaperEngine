@@ -2,7 +2,7 @@
 #include "Engine.h"
 #include "utility.h"
 
-#include "utils/UUID.h"
+#include "utils/EntityID.h"
 
 #include "camera/EditorCamera.h"
 
@@ -16,9 +16,9 @@ namespace Paper {
     public:
 
         Scene();
-        Scene(const UUID& uuid);
+        Scene(const EntityID& uuid);
         Scene(const std::string& name);
-        Scene(const UUID& uuid, const std::string& name);
+        Scene(const EntityID& uuid, const std::string& name);
         ~Scene();
 
         Shr<Scene> Copy();
@@ -39,13 +39,13 @@ namespace Paper {
         void Render();
 
         Entity CreateEntity(const std::string& name);
-        Entity CreateEntity(const UUID& id, const std::string& name);
+        Entity CreateEntity(const EntityID& id, const std::string& name);
         bool DestroyEntity(Entity entity);
 
-        Entity GetEntity(const UUID& id);
+        Entity GetEntity(const EntityID& id);
         Entity GetEntityByName(const std::string& name);
 
-        UUID GetUUID() const { return uuid; }
+        EntityID GetEntityID() const { return uuid; }
         std::string GetName() const { return name; }
 
         std::filesystem::path GetPath() { return path; }
@@ -63,7 +63,7 @@ namespace Paper {
 
         void StepFrames(const int frames = 1) { framesToStep = frames; }
     private:
-        UUID uuid;
+        EntityID uuid;
         std::string name;
 
         bool is_dirty = false;
@@ -71,7 +71,7 @@ namespace Paper {
         std::filesystem::path path;
 
         entt::registry registry;
-        std::unordered_map<UUID, entt::entity> entity_map;
+        std::unordered_map<EntityID, entt::entity> entity_map;
 
         //runtime
         bool isPaused = false;

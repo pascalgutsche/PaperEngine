@@ -187,10 +187,10 @@ void PaperLayer::PropertiesPanel()
 	ImGui::Text("Name:");
 	ImGui::SameLine();
 	std::string name = active_entity.GetName();
-	ImGui::InputText(("##" + active_entity.GetUUID().toString()).c_str(), &name);
+	ImGui::InputText(("##" + active_entity.GetEntityID().toString()).c_str(), &name);
 	active_entity.SetName(name);
 
-	ImGui::Text(("UUID: " + active_entity.GetUUID().toString()).c_str());
+	ImGui::Text(("UUID: " + active_entity.GetEntityID().toString()).c_str());
 
 	if (ImGui::BeginPopup("components_add_popup"))
 	{
@@ -482,7 +482,7 @@ void PaperLayer::PropertiesPanel()
 			{
 				
 				//Fields
-				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetUUID());
+				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetEntityID());
 				if (scriptClass)
 				{
 					const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);
@@ -532,11 +532,11 @@ void PaperLayer::PropertiesPanel()
 
 							case ScriptFieldType::Entity:
 							{
-								UUID entityUUID = fieldStorage->GetValue<uint64_t>();
+								EntityID entityID = fieldStorage->GetValue<uint64_t>();
 								FillNameCol(varName);
 
-								if (entityUUID)
-									ImGui::Button(activeScene->GetEntity(entityUUID).GetName().c_str());
+								if (entityID)
+									ImGui::Button(activeScene->GetEntity(entityID).GetName().c_str());
 								else
 									ImGui::Button("null");
 
@@ -544,8 +544,8 @@ void PaperLayer::PropertiesPanel()
 								{
 									if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
 									{
-										UUID entityUUID = *(uint64_t*)payload->Data;
-										fieldStorage->SetValue(entityUUID.toUInt64());
+										EntityID payloadEntityID = *(uint64_t*)payload->Data;
+										fieldStorage->SetValue(payloadEntityID.toUInt64());
 
 										drag_entity = Entity();
 									}

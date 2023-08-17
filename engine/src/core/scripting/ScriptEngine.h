@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine.h"
+
 #include "ScriptUtils.h"
 #include "ScriptField.h"
 
@@ -10,6 +11,8 @@
 namespace Paper
 {
 	using EntityFieldStorage = std::vector<Shr<ScriptFieldStorage>>;
+
+	class ScriptAssembly;
 
 	class ScriptClass
 		: public std::enable_shared_from_this<ScriptClass>
@@ -62,7 +65,7 @@ namespace Paper
 
 		void InitFieldMap();
 
-		friend class ScriptEngine;
+		friend class ScriptAssembly;
 	};
 
 	class ScriptInstance
@@ -106,13 +109,16 @@ namespace Paper
 	{
 	public:
 		static void Init();
-		static void Shutdown();
+		static void Shutdown(bool appClose = false);
 
 		static void LoadAssembly(const std::filesystem::path& filepath);
 		static void LoadAppAssembly(const std::filesystem::path& filepath);
-		static void ReloadAppAssembly(bool pendReload = false);
+		static void ReloadAppAssembly();
 
 		static bool ShouldReloadAppAssembly();
+		static void ScheduleAssemblyReload(ScriptAssembly* assembly);
+
+		static void SetToRootDomain();
 
 		static void OnRuntimeStart(Scene* scene);
 		static void OnRuntimeStop();
@@ -124,21 +130,26 @@ namespace Paper
 		static void OnDestroyEntity(Entity entity);
 		static void OnUpdateEntity(Entity entity, float dt);
 
-		static bool EntityClassExists(const std::string& fullClassName);
-		static Shr<ScriptClass> GetEntityClass(const std::string& fullClassName);
 
 		static Scene* GetSceneContext();
-		static Shr<EntityInstance> GetEntityScriptInstance(UUID entityUUID);
+		static Shr<EntityInstance> GetEntityScriptInstance(EntityID entityUUID);
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
 		static std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
-		static MonoImage* GetAppAssemblyImage();
-		static MonoImage* GetCoreAssemblyImage();
-		static std::unordered_map<std::string, Shr<ScriptClass>>& GetEntityClasses();
-		static std::unordered_map<UUID, Shr<EntityInstance>>& GetEntityInstances();
+		static MonoImage* GetCoreAssembly();
+		static MonoImage* GetAppAssemblies();
+
+		static Shr<ScriptClass> GetEntityClass();
+		static void SetEntityClass(Shr<ScriptClass> entityClass);
+
+		static std::unordered_map<std::string, Shr<ScriptClass>>& GetEntityInheritClasses();
+		static Shr<ScriptClass> GetEntityInheritClass(const std::string& fullClassName);
+		static bool EntityInheritClassExists(const std::string& fullClassName);
+
+		static std::unordered_map<EntityID, Shr<EntityInstance>>& GetEntityInstances();
 	private:
 		static void InitMono();
-		static void ShutdownMono();
+		static void ShutdownMono(bool appClose);
 
 		static EntityFieldStorage& GetActiveEntityFieldStorageInternal(Entity entity);
 
