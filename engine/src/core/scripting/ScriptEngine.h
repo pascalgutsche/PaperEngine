@@ -136,8 +136,8 @@ namespace Paper
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
 		static std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
-		static MonoImage* GetCoreAssembly();
-		static MonoImage* GetAppAssemblies();
+		static Shr<ScriptAssembly> GetCoreAssembly();
+		static std::vector<Shr<ScriptAssembly>> GetAppAssemblies();
 
 		static Shr<ScriptClass> GetEntityClass();
 		static void SetEntityClass(Shr<ScriptClass> entityClass);
