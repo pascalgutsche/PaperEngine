@@ -224,144 +224,152 @@ namespace Paper
 			return nullptr;
 		}
 
-		if (!data["Scene"])
-			return nullptr;
-
-		std::string scene_name = data["Name"].as<std::string>();
-		LOG_CORE_TRACE("Deserializing scene '{0}' from '{1}'", scene_name, filePath.string());
-
-		scene->name = scene_name;
-		if (data["Path"])
-			scene->path = data["Path"].as<std::string>();
-
-		if (auto entities = data["Entities"])
+		try
 		{
-			for (auto entity : entities)
+			if (!data["Scene"])
+				return nullptr;
+
+			std::string scene_name = data["Name"].as<std::string>();
+			LOG_CORE_TRACE("Deserializing scene '{0}' from '{1}'", scene_name, filePath.string());
+
+			scene->name = scene_name;
+			if (data["Path"])
+				scene->path = data["Path"].as<std::string>();
+
+			if (auto entities = data["Entities"])
 			{
-				CORE_ASSERT(entity["Components"], "")
-				auto components = entity["Components"];
-
-				EntityID uuid;
-				std::string entity_name;
-				if (auto data_component = components["DataComponent"])
+				for (auto entity : entities)
 				{
-					uuid = data_component["EntityID"].as<EntityID>();
-					entity_name = data_component["Name"].as<std::string>();
-				}
-				
-				LOG_CORE_TRACE("Deserializing entity name '{0}' and uuid '{1}' from '{2}'", entity_name, uuid.toString(), filePath.string());
-				
-				Entity deserialized_entity = scene->CreateEntity(uuid, entity_name);
-				
-				if (auto transformComponent = components["TransformComponent"])
-					deserialized_entity.GetComponent<TransformComponent>().Deserialize(transformComponent);
-				
-				if (auto sprite_component = components["SpriteComponent"])
-					deserialized_entity.AddComponent<SpriteComponent>().Deserialize(sprite_component);
-				
-				if (auto line_component = components["LineComponent"])
-					deserialized_entity.AddComponent<LineComponent>().Deserialize(line_component);
-				
-				if (auto text_component = components["TextComponent"])
-					deserialized_entity.AddComponent<TextComponent>().Deserialize(text_component);
+					CORE_ASSERT(entity["Components"], "")
+						auto components = entity["Components"];
 
-				if (auto script_component = components["ScriptComponent"])
-				{
-					deserialized_entity.AddComponent<ScriptComponent>().Deserialize(script_component);
-
-					auto yamlScriptFields = script_component["ScriptFields"];
-
-					for (YAML::const_iterator yamlScriptClass = yamlScriptFields.begin(); yamlScriptClass != yamlScriptFields.end(); ++yamlScriptClass) {
-						std::string scriptClassName = yamlScriptClass->first.as<std::string>();
-
-						Shr<ScriptClass> scriptClass = ScriptEngine::GetEntityClass(scriptClassName);
-						if (!scriptClass) continue;
-
-						auto yamlScriptClassFields = yamlScriptFields[scriptClassName];
-						for (YAML::const_iterator yamlScriptClassFieldsIT = yamlScriptClassFields.begin(); yamlScriptClassFieldsIT != yamlScriptClassFields.end(); ++yamlScriptClassFieldsIT)
-						{
-							std::string scriptFieldName = yamlScriptClassFieldsIT->first.as<std::string>();
-							ScriptField* scriptField = scriptClass->GetField(scriptFieldName);
-							if (!scriptField) continue;
-
-							auto yamlScriptField = yamlScriptClassFields[scriptFieldName];
-							auto& entityFieldStorage = ScriptEngine::GetEntityFieldStorage(deserialized_entity);
-
-							auto& scriptClassFieldStorages = entityFieldStorage[scriptClass];
-
-							int index = 0;
-							for ( ; index < scriptClassFieldStorages.size(); index++)
-								if (scriptClassFieldStorages[index]->GetField() == *scriptField) break;
-
-							Shr<ScriptFieldStorage> fieldStorage = MakeShr<ScriptFieldStorage>(scriptField);
-
-							ScriptFieldType type = (ScriptFieldType)yamlScriptField["FieldType"].as<int>();
-
-							switch (type)
-							{
-							case ScriptFieldType::Bool: 
-								SetFieldStorage<bool>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Char: 
-								SetFieldStorage<char>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::UChar: 
-								SetFieldStorage<unsigned char>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Int16:
-								SetFieldStorage<int16_t>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::UInt16:
-								SetFieldStorage<uint16_t>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Int32:
-								SetFieldStorage<int32_t>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::UInt32:
-								SetFieldStorage<uint32_t>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Int64:
-								SetFieldStorage<int64_t>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::UInt64:
-								SetFieldStorage<uint64_t>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Float:
-								SetFieldStorage<float>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Double:
-								SetFieldStorage<double>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::String:
-								SetFieldStorage<std::string>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Vec2:
-								SetFieldStorage<glm::vec2>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Vec3:
-								SetFieldStorage<glm::vec3>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Vec4:
-								SetFieldStorage<glm::vec4>(yamlScriptField, fieldStorage);
-								break;
-							case ScriptFieldType::Entity:
-							{
-								EntityID entityUUID = yamlScriptField["Value"].as<std::string>();
-								fieldStorage->SetValue(entityUUID.toUInt64(), true);
-								break;
-							}
-							}
-
-							scriptClassFieldStorages.emplace(scriptClassFieldStorages.begin() + index, fieldStorage);
-						}
+					EntityID uuid;
+					std::string entity_name;
+					if (auto data_component = components["DataComponent"])
+					{
+						uuid = data_component["EntityID"].as<EntityID>();
+						entity_name = data_component["Name"].as<std::string>();
 					}
 
-					ScriptEngine::CreateScriptEntity(deserialized_entity);
-				}
+					LOG_CORE_TRACE("Deserializing entity name '{0}' and uuid '{1}' from '{2}'", entity_name, uuid.toString(), filePath.string());
 
-				if (auto camera_component = components["CameraComponent"])
-					deserialized_entity.AddComponent<CameraComponent>().Deserialize(camera_component);
+					Entity deserialized_entity = scene->CreateEntity(uuid, entity_name);
+
+					if (auto transformComponent = components["TransformComponent"])
+						deserialized_entity.GetComponent<TransformComponent>().Deserialize(transformComponent);
+
+					if (auto sprite_component = components["SpriteComponent"])
+						deserialized_entity.AddComponent<SpriteComponent>().Deserialize(sprite_component);
+
+					if (auto line_component = components["LineComponent"])
+						deserialized_entity.AddComponent<LineComponent>().Deserialize(line_component);
+
+					if (auto text_component = components["TextComponent"])
+						deserialized_entity.AddComponent<TextComponent>().Deserialize(text_component);
+
+					if (auto script_component = components["ScriptComponent"])
+					{
+						deserialized_entity.AddComponent<ScriptComponent>().Deserialize(script_component);
+
+						auto yamlScriptFields = script_component["ScriptFields"];
+
+						for (YAML::const_iterator yamlScriptClass = yamlScriptFields.begin(); yamlScriptClass != yamlScriptFields.end(); ++yamlScriptClass) {
+							std::string scriptClassName = yamlScriptClass->first.as<std::string>();
+
+							Shr<ScriptClass> scriptClass = ScriptEngine::GetEntityInheritClass(scriptClassName);
+							if (!scriptClass) continue;
+
+							auto yamlScriptClassFields = yamlScriptFields[scriptClassName];
+							for (YAML::const_iterator yamlScriptClassFieldsIT = yamlScriptClassFields.begin(); yamlScriptClassFieldsIT != yamlScriptClassFields.end(); ++yamlScriptClassFieldsIT)
+							{
+								std::string scriptFieldName = yamlScriptClassFieldsIT->first.as<std::string>();
+								ScriptField* scriptField = scriptClass->GetField(scriptFieldName);
+								if (!scriptField) continue;
+
+								auto yamlScriptField = yamlScriptClassFields[scriptFieldName];
+								auto& entityFieldStorage = ScriptEngine::GetEntityFieldStorage(deserialized_entity);
+
+								auto& scriptClassFieldStorages = entityFieldStorage[scriptClass];
+
+								int index = 0;
+								for (; index < scriptClassFieldStorages.size(); index++)
+									if (scriptClassFieldStorages[index]->GetField() == *scriptField) break;
+
+								Shr<ScriptFieldStorage> fieldStorage = MakeShr<ScriptFieldStorage>(scriptField);
+
+								ScriptFieldType type = (ScriptFieldType)yamlScriptField["FieldType"].as<int>();
+
+								switch (type)
+								{
+									case ScriptFieldType::Bool:
+										SetFieldStorage<bool>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Char:
+										SetFieldStorage<char>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::UChar:
+										SetFieldStorage<unsigned char>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Int16:
+										SetFieldStorage<int16_t>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::UInt16:
+										SetFieldStorage<uint16_t>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Int32:
+										SetFieldStorage<int32_t>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::UInt32:
+										SetFieldStorage<uint32_t>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Int64:
+										SetFieldStorage<int64_t>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::UInt64:
+										SetFieldStorage<uint64_t>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Float:
+										SetFieldStorage<float>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Double:
+										SetFieldStorage<double>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::String:
+										SetFieldStorage<std::string>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Vec2:
+										SetFieldStorage<glm::vec2>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Vec3:
+										SetFieldStorage<glm::vec3>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Vec4:
+										SetFieldStorage<glm::vec4>(yamlScriptField, fieldStorage);
+										break;
+									case ScriptFieldType::Entity:
+									{
+										EntityID entityUUID = yamlScriptField["Value"].as<std::string>();
+										fieldStorage->SetValue(entityUUID.toUInt64(), true);
+										break;
+									}
+								}
+
+								scriptClassFieldStorages.emplace(scriptClassFieldStorages.begin() + index, fieldStorage);
+							}
+						}
+
+						ScriptEngine::CreateScriptEntity(deserialized_entity);
+					}
+
+					if (auto camera_component = components["CameraComponent"])
+						deserialized_entity.AddComponent<CameraComponent>().Deserialize(camera_component);
+				}
 			}
+		}
+		catch (YAML::Exception& ex)
+		{
+			LOG_CORE_CRITICAL(ex.msg);
+			return nullptr;
 		}
 		//scene->SetClean();
 		return scene;

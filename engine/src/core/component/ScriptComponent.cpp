@@ -13,7 +13,7 @@ namespace Paper
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap; // SpriteComponent
 
-			out << YAML::Key << "Name" << YAML::Value << ScriptEngine::GetEntityClass(scriptClassName)->GetFullClassName();
+			out << YAML::Key << "Name" << YAML::Value << ScriptEngine::GetEntityInheritClass(scriptClassName)->GetFullClassName();
 
 
 			return true;

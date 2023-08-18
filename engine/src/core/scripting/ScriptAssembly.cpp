@@ -6,19 +6,36 @@
 #include "mono/metadata/assembly.h"
 
 #include <filewatch/FileWatch.h>
+#include <mono/metadata/attrdefs.h>
 
 
 namespace Paper
 {
+	std::vector<ScriptAssembly*> ScriptAssembly::allAssemblies;
+
+	static std::unordered_map<ScriptAssembly*, Scope<filewatch::FileWatch<std::string>>> assemblyFileWatchers;
+
 	ScriptAssembly::ScriptAssembly(const std::filesystem::path& filePath, bool loadPDB, bool isCoreAssembly)
 		: filePath(filePath), isCoreAssembly(isCoreAssembly), containsPDB(loadPDB)
 	{
-		assemblyFileWatcher = MakeScoped<filewatch::FileWatch<std::string>>(filePath.string(), [&](const std::string& path, const filewatch::Event change_type)
+		assemblyFileWatchers[this] = MakeScoped<filewatch::FileWatch<std::string>>(filePath.string(), [&](const std::string& path, const filewatch::Event change_type)
 		{
 			ScriptEngine::ScheduleAssemblyReload(this);
 		});
 
+		LoadAssembly();
+		LoadAssemblyClasses();
 
+		allAssemblies.push_back(this);
+	}
+
+	ScriptAssembly::~ScriptAssembly()
+	{
+		const auto it = std::find(allAssemblies.begin(), allAssemblies.end(), this);
+		if (it != allAssemblies.end())
+			allAssemblies.erase(it);
+
+		assemblyFileWatchers.erase(this);
 	}
 
 	void ScriptAssembly::ReloadAssembly()
@@ -49,9 +66,10 @@ namespace Paper
 	void ScriptAssembly::LoadAssemblyClasses()
 	{
 		if (isCoreAssembly)
-			ScriptEngine::SetEntityClass(MakeShr<ScriptClass>("Paper", "Entity", monoAssemblyImage));
+			ScriptEngine::SetEntityClass(MakeShr<ScriptClass>("Paper", "Entity", *this));
 
 		entityClasses.clear();
+		classes.clear();
 
 		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(monoAssemblyImage, MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
@@ -66,12 +84,17 @@ namespace Paper
 
 			if (name == "<Module>") continue;
 
-			Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name);
+			Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name, *this);
+
+			uint32_t classFlags = mono_class_get_flags(scriptClass->monoClass); //if sealed, class has no constructor or is not constructable i.e enums and static classes
+			if (classFlags & MONO_TYPE_ATTR_SEALED) continue;
+
 			scriptClass->InitFieldMap();
 
 			std::string fullName = scriptClass->GetFullClassName();
 			if (scriptClass->IsSubclassOf(ScriptEngine::GetEntityClass()) && fullName != "Paper.Entity")
 				entityClasses[fullName] = scriptClass;
+			classes[fullName] = scriptClass;
 		}
 	}
 }

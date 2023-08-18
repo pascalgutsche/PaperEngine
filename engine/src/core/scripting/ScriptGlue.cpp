@@ -9,6 +9,7 @@
 #include "generic/Scene.h"
 
 #include "Components.h"
+#include "ScriptAssembly.h"
 #include "event/Input.h"
 #include "renderer/Font.h"
 
@@ -501,7 +502,7 @@ namespace Paper
             std::string_view structName = typeName.substr(++index);
             std::string csStructName = std::format("Paper.{}", structName);
 
-            MonoType* managedType = mono_reflection_type_from_name(csStructName.data(), ScriptEngine::GetCoreAssemblyImage());
+            MonoType* managedType = mono_reflection_type_from_name(csStructName.data(), ScriptEngine::GetCoreAssembly().GetMonoAssemblyImage());
             if (!managedType)
             {
                 LOG_SCR_CRITICAL("Could not find Component '{}'", csStructName);

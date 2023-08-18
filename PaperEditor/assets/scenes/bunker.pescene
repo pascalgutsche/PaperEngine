@@ -5,7 +5,7 @@ Path: assets\scenes\bunker.pescene
 Entities:
   - Components:
       DataComponent:
-        UUID:
+        EntityID:
           - ec02fe39ada8847b
         Name: Camera
         Tags:
@@ -43,7 +43,7 @@ Entities:
           OrthographicFar: 1000
   - Components:
       DataComponent:
-        UUID:
+        EntityID:
           - 8c74b899f28bd08d
         Name: Text Entity
         Tags:
@@ -59,7 +59,7 @@ Entities:
         Rotation: [0, 0, 0]
   - Components:
       DataComponent:
-        UUID:
+        EntityID:
           - 38572d50362d94f7
         Name: PlayerSprite
         Tags:
@@ -97,7 +97,7 @@ Entities:
         Rotation: [0, 0, 0]
   - Components:
       DataComponent:
-        UUID:
+        EntityID:
           - 16a27e5301e06a0c
         Name: LineWhat
         Tags:

@@ -7,6 +7,7 @@
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
 #include "renderer/Font.h"
+#include "scripting/ScriptAssembly.h"
 #include "scripting/ScriptEngine.h"
 
 static ImVec2 GetButtonSize()
@@ -454,7 +455,7 @@ void PaperLayer::PropertiesPanel()
 
 	DrawComponent<ScriptComponent>(this, "Script Component", true, [this](ScriptComponent& scrc, Entity entity)
 		{
-			Shr<ScriptClass> scriptClass = ScriptEngine::GetEntityClass(scrc.scriptClassName);
+			Shr<ScriptClass> scriptClass = ScriptEngine::GetEntityInheritClass(scrc.scriptClassName);
 			{
 				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
 				FillNameCol("C#-Class");
@@ -467,7 +468,7 @@ void PaperLayer::PropertiesPanel()
 
 				if (ImGui::BeginPopup("select_entity_scriptclass"))
 				{
-					const auto& classList = ScriptEngine::GetEntityClasses();
+					const auto& classList = ScriptEngine::GetEntityInheritClasses();
 					for (const auto [name, lscriptClass] : classList)
 					{
 						if (ImGui::Selectable(name.c_str(), scriptClass == lscriptClass) && scriptClass != lscriptClass)

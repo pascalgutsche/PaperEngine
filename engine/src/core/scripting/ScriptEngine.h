@@ -18,7 +18,8 @@ namespace Paper
 		: public std::enable_shared_from_this<ScriptClass>
 	{
 	public:
-		ScriptClass(const std::string& classNameSpace, const std::string& className, MonoImage* monoImage = nullptr);
+		ScriptClass(const std::string& classNameSpace, const std::string& className);
+		ScriptClass(const std::string& classNameSpace, const std::string& className, ScriptAssembly& scriptAssembly);
 
 		MonoObject* Instantiate() const;
 
@@ -52,16 +53,18 @@ namespace Paper
 		MonoClass* GetMonoClass() const;
 		const std::vector<ScriptField>& GetFields() const { return fields; }
 		ScriptField* GetField(const std::string& fieldName) const;
+		const ScriptAssembly& GetScriptAssembly() const { return *assembly; }
 
 		bool IsSubclassOf(const Shr<ScriptClass>& scriptClass) const;
 
 	private:
+		MonoClass* monoClass = nullptr;
+
 		std::string classNameSpace;
 		std::string className;
-
 		std::vector<ScriptField> fields;
 
-		MonoClass* monoClass = nullptr;
+		ScriptAssembly* assembly;
 
 		void InitFieldMap();
 
@@ -111,8 +114,8 @@ namespace Paper
 		static void Init();
 		static void Shutdown(bool appClose = false);
 
-		static void LoadAssembly(const std::filesystem::path& filepath);
-		static void LoadAppAssembly(const std::filesystem::path& filepath);
+		//static void LoadAssembly(const std::filesystem::path& filepath);
+		//static void LoadAppAssembly(const std::filesystem::path& filepath);
 		static void ReloadAppAssembly();
 
 		static bool ShouldReloadAppAssembly();
@@ -136,13 +139,13 @@ namespace Paper
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
 		static std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
-		static Shr<ScriptAssembly> GetCoreAssembly();
-		static std::vector<Shr<ScriptAssembly>> GetAppAssemblies();
+		static ScriptAssembly& GetCoreAssembly();
+		static std::vector<ScriptAssembly>& GetAppAssemblies();
 
 		static Shr<ScriptClass> GetEntityClass();
 		static void SetEntityClass(Shr<ScriptClass> entityClass);
 
-		static std::unordered_map<std::string, Shr<ScriptClass>>& GetEntityInheritClasses();
+		static std::unordered_map<std::string, Shr<ScriptClass>> GetEntityInheritClasses();
 		static Shr<ScriptClass> GetEntityInheritClass(const std::string& fullClassName);
 		static bool EntityInheritClassExists(const std::string& fullClassName);
 
@@ -153,7 +156,7 @@ namespace Paper
 
 		static EntityFieldStorage& GetActiveEntityFieldStorageInternal(Entity entity);
 
-		static void LoadAssemblyClasses(MonoAssembly* monoAssembly);
+		//static void LoadAssemblyClasses(MonoAssembly* monoAssembly);
 	};
 
     

@@ -11,6 +11,7 @@
 #include "mono/metadata/threads.h"
 
 #include <filewatch/FileWatch.h>
+#include <mono/metadata/attrdefs.h>
 
 #include "component/ScriptComponent.h"
 #include "generic/Application.h"
@@ -25,11 +26,11 @@ namespace Paper
         MonoDomain* rootDomain = nullptr;
         MonoDomain* appDomain = nullptr;
 
-        Shr<ScriptAssembly> coreAssembly = nullptr;
-		std::vector<Shr<ScriptAssembly>> appAssemblies;
+        ScriptAssembly coreAssembly;
+		std::vector<ScriptAssembly> appAssemblies;
 
         Shr<ScriptClass> entityClass = nullptr;
-        std::unordered_map<std::string, Shr<ScriptClass>> entityClasses;
+
         std::unordered_map<EntityID, Shr<EntityInstance>> entityInstances;
 
         std::unordered_map<EntityID, std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>> entityFieldStorage;
@@ -60,15 +61,11 @@ namespace Paper
         script_data->appDomain = mono_domain_create_appdomain((char*)"PaperScriptRuntime", nullptr);
         mono_domain_set(script_data->appDomain, true);
 
-        script_data->coreAssembly = MakeShr<ScriptAssembly>("resources/scripts/scriptcore.dll", true, true);
+        script_data->coreAssembly = ScriptAssembly("resources/scripts/scriptcore.dll", true, true);
         ScriptGlue::RegisterComponents();
 
-        script_data->appAssemblies.emplace_back(MakeShr<ScriptAssembly>("SandboxProject/assets/scripts/bin/Sandbox.dll", true));
-
-
-        script_data->entityClass = MakeShr<ScriptClass>("Paper", "Entity", script_data->coreAssemblyImage);
-
-        LoadAssemblyClasses(script_data->appAssembly);
+        script_data->appAssemblies.emplace_back("SandboxProject/assets/scripts/bin/Sandbox.dll", true);
+        script_data->appAssemblies.emplace_back("SandboxProject/assets/scripts/bin/Sandbox.dll", true);
 
 #if 0
 		ScriptClass mainClass("Paper", "Main");
@@ -162,6 +159,11 @@ namespace Paper
         }
     }
 
+    bool ScriptEngine::ShouldReloadAppAssembly()
+    {
+        return !script_data->assembliesReloadSchedule.empty();
+    }
+
     void ScriptEngine::ScheduleAssemblyReload(ScriptAssembly* assembly)
     {
         if (std::ranges::find(script_data->assembliesReloadSchedule, assembly) == script_data->assembliesReloadSchedule.end()) return;
@@ -187,7 +189,6 @@ namespace Paper
 
     void ScriptEngine::CreateScriptEntity(Entity entity)
     {
-        LOG_CORE_DEBUG("CreateScriptEntity()");
         if (!entity.HasComponent<ScriptComponent>()) return;
         
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
@@ -218,7 +219,6 @@ namespace Paper
 
     void ScriptEngine::DestroyScriptEntity(Entity entity)
     {
-        LOG_CORE_DEBUG("DestroyScriptEntity()");
         if (!entity.HasComponent<ScriptComponent>()) return;
         
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
@@ -273,13 +273,14 @@ namespace Paper
 
     bool ScriptEngine::EntityInheritClassExists(const std::string& fullClassName)
     {
-        return script_data->entityClasses.contains(fullClassName);
+        return GetEntityInheritClasses().contains(fullClassName);
     }
 
     Shr<ScriptClass> ScriptEngine::GetEntityInheritClass(const std::string& fullClassName)
     {
-        if (!script_data->entityClasses.contains(fullClassName)) return nullptr;
-        return script_data->entityClasses.at(fullClassName);
+        auto entityClasses = GetEntityInheritClasses();
+        if (!entityClasses.contains(fullClassName)) return nullptr;
+        return entityClasses.at(fullClassName);
     }
 
     Scene* ScriptEngine::GetSceneContext()
@@ -324,16 +325,24 @@ namespace Paper
         script_data->entityClass = entityClass;
     }
 
-    std::unordered_map<std::string, Shr<ScriptClass>>& ScriptEngine::GetEntityInheritClasses()
+    std::unordered_map<std::string, Shr<ScriptClass>> ScriptEngine::GetEntityInheritClasses()
     {
-        return script_data->entityClasses;
+        std::unordered_map<std::string, Shr<ScriptClass>> entityClasses;
+        for (const ScriptAssembly* scriptAssembly : ScriptAssembly::GetAllAssemblies())
+        {
+	        for (auto [name, entityClass] : scriptAssembly->GetEntityInheritClasses())
+	        {
+                entityClasses[name] = entityClass;
+	        }
+        }
+        return entityClasses;
     }
 
     std::unordered_map<EntityID, Shr<EntityInstance>>& ScriptEngine::GetEntityInstances()
     {
         return script_data->entityInstances;
     }
-
+    /*
     void ScriptEngine::LoadAssemblyClasses(MonoAssembly* monoAssembly)
     {
         script_data->entityClasses.clear();
@@ -360,7 +369,7 @@ namespace Paper
 				script_data->entityClasses[fullName] = scriptClass;
         }
     }
-
+    */
     void ScriptEngine::InitMono()
     {
         mono_set_assemblies_path("mono/lib");
@@ -409,12 +418,12 @@ namespace Paper
         return script_data->entityFieldStorage[entity.GetEntityID()][GetEntityInheritClass(sc.scriptClassName)];
     }
 
-    Shr<ScriptAssembly> ScriptEngine::GetCoreAssembly()
+    ScriptAssembly& ScriptEngine::GetCoreAssembly()
     {
         return script_data->coreAssembly;
     }
 
-    std::vector<Shr<ScriptAssembly>> ScriptEngine::GetAppAssemblies()
+    std::vector<ScriptAssembly>& ScriptEngine::GetAppAssemblies()
     {
         return script_data->appAssemblies;
     }
@@ -423,18 +432,51 @@ namespace Paper
     //
     //  ScriptClass
     //
-    ScriptClass::ScriptClass(const std::string& classNameSpace, const std::string& className, MonoImage* monoImage)
+    ScriptClass::ScriptClass(const std::string& classNameSpace, const std::string& className)
 	    : classNameSpace(classNameSpace), className(className), fields(std::vector<ScriptField>())
     {
-        if (!monoImage) monoImage = script_data->appAssemblyImage;
-        monoClass = mono_class_from_name(monoImage, classNameSpace.c_str(), className.c_str());
+        for (ScriptAssembly* scriptAssembly : ScriptAssembly::GetAllAssemblies())
+        {
+            MonoImage* image = scriptAssembly->GetMonoAssemblyImage();
+            monoClass = mono_class_from_name(image, classNameSpace.c_str(), className.c_str());
+            if (monoClass) 
+            {
+                assembly = scriptAssembly;
+                break;
+            }
+        }
+        CORE_ASSERT(monoClass, "")
+    }
+
+    ScriptClass::ScriptClass(const std::string& classNameSpace, const std::string& className,
+	    ScriptAssembly& scriptAssembly)
+        : classNameSpace(classNameSpace), className(className), fields(std::vector<ScriptField>())
+    {
+        MonoImage* image = scriptAssembly.GetMonoAssemblyImage();
+        monoClass = mono_class_from_name(image, classNameSpace.c_str(), className.c_str());
+        assembly = &scriptAssembly;
         CORE_ASSERT(monoClass, "")
     }
 
     MonoObject* ScriptClass::Instantiate() const
     {
+        uint32_t classFlags = mono_class_get_flags(monoClass); //if sealed, class has no constructor or is not constructable i.e enums and static classes
+        if (classFlags & MONO_TYPE_ATTR_SEALED)
+        {
+            LOG_CORE_ERROR("Scripting: class is sealed and therefore it cannot be instatiated. '{}'", GetFullClassName());
+            return nullptr;
+        }
+        if (!GetMethod(".ctor", 0))
+        {
+            LOG_CORE_ERROR("Scripting: class has no default constructor and therefore it cannot be default instatiated. '{}'", GetFullClassName());
+            return nullptr;
+        }
+
         MonoObject* monoObject = mono_object_new(script_data->appDomain, monoClass);
-        mono_runtime_object_init(monoObject);
+        if (monoObject)
+            mono_runtime_object_init(monoObject);
+        else
+            LOG_CORE_ERROR("Scripting: could not create object of class '{}'", GetFullClassName());
         return monoObject;
     }
 
@@ -476,6 +518,7 @@ namespace Paper
     void ScriptClass::InitFieldMap()
     {
 	    const ScriptInstance tempInstance(shared_from_this());
+        if (!tempInstance.monoInstance) return;
 
         fields.reserve(mono_class_num_fields(monoClass));
 

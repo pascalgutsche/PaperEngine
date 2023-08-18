@@ -309,7 +309,7 @@ namespace Paper
         case ScriptFieldType::String: 
             return (MonoObject*)StdStringToMonoString(std::string((char*)data));
         case ScriptFieldType::Entity:
-            return ScriptClass("Paper", "Entity", ScriptEngine::GetCoreAssemblyImage()).InstantiateParams(*(EntityID*)data);
+            return ScriptClass("Paper", "Entity", ScriptEngine::GetCoreAssembly()).InstantiateParams(*(EntityID*)data);
         default:
             return nullptr;
         }

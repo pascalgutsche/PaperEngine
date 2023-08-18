@@ -21,6 +21,7 @@ PaperLayer::PaperLayer()
 	viewports.emplace_back("4");
 
 	new_scene = YAMLSerializer::SceneDeserialize("assets/scenes/bunker.pescene");
+	
 }
 
 PaperLayer::~PaperLayer()
@@ -445,6 +446,9 @@ void PaperLayer::ToolbarPanel()
 
 	ImGui::Begin(name, nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
+	if (!editorScene)
+		ImGui::BeginDisabled();
+
 	Shr<Texture> playButton = DataPool::GetTexture("resources/editor/viewport/Play.png", true);
 	Shr<Texture> simulateButton = DataPool::GetTexture("resources/editor/viewport/Simulate.png", true);
 	Shr<Texture> pauseButton = DataPool::GetTexture("resources/editor/viewport/Pause.png", true);
@@ -519,6 +523,9 @@ void PaperLayer::ToolbarPanel()
 
 	ImGui::PopStyleVar(2);
 	ImGui::PopStyleColor(3);
+
+	if (!editorScene)
+		ImGui::EndDisabled();
 
 	ImGui::End();
 
