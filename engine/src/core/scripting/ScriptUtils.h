@@ -43,7 +43,7 @@ namespace Paper
 
         static MonoString* StdStringToMonoString(const std::string& stdString);
 
-        static MonoObject* DataToMonoObject(ScriptFieldType type, void* data);
+        static MonoObject* DataToMonoObject(ScriptFieldType type, const void* data);
 
         static bool IsPrimitive(ScriptFieldType type);
 

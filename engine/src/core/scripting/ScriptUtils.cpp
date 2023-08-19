@@ -302,14 +302,14 @@ namespace Paper
         return mono_string_new(mono_domain_get(), stdString.c_str());
     }
 
-    MonoObject* ScriptUtils::DataToMonoObject(ScriptFieldType type, void* data)
+    MonoObject* ScriptUtils::DataToMonoObject(ScriptFieldType type, const void* data)
     {
         switch (type)
         {
         case ScriptFieldType::String: 
-            return (MonoObject*)StdStringToMonoString(std::string((char*)data));
+            return (MonoObject*)StdStringToMonoString(std::string((const char*)data));
         case ScriptFieldType::Entity:
-            return ScriptClass("Paper", "Entity", ScriptEngine::GetCoreAssembly()).InstantiateParams(*(EntityID*)data);
+            return ScriptClass("Paper", "Entity", *ScriptEngine::GetCoreAssembly().get()).InstantiateParams(*(EntityID*)data);
         default:
             return nullptr;
         }

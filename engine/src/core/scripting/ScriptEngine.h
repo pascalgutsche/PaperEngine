@@ -77,7 +77,7 @@ namespace Paper
 		ScriptInstance(const Shr<ScriptClass>& scriptClass);
 
 		void GetFieldValue(const ScriptField& scriptField, Buffer& outBuffer) const;
-		void SetFieldValue(const ScriptField& scriptField, const Buffer& value) const;
+		void SetFieldValue(const ScriptField& scriptField, const void* value) const;
 
 		Shr<ScriptClass> GetScriptClass() const { return scriptClass; }
 		MonoObject* GetMonoInstance() const { return monoInstance; }
@@ -139,8 +139,8 @@ namespace Paper
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
 		static std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
-		static ScriptAssembly& GetCoreAssembly();
-		static std::vector<ScriptAssembly>& GetAppAssemblies();
+		static Shr<ScriptAssembly> GetCoreAssembly();
+		static std::vector<Shr<ScriptAssembly>>& GetAppAssemblies();
 
 		static Shr<ScriptClass> GetEntityClass();
 		static void SetEntityClass(Shr<ScriptClass> entityClass);

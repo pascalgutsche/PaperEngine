@@ -109,6 +109,8 @@ namespace Paper
 		{
 			if (runtimeInstance && !onlyBuffer)
 			{
+				Buffer val;
+				val.Allocate(sizeof(T));
 				SetRuntimeFieldValue(&value);
 				return;
 			}
@@ -126,7 +128,7 @@ namespace Paper
 		Buffer data = Buffer::Copy(scriptField->initialFieldVal);
 
 		void GetRuntimeFieldValue(Buffer& outBuffer) const;
-		void SetRuntimeFieldValue(const Buffer& value) const;
+		void SetRuntimeFieldValue(const void* value) const;
 
 		Shr<EntityInstance> runtimeInstance = nullptr;
 

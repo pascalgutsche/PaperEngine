@@ -26,8 +26,8 @@ namespace Paper
         MonoDomain* rootDomain = nullptr;
         MonoDomain* appDomain = nullptr;
 
-        ScriptAssembly coreAssembly;
-		std::vector<ScriptAssembly> appAssemblies;
+        Shr<ScriptAssembly> coreAssembly;
+		std::vector<Shr<ScriptAssembly>> appAssemblies;
 
         Shr<ScriptClass> entityClass = nullptr;
 
@@ -37,7 +37,7 @@ namespace Paper
 
         std::vector<ScriptAssembly*> assembliesReloadSchedule;
 
-        bool debugEnabled = false;
+        bool debugEnabled = true;
 
         bool monoInitialized = false;
 
@@ -61,11 +61,11 @@ namespace Paper
         script_data->appDomain = mono_domain_create_appdomain((char*)"PaperScriptRuntime", nullptr);
         mono_domain_set(script_data->appDomain, true);
 
-        script_data->coreAssembly = ScriptAssembly("resources/scripts/scriptcore.dll", true, true);
+        script_data->coreAssembly = MakeShr<ScriptAssembly>("resources/scripts/scriptcore.dll", true, true);
         ScriptGlue::RegisterComponents();
 
-        script_data->appAssemblies.emplace_back("SandboxProject/assets/scripts/bin/Sandbox.dll", true);
-        script_data->appAssemblies.emplace_back("SandboxProject/assets/scripts/bin/Sandbox.dll", true);
+        script_data->appAssemblies.emplace_back(MakeShr<ScriptAssembly>("SandboxProject/assets/scripts/bin/Sandbox.dll", true));
+        script_data->appAssemblies.emplace_back(MakeShr<ScriptAssembly>("D:/dev/C++/TestAssembly/TestAssembly/bin/Debug/TestAssembly.dll", true));
 
 #if 0
 		ScriptClass mainClass("Paper", "Main");
@@ -418,12 +418,12 @@ namespace Paper
         return script_data->entityFieldStorage[entity.GetEntityID()][GetEntityInheritClass(sc.scriptClassName)];
     }
 
-    ScriptAssembly& ScriptEngine::GetCoreAssembly()
+    Shr<ScriptAssembly> ScriptEngine::GetCoreAssembly()
     {
         return script_data->coreAssembly;
     }
 
-    std::vector<ScriptAssembly>& ScriptEngine::GetAppAssemblies()
+    std::vector<Shr<ScriptAssembly>>& ScriptEngine::GetAppAssemblies()
     {
         return script_data->appAssemblies;
     }
@@ -487,7 +487,12 @@ namespace Paper
 
     void ScriptClass::InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params) const
     {
-        mono_runtime_invoke(monoMethod, monoObject, params, nullptr);
+        MonoObject* exc = nullptr;
+        mono_runtime_invoke(monoMethod, monoObject, params, &exc);
+        if (exc)
+        {
+            mono_print_unhandled_exception(exc);
+        }
     }
 
     std::string ScriptClass::GetFullClassName() const
@@ -562,25 +567,28 @@ namespace Paper
         return ScriptUtils::MonoObjectToValue(scriptField, object, outBuffer);
     }
 
-    void ScriptInstance::SetFieldValue(const ScriptField& scriptField, const Buffer& value) const
+    void ScriptInstance::SetFieldValue(const ScriptField& scriptField, const void* value) const
     {
+        if (!value) return;
+        if (!scriptField.IsWritable()) return;
+
         const auto& classFields = scriptClass->GetFields();
         if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
 
-        void* data = nullptr;
+        const void* data = nullptr;
         if (ScriptUtils::IsPrimitive(scriptField.type))
-            data = value.data;
+            data = value;
         else
-            data = ScriptUtils::DataToMonoObject(scriptField.type, value.data);
+            data = ScriptUtils::DataToMonoObject(scriptField.type, value);
 
         /// convert char to wchar because c# char is wchar
         if (scriptField.type == ScriptFieldType::Char)
         {
-            wchar_t temp = *(char*)data;
+            wchar_t temp = *(const char*)data;
             data = &temp;
         }
 
-        mono_field_set_value(monoInstance, scriptField.monoField, data);
+        mono_field_set_value(monoInstance, scriptField.monoField, (void*)data);
     }
 
     ScriptInstance::ScriptInstance(MonoObject* instance)

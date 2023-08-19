@@ -15,7 +15,7 @@ namespace Paper
 	void ScriptFieldStorage::SetRuntimeInstance(Shr<EntityInstance> instance)
 	{
 		runtimeInstance = instance;
-		SetRuntimeFieldValue(data);
+		SetRuntimeFieldValue(data.data);
 	}
 
 	void ScriptFieldStorage::RemoveRuntimeInstance()
@@ -35,6 +35,10 @@ namespace Paper
 			valueBuffer.Release();
 			return value;
 		}
+
+		if (data.size == 0)
+			return std::string();
+
 		std::string val = std::string((const char*)data.data);
 		return val;
 	}
@@ -44,12 +48,12 @@ namespace Paper
 	{
 		if (runtimeInstance && !onlyBuffer)
 		{
-			Buffer valueBuffer;
-			valueBuffer.Allocate(value.size() + 1);
-			valueBuffer.Nullify();
-			valueBuffer.Write(value.data(), value.size());
-			SetRuntimeFieldValue(valueBuffer);
-			valueBuffer.Release();
+			//Buffer valueBuffer;
+			//valueBuffer.Allocate(value.size() + 1);
+			//valueBuffer.Nullify();
+			//valueBuffer.Write(value.data(), value.size());
+			SetRuntimeFieldValue(value.c_str());
+			//valueBuffer.Release();
 			return;
 		}
 
@@ -68,8 +72,9 @@ namespace Paper
 		runtimeInstance->GetFieldValue(*scriptField, outBuffer);
 	}
 
-	void ScriptFieldStorage::SetRuntimeFieldValue(const Buffer& value) const
+	void ScriptFieldStorage::SetRuntimeFieldValue(const void* value) const
 	{
-		runtimeInstance->SetFieldValue(*scriptField, value);
+		//if (scriptField->type != ScriptFieldType::String && value.size > 0)
+			runtimeInstance->SetFieldValue(*scriptField, value);
 	}
 }

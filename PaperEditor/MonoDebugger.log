@@ -1,8 +1,8 @@
 VM start event not sent yet: dropping APPDOMAIN_CREATE
-[000000000000C374] Thread started, obj=000001F04E220130, tls=000001F04B6F6040.
+[0000000000007F8C] Thread started, obj=0000021ADB580130, tls=0000021AD8A5A100.
 VM start event not sent yet: dropping THREAD_START
-[000000000000C374] Suspended.
-[000000000000C374] Resumed.
+[0000000000007F8C] Suspended.
+[0000000000007F8C] Resumed.
 VM start event not sent yet: dropping ASSEMBLY_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -12,12 +12,12 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
-[00000000000044AC] Thread started, obj=000001F04E220278, tls=000001F04B73F0E0.
+[0000000000008D4C] Thread started, obj=0000021ADB580278, tls=0000021AD8A859F0.
 VM start event not sent yet: dropping THREAD_START
-[00000000000044AC] Suspended.
-[00000000000044AC] Resumed.
 Debugger client is not connected: dropping VM_START
-[dbg] Agent thread started, pid=0000000000004CA0
+[0000000000008D4C] Suspended.
+[0000000000008D4C] Resumed.
+[dbg] Agent thread started, pid=0000000000006D78
 VM start event not sent yet: dropping APPDOMAIN_CREATE
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -28,75 +28,443 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping ASSEMBLY_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping ASSEMBLY_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-[00000000000090B8] Thread started, obj=000001F04E220508, tls=000001F04BBAC670.
-VM start event not sent yet: dropping THREAD_START
-[00000000000090B8] Suspended.
-[00000000000090B8] Resumed.
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping ASSEMBLY_UNLOAD
-VM start event not sent yet: dropping ASSEMBLY_UNLOAD
-VM start event not sent yet: dropping APPDOMAIN_UNLOAD
-[00000000000090B8] Thread terminated, obj=000001F04E220508, tls=000001F04BBAC670 (domain=000001F0408355C0).
-VM start event not sent yet: dropping THREAD_DEATH
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-VM start event not sent yet: dropping TYPE_LOAD
-[00000000000044AC] Thread terminated, obj=000001F04E220278, tls=000001F04B73F0E0 (domain=000001F0408355C0).
-VM start event not sent yet: dropping THREAD_DEATH
-VM start event not sent yet: dropping VM_DEATH
-Accepted connection on -1
-[dbg] Bad client connection
-[dbg] Can't attach, aborting debugger thread.
+Accepted connection from client, connection fd=1864.
+Accepted connection on 1864
+[0000000000006D78] Sent 1 events VM_START(1), suspend=0.
+[dbg] Command VM(VERSION) [1][at=38e2].
+[dbg] Command VM(SET_PROTOCOL_VERSION) [2][at=38e2].
+[dbg] Protocol version 2.57, client protocol version 2.56.
+[dbg] Command APPDOMAIN(GET_ROOT_DOMAIN) [3][at=38e2].
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [4][at=38e2].
+[dbg]   send assembly [mscorlib][PaperJITRuntime][1]
+[0000000000006D78] Sent 1 events ASSEMBLY_LOAD(2), suspend=0.
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[0000000000006D78] Sent 1 events ASSEMBLY_LOAD(3), suspend=0.
+[dbg]   send assembly [scriptcore][PaperScriptRuntime][3]
+[0000000000006D78] Sent 1 events ASSEMBLY_LOAD(4), suspend=0.
+[dbg]   send assembly [Sandbox][PaperScriptRuntime][4]
+[0000000000006D78] Sent 1 events ASSEMBLY_LOAD(5), suspend=0.
+[dbg]   send assembly [TestAssembly][PaperScriptRuntime][5]
+[0000000000006D78] Sent 1 events ASSEMBLY_LOAD(6), suspend=0.
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [5][at=38e2].
+[0000000000006D78] Sent 1 events THREAD_START(7), suspend=0.
+[0000000000006D78] Sent 1 events THREAD_START(8), suspend=0.
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [6][at=38e3].
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [7][at=38e3].
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [8][at=38e3].
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [9][at=38e3].
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [10][at=38e3].
+[dbg] 	EXCEPTION_ONLY 2 filter (all, uncaught, include-subclasses).
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [11][at=38e3].
+[dbg] Command OBJECT_REF(GET_INFO) [12][at=38e3].
+[dbg]   send class [System.Threading.Thread]
+[dbg] Command TYPE(GET_INFO) [13][at=38e3].
+[dbg]   recv class [System.Threading.Thread]
+[dbg]   send assembly [mscorlib][PaperJITRuntime][1]
+[dbg]   send class [System.Runtime.ConstrainedExecution.CriticalFinalizerObject]
+[dbg] Command APPDOMAIN(GET_CORLIB) [14][at=38e3].
+[dbg]   send assembly [mscorlib][PaperJITRuntime][1]
+[dbg] Command THREAD(GET_ID) [15][at=38e3].
+[dbg] Command THREAD(GET_NAME) [16][at=38e3].
+[dbg] Command THREAD(GET_INFO) [17][at=38e3].
+[dbg] Command ASSEMBLY(GET_TYPE) [18][at=38e4].
+[dbg]   send class [System.Exception]
+[dbg] Command TYPE(GET_INFO) [19][at=38e5].
+[dbg]   recv class [System.Exception]
+[dbg]   send assembly [mscorlib][PaperJITRuntime][1]
+[dbg]   send class [object]
+[dbg]   send class [System.Exception/__RestrictedErrorObject]
+[dbg]   send class [System.Exception/ExceptionMessageKind]
+[dbg] Command ASSEMBLY(GET_DOMAIN) [20][at=38e5].
+[dbg] Command TYPE(GET_SOURCE_FILES) [21][at=38e5].
+[dbg]   recv class [System.Exception]
+[dbg] Command ASSEMBLY(GET_NAME) [22][at=38e5].
+[dbg] Command ASSEMBLY(GET_OBJECT) [23][at=38e6].
+[dbg] Command OBJECT_REF(GET_INFO) [24][at=38e6].
+[dbg]   send class [System.Reflection.RuntimeAssembly]
+[dbg] Command TYPE(GET_INFO) [25][at=38e7].
+[dbg]   recv class [System.Reflection.RuntimeAssembly]
+[dbg]   send assembly [mscorlib][PaperJITRuntime][1]
+[dbg]   send class [System.Reflection.Assembly]
+[dbg]   send class [System.Reflection.RuntimeAssembly/UnmanagedMemoryStreamForModule]
+[dbg] Command ASSEMBLY(9) [26][at=38e7].
+[dbg] Command ASSEMBLY(13) [27][at=38e7].
+[dbg] Command ASSEMBLY(GET_LOCATION) [28][at=38e7].
+[dbg] Command OBJECT_REF(GET_ADDRESS) [29][at=38e7].
+[dbg] Command APPDOMAIN(GET_FRIENDLY_NAME) [30][at=38e7].
+[dbg] Command ASSEMBLY(GET_NAME) [31][at=38e7].
+[dbg] Command ASSEMBLY(GET_OBJECT) [32][at=38e7].
+[dbg] Command OBJECT_REF(GET_INFO) [33][at=38e8].
+[dbg]   send class [System.Reflection.RuntimeAssembly]
+[dbg] Command TYPE(GET_INFO) [34][at=38e8].
+[dbg]   recv class [System.Reflection.RuntimeAssembly]
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg]   send class [System.Reflection.Assembly]
+[dbg]   send class [System.Reflection.RuntimeAssembly/UnmanagedMemoryStreamForModule]
+[dbg] Command APPDOMAIN(GET_CORLIB) [35][at=38e8].
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg] Command ASSEMBLY(9) [36][at=38e8].
+[dbg] Command ASSEMBLY(13) [37][at=38e8].
+[dbg] Command ASSEMBLY(GET_LOCATION) [38][at=38e8].
+[dbg] Command OBJECT_REF(GET_ADDRESS) [39][at=38e8].
+[dbg] Command ASSEMBLY(GET_DOMAIN) [40][at=38e8].
+[dbg] Command APPDOMAIN(GET_FRIENDLY_NAME) [41][at=38e8].
+[dbg] Command ASSEMBLY(GET_NAME) [42][at=38e8].
+[dbg] Command ASSEMBLY(GET_OBJECT) [43][at=38e9].
+[dbg] Command OBJECT_REF(GET_INFO) [44][at=38e9].
+[dbg]   send class [System.Reflection.RuntimeAssembly]
+[dbg] Command ASSEMBLY(9) [45][at=38e9].
+[dbg] Command ASSEMBLY(13) [46][at=38e9].
+[dbg] Command ASSEMBLY(GET_LOCATION) [47][at=38e9].
+[dbg] Command OBJECT_REF(GET_ADDRESS) [48][at=38e9].
+[dbg] Command ASSEMBLY(GET_DOMAIN) [49][at=38e9].
+[dbg] Command ASSEMBLY(GET_NAME) [50][at=38e9].
+[dbg] Command ASSEMBLY(GET_OBJECT) [51][at=38e9].
+[dbg] Command OBJECT_REF(GET_INFO) [52][at=38e9].
+[dbg]   send class [System.Reflection.RuntimeAssembly]
+[dbg] Command ASSEMBLY(9) [53][at=38e9].
+[dbg] Command ASSEMBLY(13) [54][at=38ea].
+[dbg] Command ASSEMBLY(GET_LOCATION) [55][at=38ea].
+[dbg] Command OBJECT_REF(GET_ADDRESS) [56][at=38ea].
+[dbg] Command ASSEMBLY(GET_DOMAIN) [57][at=38ea].
+[dbg] Command ASSEMBLY(GET_NAME) [58][at=38ea].
+[dbg] Command ASSEMBLY(GET_OBJECT) [59][at=38ea].
+[dbg] Command OBJECT_REF(GET_INFO) [60][at=38ea].
+[dbg]   send class [System.Reflection.RuntimeAssembly]
+[dbg] Command ASSEMBLY(9) [61][at=38ea].
+[dbg] Command ASSEMBLY(13) [62][at=38ea].
+[dbg] Command ASSEMBLY(GET_LOCATION) [63][at=38ea].
+[dbg] Command OBJECT_REF(GET_ADDRESS) [64][at=38ea].
+[dbg] Command ASSEMBLY(GET_DOMAIN) [65][at=38ea].
+[dbg] Command VM(GET_TYPES) [66][at=5334].
+[dbg]   send class [Sandbox.Player]
+[dbg] Command TYPE(GET_INFO) [67][at=5335].
+[dbg]   recv class [Sandbox.Player]
+[dbg]   send assembly [Sandbox][PaperScriptRuntime][4]
+[dbg]   send class [Paper.Entity]
+[dbg] Command TYPE(GET_SOURCE_FILES) [68][at=5335].
+[dbg]   recv class [Sandbox.Player]
+[dbg] Command TYPE(GET_METHODS) [69][at=5335].
+[dbg]   recv class [Sandbox.Player]
+[dbg]   send method [Sandbox.Player:OnCreate ()]
+[dbg]   send method [Sandbox.Player:OnDestroy ()]
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg]   send method [Sandbox.Player:.ctor ()]
+[dbg] Command METHOD(GET_DEBUG_INFO) [70][at=5335].
+[dbg]   recv method [Sandbox.Player:OnCreate ()]
+[dbg] Command METHOD(GET_DEBUG_INFO) [71][at=5335].
+[dbg]   recv method [Sandbox.Player:OnDestroy ()]
+[dbg] Command METHOD(GET_DEBUG_INFO) [72][at=5335].
+[dbg]   recv method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command METHOD(GET_INFO) [73][at=5335].
+[dbg]   recv method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command METHOD(GET_DEBUG_INFO) [74][at=5335].
+[dbg]   recv method [Sandbox.Player:.ctor ()]
+[dbg] Command METHOD(GET_PARAM_INFO) [75][at=5335].
+[dbg]   recv method [Sandbox.Player:OnUpdate (single)]
+[dbg]   send class [void]
+[dbg]   send class [single]
+[dbg] Command TYPE(GET_INFO) [76][at=5336].
+[dbg]   recv class [void]
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg]   send class [System.ValueType]
+[dbg] Command METHOD(GET_DECLARING_TYPE) [77][at=5336].
+[dbg]   recv method [Sandbox.Player:OnUpdate (single)]
+[dbg]   send class [Sandbox.Player]
+[dbg] Command METHOD(GET_NAME) [78][at=5336].
+[dbg]   recv method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command TYPE(GET_INFO) [79][at=5336].
+[dbg]   recv class [single]
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg]   send class [System.ValueType]
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [80][at=5336].
+[dbg]   recv method [Sandbox.Player:OnUpdate (single)]
+[dbg] Setting breakpoint at Sandbox.Player:OnUpdate (single):0x1.
+[dbg] Command EVENT_REQUEST(REQUEST_SET) [81][at=5336].
+[dbg]   send class [Sandbox.Player]
+[0000000000006D78] Sent 1 events TYPE_LOAD(9), suspend=0.
+[dbg] Inserted breakpoint at Sandbox.Player:OnUpdate (single):[il=0x1,native=0xd9] [0000021ADB5BA689](0).
+[0000000000007F8C] Breakpoint hit, method=OnUpdate, ip=0000021ADB5BA69A, [il=0x1,native=0xea].
+[0000000000007F8C]   send method [Sandbox.Player:OnUpdate (single)]
+[0000000000007F8C] Suspending vm...
+[0000000000007F8C] Interrupting 0000000000008D4C...
+[0000000000008D4C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[0000000000007F8C] Sent 1 events BREAKPOINT(10), suspend=2.
+[0000000000007F8C] Suspended.
+[dbg] Command OBJECT_REF(GET_INFO) [82][at=5ab6].
+[dbg]   send class [System.Threading.Thread]
+[dbg] Command TYPE(GET_INFO) [83][at=5ab6].
+[dbg]   recv class [System.Threading.Thread]
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg]   send class [System.Runtime.ConstrainedExecution.CriticalFinalizerObject]
+[dbg] Command THREAD(GET_FRAME_INFO) [84][at=5ab6].
+Frames for 0000021ADB580130(tid=7f8c):
+	Frame: Sandbox.Player:OnUpdate (single):[il=0x1, native=0xea] 1
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command MODULE(GET_INFO) [85][at=5ab7].
+[dbg]   send assembly [Sandbox][PaperScriptRuntime][4]
+[dbg] Command STACK_FRAME(GET_DOMAIN) [86][at=5ab7].
+[dbg] Command APPDOMAIN(GET_ASSEMBLIES) [87][at=5ab7].
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg]   send assembly [scriptcore][PaperScriptRuntime][3]
+[dbg]   send assembly [Sandbox][PaperScriptRuntime][4]
+[dbg]   send assembly [TestAssembly][PaperScriptRuntime][5]
+[dbg] Command ASSEMBLY(GET_TYPE) [88][at=5ab7].
+[dbg]   send class [System.Diagnostics.DebuggerHiddenAttribute]
+[dbg] Command METHOD(GET_CATTRS ) [89][at=5ab7].
+[dbg]   recv method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command ASSEMBLY(GET_TYPE) [90][at=5ab7].
+[dbg]   send class [System.Diagnostics.DebuggerNonUserCodeAttribute]
+[dbg] Command TYPE(GET_CATTRS) [91][at=5ab7].
+[dbg]   recv class [Sandbox.Player]
+[dbg] Command THREAD(GET_ID) [92][at=5ab7].
+[dbg] Command VM(ALL_THREADS) [93][at=5ab7].
+[dbg] Command THREAD(GET_FRAME_INFO) [94][at=5ac0].
+Frames for 0000021ADB580130(tid=7f8c):
+	Frame: Sandbox.Player:OnUpdate (single):[il=0x1, native=0xea] 1
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command STACK_FRAME(GET_DOMAIN) [95][at=5ac1].
+[dbg] Command APPDOMAIN(GET_ASSEMBLIES) [96][at=5ac2].
+[dbg]   send assembly [mscorlib][PaperJITRuntime][1]
+[dbg] Command METHOD(GET_LOCALS_INFO) [97][at=5cdf].
+[dbg]   recv method [Sandbox.Player:OnUpdate (single)]
+[dbg]   send class [Paper.Vec3]
+[dbg]   send class [Sandbox.Camera]
+[dbg] Command STACK_FRAME(GET_THIS) [98][at=5ce0].
+[dbg] Command OBJECT_REF(GET_INFO) [99][at=5ce0].
+[dbg]   send class [Sandbox.Player]
+[dbg] Command TYPE(GET_FIELDS) [100][at=5ce0].
+[dbg]   recv class [Sandbox.Player]
+[dbg]   send class [Paper.TransformComponent]
+[dbg]   send class [Paper.SpriteComponent]
+[dbg]   send class [int]
+[dbg]   send class [single]
+[dbg]   send class [char]
+[dbg] Command OBJECT_REF(GET_VALUES) [101][at=5ce0].
+[dbg] Command OBJECT_REF(GET_INFO) [102][at=5ce0].
+[dbg]   send class [Paper.TransformComponent]
+[dbg] Command TYPE(GET_INFO) [103][at=5ce0].
+[dbg]   recv class [Paper.TransformComponent]
+[dbg]   send assembly [scriptcore][PaperScriptRuntime][3]
+[dbg]   send class [Paper.Component]
+[dbg] Command TYPE(GET_CATTRS) [104][at=5ce1].
+[dbg]   recv class [Paper.TransformComponent]
+[dbg] Command TYPE(GET_INFO) [105][at=5ce1].
+[dbg]   recv class [Paper.Component]
+[dbg]   send assembly [scriptcore][PaperScriptRuntime][3]
+[dbg]   send class [object]
+[dbg] Command TYPE(GET_CATTRS) [106][at=5ce1].
+[dbg]   recv class [Paper.Component]
+[dbg] Command TYPE(GET_INFO) [107][at=5ce1].
+[dbg]   recv class [object]
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg] Command TYPE(GET_CATTRS) [108][at=5ce1].
+[dbg]   recv class [object]
+[dbg]   send method [System.Runtime.InteropServices.ClassInterfaceAttribute:.ctor (System.Runtime.InteropServices.ClassInterfaceType)]
+[dbg]   send class [System.Runtime.InteropServices.ClassInterfaceType]
+[dbg]   send method [System.Runtime.InteropServices.ComVisibleAttribute:.ctor (bool)]
+[dbg] Command METHOD(GET_DECLARING_TYPE) [109][at=5ce1].
+[dbg]   recv method [System.Runtime.InteropServices.ClassInterfaceAttribute:.ctor (System.Runtime.InteropServices.ClassInterfaceType)]
+[dbg]   send class [System.Runtime.InteropServices.ClassInterfaceAttribute]
+[dbg] Command TYPE(GET_INFO) [110][at=5ce1].
+[dbg]   recv class [System.Runtime.InteropServices.ClassInterfaceAttribute]
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg]   send class [System.Attribute]
+[dbg] Command METHOD(GET_DECLARING_TYPE) [111][at=5ce1].
+[dbg]   recv method [System.Runtime.InteropServices.ComVisibleAttribute:.ctor (bool)]
+[dbg]   send class [System.Runtime.InteropServices.ComVisibleAttribute]
+[dbg] Command TYPE(GET_INFO) [112][at=5ce1].
+[dbg]   recv class [System.Runtime.InteropServices.ComVisibleAttribute]
+[dbg]   send assembly [mscorlib][PaperScriptRuntime][2]
+[dbg]   send class [System.Attribute]
+[dbg] Command TYPE(GET_FIELDS) [113][at=5ce2].
+[dbg]   recv class [Paper.TransformComponent]
+[dbg] Command TYPE(GET_PROPERTIES ) [114][at=5ce2].
+[dbg]   recv class [Paper.TransformComponent]
+[dbg]   send method [Paper.TransformComponent:get_Position ()]
+[dbg]   send method [Paper.TransformComponent:set_Position (Paper.Vec3)]
+[dbg]   send method [Paper.TransformComponent:get_Rotation ()]
+[dbg]   send method [Paper.TransformComponent:set_Rotation (Paper.Vec3)]
+[dbg]   send method [Paper.TransformComponent:get_Scale ()]
+[dbg]   send method [Paper.TransformComponent:set_Scale (Paper.Vec3)]
+[dbg] Command TYPE(GET_PROPERTY_CATTRS) [115][at=5ce2].
+[dbg]   recv class [Paper.TransformComponent]
+[dbg] Command TYPE(GET_PROPERTY_CATTRS) [116][at=5ce2].
+[dbg]   recv class [Paper.TransformComponent]
+[dbg] Command TYPE(GET_PROPERTY_CATTRS) [117][at=5ce2].
+[dbg]   recv class [Paper.TransformComponent]
+[dbg] Command TYPE(GET_METHODS_BY_NAME_FLAGS) [118][at=5ce2].
+[dbg]   recv class [Paper.TransformComponent]
+[dbg] Command TYPE(GET_METHODS_BY_NAME_FLAGS) [119][at=5ce2].
+[dbg]   recv class [Paper.Component]
+[dbg] Command TYPE(GET_METHODS_BY_NAME_FLAGS) [120][at=5ce2].
+[dbg]   recv class [object]
+[dbg]   send method [object:ToString ()]
+[dbg] Command METHOD(GET_NAME) [121][at=5ce2].
+[dbg]   recv method [object:ToString ()]
+[dbg] Command METHOD(GET_INFO) [122][at=5ce2].
+[dbg]   recv method [object:ToString ()]
+[dbg] Command METHOD(GET_PARAM_INFO) [123][at=5ce2].
+[dbg]   recv method [object:ToString ()]
+[dbg]   send class [string]
+[dbg] Command METHOD(GET_DECLARING_TYPE) [124][at=5ce2].
+[dbg]   recv method [object:ToString ()]
+[dbg]   send class [object]
+[dbg] Command VM(RESUME) [125][at=652a].
+[0000000000006D78] Resuming vm, suspend count=0...
+[0000000000007F8C] Resumed.
+[0000000000007F8C] Breakpoint hit, method=OnUpdate, ip=0000021ADB5BA69A, [il=0x1,native=0xea].
+[0000000000007F8C]   send method [Sandbox.Player:OnUpdate (single)]
+[0000000000007F8C] Suspending vm...
+[0000000000007F8C] Interrupting 0000000000008D4C...
+[0000000000008D4C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[0000000000007F8C] Sent 1 events BREAKPOINT(11), suspend=2.
+[0000000000007F8C] Suspended.
+[dbg] Command THREAD(GET_FRAME_INFO) [126][at=6531].
+Frames for 0000021ADB580130(tid=7f8c):
+	Frame: Sandbox.Player:OnUpdate (single):[il=0x1, native=0xea] 1
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command STACK_FRAME(GET_DOMAIN) [127][at=6531].
+[dbg] Command VM(ALL_THREADS) [128][at=6531].
+[dbg] Command THREAD(GET_FRAME_INFO) [129][at=655e].
+Frames for 0000021ADB580130(tid=7f8c):
+	Frame: Sandbox.Player:OnUpdate (single):[il=0x1, native=0xea] 1
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command STACK_FRAME(GET_DOMAIN) [130][at=655f].
+[dbg] Command STACK_FRAME(GET_THIS) [131][at=675c].
+[dbg] Command OBJECT_REF(GET_VALUES) [132][at=675c].
+[dbg] Command VM(RESUME) [133][at=6aea].
+[0000000000006D78] Resuming vm, suspend count=0...
+[0000000000007F8C] Resumed.
+[0000000000007F8C] Breakpoint hit, method=OnUpdate, ip=0000021ADB5BA69A, [il=0x1,native=0xea].
+[0000000000007F8C]   send method [Sandbox.Player:OnUpdate (single)]
+[0000000000007F8C] Suspending vm...
+[0000000000007F8C] Interrupting 0000000000008D4C...
+[0000000000008D4C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[0000000000007F8C] Sent 1 events BREAKPOINT(12), suspend=2.
+[0000000000007F8C] Suspended.
+[dbg] Command THREAD(GET_FRAME_INFO) [134][at=6aed].
+Frames for 0000021ADB580130(tid=7f8c):
+	Frame: Sandbox.Player:OnUpdate (single):[il=0x1, native=0xea] 1
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command STACK_FRAME(GET_DOMAIN) [135][at=6aed].
+[dbg] Command VM(ALL_THREADS) [136][at=6aed].
+[dbg] Command THREAD(GET_FRAME_INFO) [137][at=6af7].
+Frames for 0000021ADB580130(tid=7f8c):
+	Frame: Sandbox.Player:OnUpdate (single):[il=0x1, native=0xea] 1
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command STACK_FRAME(GET_DOMAIN) [138][at=6af8].
+[dbg] Command STACK_FRAME(GET_THIS) [139][at=6cfb].
+[dbg] Command OBJECT_REF(GET_VALUES) [140][at=6cfb].
+[dbg] Command VM(RESUME) [141][at=6e49].
+[0000000000006D78] Resuming vm, suspend count=0...
+[0000000000007F8C] Resumed.
+[0000000000007F8C] Breakpoint hit, method=OnUpdate, ip=0000021ADB5BA69A, [il=0x1,native=0xea].
+[0000000000007F8C]   send method [Sandbox.Player:OnUpdate (single)]
+[0000000000007F8C] Suspending vm...
+[0000000000007F8C] Interrupting 0000000000008D4C...
+[0000000000008D4C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[0000000000007F8C] Sent 1 events BREAKPOINT(13), suspend=2.
+[0000000000007F8C] Suspended.
+[dbg] Command THREAD(GET_FRAME_INFO) [142][at=6e4c].
+Frames for 0000021ADB580130(tid=7f8c):
+	Frame: Sandbox.Player:OnUpdate (single):[il=0x1, native=0xea] 1
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command STACK_FRAME(GET_DOMAIN) [143][at=6e4c].
+[dbg] Command VM(ALL_THREADS) [144][at=6e4c].
+[dbg] Command THREAD(GET_FRAME_INFO) [145][at=6e4d].
+Frames for 0000021ADB580130(tid=7f8c):
+	Frame: Sandbox.Player:OnUpdate (single):[il=0x1, native=0xea] 1
+[dbg]   send method [Sandbox.Player:OnUpdate (single)]
+[dbg] Command STACK_FRAME(GET_DOMAIN) [146][at=6e4d].
+[dbg] Command STACK_FRAME(GET_THIS) [147][at=7057].
+[dbg] Command OBJECT_REF(GET_VALUES) [148][at=7058].
+[dbg] Command EVENT_REQUEST(REQUEST_CLEAR) [149][at=7473].
+[dbg] Clear breakpoint at Sandbox.Player:OnUpdate (single) [0000021ADB5BA689].
+[dbg] Command VM(RESUME) [150][at=79d7].
+[0000000000006D78] Resuming vm, suspend count=0...
+[0000000000007F8C] Resumed.
+[000000000000A5F8] Thread started, obj=0000021ADB580508, tls=0000021AD345E620.
+[000000000000A5F8] Suspending vm...
+[000000000000A5F8] Interrupting 0000000000007F8C...
+[0000000000007F8C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[000000000000A5F8] Interrupting 0000000000008D4C...
+[0000000000008D4C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[000000000000A5F8] Sent 1 events THREAD_START(14), suspend=2.
+[000000000000A5F8] Suspended.
+[dbg] Command OBJECT_REF(GET_INFO) [151][at=9938].
+[dbg]   send class [System.Threading.Thread]
+[dbg] Command THREAD(GET_NAME) [152][at=9938].
+[dbg] Command THREAD(GET_INFO) [153][at=9938].
+[dbg] Command THREAD(GET_ID) [154][at=9938].
+[dbg] Command VM(RESUME) [155][at=9939].
+[0000000000006D78] Resuming vm, suspend count=0...
+[000000000000A5F8] Resumed.
+[000000000000A5F8] Suspended.
+[000000000000A5F8] Resumed.
+[000000000000A5F8] Suspending vm...
+[000000000000A5F8] Interrupting 0000000000007F8C...
+[0000000000007F8C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[000000000000A5F8] Interrupting 0000000000008D4C...
+[0000000000008D4C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[000000000000A5F8] Sent 1 events APPDOMAIN_UNLOAD(15), suspend=2.
+[000000000000A5F8] Suspended.
+[dbg] Command VM(RESUME) [156][at=9950].
+[0000000000006D78] Resuming vm, suspend count=0...
+[000000000000A5F8] Resumed.
+[000000000000A5F8] Thread terminated, obj=0000021ADB580508, tls=0000021AD345E620 (domain=0000021AD35D7520).
+[000000000000A5F8] Suspending vm...
+[000000000000A5F8] Interrupting 0000000000007F8C...
+[0000000000007F8C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[000000000000A5F8] Interrupting 0000000000008D4C...
+[0000000000008D4C] Received interrupt while at 00007FF9169CD094, treating as suspended.
+[000000000000A5F8] Sent 1 events THREAD_DEATH(16), suspend=2.
+[000000000000A5F8] Suspended.
+[dbg] Command VM(RESUME) [157][at=9953].
+[0000000000006D78] Resuming vm, suspend count=0...
+[000000000000A5F8] Resumed.
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+Mono runtime is shutting down: dropping TYPE_LOAD
+[0000000000008D4C] Thread terminated, obj=0000021ADB580278, tls=0000021AD8A859F0 (domain=0000021AD35D7520).
+Mono runtime is shutting down: dropping THREAD_DEATH
+[0000000000007F8C] Sent 1 events VM_DEATH(17), suspend=0.
+[dbg] transport_recv () returned 0, expected 11.
 [dbg] Debugger thread exited.
