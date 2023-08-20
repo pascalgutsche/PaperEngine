@@ -21,13 +21,13 @@ namespace Sandbox
 
         public override void OnUpdate(float dt)
         {
-            if(focusedEntity ==  null) return;
-            TransformComponent focusedEntityTC = focusedEntity.GetComponent<TransformComponent>();
-
-            if (focusedEntityTC == null) return;
-            Vec3 fpos = focusedEntityTC.Position;
-
-            TC.Position = new Vec3(fpos.X, fpos.Y, fpos.Z + distanceFromFocusedEntity);
+            //if(focusedEntity ==  null) return;
+            //TransformComponent focusedEntityTC = focusedEntity.GetComponent<TransformComponent>();
+            //
+            //if (focusedEntityTC == null) return;
+            //Vec3 fpos = focusedEntityTC.Position;
+            //
+            //TC.Position = new Vec3(fpos.X, fpos.Y, fpos.Z + distanceFromFocusedEntity);
         }
     }
 }

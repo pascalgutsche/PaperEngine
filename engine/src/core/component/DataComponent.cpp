@@ -10,7 +10,7 @@ namespace Paper
 			out << YAML::Key << "DataComponent";
 			out << YAML::BeginMap; // SpriteComponent
 
-			out << YAML::Key << "EntityID" << YAML::Value << uuid;
+			out << YAML::Key << "PaperID" << YAML::Value << uuid;
 			out << YAML::Key << "Name" << YAML::Value << name;
 			out << YAML::Key << "Tags" << YAML::Value << tags;
 
@@ -28,7 +28,7 @@ namespace Paper
 	{
 		try
 		{
-			uuid = data["EntityID"].as<EntityID>();
+			uuid = data["PaperID"].as<PaperID>();
 			name = data["Name"].as<std::string>();
 			tags = data["Tags"].as<std::vector<std::string>>();
 		}

@@ -67,6 +67,24 @@ namespace Paper
 		memcpy(data.data, value.c_str(), value.length() * sizeof(char));
 	}
 
+	Buffer ScriptFieldStorage::GetValueBuffer() const
+	{
+		if (runtimeInstance == nullptr)
+			return data;
+
+		Buffer result;
+		GetRuntimeFieldValue(result);
+		return result;
+	}
+
+	void ScriptFieldStorage::SetValueBuffer(const Buffer& buffer)
+	{
+		if (runtimeInstance != nullptr)
+			SetRuntimeFieldValue(buffer.data);
+		else
+			data = Buffer::Copy(buffer);
+	}
+
 	void ScriptFieldStorage::GetRuntimeFieldValue(Buffer& outBuffer) const
 	{
 		runtimeInstance->GetFieldValue(*scriptField, outBuffer);

@@ -616,7 +616,7 @@ namespace Paper {
 		NextBatch(LINE);
 	}
 
-	void Renderer2D::DrawLineRect(const glm::mat4& transform, const glm::vec4& color, int entityID)
+	void Renderer2D::DrawLineRect(const glm::mat4& transform, const glm::vec4& color, int PaperID)
 	{
 		glm::vec3 lineVertices[4];
 		for (size_t i = 0; i < 4; i++)
@@ -625,7 +625,7 @@ namespace Paper {
 		LineRenderData data;
 		data.color = color;
 		data.thickness = 1.0f; // 7.0f;
-		data.enity_id = entityID;
+		data.enity_id = PaperID;
 
 		data.point0 = lineVertices[0];
 		data.point1 = lineVertices[1];

@@ -4,7 +4,7 @@
 #include "assets/Asset3D.h"
 #include "generic/Scene.h"
 
-#include "utils/EntityID.h"
+#include "utils/PaperID.h"
 
 #include "yaml-cpp/yaml.h"
 
@@ -107,15 +107,15 @@ namespace YAML
 	};
 
 	template <>
-	struct convert<Paper::EntityID> {
-		static Node encode(const Paper::EntityID& rhs)
+	struct convert<Paper::PaperID> {
+		static Node encode(const Paper::PaperID& rhs)
 		{
 			Node node;
 			node.push_back(rhs.toString());
 			return node;
 		}
 
-		static bool decode(const Node& node, Paper::EntityID& rhs)
+		static bool decode(const Node& node, Paper::PaperID& rhs)
 		{
 			rhs.Set(node[0].as<std::string>());
 			return true;
@@ -187,7 +187,7 @@ namespace Paper
 		return out;
 	}
 
-	inline YAML::Emitter& operator<<(YAML::Emitter& out, const EntityID& uuid)
+	inline YAML::Emitter& operator<<(YAML::Emitter& out, const PaperID& uuid)
 	{
 		return out << YAML::BeginSeq << uuid.toString() << YAML::EndSeq;
 	}

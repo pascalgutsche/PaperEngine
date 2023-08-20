@@ -1,5 +1,5 @@
 ﻿#include "Engine.h"
-#include "EntityID.h"
+#include "PaperID.h"
 
 
 namespace Paper
@@ -8,41 +8,41 @@ namespace Paper
 	static std::mt19937_64 engine(randomDevice());
 	static std::uniform_int_distribution<uint64_t> distribution;
 
-	EntityID::EntityID()
+	PaperID::PaperID()
 		: uuid(distribution(engine))
 	{
 	}
 
-	EntityID::EntityID(uint64_t uuid)
+	PaperID::PaperID(uint64_t uuid)
 		: uuid(uuid)
 	{
 	}
 
-	EntityID::EntityID(std::string id)
+	PaperID::PaperID(std::string id)
 	{
 		std::stringstream ss;
 		ss << std::hex << id;
 		ss >> uuid;
 	}
 
-	void EntityID::Set(std::string id)
+	void PaperID::Set(std::string id)
 	{
 		std::stringstream ss;
 		ss << std::hex << id;
 		ss >> uuid;
 	}
 
-	void EntityID::Set(uint64_t id)
+	void PaperID::Set(uint64_t id)
 	{
 		uuid = id;
 	}
 
-	uint64_t EntityID::toUInt64() const
+	uint64_t PaperID::toUInt64() const
 	{
 		return operator uint64_t();
 	}
 
-	std::string EntityID::toString() const
+	std::string PaperID::toString() const
 	{
 		return operator std::string();
 	}

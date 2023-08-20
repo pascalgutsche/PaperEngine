@@ -4,22 +4,22 @@ namespace Paper
 {
     public class Entity
     {
-        public readonly ulong UUID;
+        public readonly PaperID PaperID;
 
         public Entity()
         {
-            UUID = 0;
+            PaperID = 0;
         }
 
-        internal Entity(ulong _UUID)
+        internal Entity(ulong _ID)
         {
-            UUID = _UUID;
+            PaperID = _ID;
         }
 
         public bool HasComponent<T>() where T : Component, new()
         {
             Type componentType = typeof(T);
-            return InternalCalls.Entity_HasComponent(UUID, componentType);
+            return InternalCalls.Entity_HasComponent(PaperID, componentType);
         }
 
         public T GetComponent<T>() where T : Component, new()
@@ -41,7 +41,7 @@ namespace Paper
 
         public T As<T>() where T : Entity, new()
         {
-            object instance = InternalCalls.Entity_GetScriptInstance(UUID);
+            object instance = InternalCalls.Entity_GetScriptInstance(PaperID);
             return instance as T;
         }
 

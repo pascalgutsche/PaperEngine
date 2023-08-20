@@ -21,6 +21,8 @@ namespace Paper
 		ScriptClass(const std::string& classNameSpace, const std::string& className);
 		ScriptClass(const std::string& classNameSpace, const std::string& className, ScriptAssembly& scriptAssembly);
 
+		void LoadMonoClass();
+
 		MonoObject* Instantiate() const;
 
 		template <typename... ConstructorArgs>
@@ -88,14 +90,21 @@ namespace Paper
 	private:
 		ScriptInstance(MonoObject* instance);
 
+		void SetScriptClass(Shr<ScriptClass> newScriptClass);
+		void GetFieldValueInternal(const ScriptField& scriptField, Buffer& outBuffer) const;
+		void SetFieldValueInternal(const ScriptField& scriptField, const void* value) const;
+
 		friend class ScriptUtils;
 		friend class ScriptClass;
+		friend class ScriptEngine;
 	};
 
 	class EntityInstance : public ScriptInstance
 	{
 	public:
 		EntityInstance(const Shr<ScriptClass>& scriptClass, Entity entity);
+
+		void LoadMethods();
 
 		void InvokeOnCreate() const;
 		void InvokeOnDestroy() const;
@@ -119,7 +128,7 @@ namespace Paper
 		static void ReloadAppAssembly();
 
 		static bool ShouldReloadAppAssembly();
-		static void ScheduleAssemblyReload(ScriptAssembly* assembly);
+		static void ScheduleAssemblyReload();
 
 		static void SetToRootDomain();
 
@@ -135,7 +144,7 @@ namespace Paper
 
 
 		static Scene* GetSceneContext();
-		static Shr<EntityInstance> GetEntityScriptInstance(EntityID entityUUID);
+		static Shr<EntityInstance> GetEntityScriptInstance(PaperID entityUUID);
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
 		static std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
@@ -145,11 +154,13 @@ namespace Paper
 		static Shr<ScriptClass> GetEntityClass();
 		static void SetEntityClass(Shr<ScriptClass> entityClass);
 
+		static std::unordered_map<std::string, Shr<ScriptClass>> GetScriptClasses();
+
 		static std::unordered_map<std::string, Shr<ScriptClass>> GetEntityInheritClasses();
 		static Shr<ScriptClass> GetEntityInheritClass(const std::string& fullClassName);
 		static bool EntityInheritClassExists(const std::string& fullClassName);
 
-		static std::unordered_map<EntityID, Shr<EntityInstance>>& GetEntityInstances();
+		static std::unordered_map<PaperID, Shr<EntityInstance>>& GetEntityInstances();
 	private:
 		static void InitMono();
 		static void ShutdownMono(bool appClose);

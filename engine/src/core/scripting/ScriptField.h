@@ -2,7 +2,7 @@
 #include "ScriptUtils.h"
 
 #include "generic/Buffer.h"
-#include "utils/EntityID.h"
+#include "utils/PaperID.h"
 
 
 namespace Paper
@@ -20,7 +20,13 @@ namespace Paper
 		Float, Double,      // 4, 8 byte
 		String,
 		Vec2, Vec3, Vec4,
-		Entity
+		PaperID,
+		Entity,
+
+		//Components
+		DataComponent, TransformComponent,
+		SpriteComponent, LineComponent, TextComponent,
+		CameraComponent, ScriptComponent
 	};
 
 	enum class ScriptFieldFlag
@@ -37,15 +43,23 @@ namespace Paper
 
 	struct ScriptField
 	{
-		std::string name;
-		ScriptFieldType type;
-		ScriptFieldFlags flags;
+		std::string name = "";
+		ScriptFieldType type = ScriptFieldType::None;
+		ScriptFieldFlags flags = 0;
 
-		uint32_t typeSize;
+		uint32_t typeSize = 0;
 		Buffer initialFieldVal;
 
-		MonoClassField* monoField;
+		MonoClassField* monoField = nullptr;
+		MonoProperty* monoProperty = nullptr;
 
+		bool isProperty = false;
+	private:
+		std::string stringType = "";
+
+		friend class ScriptUtils;
+		friend class ScriptEngine;
+	public:
 
 		ScriptField() = default;
 
@@ -57,6 +71,9 @@ namespace Paper
 			typeSize = other.typeSize;
 			initialFieldVal = Buffer(other.initialFieldVal);
 			monoField = other.monoField;
+			monoProperty = other.monoProperty;
+			isProperty = other.isProperty;
+			stringType = other.stringType;
 		}
 
 		bool HasFlag(ScriptFieldFlag flag) const { return flags & (uint32_t)flag; }
@@ -120,6 +137,9 @@ namespace Paper
 
 		template<>
 		void SetValue<std::string>(const std::string& value, bool onlyBuffer);
+
+		Buffer GetValueBuffer() const;
+		void SetValueBuffer(const Buffer& buffer);
 
 		const ScriptField& GetField() const { return *scriptField; }
 

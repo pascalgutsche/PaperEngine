@@ -18,7 +18,7 @@ namespace Paper {
 		AddComponent<TransformComponent>();
 	}
 
-	Entity::Entity(entt::entity entity, const EntityID& id, std::string name, Scene* scene)
+	Entity::Entity(entt::entity entity, const PaperID& id, std::string name, Scene* scene)
 		: scene(scene), entity(entity)
 	{
 		AddComponent<DataComponent>(id, name);
@@ -70,7 +70,7 @@ namespace Paper {
 		return it != tagList.end();
 	}
 
-	EntityID& Entity::GetEntityID()
+	PaperID& Entity::GetPaperID()
 	{
 		return GetComponent<DataComponent>().uuid;
 	}

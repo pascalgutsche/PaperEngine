@@ -17,7 +17,7 @@
 #include <mono/metadata/tokentype.h>
 #include <mono/metadata/mono-debug.h>
 
-#include "utils/EntityID.h"
+#include "utils/PaperID.h"
 
 namespace Paper
 {
@@ -38,7 +38,15 @@ namespace Paper
         { "Paper.Vec2", ScriptFieldType::Vec2 },
         { "Paper.Vec3", ScriptFieldType::Vec3 },
         { "Paper.Vec4", ScriptFieldType::Vec4 },
+        { "Paper.PaperID", ScriptFieldType::PaperID },
         { "Paper.Entity", ScriptFieldType::Entity },
+        { "Paper.DataComponent", ScriptFieldType::DataComponent },
+        { "Paper.TransformComponent", ScriptFieldType::TransformComponent },
+		{ "Paper.SpriteComponent", ScriptFieldType::SpriteComponent},
+        { "Paper.LineComponent", ScriptFieldType::LineComponent },
+        { "Paper.TextComponent", ScriptFieldType::TextComponent },
+        { "Paper.CameraComponent", ScriptFieldType::CameraComponent },
+        { "Paper.ScriptComponent",  ScriptFieldType::ScriptComponent }
 
     };
 
@@ -131,7 +139,15 @@ namespace Paper
             case ScriptFieldType::Vec2:     return "Vec2";
             case ScriptFieldType::Vec3:     return "Vec3";
             case ScriptFieldType::Vec4:     return "Vec4";
+            case ScriptFieldType::PaperID:   return "PaperID";
             case ScriptFieldType::Entity:   return "Entity";
+            case ScriptFieldType::DataComponent:        return "DataComponent";
+            case ScriptFieldType::TransformComponent:   return "TransformComponent";
+			case ScriptFieldType::SpriteComponent:      return "SpriteComponent";
+			case ScriptFieldType::LineComponent:        return "LineComponent";
+			case ScriptFieldType::TextComponent:        return "TextComponent";
+            case ScriptFieldType::CameraComponent:      return "CameraComponent";
+            case ScriptFieldType::ScriptComponent:      return "ScriptComponent";
             default: return "<Invalid>";
         }
     }
@@ -155,7 +171,16 @@ namespace Paper
             case ScriptFieldType::Vec2:     return sizeof(glm::vec2);
             case ScriptFieldType::Vec3:     return sizeof(glm::vec3);
             case ScriptFieldType::Vec4:     return sizeof(glm::vec4);
-            case ScriptFieldType::Entity:   return sizeof(EntityID);
+            case ScriptFieldType::PaperID:
+            case ScriptFieldType::Entity:
+            case ScriptFieldType::DataComponent:
+            case ScriptFieldType::TransformComponent:
+            case ScriptFieldType::SpriteComponent:
+            case ScriptFieldType::LineComponent:
+            case ScriptFieldType::TextComponent:
+            case ScriptFieldType::CameraComponent:
+            case ScriptFieldType::ScriptComponent:
+        		return sizeof(PaperID);
         }
         LOG_CORE_ERROR("No ScriptFieldType size for '{}'", ScriptFieldTypeToString(type));
         return 0;
@@ -210,81 +235,103 @@ namespace Paper
         return fieldFlags;
     }
 
-    template<typename T>
-    static T Unbox(MonoObject* obj) { return *(T*)mono_object_unbox(obj); }
-
-    template<typename T>
-    static void WriteToBuffer(Buffer& writeBuffer, MonoObject* obj)
+    Buffer ScriptUtils::MonoObjectToValue(ScriptFieldType type, MonoObject* object)
     {
-        T value = Unbox<T>(obj);
-        writeBuffer.Write(&value, sizeof(T));
-    }
+        Buffer outBuffer;
+        if (!object) return outBuffer;
 
-    void ScriptUtils::MonoObjectToValue(const ScriptField& scriptField, MonoObject* object, Buffer& outBuffer)
-    {
-        if (!object) return;
-
-        outBuffer.Allocate(ScriptFieldTypeSize(scriptField.type));
+        outBuffer.Allocate(ScriptFieldTypeSize(type));
         outBuffer.Nullify();
 
 
-        switch (scriptField.type)
+        switch (type)
         {
         case ScriptFieldType::None: 
         case ScriptFieldType::Invalid:
         case ScriptFieldType::Not_Supported:
-            return;
+            break;
 
         case ScriptFieldType::Bool:
-            return WriteToBuffer<bool>(outBuffer, object);
+            WriteToBuffer<bool>(outBuffer, object);
+            break;
         case ScriptFieldType::Char:
-            return WriteToBuffer<int8_t>(outBuffer, object);
+            WriteToBuffer<int8_t>(outBuffer, object);
+            break;
         case ScriptFieldType::UChar:
-            return WriteToBuffer<uint8_t>(outBuffer, object);
+            WriteToBuffer<uint8_t>(outBuffer, object);
+            break;
         case ScriptFieldType::Int16:
-            return WriteToBuffer<int16_t>(outBuffer, object);
+            WriteToBuffer<int16_t>(outBuffer, object);
+            break;
         case ScriptFieldType::UInt16:
-            return WriteToBuffer<uint16_t>(outBuffer, object);
+            WriteToBuffer<uint16_t>(outBuffer, object);
+            break;
         case ScriptFieldType::Int32:
-            return WriteToBuffer<int32_t>(outBuffer, object);
+            WriteToBuffer<int32_t>(outBuffer, object);
+            break;
         case ScriptFieldType::UInt32:
-            return WriteToBuffer<uint32_t>(outBuffer, object);
+            WriteToBuffer<uint32_t>(outBuffer, object);
+            break;
         case ScriptFieldType::Int64:
-            return WriteToBuffer<int64_t>(outBuffer, object);
+            WriteToBuffer<int64_t>(outBuffer, object);
+            break;
         case ScriptFieldType::UInt64:
-            return WriteToBuffer<uint64_t>(outBuffer, object);
+            WriteToBuffer<uint64_t>(outBuffer, object);
+            break;
         case ScriptFieldType::Float:
-            return WriteToBuffer<float>(outBuffer, object);
+            WriteToBuffer<float>(outBuffer, object);
+            break;
         case ScriptFieldType::Double:
-            return WriteToBuffer<double>(outBuffer, object);
+            WriteToBuffer<double>(outBuffer, object);
+            break;
         case ScriptFieldType::String:
         {
             std::string stdString = MonoStringToStdString((MonoString*)object);
             outBuffer.Allocate(stdString.size() + 1);
             outBuffer.Nullify();
             outBuffer.Write(stdString.data(), stdString.size());
-            return;
+            break;
         }
         case ScriptFieldType::Vec2:
-            return WriteToBuffer<glm::vec2>(outBuffer, object);
+            WriteToBuffer<glm::vec2>(outBuffer, object);
+            break;
         case ScriptFieldType::Vec3:
-            return WriteToBuffer<glm::vec3>(outBuffer, object);
+            WriteToBuffer<glm::vec3>(outBuffer, object);
+            break;
         case ScriptFieldType::Vec4:
-            return WriteToBuffer<glm::vec4>(outBuffer, object);
+            WriteToBuffer<glm::vec4>(outBuffer, object);
+            break;
+        case ScriptFieldType::PaperID:
+        {
+            Buffer idBuffer = GetFieldValue(object, "_id", ScriptFieldType::UInt64, false);
+            outBuffer.Write(idBuffer.data, sizeof(uint64_t));
+            idBuffer.Release();
+            break;
+        }
+
         case ScriptFieldType::Entity:
         {
-            ScriptField scriptFieldUUID;
-            CreateScriptField(scriptFieldUUID, "EntityID", object);
+            Buffer paperIDBuffer = GetFieldValue(object, "PaperID", ScriptFieldType::PaperID, false);
+            outBuffer.Write(paperIDBuffer.data, sizeof(PaperID));
+            paperIDBuffer.Release();
+            break;
+        }
 
-            Buffer uuidBuffer;
-            MonoObjectToValue(scriptFieldUUID, GetScriptFieldValueObject(scriptFieldUUID, object), uuidBuffer);
-            outBuffer.Write(uuidBuffer.data, sizeof(EntityID));
-            uuidBuffer.Release();
-            return;
+        case ScriptFieldType::DataComponent:
+        case ScriptFieldType::TransformComponent:
+        case ScriptFieldType::SpriteComponent:
+        case ScriptFieldType::LineComponent:
+        case ScriptFieldType::TextComponent:
+        case ScriptFieldType::CameraComponent:
+        case ScriptFieldType::ScriptComponent:
+        {
+            Buffer entityBuffer = GetFieldValue(object, "Entity", ScriptFieldType::Entity, true);
+            outBuffer.Write(entityBuffer.data, sizeof(PaperID));
+            entityBuffer.Release();
+            break;
         }
         }
-        CORE_ASSERT(false, "");
-        return;
+        return outBuffer;
     }
 
     std::string ScriptUtils::MonoStringToStdString(MonoString* monoString)
@@ -308,9 +355,25 @@ namespace Paper
         {
         case ScriptFieldType::String: 
             return (MonoObject*)StdStringToMonoString(std::string((const char*)data));
+        case ScriptFieldType::PaperID:
+            return ScriptClass("Paper", "PaperID", *ScriptEngine::GetCoreAssembly().get()).InstantiateParams(*(uint64_t*)data);
         case ScriptFieldType::Entity:
-            return ScriptClass("Paper", "Entity", *ScriptEngine::GetCoreAssembly().get()).InstantiateParams(*(EntityID*)data);
-        default:
+            return ScriptClass("Paper", "Entity", *ScriptEngine::GetCoreAssembly().get()).InstantiateParams(*(PaperID*)data);
+        case ScriptFieldType::DataComponent:
+        case ScriptFieldType::TransformComponent:
+        case ScriptFieldType::SpriteComponent:
+        case ScriptFieldType::LineComponent:
+        case ScriptFieldType::TextComponent:
+        case ScriptFieldType::CameraComponent:
+        case ScriptFieldType::ScriptComponent:
+	        {
+				MonoObject* object = ScriptClass("Paper", ScriptFieldTypeToString(type), *ScriptEngine::GetCoreAssembly().get()).Instantiate();
+                
+                SetFieldValue(object, ScriptFieldType::Entity, "Entity", true, data, MakeShr<ScriptClass>("Paper", "Component", *ScriptEngine::GetCoreAssembly().get()));
+                return object;
+	        }
+
+        	default:
             return nullptr;
         }
     }
@@ -318,51 +381,148 @@ namespace Paper
     bool ScriptUtils::IsPrimitive(ScriptFieldType type)
     {
         switch (type) {
-        case ScriptFieldType::String: 
-        case ScriptFieldType::Vec2: 
-        case ScriptFieldType::Vec3: 
-        case ScriptFieldType::Vec4: 
-        case ScriptFieldType::Entity: return false;
-        default: return true;
+            case ScriptFieldType::Bool:
+            case ScriptFieldType::Char:
+            case ScriptFieldType::UChar:
+            case ScriptFieldType::Int16:
+            case ScriptFieldType::UInt16:
+            case ScriptFieldType::Int32:
+            case ScriptFieldType::UInt32:
+            case ScriptFieldType::Int64:
+            case ScriptFieldType::UInt64:
+            case ScriptFieldType::Float:
+            case ScriptFieldType::Double:
+        	return true;
+        default: return false;
         }
     }
 
     MonoObject* ScriptUtils::GetScriptFieldValueObject(const ScriptField& scriptField, MonoObject* monoInstance)
     {
-        MonoClassField* classField = nullptr;
-        if (scriptField.monoField)
-            classField = scriptField.monoField;
-        else
-        {
-            if (scriptField.name == "") return nullptr;
-            MonoClass* objectClass = mono_object_get_class(monoInstance);
-            classField = mono_class_get_field_from_name(objectClass, scriptField.name.data());
-        }
-
-        return mono_field_get_value_object(mono_domain_get(), classField, monoInstance);
+        
+        if (scriptField.isProperty)
+			return mono_property_get_value(scriptField.monoProperty, monoInstance, nullptr, nullptr);
+        return mono_field_get_value_object(mono_domain_get(), scriptField.monoField, monoInstance);
     }
 
-    void ScriptUtils::CreateScriptField(ScriptField& scriptField, const std::string& name, MonoObject* reference)
+    void ScriptUtils::CreateScriptField(ScriptField& scriptField, const std::string& name, MonoObject* reference, Shr<ScriptClass> fieldClass)
     {
-        MonoClass* monoClass = mono_object_get_class(reference);
+        MonoClass* monoClass = nullptr; 
+        if (fieldClass)
+            monoClass = fieldClass->GetMonoClass();
+        else
+            monoClass = mono_object_get_class(reference);
+        MonoType* monoType = nullptr; 
         MonoClassField* monoField = mono_class_get_field_from_name(monoClass, name.data());
-        MonoType* monoType = mono_field_get_type(monoField);
+        MonoProperty* monoProperty = mono_class_get_property_from_name(monoClass, name.data());
+
+        if (monoProperty)
+        {
+            MonoMethod* getMethod = mono_property_get_get_method(monoProperty);
+            MonoMethodSignature * getMethodSigniture = mono_method_get_signature(getMethod, nullptr, 0);
+            monoType = mono_signature_get_return_type(getMethodSigniture);
+        }
+        else
+        {
+            monoType = mono_field_get_type(monoField);
+        }
 
         ScriptInstance scriptInstance(reference);
 
         scriptField.name = name;
         scriptField.type = MonoTypeToScriptFieldType(monoType);
-        scriptField.flags = GetFieldFlags(mono_field_get_flags(monoField));
+        scriptField.stringType = mono_type_get_name(monoType);
+        ASSERT(scriptField.stringType != "", "");
         int align;
         scriptField.typeSize = mono_type_size(monoType, &align);
         scriptField.monoField = monoField;
+        scriptField.monoProperty = monoProperty;
+        if (monoProperty) 
+        {
+            scriptField.flags = GetFieldFlags(mono_property_get_flags(monoProperty));
+            scriptField.isProperty = true;
+        }
+        else
+        {
+            scriptField.flags = GetFieldFlags(mono_field_get_flags(monoField));
+        }
     	scriptInstance.GetFieldValue(scriptField, scriptField.initialFieldVal);
 
         // allocate memory to the buffer for later SetData when an entity field contains no entity.
         if (scriptField.type == ScriptFieldType::Entity)
         {
-            scriptField.initialFieldVal.Allocate(sizeof(EntityID));
+            scriptField.initialFieldVal.Allocate(sizeof(PaperID));
             scriptField.initialFieldVal.Nullify();
+        }
+    }
+
+    void* ScriptUtils::UnboxInternal(MonoObject* obj)
+    {
+        if (!obj) return nullptr;
+        return mono_object_unbox(obj);
+    }
+
+    Buffer ScriptUtils::GetFieldValue(MonoObject* object, std::string_view fieldName, ScriptFieldType type, bool isProperty)
+    {
+        return MonoObjectToValue(type, GetFieldValueObject(object, fieldName, isProperty));
+    }
+
+    MonoObject* ScriptUtils::GetFieldValueObject(MonoObject* object, std::string_view fieldName, bool isProperty)
+    {
+
+        MonoClass* objectClass = mono_object_get_class(object);
+
+        MonoObject* valueObject = nullptr;
+
+        if (isProperty)
+        {
+            MonoProperty* classProperty = mono_class_get_property_from_name(objectClass, fieldName.data());
+            valueObject = mono_property_get_value(classProperty, object, nullptr, nullptr);
+        }
+        else
+        {
+            MonoClassField* classField = mono_class_get_field_from_name(objectClass, fieldName.data());
+            valueObject = mono_field_get_value_object(mono_domain_get(), classField, object);
+        }
+
+        return valueObject;
+    }
+
+    void ScriptUtils::SetFieldValue(MonoObject* object, ScriptFieldType type, const std::string& name, bool isProperty, const void* data, const Shr<ScriptClass>& baseClass)
+    {
+        if (object == nullptr || data == nullptr)
+            return;
+
+        MonoClass* objectClass = nullptr;
+        if (baseClass)
+            objectClass = baseClass->GetMonoClass();
+        else
+            objectClass = mono_object_get_class(object);
+
+        if (isProperty)
+        {
+            MonoProperty* classProperty = mono_class_get_property_from_name(objectClass, name.c_str());
+            void* propertyData = nullptr;
+
+            if (IsPrimitive(type))
+                propertyData = (void*)data;
+            else
+                propertyData = DataToMonoObject(type, data);
+
+            mono_property_set_value(classProperty, object, &propertyData, nullptr);
+        }
+        else
+        {
+            MonoClassField* classField = mono_class_get_field_from_name(objectClass, name.c_str());
+            void* fieldData = nullptr;
+
+            if (IsPrimitive(type))
+                fieldData = (void*)data;
+            else
+                fieldData = DataToMonoObject(type, data);
+
+
+            mono_field_set_value(object, classField, fieldData);
         }
     }
 }

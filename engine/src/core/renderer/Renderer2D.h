@@ -101,7 +101,7 @@ namespace Paper {
 
     	static void NextBatch(RenderTarget2D target);
 
-        static void DrawLineRect(const glm::mat4& transform, const glm::vec4& color, int entityID);
+        static void DrawLineRect(const glm::mat4& transform, const glm::vec4& color, int PaperID);
 
 
     private:

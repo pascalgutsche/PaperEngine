@@ -3,13 +3,13 @@
 
 namespace Paper
 {
-	class EntityID
+	class PaperID
 	{
 	public:
-		EntityID();
-		EntityID(uint64_t uuid);
-		EntityID(std::string uuid);
-		EntityID(const EntityID&) = default;
+		PaperID();
+		PaperID(uint64_t uuid);
+		PaperID(std::string uuid);
+		PaperID(const PaperID&) = default;
 
 		void Set(std::string id);
 		void Set(uint64_t id);
@@ -34,9 +34,9 @@ namespace std {
 	template <typename T> struct hash;
 
 	template<>
-	struct hash<Paper::EntityID>
+	struct hash<Paper::PaperID>
 	{
-		std::size_t operator()(const Paper::EntityID& uuid) const
+		std::size_t operator()(const Paper::PaperID& uuid) const
 		{
 			return (uint64_t)uuid;
 		}

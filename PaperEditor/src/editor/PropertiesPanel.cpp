@@ -188,10 +188,10 @@ void PaperLayer::PropertiesPanel()
 	ImGui::Text("Name:");
 	ImGui::SameLine();
 	std::string name = active_entity.GetName();
-	ImGui::InputText(("##" + active_entity.GetEntityID().toString()).c_str(), &name);
+	ImGui::InputText(("##" + active_entity.GetPaperID().toString()).c_str(), &name);
 	active_entity.SetName(name);
 
-	ImGui::Text(("UUID: " + active_entity.GetEntityID().toString()).c_str());
+	ImGui::Text(("UUID: " + active_entity.GetPaperID().toString()).c_str());
 
 	if (ImGui::BeginPopup("components_add_popup"))
 	{
@@ -483,7 +483,7 @@ void PaperLayer::PropertiesPanel()
 			{
 				
 				//Fields
-				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetEntityID());
+				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
 				if (scriptClass)
 				{
 					const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);
@@ -533,7 +533,7 @@ void PaperLayer::PropertiesPanel()
 
 							case ScriptFieldType::Entity:
 							{
-								EntityID entityID = fieldStorage->GetValue<uint64_t>();
+								PaperID entityID = fieldStorage->GetValue<uint64_t>();
 								FillNameCol(varName);
 
 								if (entityID)
@@ -545,7 +545,7 @@ void PaperLayer::PropertiesPanel()
 								{
 									if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
 									{
-										EntityID payloadEntityID = *(uint64_t*)payload->Data;
+										PaperID payloadEntityID = *(uint64_t*)payload->Data;
 										fieldStorage->SetValue(payloadEntityID.toUInt64());
 
 										drag_entity = Entity();
