@@ -2,11 +2,7 @@
 #include "ScriptAssembly.h"
 #include "ScriptEngine.h"
 
-#include "mono/jit/jit.h"
-#include "mono/metadata/assembly.h"
-
 #include <filewatch/FileWatch.h>
-#include <mono/metadata/attrdefs.h>
 
 
 namespace Paper

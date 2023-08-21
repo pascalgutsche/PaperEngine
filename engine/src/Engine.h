@@ -25,6 +25,7 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
+#include <ranges>
 
 //C Libraries
 #include <stdbool.h>

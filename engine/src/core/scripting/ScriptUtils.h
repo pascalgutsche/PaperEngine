@@ -1,25 +1,13 @@
 ﻿#pragma once
 #include "generic/Buffer.h"
 
-extern "C"
-{
-    typedef struct _MonoClass MonoClass;
-    typedef struct _MonoObject MonoObject;
-    typedef struct _MonoAssembly MonoAssembly;
-    typedef struct _MonoMethod MonoMethod;
-    typedef struct _MonoDomain MonoDomain;
-    typedef struct _MonoImage MonoImage;
-    typedef struct _MonoType MonoType;
-    typedef struct _MonoClassField MonoClassField;
-    typedef struct _MonoProperty MonoProperty;
-    typedef struct _MonoString MonoString;
-}
+#include "ManagedTypes.h"
 
 namespace Paper
 {
 	class ScriptClass;
 	struct ScriptField;
-	using ScriptFieldFlags = uint32_t;
+	
 	enum class ScriptFieldFlag;
     enum class ScriptFieldType;
 
@@ -68,6 +56,9 @@ namespace Paper
         static Buffer GetFieldValue(MonoObject* object, std::string_view fieldName, ScriptFieldType type, bool isProperty);
 
         static void SetFieldValue(MonoObject* object, ScriptFieldType type, const std::string& name, bool isProperty, const void* data, const Shr<ScriptClass>& baseClass = nullptr);
+
+        static ScriptField GetScriptField(const std::string& fieldName, MonoClass* monoClass);
+        static std::vector<ScriptField> GetScriptFieldsOfClass(MonoClass* monoClass);
     private:
         static void* UnboxInternal(MonoObject* obj);
 

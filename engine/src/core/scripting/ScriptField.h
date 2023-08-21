@@ -9,46 +9,12 @@ namespace Paper
 {
 	class EntityInstance;
 
-	enum class ScriptFieldType
-	{
-		None = 0, Invalid, Not_Supported,
-		Bool,
-		Char, UChar,        // 1 byte
-		Int16, UInt16,      // 2 byte
-		Int32, UInt32,          // 4 byte
-		Int64, UInt64,        // 8 byte
-		Float, Double,      // 4, 8 byte
-		String,
-		Vec2, Vec3, Vec4,
-		PaperID,
-		Entity,
-
-		//Components
-		DataComponent, TransformComponent,
-		SpriteComponent, LineComponent, TextComponent,
-		CameraComponent, ScriptComponent
-	};
-
-	enum class ScriptFieldFlag
-	{
-		None = 0,
-		Static = BIT(1),
-		Readonly = BIT(2),
-		Private = BIT(3),
-		Internal = BIT(4),
-		Protected = BIT(5),
-		Public = BIT(6)
-	};
+	
 
 
 	struct ScriptField
 	{
-		std::string name = "";
-		ScriptFieldType type = ScriptFieldType::None;
-		ScriptFieldFlags flags = 0;
-
-		uint32_t typeSize = 0;
-		Buffer initialFieldVal;
+		
 
 		MonoClassField* monoField = nullptr;
 		MonoProperty* monoProperty = nullptr;
