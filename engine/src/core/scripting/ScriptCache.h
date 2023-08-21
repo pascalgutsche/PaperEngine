@@ -16,7 +16,7 @@ namespace Paper
 		static void CacheAssembly(ScriptAssembly* assembly);
 
 		static CacheID CacheClass(const std::string& fullName, ScriptAssembly* assembly);
-		static CacheID CacheFields(CacheID classID);
-		static CacheID CacheMethods(CacheID classID);
+		static std::vector<CacheID> CacheFields(CacheID classID);
+		static std::vector<CacheID> CacheMethods(CacheID classID);
 	};
 }

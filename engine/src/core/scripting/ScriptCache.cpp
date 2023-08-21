@@ -100,6 +100,7 @@ namespace Paper
 	CacheID ScriptCache::CacheClass(const std::string& fullName, ScriptAssembly* assembly)
 	{
 		CacheID id = Hash::GenerateFNVHash(fullName);
+
 	}
 
 	std::vector<CacheID> ScriptCache::CacheFields(CacheID classID)
