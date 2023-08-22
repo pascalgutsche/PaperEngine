@@ -58,6 +58,7 @@ namespace Paper
 		CacheID classID = -1;
 		std::string classNameSpace = "";
 		std::string className = "";
+		std::string fullClassName = "";
 		uint32_t classFlags = 0;
 
 		std::vector<uint32_t> fieldIDs;

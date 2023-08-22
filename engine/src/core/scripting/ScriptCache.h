@@ -15,8 +15,13 @@ namespace Paper
 
 		static void CacheAssembly(ScriptAssembly* assembly);
 
-		static CacheID CacheClass(const std::string& fullName, ScriptAssembly* assembly);
-		static std::vector<CacheID> CacheFields(CacheID classID);
-		static std::vector<CacheID> CacheMethods(CacheID classID);
+		static ManagedClass* GetManagedClass(CacheID classID);
+		static ManagedField* GetManagedField(CacheID fieldID);
+		static ManagedMethod* GetManagedMethod(CacheID methodID, uint32_t parameterCount = 0);
+
+	private:
+		static CacheID CacheClass(const std::string& classNameSpace, const std::string& className, ScriptAssembly* assembly);
+		static std::vector<CacheID> CacheFields(ManagedClass& managedClass, ScriptAssembly* assembly);
+		static std::vector<CacheID> CacheMethods(ManagedClass& managedClass, ScriptAssembly* assembly);
 	};
 }

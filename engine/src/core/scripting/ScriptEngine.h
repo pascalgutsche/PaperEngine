@@ -18,10 +18,7 @@ namespace Paper
 		: public std::enable_shared_from_this<ScriptClass>
 	{
 	public:
-		ScriptClass(const std::string& classNameSpace, const std::string& className);
-		ScriptClass(const std::string& classNameSpace, const std::string& className, ScriptAssembly& scriptAssembly);
-
-		void LoadMonoClass();
+		ScriptClass(CacheID classID);
 
 		MonoObject* Instantiate() const;
 
@@ -53,24 +50,15 @@ namespace Paper
 
 		std::string GetFullClassName() const;
 		MonoClass* GetMonoClass() const;
-		const std::vector<ScriptField>& GetFields() const { return fields; }
+		const std::vector<ScriptField>& GetFields() const { return std::vector<ScriptField>(); }
 		ScriptField* GetField(const std::string& fieldName) const;
-		const ScriptAssembly& GetScriptAssembly() const { return *assembly; }
+		const ScriptAssembly& GetScriptAssembly() const { return *managedClass->assembly; }
 
-		bool IsSubclassOf(const Shr<ScriptClass>& scriptClass) const;
+		bool IsSubclassOf(const ScriptClass& scriptClass) const;
 
 	private:
-		MonoClass* monoClass = nullptr;
-
-		std::string classNameSpace;
-		std::string className;
-		std::vector<ScriptField> fields;
-
-		ScriptAssembly* assembly;
-
-		void InitFieldMap();
-
-		friend class ScriptAssembly;
+		CacheID id = 0;
+		ManagedClass* managedClass = nullptr;
 	};
 
 	class ScriptInstance

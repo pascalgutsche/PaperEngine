@@ -1,8 +1,6 @@
 #include "Engine.h"
 #include "ScriptEngine.h"
 
-#include <ranges>
-
 #include "ScriptGlue.h"
 #include "ScriptAssembly.h"
 
@@ -12,10 +10,11 @@
 #include "mono/metadata/tabledefs.h"
 #include "mono/metadata/mono-debug.h"
 #include "mono/metadata/threads.h"
-
-#include <filewatch/FileWatch.h>
 #include <mono/metadata/attrdefs.h>
 
+#include <filewatch/FileWatch.h>
+
+#include "ScriptCache.h"
 #include "component/ScriptComponent.h"
 #include "generic/Application.h"
 #include "generic/Entity.h"
@@ -58,6 +57,7 @@ namespace Paper
 	{
         script_data = new ScriptEngineData();
 
+        ScriptCache::Init();
         InitMono();
         ScriptGlue::RegisterFunctions();
 
@@ -109,8 +109,9 @@ namespace Paper
 
 	void ScriptEngine::Shutdown(bool appClose)
 	{
+        ScriptCache::Shutdown();
         ShutdownMono(appClose);
-        delete script_data;
+    	delete script_data;
 	}
 
     //static void OnAppAssemblyFileEvent(const std::string& path, const filewatch::Event change_type)
@@ -471,39 +472,14 @@ namespace Paper
     //
     //  ScriptClass
     //
-    ScriptClass::ScriptClass(const std::string& classNameSpace, const std::string& className)
-	    : classNameSpace(classNameSpace), className(className), fields(std::vector<ScriptField>())
+    ScriptClass::ScriptClass(CacheID classID)
+        : id(classID), managedClass(ScriptCache::GetManagedClass(classID))
     {
-        for (ScriptAssembly* scriptAssembly : ScriptAssembly::GetAllAssemblies())
-        {
-            MonoImage* image = scriptAssembly->GetMonoAssemblyImage();
-            monoClass = mono_class_from_name(image, classNameSpace.c_str(), className.c_str());
-            if (monoClass) 
-            {
-                assembly = scriptAssembly;
-                break;
-            }
-        }
-        CORE_ASSERT(monoClass, "")
-    }
-
-    ScriptClass::ScriptClass(const std::string& classNameSpace, const std::string& className,
-	    ScriptAssembly& scriptAssembly)
-        : classNameSpace(classNameSpace), className(className), fields(std::vector<ScriptField>()), assembly(&scriptAssembly)
-    {
-        LoadMonoClass();
-    }
-
-    void ScriptClass::LoadMonoClass()
-    {
-        MonoImage* image = assembly->GetMonoAssemblyImage();
-        monoClass = mono_class_from_name(image, classNameSpace.c_str(), className.c_str());
-        CORE_ASSERT(monoClass, "")
     }
 
     MonoObject* ScriptClass::Instantiate() const
     {
-        uint32_t classFlags = mono_class_get_flags(monoClass); //if sealed, class has no constructor or is not constructable i.e enums and static classes
+        uint32_t classFlags = managedClass->classFlags; //if sealed, class has no constructor or is not constructable i.e enums and static classes
         if (classFlags & MONO_TYPE_ATTR_SEALED)
         {
             LOG_CORE_ERROR("Scripting: class is sealed and therefore it cannot be instatiated. '{}'", GetFullClassName());
@@ -515,7 +491,7 @@ namespace Paper
             return nullptr;
         }
 
-        MonoObject* monoObject = mono_object_new(script_data->appDomain, monoClass);
+        MonoObject* monoObject = mono_object_new(script_data->appDomain, managedClass->monoClass);
         if (monoObject)
             mono_runtime_object_init(monoObject);
         else
@@ -525,7 +501,7 @@ namespace Paper
 
     MonoMethod* ScriptClass::GetMethod(const std::string& methodName, uint32_t paramCount) const
     {
-        return mono_class_get_method_from_name(monoClass, methodName.c_str(), paramCount);
+        return mono_class_get_method_from_name(managedClass->monoClass, methodName.c_str(), paramCount);
     }
 
     void ScriptClass::InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params) const
@@ -540,53 +516,51 @@ namespace Paper
 
     std::string ScriptClass::GetFullClassName() const
     {
-        if (!classNameSpace.empty())
-            return fmt::format("{}.{}", classNameSpace, className);
-        return className;
+        return managedClass->fullClassName;
     }
 
     MonoClass* ScriptClass::GetMonoClass() const
     {
-        return monoClass;
+        return managedClass->monoClass;
     }
 
     ScriptField* ScriptClass::GetField(const std::string& fieldName) const
     {
         ScriptField* scriptField = nullptr;
-        for (const ScriptField& field : fields)
-            if (field.name == fieldName) scriptField = (ScriptField*)&field;
+        //for (const ScriptField& field : fields)
+        //    if (field.name == fieldName) scriptField = (ScriptField*)&field;
 	    return scriptField;
     }
 
-    bool ScriptClass::IsSubclassOf(const Shr<ScriptClass>& scriptClass) const
+    bool ScriptClass::IsSubclassOf(const ScriptClass& scriptClass) const
     {
-        return mono_class_is_subclass_of(monoClass, scriptClass->monoClass, false);
+        return mono_class_is_subclass_of(managedClass->monoClass, scriptClass.GetMonoClass(), false);
     }
 
-    void ScriptClass::InitFieldMap()
-    {
-	    const ScriptInstance tempInstance(shared_from_this());
-        if (!tempInstance.monoInstance) return;
-
-        fields.reserve(mono_class_num_fields(monoClass));
-
-        void* iterator = nullptr;
-        while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
-        {
-            std::string fieldName = mono_field_get_name(field);
-            ScriptField& scriptField = fields.emplace_back();
-            ScriptUtils::CreateScriptField(scriptField, fieldName, tempInstance.GetMonoInstance());
-
-        	//MonoType* monoType = mono_field_get_type(field);
-            //scriptField.name = 
-			//scriptField.type = Utils::MonoTypeToScriptFieldType(monoType);
-            //scriptField.flags = Utils::GetFieldFlags(mono_field_get_flags(field));
-            //int align;
-            //scriptField.typeSize = mono_type_size(monoType, &align);
-            //scriptField.monoField = field;
-            //scriptField.initialFieldVal = tempInstance.GetFieldValue(scriptField);
-        }
-    }
+    //void ScriptClass::InitFieldMap()
+    //{
+	//    const ScriptInstance tempInstance(shared_from_this());
+    //    if (!tempInstance.monoInstance) return;
+    //
+    //    fields.reserve(mono_class_num_fields(monoClass));
+    //
+    //    void* iterator = nullptr;
+    //    while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
+    //    {
+    //        std::string fieldName = mono_field_get_name(field);
+    //        ScriptField& scriptField = fields.emplace_back();
+    //        ScriptUtils::CreateScriptField(scriptField, fieldName, tempInstance.GetMonoInstance());
+    //
+    //    	//MonoType* monoType = mono_field_get_type(field);
+    //        //scriptField.name = 
+	//		//scriptField.type = Utils::MonoTypeToScriptFieldType(monoType);
+    //        //scriptField.flags = Utils::GetFieldFlags(mono_field_get_flags(field));
+    //        //int align;
+    //        //scriptField.typeSize = mono_type_size(monoType, &align);
+    //        //scriptField.monoField = field;
+    //        //scriptField.initialFieldVal = tempInstance.GetFieldValue(scriptField);
+    //    }
+    //}
 
 
     //
