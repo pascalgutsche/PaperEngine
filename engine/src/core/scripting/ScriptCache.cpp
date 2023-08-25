@@ -7,6 +7,7 @@
 #include "mono/metadata/assembly.h"
 #include <mono/metadata/attrdefs.h>
 #include <mono/metadata/tabledefs.h>
+#include <mono/metadata/debug-helpers.h>
 
 #include "mono/metadata/object.h"
 
@@ -20,6 +21,7 @@ namespace Paper
 		std::unordered_map<uint32_t, ManagedClass> managedClasses;
 		std::unordered_map<uint32_t, ManagedField> managedFields;
 		std::unordered_map<uint32_t, std::vector<ManagedMethod>> managedMethods;
+		std::vector<std::filesystem::path> assemblyPathsCached;
 	};
 
 	static Cache* cache = nullptr;
@@ -42,6 +44,7 @@ namespace Paper
 		cache->managedClasses.clear();
 		cache->managedFields.clear();
 		cache->managedMethods.clear();
+		cache->assemblyPathsCached.clear();
 	}
 
 	void ScriptCache::ClearAssemblyCache(ScriptAssembly* assembly)
@@ -65,6 +68,12 @@ namespace Paper
 
 	void ScriptCache::CacheAssembly(ScriptAssembly* assembly)
 	{
+		if (std::ranges::find(cache->assemblyPathsCached, assembly->GetFilePath()) != cache->assemblyPathsCached.end())
+		{
+			LOG_CORE_WARN("Attempting to cache the same assembly multiple times.\n\tAssembly: '{}'", assembly->GetFilePath().string());
+			return;
+		}
+
 		MonoImage* assemblyImage = assembly->GetMonoAssemblyImage();
 		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(assemblyImage, MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
@@ -79,22 +88,22 @@ namespace Paper
 
 			if (name == "<Module>") continue;
 
-
-
-			CacheID classID = CacheClass(fullClassName, assembly);
-
-			Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name, *this);
-
-			uint32_t classFlags = mono_class_get_flags(scriptClass->monoClass); //if sealed, class has no constructor or is not constructable i.e enums and static classes
-			if (classFlags & MONO_TYPE_ATTR_SEALED) continue;
-
-			scriptClass->InitFieldMap();
-
-			std::string fullName = scriptClass->GetFullClassName();
-			if (scriptClass->IsSubclassOf(ScriptEngine::GetEntityClass()) && fullName != "Paper.Entity")
-				entityClasses[fullName] = scriptClass;
-			classes[fullName] = scriptClass;
+			ManagedClass* managedClass = GetManagedClass(CacheClass(nameSpace, name, assembly));
+			if (managedClass->fullClassName == "Paper.Entity")
+				ScriptEngine::SetEntityClass(managedClass);
 		}
+
+		cache->assemblyPathsCached.push_back(assembly->GetFilePath());
+	}
+
+	std::vector<ManagedClass*> ScriptCache::GetManagedClasses()
+	{
+		std::vector<ManagedClass*> managedClasses;
+		for (ManagedClass& managedClass : cache->managedClasses | std::views::values)
+		{
+			managedClasses.push_back(&managedClass);
+		}
+		return managedClasses;
 	}
 
 	ManagedClass* ScriptCache::GetManagedClass(CacheID classID)
@@ -103,22 +112,36 @@ namespace Paper
 		return &cache->managedClasses.at(classID);
 	}
 
+	ManagedClass* ScriptCache::GetManagedClassFromName(const std::string& fullClassName)
+	{
+		for (ManagedClass& managedClass : cache->managedClasses | std::views::values)
+		{
+			if (managedClass.fullClassName == fullClassName)
+				return &managedClass;
+		}
+		return nullptr;
+	}
+
 	ManagedField* ScriptCache::GetManagedField(CacheID fieldID)
 	{
 		if (!cache->managedFields.contains(fieldID)) return nullptr;
 		return &cache->managedFields.at(fieldID);
 	}
 
-	ManagedMethod* ScriptCache::GetManagedMethod(CacheID methodID, uint32_t parameterCount)
+	ManagedMethod* ScriptCache::GetManagedMethod(ManagedClass* managedClass, const std::string& name, uint32_t parameterCount)
 	{
+		std::string methodIDName = fmt::format("{}:{}", managedClass->fullClassName, name);
+		std::string methodIDNameStd = std::format("{}:{}", managedClass->fullClassName, name);
+		CacheID methodID = Hash::GenerateFNVHash(methodIDName);
 		if (!cache->managedMethods.contains(methodID)) return nullptr;
-		for (ManagedMethod& managedMethod : cache->managedClasses.at(methodID))
+		for (ManagedMethod& managedMethod : cache->managedMethods.at(methodID))
 		{
 			if (managedMethod.parameterCount == parameterCount)
 				return &managedMethod;
 		}
 		return nullptr;
 	}
+
 
 	CacheID ScriptCache::CacheClass(const std::string& classNameSpace, const std::string& className, ScriptAssembly* assembly)
 	{
@@ -128,9 +151,9 @@ namespace Paper
 		else
 			fullClassName = fmt::format("{}.{}", classNameSpace, className);
 
-		CacheID id = Hash::GenerateFNVHash(fullClassName);
+		CacheID classID = Hash::GenerateFNVHash(fullClassName);
 		ManagedClass managedClass;
-		managedClass.classID = id;
+		managedClass.classID = classID;
 		managedClass.classNameSpace = classNameSpace;
 		managedClass.className = className;
 		managedClass.fullClassName = fullClassName;
@@ -142,16 +165,16 @@ namespace Paper
 		managedClass.monoClass = monoClass;
 		managedClass.classFlags = mono_class_get_flags(monoClass);
 		
-		managedClass.fieldIDs = CacheFields(managedClass, assembly);
 		managedClass.methodIDs = CacheMethods(managedClass, assembly);
+		managedClass.fieldIDs = CacheFields(managedClass, assembly);
 
-
-		cache->managedClasses[id] = managedClass;
+		cache->managedClasses[classID] = managedClass;
+		return classID;
 	}
 
 	std::vector<CacheID> ScriptCache::CacheFields(ManagedClass& managedClass, ScriptAssembly* assembly)
 	{
-		MonoObject* tempInstance = ScriptClass(managedClass.classID).Instantiate();
+		MonoObject* tempInstance = ScriptClass(&managedClass).Instantiate();
 		std::vector<CacheID> fieldIDs;
 		
 		void* fieldIterator = nullptr;
@@ -175,7 +198,13 @@ namespace Paper
 			int align;
 			managedField.monoFieldSize = mono_type_size(monoType, &align);
 
-			managedField.initialFieldValue = ScriptUtils::GetFieldValue(tempInstance, managedField.fieldName, managedField.fieldType, managedField.isProperty);
+			if (tempInstance)
+				managedField.initialFieldValue = ScriptUtils::GetFieldValue(tempInstance, managedField.fieldName, managedField.fieldType, managedField.isProperty);
+			else
+			{
+				managedField.initialFieldValue.Allocate(managedField.monoFieldSize);
+				managedField.initialFieldValue.Nullify();
+			}
 
 			managedField.assembly = assembly;
 
@@ -207,18 +236,50 @@ namespace Paper
 			int align;
 			managedField.monoFieldSize = mono_type_size(monoType, &align);
 
-			managedField.initialFieldValue = ScriptUtils::GetFieldValue(tempInstance, managedField.fieldName, managedField.fieldType, managedField.isProperty);
+			if (tempInstance)
+				managedField.initialFieldValue = ScriptUtils::GetFieldValue(tempInstance, managedField.fieldName, managedField.fieldType, managedField.isProperty);
+			else
+			{
+				managedField.initialFieldValue.Allocate(managedField.monoFieldSize);
+				managedField.initialFieldValue.Nullify();
 
+			}
 			managedField.assembly = assembly;
 
 			fieldIDs.push_back(propertyID);
 			cache->managedFields[propertyID] = managedField;
 		}
 
-		return 
+		return fieldIDs;
 	}
+
 
 	std::vector<CacheID> ScriptCache::CacheMethods(ManagedClass& managedClass, ScriptAssembly* assembly)
 	{
+		std::vector<CacheID> methodIDs;
+
+		void* methodIterator = nullptr;
+		while (MonoMethod* method = mono_class_get_methods(managedClass.monoClass, &methodIterator))
+		{
+			MonoMethodSignature* methodSig = mono_method_signature(method);
+			
+			std::string methodName = ScriptUtils::MonoCharPtrToStdString(mono_method_full_name(method, false));
+			CacheID methodID = Hash::GenerateFNVHash(methodName);
+			ManagedMethod managedMethod;
+			managedMethod.methodID = methodID;
+			managedMethod.classID = managedClass.classID;
+			managedMethod.methodName = methodName;
+			managedMethod.parameterCount = mono_signature_get_param_count(methodSig);
+			managedMethod.monoMethod = method;
+			managedMethod.methodFlags = mono_method_get_flags(method, nullptr);
+			managedMethod.isStatic = managedMethod.methodFlags & METHOD_ATTRIBUTE_STATIC;
+			managedMethod.isVirtual = managedMethod.methodFlags & METHOD_ATTRIBUTE_VIRTUAL;
+
+			managedMethod.assembly = assembly;
+
+			methodIDs.push_back(methodID);
+			cache->managedMethods[methodID].push_back(managedMethod);
+		}
+		return methodIDs;
 	}
 }

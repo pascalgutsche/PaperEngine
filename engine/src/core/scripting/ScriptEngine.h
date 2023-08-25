@@ -15,10 +15,11 @@ namespace Paper
 	class ScriptAssembly;
 
 	class ScriptClass
-		: public std::enable_shared_from_this<ScriptClass>
 	{
 	public:
 		ScriptClass(CacheID classID);
+		ScriptClass(ManagedClass* managedClass);
+		~ScriptClass();
 
 		MonoObject* Instantiate() const;
 
@@ -28,7 +29,7 @@ namespace Paper
 			MonoObject* monoInstance = Instantiate();
 
 			constexpr size_t argsCount = sizeof...(args);
-			MonoMethod* ctor = GetMethod(".ctor", argsCount);
+			ManagedMethod* ctor = GetMethod(".ctor", argsCount);
 
 			if constexpr (argsCount > 0)
 			{
@@ -45,16 +46,18 @@ namespace Paper
 			return monoInstance;
 		};
 
-		MonoMethod* GetMethod(const std::string& methodName, uint32_t paramCount) const;
-		void InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params = nullptr) const;
+		ManagedMethod* GetMethod(const std::string& methodName, uint32_t paramCount) const;
+		void InvokeMethod(MonoObject* monoObject, const ManagedMethod* managedMethod, void** params = nullptr) const;
 
 		std::string GetFullClassName() const;
 		MonoClass* GetMonoClass() const;
-		const std::vector<ScriptField>& GetFields() const { return std::vector<ScriptField>(); }
-		ScriptField* GetField(const std::string& fieldName) const;
-		const ScriptAssembly& GetScriptAssembly() const { return *managedClass->assembly; }
+		ManagedClass* GetManagedClass() const;
+		std::vector<ManagedField*> GetFields() const;
+		ManagedField* GetField(const std::string& fieldName) const;
+		ScriptAssembly* GetScriptAssembly() const;
 
 		bool IsSubclassOf(const ScriptClass& scriptClass) const;
+		bool IsSubclassOf(const CacheID classID) const { return IsSubclassOf(ScriptClass(classID)); }
 
 	private:
 		CacheID id = 0;
@@ -64,33 +67,25 @@ namespace Paper
 	class ScriptInstance
 	{
 	public:
-		ScriptInstance(const Shr<ScriptClass>& scriptClass);
+		ScriptInstance(CacheID classID);
+		ScriptInstance(ManagedClass* managedClass);
+		ScriptInstance(const ScriptClass& scriptClass);
 
-		void GetFieldValue(const ScriptField& scriptField, Buffer& outBuffer) const;
-		void SetFieldValue(const ScriptField& scriptField, const void* value) const;
+		Buffer GetFieldValue(ManagedField* managedField) const;
+		void SetFieldValue(ManagedField* managedField, const void* value) const;
 
-		Shr<ScriptClass> GetScriptClass() const { return scriptClass; }
-		MonoObject* GetMonoInstance() const { return monoInstance; }
+		ManagedClass* GetManagedClass() const;
+		MonoObject* GetMonoInstance() const;
 	protected:
-		Shr <ScriptClass> scriptClass = nullptr;
+		CacheID managedClassID = 0;
+		ManagedClass* managedClass = nullptr;
 		MonoObject* monoInstance = nullptr;
-
-	private:
-		ScriptInstance(MonoObject* instance);
-
-		void SetScriptClass(Shr<ScriptClass> newScriptClass);
-		void GetFieldValueInternal(const ScriptField& scriptField, Buffer& outBuffer) const;
-		void SetFieldValueInternal(const ScriptField& scriptField, const void* value) const;
-
-		friend class ScriptUtils;
-		friend class ScriptClass;
-		friend class ScriptEngine;
 	};
 
 	class EntityInstance : public ScriptInstance
 	{
 	public:
-		EntityInstance(const Shr<ScriptClass>& scriptClass, Entity entity);
+		EntityInstance(CacheID entityScriptClassID, Entity entity);
 
 		void LoadMethods();
 
@@ -99,10 +94,13 @@ namespace Paper
 		void InvokeOnUpdate(float dt) const;
 
 	private:
-		MonoMethod* constructor = nullptr;
-		MonoMethod* onCreateMethod = nullptr;
-		MonoMethod* onDestroyMethod = nullptr;
-		MonoMethod* onUpdateMethod = nullptr;
+		ManagedMethod* constructor = nullptr;
+		ManagedMethod* onCreateMethod = nullptr;
+		ManagedMethod* onDestroyMethod = nullptr;
+		ManagedMethod* onUpdateMethod = nullptr;
+
+		//convenience
+		ScriptClass scriptClass;
 	};
 
 	class ScriptEngine
@@ -134,18 +132,18 @@ namespace Paper
 		static Scene* GetSceneContext();
 		static Shr<EntityInstance> GetEntityScriptInstance(PaperID entityUUID);
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
-		static std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
+		static std::unordered_map<CacheID, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
 		static Shr<ScriptAssembly> GetCoreAssembly();
 		static std::vector<Shr<ScriptAssembly>>& GetAppAssemblies();
 
-		static Shr<ScriptClass> GetEntityClass();
-		static void SetEntityClass(Shr<ScriptClass> entityClass);
+		static ManagedClass* GetEntityClass();
+		static void SetEntityClass(ManagedClass* managedEntityClass);
 
-		static std::unordered_map<std::string, Shr<ScriptClass>> GetScriptClasses();
+		static std::vector<ManagedClass*> GetScriptClasses();
 
-		static std::unordered_map<std::string, Shr<ScriptClass>> GetEntityInheritClasses();
-		static Shr<ScriptClass> GetEntityInheritClass(const std::string& fullClassName);
+		static std::vector<ManagedClass*> GetEntityInheritClasses();
+		static ManagedClass* GetEntityInheritClass(const std::string& fullClassName);
 		static bool EntityInheritClassExists(const std::string& fullClassName);
 
 		static std::unordered_map<PaperID, Shr<EntityInstance>>& GetEntityInstances();

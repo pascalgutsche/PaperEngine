@@ -7,7 +7,6 @@
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
 #include "renderer/Font.h"
-#include "scripting/ScriptAssembly.h"
 #include "scripting/ScriptEngine.h"
 
 static ImVec2 GetButtonSize()
@@ -455,13 +454,13 @@ void PaperLayer::PropertiesPanel()
 
 	DrawComponent<ScriptComponent>(this, "Script Component", true, [this](ScriptComponent& scrc, Entity entity)
 		{
-			Shr<ScriptClass> scriptClass = ScriptEngine::GetEntityInheritClass(scrc.scriptClassName);
+			ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scrc.scriptClassName);
 			{
 				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
 				FillNameCol("C#-Class");
 
 
-				if (ImGui::Button(((scriptClass ? scriptClass->GetFullClassName() : "") + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+				if (ImGui::Button(((managedClass ? managedClass->fullClassName : "") + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
 					ImGui::OpenPopup("select_entity_scriptclass");
 				}
@@ -469,11 +468,11 @@ void PaperLayer::PropertiesPanel()
 				if (ImGui::BeginPopup("select_entity_scriptclass"))
 				{
 					const auto& classList = ScriptEngine::GetEntityInheritClasses();
-					for (const auto [name, lscriptClass] : classList)
+					for (const auto lmanagedClass : classList)
 					{
-						if (ImGui::Selectable(name.c_str(), scriptClass == lscriptClass) && scriptClass != lscriptClass)
+						if (ImGui::Selectable(lmanagedClass->fullClassName.c_str(), managedClass == lmanagedClass) && managedClass != lmanagedClass)
 						{
-							scrc.scriptClassName = lscriptClass->GetFullClassName();
+							scrc.scriptClassName = lmanagedClass->fullClassName;
 							ScriptEngine::CreateScriptEntity(entity);
 						}
 					}
@@ -484,25 +483,25 @@ void PaperLayer::PropertiesPanel()
 				
 				//Fields
 				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
-				if (scriptClass)
+				if (managedClass)
 				{
 					const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);
 					for (const auto& fieldStorage : storageFields)
 					{
 						const auto& field = fieldStorage->GetField();
-						if (!field.HasFlag(ScriptFieldFlag::Public)) continue;
-						if (field.type == ScriptFieldType::Invalid) continue;
+						if (!field->HasFlag(ScriptFieldFlag::Public)) continue;
+						if (field->fieldType == ScriptFieldType::Invalid) continue;
 					
-						std::string varName = std::format("{} {}", ScriptUtils::ScriptFieldTypeToString(field.type), field.name);
+						std::string varName = std::format("{} {}", ScriptUtils::ScriptFieldTypeToString(field->fieldType), field->fieldName);
 						ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
 					
-						switch (field.type)
+						switch (field->fieldType)
 						{
 							case ScriptFieldType::String:
 							{
 								std::string dataString = fieldStorage->GetValue<std::string>();
 								FillNameCol(varName);
-								if (ImGui::InputText(CONST_UI_ID, &dataString) && field.IsWritable())
+								if (ImGui::InputText(CONST_UI_ID, &dataString) && field->IsWritable())
 								{
 									fieldStorage->SetValue(dataString);
 								};
@@ -512,7 +511,7 @@ void PaperLayer::PropertiesPanel()
 							case ScriptFieldType::Float:
 							{
 								float dataFloat = fieldStorage->GetValue<float>();
-								if (DrawFloatControl(varName, dataFloat) && field.IsWritable())
+								if (DrawFloatControl(varName, dataFloat) && field->IsWritable())
 								{
 									fieldStorage->SetValue(dataFloat);
 								};
@@ -524,7 +523,7 @@ void PaperLayer::PropertiesPanel()
 								char dataChar = fieldStorage->GetValue<char>();
 								char data[] = { dataChar, 0 };
 								FillNameCol(varName);
-								if (ImGui::InputText(CONST_UI_ID, data, 2) && field.IsWritable())
+								if (ImGui::InputText(CONST_UI_ID, data, 2) && field->IsWritable())
 								{
 									fieldStorage->SetValue(data[0]);
 								};

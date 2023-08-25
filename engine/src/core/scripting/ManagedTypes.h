@@ -125,6 +125,10 @@ namespace Paper
 		uint32_t classID = -1;
 		ScriptAssembly* assembly = nullptr;
 
+		bool HasFlag(ScriptFieldFlag flag) const { return accessibilityFlags & (uint32_t)flag; }
+
+		bool IsWritable() const { return !HasFlag(ScriptFieldFlag::Readonly) && HasFlag(ScriptFieldFlag::Public); }
+
 		bool operator==(const ManagedField& other) const
 		{
 			return fieldID == other.fieldID;
@@ -133,6 +137,11 @@ namespace Paper
 		bool operator!=(const ManagedField& other) const
 		{
 			return !(*this == other);
+		}
+
+		~ManagedField()
+		{
+			initialFieldValue.Release();
 		}
 	};
 }

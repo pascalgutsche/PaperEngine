@@ -6,7 +6,6 @@
 namespace Paper
 {
 	class ScriptClass;
-	struct ScriptField;
 	
 	enum class ScriptFieldFlag;
     enum class ScriptFieldType;
@@ -30,6 +29,7 @@ namespace Paper
         static Buffer MonoObjectToValue(ScriptFieldType type, MonoObject* object);
 
         static std::string MonoStringToStdString(MonoString* monoString);
+        static std::string MonoCharPtrToStdString(char* monoCharPtr);
 
         static MonoString* StdStringToMonoString(const std::string& stdString);
 
@@ -47,18 +47,11 @@ namespace Paper
 
         static bool IsPrimitive(ScriptFieldType type);
 
-        static MonoObject* GetScriptFieldValueObject(const ScriptField& scriptField, MonoObject* monoInstance);
-
-        static void CreateScriptField(ScriptField& scriptField, const std::string& name, MonoObject* reference, Shr<ScriptClass> classField = nullptr);
-
         static MonoObject* GetFieldValueObject(MonoObject* object, std::string_view fieldName, bool isProperty);
 
         static Buffer GetFieldValue(MonoObject* object, std::string_view fieldName, ScriptFieldType type, bool isProperty);
+        static void SetFieldValue(MonoObject* object, const std::string& fieldName, ScriptFieldType type, bool isProperty, const void* data, ManagedClass* baseClass = nullptr);
 
-        static void SetFieldValue(MonoObject* object, ScriptFieldType type, const std::string& name, bool isProperty, const void* data, const Shr<ScriptClass>& baseClass = nullptr);
-
-        static ScriptField GetScriptField(const std::string& fieldName, MonoClass* monoClass);
-        static std::vector<ScriptField> GetScriptFieldsOfClass(MonoClass* monoClass);
     private:
         static void* UnboxInternal(MonoObject* obj);
 

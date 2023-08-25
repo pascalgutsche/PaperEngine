@@ -9,60 +9,10 @@ namespace Paper
 {
 	class EntityInstance;
 
-	
-
-
-	struct ScriptField
-	{
-		
-
-		MonoClassField* monoField = nullptr;
-		MonoProperty* monoProperty = nullptr;
-
-		bool isProperty = false;
-	private:
-		std::string stringType = "";
-
-		friend class ScriptUtils;
-		friend class ScriptEngine;
-	public:
-
-		ScriptField() = default;
-
-		ScriptField(const ScriptField& other)
-		{
-			name = other.name;
-			type = other.type;
-			flags = other.flags;
-			typeSize = other.typeSize;
-			initialFieldVal = Buffer(other.initialFieldVal);
-			monoField = other.monoField;
-			monoProperty = other.monoProperty;
-			isProperty = other.isProperty;
-			stringType = other.stringType;
-		}
-
-		bool HasFlag(ScriptFieldFlag flag) const { return flags & (uint32_t)flag; }
-
-		bool IsWritable() const { return !HasFlag(ScriptFieldFlag::Readonly) && HasFlag(ScriptFieldFlag::Public); }
-
-		bool operator==(const ScriptField& other) const
-		{
-			return other.monoField == monoField;
-		}
-
-		~ScriptField()
-		{
-			initialFieldVal.Release();
-		}
-
-		
-	};
-
 	class ScriptFieldStorage
 	{
 	public:
-		ScriptFieldStorage(const ScriptField* scriptField);
+		ScriptFieldStorage(ManagedField* scriptField);
 
 		void SetRuntimeInstance(Shr<EntityInstance> instance);
 		void RemoveRuntimeInstance();
@@ -107,11 +57,11 @@ namespace Paper
 		Buffer GetValueBuffer() const;
 		void SetValueBuffer(const Buffer& buffer);
 
-		const ScriptField& GetField() const { return *scriptField; }
+		ManagedField* GetField() const { return managedField; }
 
 	private:
-		const ScriptField* scriptField = nullptr;
-		Buffer data = Buffer::Copy(scriptField->initialFieldVal);
+		ManagedField* managedField = nullptr;
+		Buffer data = Buffer::Copy(managedField->initialFieldValue);
 
 		void GetRuntimeFieldValue(Buffer& outBuffer) const;
 		void SetRuntimeFieldValue(const void* value) const;

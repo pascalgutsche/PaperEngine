@@ -17,6 +17,7 @@
 #include <mono/metadata/tokentype.h>
 #include <mono/metadata/mono-debug.h>
 
+#include "ScriptCache.h"
 #include "utils/PaperID.h"
 
 namespace Paper
@@ -339,8 +340,14 @@ namespace Paper
         if (!monoString) return "";
 
         char* text = mono_string_to_utf8(monoString);
-        std::string value = std::string(text);
-        mono_free(text);
+        return MonoCharPtrToStdString(text);
+    }
+
+    std::string ScriptUtils::MonoCharPtrToStdString(char* monoCharPtr)
+    {
+        if (!monoCharPtr) return "";
+        std::string value = std::string(monoCharPtr);
+        mono_free(monoCharPtr);
         return value;
     }
 
@@ -356,9 +363,9 @@ namespace Paper
         case ScriptFieldType::String: 
             return (MonoObject*)StdStringToMonoString(std::string((const char*)data));
         case ScriptFieldType::PaperID:
-            return ScriptClass("Paper", "PaperID", *ScriptEngine::GetCoreAssembly().get()).InstantiateParams(*(uint64_t*)data);
+            return ScriptClass(ScriptCache::GetManagedClassFromName("Paper.Entity")).InstantiateParams(*(uint64_t*)data);
         case ScriptFieldType::Entity:
-            return ScriptClass("Paper", "Entity", *ScriptEngine::GetCoreAssembly().get()).InstantiateParams(*(PaperID*)data);
+            return ScriptClass(ScriptCache::GetManagedClassFromName("Paper.Entity")).InstantiateParams(*(PaperID*)data);
         case ScriptFieldType::DataComponent:
         case ScriptFieldType::TransformComponent:
         case ScriptFieldType::SpriteComponent:
@@ -367,9 +374,9 @@ namespace Paper
         case ScriptFieldType::CameraComponent:
         case ScriptFieldType::ScriptComponent:
 	        {
-				MonoObject* object = ScriptClass("Paper", ScriptFieldTypeToString(type), *ScriptEngine::GetCoreAssembly().get()).Instantiate();
+				MonoObject* object = ScriptClass(ScriptCache::GetManagedClassFromName("Paper." + ScriptFieldTypeToString(type))).Instantiate();
                 
-                SetFieldValue(object, ScriptFieldType::Entity, "Entity", true, data, MakeShr<ScriptClass>("Paper", "Component", *ScriptEngine::GetCoreAssembly().get()));
+                SetFieldValue(object, "Entity", ScriptFieldType::Entity, true, data, ScriptCache::GetManagedClassFromName("Paper.Component"));
                 return object;
 	        }
 
@@ -397,65 +404,6 @@ namespace Paper
         }
     }
 
-    MonoObject* ScriptUtils::GetScriptFieldValueObject(const ScriptField& scriptField, MonoObject* monoInstance)
-    {
-        
-        if (scriptField.isProperty)
-			return mono_property_get_value(scriptField.monoProperty, monoInstance, nullptr, nullptr);
-        return mono_field_get_value_object(mono_domain_get(), scriptField.monoField, monoInstance);
-    }
-
-    void ScriptUtils::CreateScriptField(ScriptField& scriptField, const std::string& name, MonoObject* reference, Shr<ScriptClass> fieldClass)
-    {
-        MonoClass* monoClass = nullptr; 
-        if (fieldClass)
-            monoClass = fieldClass->GetMonoClass();
-        else
-            monoClass = mono_object_get_class(reference);
-        MonoType* monoType = nullptr; 
-        MonoClassField* monoField = mono_class_get_field_from_name(monoClass, name.data());
-        MonoProperty* monoProperty = mono_class_get_property_from_name(monoClass, name.data());
-
-        if (monoProperty)
-        {
-            MonoMethod* getMethod = mono_property_get_get_method(monoProperty);
-            MonoMethodSignature * getMethodSigniture = mono_method_get_signature(getMethod, nullptr, 0);
-            monoType = mono_signature_get_return_type(getMethodSigniture);
-        }
-        else
-        {
-            monoType = mono_field_get_type(monoField);
-        }
-
-        ScriptInstance scriptInstance(reference);
-
-        scriptField.name = name;
-        scriptField.type = MonoTypeToScriptFieldType(monoType);
-        scriptField.stringType = mono_type_get_name(monoType);
-        ASSERT(scriptField.stringType != "", "");
-        int align;
-        scriptField.typeSize = mono_type_size(monoType, &align);
-        scriptField.monoField = monoField;
-        scriptField.monoProperty = monoProperty;
-        if (monoProperty) 
-        {
-            scriptField.flags = GetFieldFlags(mono_property_get_flags(monoProperty));
-            scriptField.isProperty = true;
-        }
-        else
-        {
-            scriptField.flags = GetFieldFlags(mono_field_get_flags(monoField));
-        }
-    	scriptInstance.GetFieldValue(scriptField, scriptField.initialFieldVal);
-
-        // allocate memory to the buffer for later SetData when an entity field contains no entity.
-        if (scriptField.type == ScriptFieldType::Entity)
-        {
-            scriptField.initialFieldVal.Allocate(sizeof(PaperID));
-            scriptField.initialFieldVal.Nullify();
-        }
-    }
-
     void* ScriptUtils::UnboxInternal(MonoObject* obj)
     {
         if (!obj) return nullptr;
@@ -469,15 +417,18 @@ namespace Paper
 
     MonoObject* ScriptUtils::GetFieldValueObject(MonoObject* object, std::string_view fieldName, bool isProperty)
     {
-
+        CORE_ASSERT(object, "");
+        if (!object) return nullptr;
         MonoClass* objectClass = mono_object_get_class(object);
 
         MonoObject* valueObject = nullptr;
 
         if (isProperty)
         {
+            MonoObject* exc = nullptr;
             MonoProperty* classProperty = mono_class_get_property_from_name(objectClass, fieldName.data());
-            valueObject = mono_property_get_value(classProperty, object, nullptr, nullptr);
+            valueObject = mono_property_get_value(classProperty, object, nullptr, &exc);
+            //TODO: HANDLE exc 
         }
         else
         {
@@ -488,20 +439,20 @@ namespace Paper
         return valueObject;
     }
 
-    void ScriptUtils::SetFieldValue(MonoObject* object, ScriptFieldType type, const std::string& name, bool isProperty, const void* data, const Shr<ScriptClass>& baseClass)
+    void ScriptUtils::SetFieldValue(MonoObject* object, const std::string& fieldName, ScriptFieldType type, bool isProperty, const void* data, ManagedClass* baseClass)
     {
         if (object == nullptr || data == nullptr)
             return;
 
         MonoClass* objectClass = nullptr;
         if (baseClass)
-            objectClass = baseClass->GetMonoClass();
+            objectClass = baseClass->monoClass;
         else
             objectClass = mono_object_get_class(object);
 
         if (isProperty)
         {
-            MonoProperty* classProperty = mono_class_get_property_from_name(objectClass, name.c_str());
+            MonoProperty* classProperty = mono_class_get_property_from_name(objectClass, fieldName.c_str());
             void* propertyData = nullptr;
 
             if (IsPrimitive(type))
@@ -513,7 +464,7 @@ namespace Paper
         }
         else
         {
-            MonoClassField* classField = mono_class_get_field_from_name(objectClass, name.c_str());
+            MonoClassField* classField = mono_class_get_field_from_name(objectClass, fieldName.c_str());
             void* fieldData = nullptr;
 
             if (IsPrimitive(type))

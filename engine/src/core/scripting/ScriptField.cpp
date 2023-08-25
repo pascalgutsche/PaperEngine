@@ -7,8 +7,8 @@
 namespace Paper
 {
 
-	ScriptFieldStorage::ScriptFieldStorage(const ScriptField* scriptField)
-		: scriptField(scriptField)
+	ScriptFieldStorage::ScriptFieldStorage(ManagedField* managedField)
+		: managedField(managedField)
 	{
 	}
 
@@ -87,12 +87,12 @@ namespace Paper
 
 	void ScriptFieldStorage::GetRuntimeFieldValue(Buffer& outBuffer) const
 	{
-		runtimeInstance->GetFieldValue(*scriptField, outBuffer);
+		outBuffer = runtimeInstance->GetFieldValue(managedField);
 	}
 
 	void ScriptFieldStorage::SetRuntimeFieldValue(const void* value) const
 	{
 		//if (scriptField->type != ScriptFieldType::String && value.size > 0)
-			runtimeInstance->SetFieldValue(*scriptField, value);
+			runtimeInstance->SetFieldValue(managedField, value);
 	}
 }

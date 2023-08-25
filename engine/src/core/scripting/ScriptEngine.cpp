@@ -31,11 +31,11 @@ namespace Paper
         Shr<ScriptAssembly> coreAssembly;
 		std::vector<Shr<ScriptAssembly>> appAssemblies;
 
-        Shr<ScriptClass> entityClass = nullptr;
+        ManagedClass* entityClass = nullptr;
 
         std::unordered_map<PaperID, Shr<EntityInstance>> entityInstances;
 
-        std::unordered_map<PaperID, std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>> entityFieldStorage;
+        std::unordered_map<PaperID, std::unordered_map<CacheID, EntityFieldStorage>> entityFieldStorage;
 
         bool assembliesReloadSchedule = false;
 
@@ -128,7 +128,7 @@ namespace Paper
         //if no assemblies to reload just return
         if (!script_data->assembliesReloadSchedule) return;
         script_data->assembliesReloadSchedule = false;
-
+#if 0
         //cache scriptfieldstorage and restore it later
         std::unordered_map<Shr<EntityInstance>, std::unordered_map<Shr<ScriptField>, Buffer>> oldScriptFieldValues;
         for (const auto entityInstance : GetEntityInstances() | std::views::values)
@@ -179,7 +179,7 @@ namespace Paper
                 buffer.Release();
             }
         }
-
+#endif
     }
 
     bool ScriptEngine::ShouldReloadAppAssembly()
@@ -224,8 +224,8 @@ namespace Paper
         auto& entityFieldStorages = GetActiveEntityFieldStorageInternal(entity);
 
 		
-        const auto& scriptFields = GetEntityInheritClass(sc.scriptClassName)->GetFields();
-        for (auto& field : scriptFields)
+        const auto& scriptFields = ScriptClass(GetEntityInheritClass(sc.scriptClassName)).GetFields();
+        for (auto field : scriptFields)
         {
             bool found = false;
             for (auto& fieldStorage : entityFieldStorages)
@@ -235,7 +235,7 @@ namespace Paper
             }
 
             if (!found)
-                entityFieldStorages.push_back(MakeShr<ScriptFieldStorage>(&field));
+                entityFieldStorages.push_back(MakeShr<ScriptFieldStorage>(field));
         }
     }
 
@@ -259,7 +259,7 @@ namespace Paper
         const auto& scrc = entity.GetComponent<ScriptComponent>();
         if (GetEntityInheritClass(scrc.scriptClassName))
         {
-            Shr<EntityInstance> instance = MakeShr<EntityInstance>(GetEntityInheritClass(scrc.scriptClassName), entity);
+            Shr<EntityInstance> instance = MakeShr<EntityInstance>(GetEntityInheritClass(scrc.scriptClassName)->classID, entity);
             script_data->entityInstances[entity.GetPaperID()] = instance;
 
             //apply class variables defined in editor
@@ -300,14 +300,18 @@ namespace Paper
 
     bool ScriptEngine::EntityInheritClassExists(const std::string& fullClassName)
     {
-        return GetEntityInheritClasses().contains(fullClassName);
+	    const std::vector<ManagedClass*> entityInheritClasses = GetEntityInheritClasses();
+        for (const ManagedClass* entityInheritClass : entityInheritClasses)
+        {
+            if (entityInheritClass->fullClassName == fullClassName)
+                return true;
+        }
+        return false;
     }
 
-    Shr<ScriptClass> ScriptEngine::GetEntityInheritClass(const std::string& fullClassName)
+    ManagedClass* ScriptEngine::GetEntityInheritClass(const std::string& fullClassName)
     {
-        auto entityClasses = GetEntityInheritClasses();
-        if (!entityClasses.contains(fullClassName)) return nullptr;
-        return entityClasses.at(fullClassName);
+        return ScriptCache::GetManagedClassFromName(fullClassName);
     }
 
     Scene* ScriptEngine::GetSceneContext()
@@ -324,15 +328,15 @@ namespace Paper
     const EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorage(Entity entity)
     {
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
-        if (!script_data->entityFieldStorage.contains(entity.GetPaperID()) || !script_data->entityFieldStorage.at(entity.GetPaperID()).contains(GetEntityInheritClass(sc.scriptClassName)))
+        if (!script_data->entityFieldStorage.contains(entity.GetPaperID()) || !script_data->entityFieldStorage.at(entity.GetPaperID()).contains(GetEntityInheritClass(sc.scriptClassName)->classID))
         {
             LOG_CORE_ERROR("Does not have field storage for entity '{}'", entity.GetPaperID().toString());
             return EntityFieldStorage();
         }
-        return script_data->entityFieldStorage.at(entity.GetPaperID()).at(GetEntityInheritClass(sc.scriptClassName));
+        return script_data->entityFieldStorage.at(entity.GetPaperID()).at(GetEntityInheritClass(sc.scriptClassName)->classID);
     }
 
-    std::unordered_map<Shr<ScriptClass>, EntityFieldStorage>& ScriptEngine::GetEntityFieldStorage(Entity entity)
+    std::unordered_map<CacheID, EntityFieldStorage>& ScriptEngine::GetEntityFieldStorage(Entity entity)
     {
         return script_data->entityFieldStorage[entity.GetPaperID()];
     }
@@ -342,38 +346,30 @@ namespace Paper
         return script_data->appDomain;
     }
 
-    Shr<ScriptClass> ScriptEngine::GetEntityClass()
+    ManagedClass* ScriptEngine::GetEntityClass()
     {
         return script_data->entityClass;
     }
 
-    void ScriptEngine::SetEntityClass(Shr<ScriptClass> entityClass)
+    void ScriptEngine::SetEntityClass(ManagedClass* managedEntityClass)
     {
-        script_data->entityClass = entityClass;
+        script_data->entityClass = managedEntityClass;
     }
 
-    std::unordered_map<std::string, Shr<ScriptClass>> ScriptEngine::GetScriptClasses()
+    std::vector<ManagedClass*> ScriptEngine::GetScriptClasses()
     {
-        std::unordered_map<std::string, Shr<ScriptClass>> scriptClasses;
-        for (const ScriptAssembly* scriptAssembly : ScriptAssembly::GetAllAssemblies())
-        {
-            for (auto [name, scriptClass] : scriptAssembly->GetClasses())
-            {
-                scriptClasses[name] = scriptClass;
-            }
-        }
-        return scriptClasses;
+        return ScriptCache::GetManagedClasses();
     }
 
-    std::unordered_map<std::string, Shr<ScriptClass>> ScriptEngine::GetEntityInheritClasses()
+    std::vector<ManagedClass*> ScriptEngine::GetEntityInheritClasses()
     {
-        std::unordered_map<std::string, Shr<ScriptClass>> entityClasses;
-        for (const ScriptAssembly* scriptAssembly : ScriptAssembly::GetAllAssemblies())
+        std::vector<ManagedClass*> managedClasses = ScriptCache::GetManagedClasses();
+        std::vector<ManagedClass*> entityClasses;
+        for (ManagedClass* managedClass : managedClasses)
         {
-	        for (auto [name, entityClass] : scriptAssembly->GetEntityInheritClasses())
-	        {
-                entityClasses[name] = entityClass;
-	        }
+            if (managedClass->fullClassName == "Paper.Entity") continue;
+            if (ScriptClass(managedClass).IsSubclassOf(script_data->entityClass))
+                entityClasses.push_back(managedClass);
         }
         return entityClasses;
     }
@@ -455,7 +451,7 @@ namespace Paper
     EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorageInternal(Entity entity)
     {
         ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
-        return script_data->entityFieldStorage[entity.GetPaperID()][GetEntityInheritClass(sc.scriptClassName)];
+        return script_data->entityFieldStorage[entity.GetPaperID()][GetEntityInheritClass(sc.scriptClassName)->classID];
     }
 
     Shr<ScriptAssembly> ScriptEngine::GetCoreAssembly()
@@ -475,6 +471,17 @@ namespace Paper
     ScriptClass::ScriptClass(CacheID classID)
         : id(classID), managedClass(ScriptCache::GetManagedClass(classID))
     {
+    }
+
+    ScriptClass::ScriptClass(ManagedClass* managedClass)
+	    : id(managedClass->classID), managedClass(managedClass)
+	{
+    }
+
+    ScriptClass::~ScriptClass()
+    {
+        id = 0;
+        managedClass = nullptr;
     }
 
     MonoObject* ScriptClass::Instantiate() const
@@ -499,15 +506,15 @@ namespace Paper
         return monoObject;
     }
 
-    MonoMethod* ScriptClass::GetMethod(const std::string& methodName, uint32_t paramCount) const
+    ManagedMethod* ScriptClass::GetMethod(const std::string& methodName, uint32_t paramCount) const
     {
-        return mono_class_get_method_from_name(managedClass->monoClass, methodName.c_str(), paramCount);
+        return ScriptCache::GetManagedMethod(managedClass, methodName, paramCount);
     }
 
-    void ScriptClass::InvokeMethod(MonoObject* monoObject, MonoMethod* monoMethod, void** params) const
+    void ScriptClass::InvokeMethod(MonoObject* monoObject, const ManagedMethod* managedMethod, void** params) const
     {
         MonoObject* exc = nullptr;
-        mono_runtime_invoke(monoMethod, monoObject, params, &exc);
+        mono_runtime_invoke(managedMethod->monoMethod, monoObject, params, &exc);
         if (exc)
         {
             mono_print_unhandled_exception(exc);
@@ -524,12 +531,36 @@ namespace Paper
         return managedClass->monoClass;
     }
 
-    ScriptField* ScriptClass::GetField(const std::string& fieldName) const
+    ManagedClass* ScriptClass::GetManagedClass() const
     {
-        ScriptField* scriptField = nullptr;
-        //for (const ScriptField& field : fields)
-        //    if (field.name == fieldName) scriptField = (ScriptField*)&field;
-	    return scriptField;
+        return managedClass;
+    }
+
+    std::vector<ManagedField*> ScriptClass::GetFields() const
+    {
+        std::vector<ManagedField*> classFields;
+        for (const CacheID fieldID : managedClass->fieldIDs)
+        {
+            ManagedField* field = ScriptCache::GetManagedField(fieldID);
+            classFields.push_back(field);
+        }
+        return classFields;
+    }
+
+    ManagedField* ScriptClass::GetField(const std::string& fieldName) const
+    {
+        for (const CacheID fieldID : managedClass->fieldIDs)
+        {
+            ManagedField* field = ScriptCache::GetManagedField(fieldID);
+            if (field->fieldName == fieldName)
+                return field;
+        }
+        return nullptr;
+    }
+
+    ScriptAssembly* ScriptClass::GetScriptAssembly() const
+    {
+        return managedClass->assembly;
     }
 
     bool ScriptClass::IsSubclassOf(const ScriptClass& scriptClass) const
@@ -537,100 +568,52 @@ namespace Paper
         return mono_class_is_subclass_of(managedClass->monoClass, scriptClass.GetMonoClass(), false);
     }
 
-    //void ScriptClass::InitFieldMap()
-    //{
-	//    const ScriptInstance tempInstance(shared_from_this());
-    //    if (!tempInstance.monoInstance) return;
-    //
-    //    fields.reserve(mono_class_num_fields(monoClass));
-    //
-    //    void* iterator = nullptr;
-    //    while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
-    //    {
-    //        std::string fieldName = mono_field_get_name(field);
-    //        ScriptField& scriptField = fields.emplace_back();
-    //        ScriptUtils::CreateScriptField(scriptField, fieldName, tempInstance.GetMonoInstance());
-    //
-    //    	//MonoType* monoType = mono_field_get_type(field);
-    //        //scriptField.name = 
-	//		//scriptField.type = Utils::MonoTypeToScriptFieldType(monoType);
-    //        //scriptField.flags = Utils::GetFieldFlags(mono_field_get_flags(field));
-    //        //int align;
-    //        //scriptField.typeSize = mono_type_size(monoType, &align);
-    //        //scriptField.monoField = field;
-    //        //scriptField.initialFieldVal = tempInstance.GetFieldValue(scriptField);
-    //    }
-    //}
-
-
     //
     //  ScriptInstance
     //
-    ScriptInstance::ScriptInstance(const Shr<ScriptClass>& scriptClass)
-	    : scriptClass(scriptClass)
+
+    ScriptInstance::ScriptInstance(CacheID classID)
+        : managedClassID(classID), managedClass(ScriptCache::GetManagedClass(classID))
     {
-        monoInstance = scriptClass->Instantiate();
+        monoInstance = ScriptClass(managedClassID).Instantiate();
     }
 
-    void ScriptInstance::GetFieldValue(const ScriptField& scriptField, Buffer& outBuffer) const
+    ScriptInstance::ScriptInstance(ManagedClass* managedClass)
+	    : managedClassID(managedClass->classID), managedClass(managedClass)
     {
-        if (scriptClass)
-        {
-			const auto& classFields = scriptClass->GetFields();
-			if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
-        }
-
-        MonoObject* object = ScriptUtils::GetScriptFieldValueObject(scriptField, monoInstance);
-        outBuffer = ScriptUtils::MonoObjectToValue(scriptField.type, object);
+        monoInstance = ScriptClass(managedClassID).Instantiate();
     }
 
-    void ScriptInstance::SetFieldValue(const ScriptField& scriptField, const void* value) const
+    ScriptInstance::ScriptInstance(const ScriptClass& scriptClass)
+	    : managedClassID(scriptClass.GetManagedClass()->classID), managedClass(scriptClass.GetManagedClass())
     {
-        if (!value) return;
-        if (!scriptField.IsWritable()) return;
-
-        const auto& classFields = scriptClass->GetFields();
-        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
-
-        const void* data = nullptr;
-        if (ScriptUtils::IsPrimitive(scriptField.type))
-            data = value;
-        else
-            data = ScriptUtils::DataToMonoObject(scriptField.type, value);
-
-        /// convert char to wchar because c# char is wchar
-        if (scriptField.type == ScriptFieldType::Char)
-        {
-            wchar_t temp = *(const char*)data;
-            data = &temp;
-        }
-
-        mono_field_set_value(monoInstance, scriptField.monoField, (void*)data);
+        monoInstance = ScriptClass(managedClassID).Instantiate();
     }
 
+    MonoObject* ScriptInstance::GetMonoInstance() const
+    {
+        return monoInstance; 
+    }
+
+    Buffer ScriptInstance::GetFieldValue(ManagedField* managedField) const
+    {
+        return ScriptUtils::GetFieldValue(monoInstance, managedField->fieldName, managedField->fieldType, managedField->isProperty);
+    }
+
+    void ScriptInstance::SetFieldValue(ManagedField* managedField, const void* value) const
+    {
+        ScriptUtils::SetFieldValue(monoInstance, managedField->fieldName, managedField->fieldType, managedField->isProperty, value);
+    }
+
+    ManagedClass* ScriptInstance::GetManagedClass() const
+    {
+        return managedClass;
+    }
+
+    /*
     ScriptInstance::ScriptInstance(MonoObject* instance)
         : monoInstance(instance) { }
 
-    void ScriptInstance::SetScriptClass(Shr<ScriptClass> newScriptClass)
-    {
-        scriptClass = newScriptClass;
-        monoInstance = scriptClass->Instantiate();
-    }
-
-    void ScriptInstance::GetFieldValueInternal(const ScriptField& scriptField, Buffer& outBuffer) const
-    {
-        if (scriptClass)
-        {
-            const auto& classFields = scriptClass->GetFields();
-            if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
-        }
-
-        MonoObject* object = ScriptUtils::GetScriptFieldValueObject(scriptField, monoInstance);
-        void* data = ScriptUtils::UnboxInternal(object);
-        outBuffer.Allocate(scriptField.typeSize);
-        outBuffer.Nullify();
-        outBuffer.Write(data, scriptField.typeSize);
-    }
 
     void ScriptInstance::SetFieldValueInternal(const ScriptField& scriptField, const void* value) const
     {
@@ -645,47 +628,48 @@ namespace Paper
 
         mono_field_set_value(monoInstance, scriptField.monoField, (void*)data);
     }
+*/
 
     //
     //  EntityInstance
     //
-    EntityInstance::EntityInstance(const Shr<ScriptClass>& scriptClass, Entity entity)
-	    : ScriptInstance(scriptClass)
+    EntityInstance::EntityInstance(const CacheID entityScriptClassID, Entity entity)
+        : ScriptInstance(entityScriptClassID), scriptClass(ScriptClass(entityScriptClassID))
     {
-        CORE_ASSERT(scriptClass->IsSubclassOf(script_data->entityClass), "Class must be a subclass of entity");
+        CORE_ASSERT(ScriptClass(managedClassID).IsSubclassOf(script_data->entityClass), "Class must be a subclass of entity");
 
         LoadMethods();
 
         //constructor
         PaperID entityUUID = entity.GetPaperID();
         void* param = &entityUUID;
-        scriptClass->InvokeMethod(monoInstance, constructor, &param);
+        scriptClass.InvokeMethod(monoInstance, constructor, &param);
     }
 
     void EntityInstance::LoadMethods()
     {
-        constructor = script_data->entityClass->GetMethod(".ctor", 1);
-        onCreateMethod = scriptClass->GetMethod("OnCreate", 0);
-        onDestroyMethod = scriptClass->GetMethod("OnDestroy", 0);
-        onUpdateMethod = scriptClass->GetMethod("OnUpdate", 1);
+        constructor = ScriptClass(script_data->entityClass).GetMethod(".ctor", 1);
+        onCreateMethod = scriptClass.GetMethod("OnCreate", 0);
+        onDestroyMethod = scriptClass.GetMethod("OnDestroy", 0);
+        onUpdateMethod = scriptClass.GetMethod("OnUpdate", 1);
     }
 
     void EntityInstance::InvokeOnCreate() const
     {
         if (onCreateMethod)
-			scriptClass->InvokeMethod(monoInstance, onCreateMethod);
+			scriptClass.InvokeMethod(monoInstance, onCreateMethod);
     }
 
     void EntityInstance::InvokeOnDestroy() const
     {
         if (onDestroyMethod)
-			scriptClass->InvokeMethod(monoInstance, onDestroyMethod);
+			scriptClass.InvokeMethod(monoInstance, onDestroyMethod);
     }
 
     void EntityInstance::InvokeOnUpdate(float dt) const
     {
         void* param = &dt;
         if (onUpdateMethod)
-			scriptClass->InvokeMethod(monoInstance, onUpdateMethod, &param);
+			scriptClass.InvokeMethod(monoInstance, onUpdateMethod, &param);
     }
 }

@@ -3,6 +3,9 @@
 #include "ScriptEngine.h"
 
 #include <filewatch/FileWatch.h>
+#include <mono/metadata/assembly.h>
+
+#include "ScriptCache.h"
 
 
 namespace Paper
@@ -16,13 +19,12 @@ namespace Paper
 	{
 		assemblyFileWatchers[this] = MakeScoped<filewatch::FileWatch<std::string>>(filePath.string(), [&](const std::string& path, const filewatch::Event change_type)
 		{
-				if (change_type != filewatch::Event::modified) return;
+			if (change_type != filewatch::Event::modified) return;
 			LOG_CORE_WARN("FILE CHANGED: {} {}", path, (int)change_type);
 			ScriptEngine::ScheduleAssemblyReload();
 		});
 
 		LoadAssembly();
-		LoadAssemblyClasses();
 
 		allAssemblies.push_back(this);
 	}
@@ -40,7 +42,6 @@ namespace Paper
 	{
 		UnloadAssembly();
 		LoadAssembly();
-		LoadAssemblyClasses();
 	}
 
 	void ScriptAssembly::LoadAssembly()
@@ -51,17 +52,17 @@ namespace Paper
 			monoAssemblyImage = mono_assembly_get_image(monoAssembly);
 		else
 			LOG_CORE_ERROR("Could not find C# assembly '{}'", filePath.string());
+
+		ScriptCache::CacheAssembly(this);
 	}
 
 	void ScriptAssembly::UnloadAssembly()
 	{
 		monoAssembly = nullptr;
 		monoAssemblyImage = nullptr;
-
-		classes.clear();
-		entityClasses.clear();
 	}
 
+	/*
 	void ScriptAssembly::LoadAssemblyClasses()
 	{
 		if (isCoreAssembly)
@@ -96,4 +97,5 @@ namespace Paper
 			classes[fullName] = scriptClass;
 		}
 	}
+	*/
 }

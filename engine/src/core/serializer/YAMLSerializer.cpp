@@ -109,16 +109,16 @@ namespace Paper
 			out << YAML::Key << "ScriptFields";
 			out << YAML::BeginMap;
 
-			for (const auto& scriptClass : entityFieldStorage)
+			for (const auto& [classID, fieldStorage] : entityFieldStorage)
 			{
-				out << YAML::Key << scriptClass.first->GetFullClassName();
+				out << YAML::Key << ScriptClass(classID).GetFullClassName();
 				out << YAML::BeginMap;
 
-				for (const auto& classFieldStorage : scriptClass.second)
+				for (const auto& classFieldStorage : fieldStorage)
 				{
-					ScriptFieldType type = classFieldStorage->GetField().type;
+					ScriptFieldType type = classFieldStorage->GetField()->fieldType;
 
-					out << YAML::Key << classFieldStorage->GetField().name;
+					out << YAML::Key << classFieldStorage->GetField()->fieldName;
 					out << YAML::BeginMap;
 
 					out << YAML::Key << "FieldType" << YAML::Value << (int)type;
@@ -276,26 +276,26 @@ namespace Paper
 						for (YAML::const_iterator yamlScriptClass = yamlScriptFields.begin(); yamlScriptClass != yamlScriptFields.end(); ++yamlScriptClass) {
 							std::string scriptClassName = yamlScriptClass->first.as<std::string>();
 
-							Shr<ScriptClass> scriptClass = ScriptEngine::GetEntityInheritClass(scriptClassName);
-							if (!scriptClass) continue;
+							ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scriptClassName);
+							if (!managedClass) continue;
 
 							auto yamlScriptClassFields = yamlScriptFields[scriptClassName];
 							for (YAML::const_iterator yamlScriptClassFieldsIT = yamlScriptClassFields.begin(); yamlScriptClassFieldsIT != yamlScriptClassFields.end(); ++yamlScriptClassFieldsIT)
 							{
 								std::string scriptFieldName = yamlScriptClassFieldsIT->first.as<std::string>();
-								ScriptField* scriptField = scriptClass->GetField(scriptFieldName);
-								if (!scriptField) continue;
+								ManagedField* managedField = ScriptClass(managedClass).GetField(scriptFieldName);
+								if (!managedField) continue;
 
 								auto yamlScriptField = yamlScriptClassFields[scriptFieldName];
 								auto& entityFieldStorage = ScriptEngine::GetEntityFieldStorage(deserialized_entity);
 
-								auto& scriptClassFieldStorages = entityFieldStorage[scriptClass];
+								auto& scriptClassFieldStorages = entityFieldStorage[managedClass->classID];
 
 								int index = 0;
 								for (; index < scriptClassFieldStorages.size(); index++)
-									if (scriptClassFieldStorages[index]->GetField() == *scriptField) break;
+									if (scriptClassFieldStorages[index]->GetField() == managedField) break;
 
-								Shr<ScriptFieldStorage> fieldStorage = MakeShr<ScriptFieldStorage>(scriptField);
+								Shr<ScriptFieldStorage> fieldStorage = MakeShr<ScriptFieldStorage>(managedField);
 
 								ScriptFieldType type = (ScriptFieldType)yamlScriptField["FieldType"].as<int>();
 
