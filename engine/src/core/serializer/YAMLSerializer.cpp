@@ -209,6 +209,93 @@ namespace Paper
 		storage->SetValue(value, true);
 	}
 
+	bool DeserializeClassScriptValues(const YAML::const_iterator& yamlScriptClass, const YAML::Node& yamlScriptFields, Entity deserializedEntity)
+	{
+		std::string scriptClassName = yamlScriptClass->first.as<std::string>();
+
+		ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scriptClassName);
+		if (!managedClass) return false;
+
+		auto yamlScriptClassFields = yamlScriptFields[scriptClassName];
+		for (YAML::const_iterator yamlScriptClassFieldsIT = yamlScriptClassFields.begin(); yamlScriptClassFieldsIT != yamlScriptClassFields.end(); ++yamlScriptClassFieldsIT)
+		{
+			std::string scriptFieldName = yamlScriptClassFieldsIT->first.as<std::string>();
+			ManagedField* managedField = ScriptClass(managedClass).GetField(scriptFieldName);
+			if (!managedField) continue;
+
+			auto yamlScriptField = yamlScriptClassFields[scriptFieldName];
+			auto& entityFieldStorage = ScriptEngine::GetEntityFieldStorage(deserializedEntity);
+
+			auto& scriptClassFieldStorages = entityFieldStorage[managedClass->classID];
+
+			int index = 0;
+			for (; index < scriptClassFieldStorages.size(); index++)
+				if (scriptClassFieldStorages[index]->GetField() == managedField) break;
+
+			Shr<ScriptFieldStorage> fieldStorage = MakeShr<ScriptFieldStorage>(managedField);
+
+			ScriptFieldType type = (ScriptFieldType)yamlScriptField["FieldType"].as<int>();
+
+			switch (type)
+			{
+				case ScriptFieldType::Bool:
+					SetFieldStorage<bool>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Char:
+					SetFieldStorage<char>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::UChar:
+					SetFieldStorage<unsigned char>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Int16:
+					SetFieldStorage<int16_t>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::UInt16:
+					SetFieldStorage<uint16_t>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Int32:
+					SetFieldStorage<int32_t>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::UInt32:
+					SetFieldStorage<uint32_t>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Int64:
+					SetFieldStorage<int64_t>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::UInt64:
+					SetFieldStorage<uint64_t>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Float:
+					SetFieldStorage<float>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Double:
+					SetFieldStorage<double>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::String:
+					SetFieldStorage<std::string>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Vec2:
+					SetFieldStorage<glm::vec2>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Vec3:
+					SetFieldStorage<glm::vec3>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Vec4:
+					SetFieldStorage<glm::vec4>(yamlScriptField, fieldStorage);
+					break;
+				case ScriptFieldType::Entity:
+				{
+					PaperID entityUUID = yamlScriptField["Value"].as<std::string>();
+					fieldStorage->SetValue(entityUUID.toUInt64(), true);
+					break;
+				}
+			}
+
+			scriptClassFieldStorages.emplace(scriptClassFieldStorages.begin() + index, fieldStorage);
+		}
+		return true;
+	}
+
 	Shr<Scene> YAMLSerializer::SceneDeserialize(const std::filesystem::path& filePath)
 	{
 		Shr<Scene> scene = MakeShr<Scene>();
@@ -274,88 +361,7 @@ namespace Paper
 						auto yamlScriptFields = script_component["ScriptFields"];
 
 						for (YAML::const_iterator yamlScriptClass = yamlScriptFields.begin(); yamlScriptClass != yamlScriptFields.end(); ++yamlScriptClass) {
-							std::string scriptClassName = yamlScriptClass->first.as<std::string>();
-
-							ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scriptClassName);
-							if (!managedClass) continue;
-
-							auto yamlScriptClassFields = yamlScriptFields[scriptClassName];
-							for (YAML::const_iterator yamlScriptClassFieldsIT = yamlScriptClassFields.begin(); yamlScriptClassFieldsIT != yamlScriptClassFields.end(); ++yamlScriptClassFieldsIT)
-							{
-								std::string scriptFieldName = yamlScriptClassFieldsIT->first.as<std::string>();
-								ManagedField* managedField = ScriptClass(managedClass).GetField(scriptFieldName);
-								if (!managedField) continue;
-
-								auto yamlScriptField = yamlScriptClassFields[scriptFieldName];
-								auto& entityFieldStorage = ScriptEngine::GetEntityFieldStorage(deserialized_entity);
-
-								auto& scriptClassFieldStorages = entityFieldStorage[managedClass->classID];
-
-								int index = 0;
-								for (; index < scriptClassFieldStorages.size(); index++)
-									if (scriptClassFieldStorages[index]->GetField() == managedField) break;
-
-								Shr<ScriptFieldStorage> fieldStorage = MakeShr<ScriptFieldStorage>(managedField);
-
-								ScriptFieldType type = (ScriptFieldType)yamlScriptField["FieldType"].as<int>();
-
-								switch (type)
-								{
-									case ScriptFieldType::Bool:
-										SetFieldStorage<bool>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Char:
-										SetFieldStorage<char>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::UChar:
-										SetFieldStorage<unsigned char>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Int16:
-										SetFieldStorage<int16_t>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::UInt16:
-										SetFieldStorage<uint16_t>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Int32:
-										SetFieldStorage<int32_t>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::UInt32:
-										SetFieldStorage<uint32_t>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Int64:
-										SetFieldStorage<int64_t>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::UInt64:
-										SetFieldStorage<uint64_t>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Float:
-										SetFieldStorage<float>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Double:
-										SetFieldStorage<double>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::String:
-										SetFieldStorage<std::string>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Vec2:
-										SetFieldStorage<glm::vec2>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Vec3:
-										SetFieldStorage<glm::vec3>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Vec4:
-										SetFieldStorage<glm::vec4>(yamlScriptField, fieldStorage);
-										break;
-									case ScriptFieldType::Entity:
-									{
-										PaperID entityUUID = yamlScriptField["Value"].as<std::string>();
-										fieldStorage->SetValue(entityUUID.toUInt64(), true);
-										break;
-									}
-								}
-
-								scriptClassFieldStorages.emplace(scriptClassFieldStorages.begin() + index, fieldStorage);
-							}
+							DeserializeClassScriptValues(yamlScriptClass, yamlScriptFields, deserialized_entity);
 						}
 
 						ScriptEngine::CreateScriptEntity(deserialized_entity);

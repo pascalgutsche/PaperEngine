@@ -17,6 +17,7 @@ namespace Paper
 	class ScriptClass
 	{
 	public:
+		ScriptClass() = default;
 		ScriptClass(CacheID classID);
 		ScriptClass(ManagedClass* managedClass);
 		~ScriptClass();
@@ -67,6 +68,7 @@ namespace Paper
 	class ScriptInstance
 	{
 	public:
+		ScriptInstance() = default;
 		ScriptInstance(CacheID classID);
 		ScriptInstance(ManagedClass* managedClass);
 		ScriptInstance(const ScriptClass& scriptClass);
@@ -85,6 +87,7 @@ namespace Paper
 	class EntityInstance : public ScriptInstance
 	{
 	public:
+		EntityInstance() = default;
 		EntityInstance(CacheID entityScriptClassID, Entity entity);
 
 		void LoadMethods();
@@ -130,7 +133,7 @@ namespace Paper
 
 
 		static Scene* GetSceneContext();
-		static Shr<EntityInstance> GetEntityScriptInstance(PaperID entityUUID);
+		static EntityInstance* GetEntityScriptInstance(PaperID entityUUID);
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
 		static std::unordered_map<CacheID, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
@@ -146,7 +149,7 @@ namespace Paper
 		static ManagedClass* GetEntityInheritClass(const std::string& fullClassName);
 		static bool EntityInheritClassExists(const std::string& fullClassName);
 
-		static std::unordered_map<PaperID, Shr<EntityInstance>>& GetEntityInstances();
+		static const std::unordered_map<PaperID, EntityInstance*>& GetEntityInstances();
 	private:
 		static void InitMono();
 		static void ShutdownMono(bool appClose);

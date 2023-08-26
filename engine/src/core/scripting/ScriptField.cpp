@@ -12,7 +12,7 @@ namespace Paper
 	{
 	}
 
-	void ScriptFieldStorage::SetRuntimeInstance(Shr<EntityInstance> instance)
+	void ScriptFieldStorage::SetRuntimeInstance(EntityInstance* instance)
 	{
 		runtimeInstance = instance;
 		SetRuntimeFieldValue(data.data);

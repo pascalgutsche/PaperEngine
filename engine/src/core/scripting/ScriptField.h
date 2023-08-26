@@ -14,7 +14,7 @@ namespace Paper
 	public:
 		ScriptFieldStorage(ManagedField* scriptField);
 
-		void SetRuntimeInstance(Shr<EntityInstance> instance);
+		void SetRuntimeInstance(EntityInstance* instance);
 		void RemoveRuntimeInstance();
 
 		template <typename T>
@@ -66,7 +66,7 @@ namespace Paper
 		void GetRuntimeFieldValue(Buffer& outBuffer) const;
 		void SetRuntimeFieldValue(const void* value) const;
 
-		Shr<EntityInstance> runtimeInstance = nullptr;
+		EntityInstance* runtimeInstance = nullptr;
 
 		friend class ScriptEngine;
 	};

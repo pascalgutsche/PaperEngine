@@ -181,9 +181,10 @@ namespace Paper
 		while (MonoClassField* field = mono_class_get_fields(managedClass.monoClass, &fieldIterator))
 		{
 			std::string fieldName = mono_field_get_name(field);
+			if (fieldName.find(">k__BackingField") != std::string::npos) continue;
 			std::string fieldIDName = fmt::format("{}_{}", managedClass.fullClassName, fieldName);
 			CacheID fieldID = Hash::GenerateFNVHash(fieldIDName);
-			ManagedField managedField;
+			ManagedField& managedField = cache->managedFields[fieldID];
 			managedField.fieldID = fieldID;
 			managedField.classID = managedClass.classID;
 			managedField.fieldName = fieldName;
@@ -200,7 +201,8 @@ namespace Paper
 
 			if (tempInstance)
 				managedField.initialFieldValue = ScriptUtils::GetFieldValue(tempInstance, managedField.fieldName, managedField.fieldType, managedField.isProperty);
-			else
+
+			if (!managedField.initialFieldValue)
 			{
 				managedField.initialFieldValue.Allocate(managedField.monoFieldSize);
 				managedField.initialFieldValue.Nullify();
@@ -209,7 +211,6 @@ namespace Paper
 			managedField.assembly = assembly;
 
 			fieldIDs.push_back(fieldID);
-			cache->managedFields[fieldID] = managedField;
 		}
 
 		void* propertyIterator = nullptr;
@@ -238,12 +239,7 @@ namespace Paper
 
 			if (tempInstance)
 				managedField.initialFieldValue = ScriptUtils::GetFieldValue(tempInstance, managedField.fieldName, managedField.fieldType, managedField.isProperty);
-			else
-			{
-				managedField.initialFieldValue.Allocate(managedField.monoFieldSize);
-				managedField.initialFieldValue.Nullify();
 
-			}
 			managedField.assembly = assembly;
 
 			fieldIDs.push_back(propertyID);

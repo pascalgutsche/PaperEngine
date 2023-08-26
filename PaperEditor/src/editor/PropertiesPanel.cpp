@@ -482,7 +482,7 @@ void PaperLayer::PropertiesPanel()
 			{
 				
 				//Fields
-				Shr<EntityInstance> entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
+				EntityInstance* entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
 				if (managedClass)
 				{
 					const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);

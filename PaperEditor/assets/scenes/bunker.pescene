@@ -16,7 +16,7 @@ Entities:
           Sandbox.Camera:
             distanceFromFocusedEntity:
               FieldType: 12
-              Value: 5
+              Value: 7
             TC:
               FieldType: 1
               Value: 0
@@ -87,10 +87,10 @@ Entities:
               Value: 1
             speed:
               FieldType: 12
-              Value: -1.20000005
+              Value: 2.5
             charVar:
               FieldType: 4
-              Value: b
+              Value: c
       TransformComponent:
         Position: [0, 1, 0]
         Scale: [1, 1, 1]

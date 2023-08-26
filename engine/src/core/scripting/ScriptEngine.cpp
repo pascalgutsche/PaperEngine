@@ -33,7 +33,7 @@ namespace Paper
 
         ManagedClass* entityClass = nullptr;
 
-        std::unordered_map<PaperID, Shr<EntityInstance>> entityInstances;
+        std::unordered_map<PaperID, EntityInstance> entityInstances;
 
         std::unordered_map<PaperID, std::unordered_map<CacheID, EntityFieldStorage>> entityFieldStorage;
 
@@ -76,35 +76,6 @@ namespace Paper
         {
             LOG_CORE_CRITICAL("could not find sandbox dll");
         }
-
-#if 0
-		ScriptClass mainClass("Paper", "Main");
-        MonoObject* main_instance = mainClass.Instantiate();
-
-        //
-        mainClass.CallMethod(main_instance, "PrintMessage", 0);
-
-        //
-        int value = 88;
-        void* param = &value;
-        mainClass.CallMethod(main_instance, "PrintIntMessage", 1, &param);
-
-        //
-        int value1 = 18;
-        int value2 = 420;
-        void* params[2] = {
-            &value1,
-            &value2
-        };
-        mainClass.CallMethod(main_instance, "PrintIntsMessage", 2, params);
-
-        //
-        MonoString* mono_string = mono_string_new(script_data->app_domain, "Hello FROM C++ you bunker");
-        void* string_param = mono_string;
-        mainClass.CallMethod(main_instance, "PrintCustomMessage", 1, &string_param);
-#endif
-
-
 	}
 
 	void ScriptEngine::Shutdown(bool appClose)
@@ -114,32 +85,24 @@ namespace Paper
     	delete script_data;
 	}
 
-    //static void OnAppAssemblyFileEvent(const std::string& path, const filewatch::Event change_type)
-    //{
-    //    if (change_type == filewatch::Event::modified)
-    //    {
-    //        Application::SubmitToMainThread([]() {ScriptEngine::ReloadAppAssembly(true); });
-    //    }
-    //    LOG_CORE_DEBUG("FILEWATCH - Path: {} Event: {}", path, (int)change_type);
-    //}
-
     void ScriptEngine::ReloadAppAssembly()
     {
         //if no assemblies to reload just return
         if (!script_data->assembliesReloadSchedule) return;
         script_data->assembliesReloadSchedule = false;
-#if 0
+
         //cache scriptfieldstorage and restore it later
-        std::unordered_map<Shr<EntityInstance>, std::unordered_map<Shr<ScriptField>, Buffer>> oldScriptFieldValues;
-        for (const auto entityInstance : GetEntityInstances() | std::views::values)
+        std::unordered_map<PaperID, std::unordered_map<CacheID, Buffer>> oldScriptFieldValues;
+        for (const auto& [entityID, entityInstance] : GetEntityInstances())
         {
-            for (auto& scriptField : entityInstance->GetScriptClass()->GetFields())
+            for (auto fieldID : entityInstance->GetManagedClass()->fieldIDs)
             {
-                Buffer outBuffer;
-                entityInstance->GetFieldValue(scriptField, outBuffer);
-                oldScriptFieldValues[entityInstance][MakeShr<ScriptField>(scriptField)] = Buffer::Copy(outBuffer);
+                ManagedField* managedField = ScriptCache::GetManagedField(fieldID);
+                oldScriptFieldValues[entityID][fieldID] = entityInstance->GetFieldValue(managedField);;
             }
+            DestroyScriptEntity(script_data->sceneContext->GetEntity(entityID));
         }
+        script_data->entityInstances.clear();
 
         SetToRootDomain();
 
@@ -156,30 +119,23 @@ namespace Paper
             scriptAssembly->ReloadAssembly();
 
 
-
-        for (const auto entityInstance : GetEntityInstances() | std::views::values)
+        for (const auto& [entityID, classFieldMapBuffer] : oldScriptFieldValues)
         {
-            Shr<ScriptClass> oldScriptClass = entityInstance->GetScriptClass();
-            entityInstance->SetScriptClass(GetEntityInheritClass(oldScriptClass->GetFullClassName()));
-            entityInstance->LoadMethods();
-        }
+            Entity entity = script_data->sceneContext->GetEntity(entityID);
+            const auto& scrc = entity.GetComponent<ScriptComponent>();
 
-        for (auto& [entityInstance, fieldValues] : oldScriptFieldValues)
-        {
-            for (auto [scriptField, buffer] : fieldValues)
+            CreateScriptEntity(entity);
+
+            EntityInstance instance(GetEntityInheritClass(scrc.scriptClassName)->classID, entity);
+            script_data->entityInstances[entity.GetPaperID()] = instance;
+
+
+            for (const auto& [fieldID, fieldBuffer] : classFieldMapBuffer)
             {
-                for (const auto& newScriptField : entityInstance->GetScriptClass()->GetFields())
-                {
-	                if (scriptField->name == newScriptField.name && scriptField->stringType == newScriptField.stringType) 
-                    {
-                        entityInstance->SetFieldValueInternal(newScriptField, buffer.data);
-                        break;
-                    };
-                }
-                buffer.Release();
+                ManagedField* managedField = ScriptCache::GetManagedField(fieldID);
+                GetEntityScriptInstance(entityID)->SetFieldValue(managedField, fieldBuffer.data);
             }
         }
-#endif
     }
 
     bool ScriptEngine::ShouldReloadAppAssembly()
@@ -259,43 +215,40 @@ namespace Paper
         const auto& scrc = entity.GetComponent<ScriptComponent>();
         if (GetEntityInheritClass(scrc.scriptClassName))
         {
-            Shr<EntityInstance> instance = MakeShr<EntityInstance>(GetEntityInheritClass(scrc.scriptClassName)->classID, entity);
+            EntityInstance instance(GetEntityInheritClass(scrc.scriptClassName)->classID, entity);
             script_data->entityInstances[entity.GetPaperID()] = instance;
 
             //apply class variables defined in editor
             if (script_data->entityFieldStorage.contains(entity.GetPaperID()))
                 for (const auto& fieldStorage : GetActiveEntityFieldStorage(entity))
-                    fieldStorage->SetRuntimeInstance(instance);
+                    fieldStorage->SetRuntimeInstance(GetEntityScriptInstance(entity.GetPaperID()));
 
-            instance->InvokeOnCreate();
-        }
-        else
-        {
-            CORE_ASSERT(false, "");
-            GetEntityInheritClass(scrc.scriptClassName);
+            instance.InvokeOnCreate();
         }
     }
 
     void ScriptEngine::OnDestroyEntity(Entity entity)
     {
-        CORE_ASSERT(script_data->entityInstances.contains(entity.GetPaperID()), "")
+        CORE_ASSERT(script_data->entityInstances.contains(entity.GetPaperID()), "");
+        EntityInstance* entityInstance = GetEntityScriptInstance(entity.GetPaperID());
 
-        auto it = script_data->entityInstances.find(entity.GetPaperID());
-        (*it).second->InvokeOnDestroy();
+    	if (!entityInstance) return;
+
+        entityInstance->InvokeOnDestroy();
 
         //remove runtime instance of field storages
         if (script_data->entityFieldStorage.contains(entity.GetPaperID()))
             for (const auto& fieldStorage : GetActiveEntityFieldStorage(entity))
                 fieldStorage->RemoveRuntimeInstance();
 
-        script_data->entityInstances.erase(it);
+        script_data->entityInstances.erase(entity.GetPaperID());
     }
 
     void ScriptEngine::OnUpdateEntity(Entity entity, float dt)
     {
         CORE_ASSERT(script_data->entityInstances.contains(entity.GetPaperID()), "")
 
-        script_data->entityInstances.at(entity.GetPaperID())->InvokeOnUpdate(dt);
+        GetEntityScriptInstance(entity.GetPaperID())->InvokeOnUpdate(dt);
     }
 
     bool ScriptEngine::EntityInheritClassExists(const std::string& fullClassName)
@@ -319,10 +272,10 @@ namespace Paper
         return script_data->sceneContext;
     }
 
-    Shr<EntityInstance> ScriptEngine::GetEntityScriptInstance(PaperID entityUUID)
+    EntityInstance* ScriptEngine::GetEntityScriptInstance(PaperID entityUUID)
     {
         if (!script_data->entityInstances.contains(entityUUID)) return nullptr;
-        return script_data->entityInstances.at(entityUUID);
+        return &script_data->entityInstances.at(entityUUID);
     }
 
     const EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorage(Entity entity)
@@ -374,38 +327,16 @@ namespace Paper
         return entityClasses;
     }
 
-    std::unordered_map<PaperID, Shr<EntityInstance>>& ScriptEngine::GetEntityInstances()
+    const std::unordered_map<PaperID, EntityInstance*>& ScriptEngine::GetEntityInstances()
     {
-        return script_data->entityInstances;
-    }
-    /*
-    void ScriptEngine::LoadAssemblyClasses(MonoAssembly* monoAssembly)
-    {
-        script_data->entityClasses.clear();
-
-        MonoImage* image = mono_assembly_get_image(monoAssembly);
-        const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
-        int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
-
-		for (int32_t i = 0; i < numTypes; i++)
+        std::unordered_map<PaperID, EntityInstance*> entityInstances;
+        for (auto& [entityID, entityInstance] : script_data->entityInstances)
         {
-            uint32_t cols[MONO_TYPEDEF_SIZE];
-            mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
-
-            std::string nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
-            std::string name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
-
-            if (name == "<Module>") continue;
-
-            Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name);
-            scriptClass->InitFieldMap();
-
-            std::string fullName = scriptClass->GetFullClassName();
-            if (scriptClass->IsSubclassOf(script_data->entityClass) && fullName != "Paper.Entity")
-				script_data->entityClasses[fullName] = scriptClass;
+            entityInstances[entityID] = &entityInstance;
         }
+        return entityInstances;
     }
-    */
+    
     void ScriptEngine::InitMono()
     {
         mono_set_assemblies_path("mono/lib");
@@ -489,12 +420,12 @@ namespace Paper
         uint32_t classFlags = managedClass->classFlags; //if sealed, class has no constructor or is not constructable i.e enums and static classes
         if (classFlags & MONO_TYPE_ATTR_SEALED)
         {
-            LOG_CORE_ERROR("Scripting: class is sealed and therefore it cannot be instatiated. '{}'", GetFullClassName());
+            LOG_CORE_WARN("Scripting: class is sealed and therefore it cannot be instatiated. '{}'", GetFullClassName());
             return nullptr;
         }
         if (!GetMethod(".ctor", 0))
         {
-            LOG_CORE_ERROR("Scripting: class has no default constructor and therefore it cannot be default instatiated. '{}'", GetFullClassName());
+            LOG_CORE_WARN("Scripting: class has no default constructor and therefore it cannot be default instatiated. '{}'", GetFullClassName());
             return nullptr;
         }
 
@@ -609,26 +540,6 @@ namespace Paper
     {
         return managedClass;
     }
-
-    /*
-    ScriptInstance::ScriptInstance(MonoObject* instance)
-        : monoInstance(instance) { }
-
-
-    void ScriptInstance::SetFieldValueInternal(const ScriptField& scriptField, const void* value) const
-    {
-        const auto& classFields = scriptClass->GetFields();
-        if (std::find(classFields.begin(), classFields.end(), scriptField) == classFields.end()) return;
-
-        const void* data = nullptr;
-        if (ScriptUtils::IsPrimitive(scriptField.type))
-            data = value;
-        else
-            data = ScriptUtils::DataToMonoObject(scriptField.type, value);
-
-        mono_field_set_value(monoInstance, scriptField.monoField, (void*)data);
-    }
-*/
 
     //
     //  EntityInstance

@@ -29,11 +29,11 @@ namespace Sandbox
         
 
         public override void OnUpdate(float dt)
-        {
+        { 
            //TransformComponent tc = GetEntityByName("Camera").GetComponent<TransformComponent>();
            Vec3 pos = transformComponent.Position;
            
-           float speed = Speed * 7;
+           float speed = Speed * 9;
            
            if (Input.IsKeyDown(Key.W))
            {
