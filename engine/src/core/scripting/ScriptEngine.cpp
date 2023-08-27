@@ -111,6 +111,8 @@ namespace Paper
         script_data->appDomain = mono_domain_create_appdomain((char*)"PaperScriptRuntime", nullptr);
         mono_domain_set(script_data->appDomain, true);
 
+        ScriptCache::ClearCache();
+
         script_data->coreAssembly->ReloadAssembly();
 
         ScriptGlue::RegisterComponents();
@@ -327,7 +329,7 @@ namespace Paper
         return entityClasses;
     }
 
-    const std::unordered_map<PaperID, EntityInstance*>& ScriptEngine::GetEntityInstances()
+    std::unordered_map<PaperID, EntityInstance*> ScriptEngine::GetEntityInstances()
     {
         std::unordered_map<PaperID, EntityInstance*> entityInstances;
         for (auto& [entityID, entityInstance] : script_data->entityInstances)

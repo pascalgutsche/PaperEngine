@@ -149,7 +149,7 @@ namespace Paper
 		static ManagedClass* GetEntityInheritClass(const std::string& fullClassName);
 		static bool EntityInheritClassExists(const std::string& fullClassName);
 
-		static const std::unordered_map<PaperID, EntityInstance*>& GetEntityInstances();
+		static std::unordered_map<PaperID, EntityInstance*> GetEntityInstances();
 	private:
 		static void InitMono();
 		static void ShutdownMono(bool appClose);
