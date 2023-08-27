@@ -329,8 +329,10 @@ namespace Paper {
 
 	Entity Scene::GetEntity(const PaperID& id)
 	{
-		CORE_ASSERT(entity_map.contains(id), "Entity does not exists");
-		
+		//CORE_ASSERT(entity_map.contains(id), "Entity does not exists");
+		if (!entity_map.contains(id))
+			return {};
+
 		return {entity_map.at(id), this};
 	}
 

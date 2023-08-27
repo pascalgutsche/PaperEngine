@@ -38,7 +38,48 @@ namespace Paper
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void GetTexture(string _FilePath, out TextureData _Data);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern float EntityCamera_GetPerspectiveFOV(ulong _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void EntityCamera_SetPerspectiveFOV(ulong _EntityID, float _FOV);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern float EntityCamera_GetPerspectiveNearClip(ulong _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void EntityCamera_SetPerspectiveNearClip(ulong _EntityID, float _NearClip);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern float EntityCamera_GetPerspectiveFarClip(ulong _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void EntityCamera_SetPerspectiveFarClip(ulong _EntityID, float _FarCLip);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern float EntityCamera_GetOrthographicSize(ulong _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void EntityCamera_SetOrthographicSize(ulong _EntityID, float _Size);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern float EntityCamera_GetOrthographicNearClip(ulong _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void EntityCamera_SetOrthographicNearClip(ulong _EntityID, float _NearClip);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern float EntityCamera_GetOrthographicFarClip(ulong _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void EntityCamera_SetOrthographicFarClip(ulong _EntityID, float _FarClip);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void EntityCamera_SetViewportSize(ulong _EntityID, ref Vec2 _Size);
+
         #endregion
+
+        #region Entity
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern bool Entity_HasComponent(ulong _UUID, Type _ComponentType);
@@ -48,6 +89,9 @@ namespace Paper
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern object Entity_GetScriptInstance(ulong _UUID);
+
+
+        #endregion
 
         #region Components
 
@@ -179,7 +223,24 @@ namespace Paper
 
         #endregion
 
+        #region CameraComponent
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern bool CameraComponent_GetFixedAspectRatio(ulong _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void CameraComponent_SetFixedAspectRatio(ulong _EntityID, bool _FixedAspectRatio);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern bool CameraComponent_GetPrimary(ulong _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void CameraComponent_SetPrimary(ulong _EntityID, bool _Primary);
+
         #endregion
+
+        #endregion
+
 
     }
 }

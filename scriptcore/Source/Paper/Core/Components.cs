@@ -208,4 +208,21 @@ namespace Paper
             set => InternalCalls.TextComponent_SetFontPath(Entity.PaperID, value);
         }
     }
+
+    public class CameraComponent : Component
+    {
+        public bool FixedAspectRatio
+        {
+            get => InternalCalls.CameraComponent_GetFixedAspectRatio(Entity.PaperID);
+            set => InternalCalls.CameraComponent_SetFixedAspectRatio(Entity.PaperID, value);
+        }
+
+        public bool Primary
+        {
+            get => InternalCalls.CameraComponent_GetPrimary(Entity.PaperID);
+            set => InternalCalls.CameraComponent_SetPrimary(Entity.PaperID, value);
+        }
+
+        public EntityCamera EntityCamera => new EntityCamera(Entity.PaperID);
+    }
 }

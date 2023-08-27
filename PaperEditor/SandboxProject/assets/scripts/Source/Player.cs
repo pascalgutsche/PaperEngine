@@ -15,11 +15,13 @@ namespace Sandbox
         //public string bunker = "bunker123";
 
         public char charVar = 'b';
+        private EntityCamera entityCamera;
 
         public override void OnCreate()
         {
             transformComponent = GetComponent<TransformComponent>();
             spriteComponent = GetComponent<SpriteComponent>();
+            entityCamera = GetEntityByName("Camera").GetComponent<CameraComponent>().EntityCamera;
         }
 
         public override void OnDestroy()
@@ -33,7 +35,7 @@ namespace Sandbox
            //TransformComponent tc = GetEntityByName("Camera").GetComponent<TransformComponent>();
            Vec3 pos = transformComponent.Position;
            
-           float speed = Speed * -6;
+           float speed = Speed * 1;
            
            if (Input.IsKeyDown(Key.W))
            {
@@ -63,11 +65,13 @@ namespace Sandbox
            {
                if (Input.IsKeyDown(Key.F))
                {
-                   camera.distanceFromFocusedEntity -= speed * dt;
+                   //camera.distanceFromFocusedEntity -= speed * dt;
+                   entityCamera.PerspectiveFOV -= speed;
                }
                if (Input.IsKeyDown(Key.G))
                {
-                   camera.distanceFromFocusedEntity += speed * dt;
+                   //camera.distanceFromFocusedEntity += speed * dt;
+                   entityCamera.PerspectiveFOV += speed;
                }
            }
            

@@ -20,7 +20,6 @@ namespace Paper
 		assemblyFileWatchers[this] = MakeScoped<filewatch::FileWatch<std::string>>(filePath.string(), [&](const std::string& path, const filewatch::Event change_type)
 		{
 			if (change_type != filewatch::Event::modified) return;
-			LOG_CORE_WARN("FILE CHANGED: {} {}", path, (int)change_type);
 			ScriptEngine::ScheduleAssemblyReload();
 		});
 

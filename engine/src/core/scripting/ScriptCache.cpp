@@ -174,7 +174,7 @@ namespace Paper
 
 	std::vector<CacheID> ScriptCache::CacheFields(ManagedClass& managedClass, ScriptAssembly* assembly)
 	{
-		MonoObject* tempInstance = ScriptClass(&managedClass).Instantiate();
+		MonoObject* tempInstance = ScriptClass(&managedClass).Instantiate(false);
 		std::vector<CacheID> fieldIDs;
 		
 		void* fieldIterator = nullptr;
@@ -230,12 +230,15 @@ namespace Paper
 			managedField.isStatic = managedField.fieldFlags & FIELD_ATTRIBUTE_STATIC;
 
 			MonoMethod* getMethod = mono_property_get_get_method(property);
-			MonoMethodSignature* getMethodSigniture = mono_method_get_signature(getMethod, nullptr, 0);
-			MonoType* monoType = mono_signature_get_return_type(getMethodSigniture);
+			if (getMethod)
+			{
+				MonoMethodSignature* getMethodSigniture = mono_method_get_signature(getMethod, nullptr, 0);
+				MonoType* monoType = mono_signature_get_return_type(getMethodSigniture);
+				managedField.fieldType = ScriptUtils::MonoTypeToScriptFieldType(monoType);
 
-			managedField.fieldType = ScriptUtils::MonoTypeToScriptFieldType(monoType);
-			int align;
-			managedField.monoFieldSize = mono_type_size(monoType, &align);
+				int align;
+				managedField.monoFieldSize = mono_type_size(monoType, &align);
+			}
 
 			if (tempInstance)
 				managedField.initialFieldValue = ScriptUtils::GetFieldValue(tempInstance, managedField.fieldName, managedField.fieldType, managedField.isProperty);

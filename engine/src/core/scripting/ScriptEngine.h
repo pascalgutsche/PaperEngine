@@ -22,7 +22,7 @@ namespace Paper
 		ScriptClass(ManagedClass* managedClass);
 		~ScriptClass();
 
-		MonoObject* Instantiate() const;
+		MonoObject* Instantiate(bool showWarnings = true) const;
 
 		template <typename... ConstructorArgs>
 		MonoObject* InstantiateParams(ConstructorArgs&&... args) const

@@ -91,6 +91,9 @@ namespace Paper
         if (!script_data->assembliesReloadSchedule) return;
         script_data->assembliesReloadSchedule = false;
 
+        LOG_CORE_TRACE("Assembly change detected")
+            LOG_CORE_TRACE("\t->Reloading script assemblies");
+
         //cache scriptfieldstorage and restore it later
         std::unordered_map<PaperID, std::unordered_map<CacheID, Buffer>> oldScriptFieldValues;
         for (const auto& [entityID, entityInstance] : GetEntityInstances())
@@ -417,17 +420,19 @@ namespace Paper
         managedClass = nullptr;
     }
 
-    MonoObject* ScriptClass::Instantiate() const
+    MonoObject* ScriptClass::Instantiate(bool showWarnings) const
     {
         uint32_t classFlags = managedClass->classFlags; //if sealed, class has no constructor or is not constructable i.e enums and static classes
         if (classFlags & MONO_TYPE_ATTR_SEALED)
         {
-            LOG_CORE_WARN("Scripting: class is sealed and therefore it cannot be instatiated. '{}'", GetFullClassName());
+            if (showWarnings)
+				LOG_CORE_WARN("Scripting: class is sealed and therefore it cannot be instatiated. '{}'", GetFullClassName());
             return nullptr;
         }
         if (!GetMethod(".ctor", 0))
         {
-            LOG_CORE_WARN("Scripting: class has no default constructor and therefore it cannot be default instatiated. '{}'", GetFullClassName());
+            if (showWarnings)
+				LOG_CORE_WARN("Scripting: class has no default constructor and therefore it cannot be default instatiated. '{}'", GetFullClassName());
             return nullptr;
         }
 

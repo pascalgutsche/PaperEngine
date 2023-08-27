@@ -96,6 +96,149 @@ namespace Paper
         *data = localData;
     }
 
+    static float EntityCamera_GetPerspectiveFOV(PaperID entityID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        return cc.camera.GetPerspectiveFOV();
+    }
+
+    static void EntityCamera_SetPerspectiveFOV(PaperID entityID, float fov)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        cc.camera.SetPerspectiveFOV(fov);
+    }
+
+    static float EntityCamera_GetPerspectiveNearClip(PaperID entityID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        return cc.camera.GetPerspectiveNearClip();
+    }
+
+    static void EntityCamera_SetPerspectiveNearClip(PaperID entityID, float nearClip)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        cc.camera.SetPerspectiveNearClip(nearClip);
+    }
+
+    static float EntityCamera_GetPerspectiveFarClip(PaperID entityID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        return cc.camera.GetPerspectiveFarClip();
+    }
+
+    static void EntityCamera_SetPerspectiveFarClip(PaperID entityID, float farClip)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        cc.camera.SetPerspectiveFarClip(farClip);
+    }
+
+    static float EntityCamera_GetOrthographicSize(PaperID entityID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        return cc.camera.GetOrthographicSize();
+    }
+
+    static void EntityCamera_SetOrthographicSize(PaperID entityID, float size)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        cc.camera.SetOrthographicSize(size);
+    }
+
+    static float EntityCamera_GetOrthographicNearClip(PaperID entityID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        return cc.camera.GetOrthographicNearClip();
+    }
+
+    static void EntityCamera_SetOrthographicNearClip(PaperID entityID, float nearClip)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        cc.camera.SetOrthographicNearClip(nearClip);
+    }
+
+    static float EntityCamera_GetOrthographicFarClip(PaperID entityID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        return cc.camera.GetOrthographicFarClip();
+    }
+
+    static void EntityCamera_SetOrthographicFarClip(PaperID entityID, float farClip)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        cc.camera.SetOrthographicFarClip(farClip);
+    }
+
+    static void EntityCamera_SetViewportSize(PaperID entityID, glm::vec2* size)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        Entity entity = scene->GetEntity(entityID);
+        CORE_ASSERT(entity, "");
+
+        auto& cc = entity.GetComponent<CameraComponent>();
+        cc.camera.SetViewportSize(size->x, size->y);
+    }
+
     static bool Entity_HasComponent(PaperID entityUUID, MonoReflectionType* componentType)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
@@ -429,6 +572,34 @@ namespace Paper
         tc.font = DataPool::GetFont(ScriptUtils::MonoStringToStdString(fontPath), true);
     }
 
+    static float CameraComponent_GetFixedAspectRatio(PaperID entityUUID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        auto& cc = scene->GetEntity(entityUUID).GetComponent<CameraComponent>();
+        return cc.fixedAspectRatio;
+    }
+
+    static void CameraComponent_SetFixedAspectRatio(PaperID entityUUID, bool fixedAspectRatio)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        auto& cc = scene->GetEntity(entityUUID).GetComponent<CameraComponent>();
+        cc.fixedAspectRatio = fixedAspectRatio;
+    }
+
+    static float CameraComponent_GetPrimary(PaperID entityUUID)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        auto& cc = scene->GetEntity(entityUUID).GetComponent<CameraComponent>();
+        return cc.primary;
+    }
+
+    static void CameraComponent_SetPrimary(PaperID entityUUID, bool primary)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        auto& cc = scene->GetEntity(entityUUID).GetComponent<CameraComponent>();
+        cc.primary = primary;
+    }
+
 	void ScriptGlue::RegisterFunctions()
 	{
         //Input
@@ -443,6 +614,19 @@ namespace Paper
 
         //Render
         SCR_ADD_INTRERNAL_CALL(GetTexture);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_GetPerspectiveFOV);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_SetPerspectiveFOV);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_GetPerspectiveNearClip);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_SetPerspectiveNearClip);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_GetPerspectiveFarClip);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_SetPerspectiveFarClip);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_GetOrthographicSize);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_SetOrthographicSize);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_GetOrthographicNearClip);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_SetOrthographicNearClip);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_GetOrthographicFarClip);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_SetOrthographicFarClip);
+        SCR_ADD_INTRERNAL_CALL(EntityCamera_SetViewportSize);
 
         //Entity
         SCR_ADD_INTRERNAL_CALL(Entity_HasComponent);
@@ -490,6 +674,11 @@ namespace Paper
     	SCR_ADD_INTRERNAL_CALL(TextComponent_SetText);
     	SCR_ADD_INTRERNAL_CALL(TextComponent_GetFontPath);
     	SCR_ADD_INTRERNAL_CALL(TextComponent_SetFontPath);
+
+    	SCR_ADD_INTRERNAL_CALL(CameraComponent_GetFixedAspectRatio);
+    	SCR_ADD_INTRERNAL_CALL(CameraComponent_SetFixedAspectRatio);
+    	SCR_ADD_INTRERNAL_CALL(CameraComponent_GetPrimary);
+    	SCR_ADD_INTRERNAL_CALL(CameraComponent_SetPrimary);
 	}
 
     template<typename... Component>
