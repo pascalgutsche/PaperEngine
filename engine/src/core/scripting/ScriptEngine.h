@@ -2,7 +2,7 @@
 #include "Engine.h"
 
 #include "ScriptUtils.h"
-#include "ScriptField.h"
+#include "ScriptFieldStorage.h"
 
 #include "generic/Buffer.h"
 #include "generic/Entity.h"
