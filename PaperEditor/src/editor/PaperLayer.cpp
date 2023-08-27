@@ -8,6 +8,7 @@
 #include "ViewPort.h"
 
 #include "ImGuizmo/ImGuizmo.h"
+#include "panels/DebuggingPanel.h"
 
 #include "renderer/Renderer2D.h"
 #include "scripting/ScriptEngine.h"
@@ -45,7 +46,7 @@ void PaperLayer::OnAttach()
 	//scene1->GetEntity(uuid).AddTag({ "A", "B", "C", "AA", "aB", "Ac" });
 	//
 	//YAMLSerializer::SceneSerialize("bunker.yaml", scene1);
-
+	panelManager.AddPanel<SceneDebuggingPanel>("SceneDebuggerPanel", false, this);
 }
 
 void PaperLayer::OnDetach()
@@ -311,8 +312,10 @@ void PaperLayer::Imgui(const float dt)
 	if (show_viewport_debug_panel)
 		ViewPortDebugging();
 
-	if (show_scene_debugger_panel)
-		SceneDebugger();
+	//if (show_scene_debugger_panel)
+	//	SceneDebugger();
+
+	panelManager.OnImGuiRender();
 
 	ToolbarPanel();
 	ViewPortPanel();
@@ -320,6 +323,7 @@ void PaperLayer::Imgui(const float dt)
 	MousePicking();
 
 	EntityDragging();
+
 
 }
 

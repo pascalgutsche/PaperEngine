@@ -1,6 +1,7 @@
 #pragma once
 #include "Editor.h"
 
+#include "PanelManager.h"
 #include "ViewPort.h"
 
 enum CameraModes
@@ -63,7 +64,8 @@ public:
 
 	void SwitchScene(const Shr<Scene>& scene);
 
-private:
+//private:
+public: // temporary until proper rewrite
 
 	std::unordered_map<std::string, ImGuiID> dockPanelQueue;
 
@@ -77,9 +79,10 @@ private:
 
 	//PANELS
 
+	PanelManager panelManager;
+
 	void MainMenuBar();
 	void ApplicationPanel();
-	void SceneDebugger();
 	void AssetManagerPanel();
 	void OutlinerPanel();
 	void PropertiesPanel();

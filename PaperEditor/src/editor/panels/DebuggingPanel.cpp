@@ -1,6 +1,9 @@
 ﻿#include "Editor.h"
-#include "PaperLayer.h"
-#include "WindowsOpen.h"
+#include "DebuggingPanel.h"
+
+#include "editor/PaperLayer.h"
+
+#include "editor/WindowsOpen.h"
 
 void PaperLayer::ApplicationPanel()
 {
@@ -145,34 +148,6 @@ void PaperLayer::ApplicationPanel()
 	first = false;
 }
 
-void PaperLayer::SceneDebugger()
-{
-	ImGui::Begin("SceneDebugger", &show_scene_debugger_panel);
-
-	if (!activeScene)
-	{
-		ImGui::Text("no activeScene active!");
-		ImGui::End();
-		return;
-	}
-
-	auto view = activeScene->Registry().view<TransformComponent>();
-	int i = 0;
-	for (auto [entity, transform] : view.each()) {
-		ImGui::PushID(i);
-		ImGui::Text(Entity(entity, activeScene.get()).GetName().c_str());
-		ImGui::InputFloat3("Position", &transform.position.x);
-		ImGui::InputFloat3("Scale", &transform.scale.x);
-		ImGui::InputFloat3("Rotation", &transform.rotation.x);
-
-		ImGui::Text("-----------------------");
-		ImGui::PopID();
-		i++;
-	}
-
-	ImGui::End();
-}
-
 void PaperLayer::ViewPortDebugging()
 {
 	ImGui::Begin("Viewporting", &show_viewport_debug_panel);
@@ -200,3 +175,35 @@ void PaperLayer::ViewPortDebugging()
 	ImGui::End();
 }
 
+SceneDebuggingPanel::SceneDebuggingPanel(PaperLayer* paperLayer)
+	: paperLayer(paperLayer)
+{
+}
+
+void SceneDebuggingPanel::OnImGuiRender(bool& isOpen, bool firstRender)
+{
+	ImGui::Begin("SceneDebugger", &isOpen);
+
+	if (!paperLayer->activeScene)
+	{
+		ImGui::Text("no activeScene active!");
+		ImGui::End();
+		return;
+	}
+
+	auto view = paperLayer->activeScene->Registry().view<TransformComponent>();
+	int i = 0;
+	for (auto [entity, transform] : view.each()) {
+		ImGui::PushID(i);
+		ImGui::Text(Entity(entity, paperLayer->activeScene.get()).GetName().c_str());
+		ImGui::InputFloat3("Position", &transform.position.x);
+		ImGui::InputFloat3("Scale", &transform.scale.x);
+		ImGui::InputFloat3("Rotation", &transform.rotation.x);
+
+		ImGui::Text("-----------------------");
+		ImGui::PopID();
+		i++;
+	}
+
+	ImGui::End();
+}

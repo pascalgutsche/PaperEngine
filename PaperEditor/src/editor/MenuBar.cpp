@@ -16,31 +16,7 @@ void MenuItemPanel(const char* name, const char* shortcut, bool* p_open)
 
 void MenuTabView()
 {
-	if (ImGui::BeginMenu("View"))
-	{
-		MenuItemPanel("Asset Manager", nullptr, &show_asset_manager_panel);
-
-		MenuItemPanel("Application", nullptr, &show_application_panel);
-
-		MenuItemPanel("ViewPort", nullptr, &show_viewport_panel);
-
-		MenuItemPanel("Camera Settings", nullptr, &show_camera_settings_panel);
-
-		MenuItemPanel("Outliner", nullptr, &show_outliner_panel);
-
-		MenuItemPanel("Properties", nullptr, &show_property_panel);
-
-		ImGui::Separator();
-
-		MenuItemPanel("ImGui Demo Window", nullptr, &show_imgui_demo);
-
-		MenuItemPanel("ViewPort Debugging", nullptr, &show_viewport_debug_panel);
-
-		MenuItemPanel("Scene Debugger", nullptr, &show_scene_debugger_panel);
-
-
-		ImGui::EndMenu();
-	}
+	
 }
 
 void PaperLayer::MainMenuBar()
@@ -83,7 +59,36 @@ void PaperLayer::MainMenuBar()
 			ImGui::EndMenu();
 		}
 
-		MenuTabView();
+		if (ImGui::BeginMenu("View"))
+		{
+			MenuItemPanel("Asset Manager", nullptr, &show_asset_manager_panel);
+
+			MenuItemPanel("Application", nullptr, &show_application_panel);
+
+			MenuItemPanel("ViewPort", nullptr, &show_viewport_panel);
+
+			MenuItemPanel("Camera Settings", nullptr, &show_camera_settings_panel);
+
+			MenuItemPanel("Outliner", nullptr, &show_outliner_panel);
+
+			MenuItemPanel("Properties", nullptr, &show_property_panel);
+
+			ImGui::Separator();
+
+			MenuItemPanel("ImGui Demo Window", nullptr, &show_imgui_demo);
+
+			MenuItemPanel("ViewPort Debugging", nullptr, &show_viewport_debug_panel);
+
+			for (PanelData& panelData : panelManager.GetPanels() | std::views::values)
+			{
+				ImGui::MenuItem(panelData.strID.c_str(), nullptr, &panelData.isOpen);
+			}
+
+				//MenuItemPanel("Scene Debugger", nullptr, &show_scene_debugger_panel);
+
+
+				ImGui::EndMenu();
+		}
 
 		if (ImGui::BeginMenu("Scripting"))
 		{

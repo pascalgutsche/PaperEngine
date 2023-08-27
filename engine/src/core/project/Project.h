@@ -27,31 +27,31 @@ namespace Paper
 
 		static const std::string& GetProjectName()
 		{
-			CORE_ASSERT(activeProject);
+			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectName;
 		}
 
 		static const std::filesystem::path& GetProjectPath()
 		{
-			CORE_ASSERT(activeProject);
+			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectPath;
 		}
 
 		static const std::filesystem::path& GetAssetPath()
 		{
-			CORE_ASSERT(activeProject);
+			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectPath / activeProject->GetConfig().assetPath;
 		}
 
 		static const std::filesystem::path& GetScriptBinaryPath()
 		{
-			CORE_ASSERT(activeProject);
+			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectPath / activeProject->GetConfig().scriptBinaryPath;
 		}
 
 		static const std::filesystem::path& GetScriptBinaryFilePath()
 		{
-			CORE_ASSERT(activeProject);
+			CORE_ASSERT(activeProject, "");
 			return GetScriptBinaryPath() / std::format("{}.dll", GetProjectName());
 		}
 
