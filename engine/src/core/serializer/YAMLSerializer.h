@@ -192,6 +192,8 @@ namespace Paper
 		return out << YAML::BeginSeq << uuid.toString() << YAML::EndSeq;
 	}
 
+	class Project;
+
 	class YAMLSerializer
 	{
 	public:

@@ -1,6 +1,5 @@
 #pragma once
 #include "Engine.h"
-#include "utility.h"
 
 #include "YAMLSerializer.h"
 

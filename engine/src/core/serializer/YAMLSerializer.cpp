@@ -5,6 +5,7 @@
 
 #include "Components.h"
 #include "component/CameraComponent.h"
+#include "project/Project.h"
 #include "scripting/ScriptEngine.h"
 
 namespace Paper
@@ -40,6 +41,8 @@ namespace Paper
 		//
 		return true;
 	}
+
+	
 
 	bool YAMLSerializer::SceneSerialize(const std::filesystem::path& filePath, const Shr<Scene>& scene)
 	{
