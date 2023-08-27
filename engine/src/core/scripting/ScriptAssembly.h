@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "ScriptUtils.h"
+#include "ManagedTypes.h"
 
 namespace filewatch
 {

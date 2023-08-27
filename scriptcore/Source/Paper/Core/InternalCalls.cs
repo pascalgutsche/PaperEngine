@@ -239,7 +239,18 @@ namespace Paper
 
         #endregion
 
+        #region ScriptComponent
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern string ScriptComponent_GetScriptClassName(PaperID _EntityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void ScriptComponent_SetScriptClassName(PaperID _EntityID, string _ScriptClassName);
+
         #endregion
+
+        #endregion
+
 
 
     }

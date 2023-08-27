@@ -42,7 +42,7 @@ void PaperLayer::MousePicking()
 	{
 		active_entity = Entity();
 	}
-	else if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && !ImGuizmo::IsUsing() && pressedEntity == hovered_entity && !drag_entity)
+	else if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && pressedEntity == hovered_entity && !drag_entity)
 	{
 		active_entity = hovered_entity;
 	}

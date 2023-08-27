@@ -56,11 +56,11 @@ void PaperLayer::OnDetach()
 
 void PaperLayer::Update(const float dt)
 {
-	if (ScriptEngine::ShouldReloadAppAssembly())
+	if (ScriptEngine::ShouldReloadAssemblies())
 	{
 		//if (sceneState != SceneState::Edit)
 		//	OnSceneStop();
-		ScriptEngine::ReloadAppAssembly();
+		ScriptEngine::ReloadAssemblies();
 	}
 
 	CheckSceneChange();
@@ -212,9 +212,9 @@ void PaperLayer::EntityDragging()
 
 	if (drag_entity && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceExtern))
 	{
-		uint64_t entityUUID = drag_entity.GetPaperID().toUInt64();
+		uint64_t entityID = drag_entity.GetPaperID().toUInt64();
 
-		ImGui::SetDragDropPayload("ENTITY_DRAG", &entityUUID, sizeof(uint64_t));
+		ImGui::SetDragDropPayload("ENTITY_DRAG", &entityID, sizeof(uint64_t));
 		ImGui::Text(drag_entity.GetName().c_str());
 
 		ImGui::EndDragDropSource();

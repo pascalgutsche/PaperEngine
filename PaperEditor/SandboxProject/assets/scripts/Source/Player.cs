@@ -35,7 +35,7 @@ namespace Sandbox
            //TransformComponent tc = GetEntityByName("Camera").GetComponent<TransformComponent>();
            Vec3 pos = transformComponent.Position;
            
-           float speed = Speed * 1;
+           float speed = Speed * 5;
            
            if (Input.IsKeyDown(Key.W))
            {

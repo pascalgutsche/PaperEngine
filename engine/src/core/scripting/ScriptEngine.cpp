@@ -3,22 +3,23 @@
 
 #include "ScriptGlue.h"
 #include "ScriptAssembly.h"
+#include "ScriptCache.h"
+#include "ScriptFieldStorage.h"
 
-#include "mono/jit/jit.h"
-#include "mono/metadata/assembly.h"
-#include "mono/metadata/object.h"
-#include "mono/metadata/tabledefs.h"
-#include "mono/metadata/mono-debug.h"
-#include "mono/metadata/threads.h"
+#include "component/ScriptComponent.h"
+#include "generic/Application.h"
+#include "generic/Entity.h"
+
+#include <mono/jit/jit.h>
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/object.h>
+#include <mono/metadata/mono-debug.h>
+#include <mono/metadata/threads.h>
 #include <mono/metadata/attrdefs.h>
 
 #include <filewatch/FileWatch.h>
 
-#include "ScriptCache.h"
-#include "component/ScriptComponent.h"
-#include "generic/Application.h"
-#include "generic/Entity.h"
-#include "utils/Utils.h"
+
 
 
 namespace Paper
@@ -28,8 +29,8 @@ namespace Paper
         MonoDomain* rootDomain = nullptr;
         MonoDomain* appDomain = nullptr;
 
-        Shr<ScriptAssembly> coreAssembly;
-		std::vector<Shr<ScriptAssembly>> appAssemblies;
+        ScriptAssembly coreAssembly;
+		std::vector<ScriptAssembly> appAssemblies;
 
         ManagedClass* entityClass = nullptr;
 
@@ -43,15 +44,11 @@ namespace Paper
 
         bool monoInitialized = false;
 
-
         //Runtime
     	Scene* sceneContext = nullptr;
     };
 
     static ScriptEngineData* script_data;
-
-
-    
 
     void ScriptEngine::Init()
 	{
@@ -64,18 +61,14 @@ namespace Paper
         script_data->appDomain = mono_domain_create_appdomain((char*)"PaperScriptRuntime", nullptr);
         mono_domain_set(script_data->appDomain, true);
 
-        script_data->coreAssembly = MakeShr<ScriptAssembly>("resources/scripts/scriptcore.dll", true, true);
+        script_data->coreAssembly = ScriptAssembly("resources/scripts/scriptcore.dll", true, true);
         ScriptGlue::RegisterComponents();
 
         std::filesystem::path sandbox = "SandboxProject/assets/scripts/bin/Sandbox.dll";
         if (std::filesystem::exists(sandbox))
-        {
-			script_data->appAssemblies.emplace_back(MakeShr<ScriptAssembly>(sandbox, true));
-        }
+			script_data->appAssemblies.emplace_back(sandbox, true);
         else
-        {
             LOG_CORE_CRITICAL("could not find sandbox dll");
-        }
 	}
 
 	void ScriptEngine::Shutdown(bool appClose)
@@ -85,14 +78,14 @@ namespace Paper
     	delete script_data;
 	}
 
-    void ScriptEngine::ReloadAppAssembly()
+    void ScriptEngine::ReloadAssemblies()
     {
         //if no assemblies to reload just return
         if (!script_data->assembliesReloadSchedule) return;
         script_data->assembliesReloadSchedule = false;
 
-        LOG_CORE_TRACE("Assembly change detected")
-            LOG_CORE_TRACE("\t->Reloading script assemblies");
+        LOG_CORE_TRACE("Assembly change detected");
+    	LOG_CORE_TRACE("\t->Reloading script assemblies");
 
         //cache scriptfieldstorage and restore it later
         std::unordered_map<PaperID, std::unordered_map<CacheID, Buffer>> oldScriptFieldValues;
@@ -116,12 +109,12 @@ namespace Paper
 
         ScriptCache::ClearCache();
 
-        script_data->coreAssembly->ReloadAssembly();
+        script_data->coreAssembly.ReloadAssembly();
 
         ScriptGlue::RegisterComponents();
 
-        for (const Shr<ScriptAssembly> scriptAssembly : script_data->appAssemblies)
-            scriptAssembly->ReloadAssembly();
+        for (ScriptAssembly& scriptAssembly : script_data->appAssemblies)
+            scriptAssembly.ReloadAssembly();
 
 
         for (const auto& [entityID, classFieldMapBuffer] : oldScriptFieldValues)
@@ -143,12 +136,12 @@ namespace Paper
         }
     }
 
-    bool ScriptEngine::ShouldReloadAppAssembly()
+    bool ScriptEngine::ShouldReloadAssemblies()
     {
         return script_data->assembliesReloadSchedule;
     }
 
-    void ScriptEngine::ScheduleAssemblyReload()
+    void ScriptEngine::ScheduleAssembliesReload()
     {
         script_data->assembliesReloadSchedule = true;
     }
@@ -185,7 +178,7 @@ namespace Paper
         auto& entityFieldStorages = GetActiveEntityFieldStorageInternal(entity);
 
 		
-        const auto& scriptFields = ScriptClass(GetEntityInheritClass(sc.scriptClassName)).GetFields();
+        const auto& scriptFields = ScriptClass(GetEntityInheritClass(sc.scriptClassName)).GetManagedFields();
         for (auto field : scriptFields)
         {
             bool found = false;
@@ -277,10 +270,10 @@ namespace Paper
         return script_data->sceneContext;
     }
 
-    EntityInstance* ScriptEngine::GetEntityScriptInstance(PaperID entityUUID)
+    EntityInstance* ScriptEngine::GetEntityScriptInstance(PaperID entityID)
     {
-        if (!script_data->entityInstances.contains(entityUUID)) return nullptr;
-        return &script_data->entityInstances.at(entityUUID);
+        if (!script_data->entityInstances.contains(entityID)) return nullptr;
+        return &script_data->entityInstances.at(entityID);
     }
 
     const EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorage(Entity entity)
@@ -390,14 +383,19 @@ namespace Paper
         return script_data->entityFieldStorage[entity.GetPaperID()][GetEntityInheritClass(sc.scriptClassName)->classID];
     }
 
-    Shr<ScriptAssembly> ScriptEngine::GetCoreAssembly()
+    ScriptAssembly* ScriptEngine::GetCoreAssembly()
     {
-        return script_data->coreAssembly;
+        return &script_data->coreAssembly;
     }
 
-    std::vector<Shr<ScriptAssembly>>& ScriptEngine::GetAppAssemblies()
+    std::vector<ScriptAssembly*> ScriptEngine::GetAppAssemblies()
     {
-        return script_data->appAssemblies;
+        std::vector<ScriptAssembly*> appAssemblies;
+        for (ScriptAssembly& assembly : script_data->appAssemblies)
+        {
+            appAssemblies.push_back(&assembly);
+        }
+        return appAssemblies;
     }
 
 
@@ -474,7 +472,7 @@ namespace Paper
         return managedClass;
     }
 
-    std::vector<ManagedField*> ScriptClass::GetFields() const
+    std::vector<ManagedField*> ScriptClass::GetManagedFields() const
     {
         std::vector<ManagedField*> classFields;
         for (const CacheID fieldID : managedClass->fieldIDs)
@@ -485,7 +483,7 @@ namespace Paper
         return classFields;
     }
 
-    ManagedField* ScriptClass::GetField(const std::string& fieldName) const
+    ManagedField* ScriptClass::GetManagedField(const std::string& fieldName) const
     {
         for (const CacheID fieldID : managedClass->fieldIDs)
         {
@@ -559,8 +557,8 @@ namespace Paper
         LoadMethods();
 
         //constructor
-        PaperID entityUUID = entity.GetPaperID();
-        void* param = &entityUUID;
+        PaperID entityID = entity.GetPaperID();
+        void* param = &entityID;
         scriptClass.InvokeMethod(monoInstance, constructor, &param);
     }
 

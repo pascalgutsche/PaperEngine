@@ -89,9 +89,7 @@ void PaperLayer::MainMenuBar()
 		{
 			if (ImGui::MenuItem("Reload C# Assembly"))
 			{
-				if (sceneState != SceneState::Edit)
-					OnSceneStop();
-				ScriptEngine::ReloadAppAssembly();
+				ScriptEngine::ReloadAssemblies();
 			}
 
 			ImGui::EndMenu();

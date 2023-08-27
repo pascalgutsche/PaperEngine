@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "ManagedTypes.h"
-#include "ScriptAssembly.h"
 
 namespace Paper
 {

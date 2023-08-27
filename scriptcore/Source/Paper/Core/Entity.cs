@@ -33,10 +33,10 @@ namespace Paper
 
         public Entity GetEntityByName(string _Name)
         {
-            ulong entityUUID = InternalCalls.Entity_GetEntityByName(_Name);
-            if (entityUUID == 0)
+            ulong entityID = InternalCalls.Entity_GetEntityByName(_Name);
+            if (entityID == 0)
                 return null;
-            return new Entity(entityUUID);
+            return new Entity(entityID);
         }
 
         public T As<T>() where T : Entity, new()

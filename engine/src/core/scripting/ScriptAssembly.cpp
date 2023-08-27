@@ -2,11 +2,10 @@
 #include "ScriptAssembly.h"
 #include "ScriptEngine.h"
 
-#include <filewatch/FileWatch.h>
-#include <mono/metadata/assembly.h>
-
 #include "ScriptCache.h"
 
+#include <filewatch/FileWatch.h>
+#include <mono/metadata/assembly.h>
 
 namespace Paper
 {
@@ -20,7 +19,7 @@ namespace Paper
 		assemblyFileWatchers[this] = MakeScoped<filewatch::FileWatch<std::string>>(filePath.string(), [&](const std::string& path, const filewatch::Event change_type)
 		{
 			if (change_type != filewatch::Event::modified) return;
-			ScriptEngine::ScheduleAssemblyReload();
+			ScriptEngine::ScheduleAssembliesReload();
 		});
 
 		LoadAssembly();
@@ -60,41 +59,4 @@ namespace Paper
 		monoAssembly = nullptr;
 		monoAssemblyImage = nullptr;
 	}
-
-	/*
-	void ScriptAssembly::LoadAssemblyClasses()
-	{
-		if (isCoreAssembly)
-			ScriptEngine::SetEntityClass(MakeShr<ScriptClass>("Paper", "Entity", *this));
-
-		entityClasses.clear();
-		classes.clear();
-
-		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(monoAssemblyImage, MONO_TABLE_TYPEDEF);
-		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
-
-		for (int32_t i = 0; i < numTypes; i++)
-		{
-			uint32_t cols[MONO_TYPEDEF_SIZE];
-			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
-
-			std::string nameSpace = mono_metadata_string_heap(monoAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
-			std::string name = mono_metadata_string_heap(monoAssemblyImage, cols[MONO_TYPEDEF_NAME]);
-
-			if (name == "<Module>") continue;
-
-			Shr<ScriptClass> scriptClass = MakeShr<ScriptClass>(nameSpace, name, *this);
-
-			uint32_t classFlags = mono_class_get_flags(scriptClass->monoClass); //if sealed, class has no constructor or is not constructable i.e enums and static classes
-			if (classFlags & MONO_TYPE_ATTR_SEALED) continue;
-
-			scriptClass->InitFieldMap();
-
-			std::string fullName = scriptClass->GetFullClassName();
-			if (scriptClass->IsSubclassOf(ScriptEngine::GetEntityClass()) && fullName != "Paper.Entity")
-				entityClasses[fullName] = scriptClass;
-			classes[fullName] = scriptClass;
-		}
-	}
-	*/
 }

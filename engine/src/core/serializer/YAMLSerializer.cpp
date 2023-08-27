@@ -220,7 +220,7 @@ namespace Paper
 		for (YAML::const_iterator yamlScriptClassFieldsIT = yamlScriptClassFields.begin(); yamlScriptClassFieldsIT != yamlScriptClassFields.end(); ++yamlScriptClassFieldsIT)
 		{
 			std::string scriptFieldName = yamlScriptClassFieldsIT->first.as<std::string>();
-			ManagedField* managedField = ScriptClass(managedClass).GetField(scriptFieldName);
+			ManagedField* managedField = ScriptClass(managedClass).GetManagedField(scriptFieldName);
 			if (!managedField) continue;
 
 			auto yamlScriptField = yamlScriptClassFields[scriptFieldName];
@@ -285,8 +285,8 @@ namespace Paper
 					break;
 				case ScriptFieldType::Entity:
 				{
-					PaperID entityUUID = yamlScriptField["Value"].as<std::string>();
-					fieldStorage->SetValue(entityUUID.toUInt64(), true);
+					PaperID entityID = yamlScriptField["Value"].as<std::string>();
+					fieldStorage->SetValue(entityID.toUInt64(), true);
 					break;
 				}
 			}

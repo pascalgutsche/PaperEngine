@@ -1,18 +1,16 @@
 ﻿#include "Engine.h"
 #include "ScriptCache.h"
-
 #include "ManagedTypes.h"
+#include "ScriptEngine.h"
+#include "ScriptAssembly.h"
 
-#include "mono/jit/jit.h"
-#include "mono/metadata/assembly.h"
-#include <mono/metadata/attrdefs.h>
+#include "generic/Hash.h"
+
+#include <mono/jit/jit.h>
+#include <mono/metadata/assembly.h>
 #include <mono/metadata/tabledefs.h>
 #include <mono/metadata/debug-helpers.h>
-
-#include "mono/metadata/object.h"
-
-#include "ScriptEngine.h"
-#include "generic/Hash.h"
+#include <mono/metadata/object.h>
 
 namespace Paper
 {

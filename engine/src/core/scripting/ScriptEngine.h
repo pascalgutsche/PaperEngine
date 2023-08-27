@@ -5,14 +5,11 @@
 #include "ScriptField.h"
 
 #include "generic/Buffer.h"
-
 #include "generic/Entity.h"
 
 namespace Paper
 {
 	using EntityFieldStorage = std::vector<Shr<ScriptFieldStorage>>;
-
-	class ScriptAssembly;
 
 	class ScriptClass
 	{
@@ -53,8 +50,8 @@ namespace Paper
 		std::string GetFullClassName() const;
 		MonoClass* GetMonoClass() const;
 		ManagedClass* GetManagedClass() const;
-		std::vector<ManagedField*> GetFields() const;
-		ManagedField* GetField(const std::string& fieldName) const;
+		std::vector<ManagedField*> GetManagedFields() const;
+		ManagedField* GetManagedField(const std::string& fieldName) const;
 		ScriptAssembly* GetScriptAssembly() const;
 
 		bool IsSubclassOf(const ScriptClass& scriptClass) const;
@@ -112,12 +109,10 @@ namespace Paper
 		static void Init();
 		static void Shutdown(bool appClose = false);
 
-		//static void LoadAssembly(const std::filesystem::path& filepath);
-		//static void LoadAppAssembly(const std::filesystem::path& filepath);
-		static void ReloadAppAssembly();
+		static void ReloadAssemblies();
 
-		static bool ShouldReloadAppAssembly();
-		static void ScheduleAssemblyReload();
+		static bool ShouldReloadAssemblies();
+		static void ScheduleAssembliesReload();
 
 		static void SetToRootDomain();
 
@@ -133,12 +128,12 @@ namespace Paper
 
 
 		static Scene* GetSceneContext();
-		static EntityInstance* GetEntityScriptInstance(PaperID entityUUID);
+		static EntityInstance* GetEntityScriptInstance(PaperID entityID);
 		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
 		static std::unordered_map<CacheID, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
-		static Shr<ScriptAssembly> GetCoreAssembly();
-		static std::vector<Shr<ScriptAssembly>>& GetAppAssemblies();
+		static ScriptAssembly* GetCoreAssembly();
+		static std::vector<ScriptAssembly*> GetAppAssemblies();
 
 		static ManagedClass* GetEntityClass();
 		static void SetEntityClass(ManagedClass* managedEntityClass);
@@ -155,8 +150,6 @@ namespace Paper
 		static void ShutdownMono(bool appClose);
 
 		static EntityFieldStorage& GetActiveEntityFieldStorageInternal(Entity entity);
-
-		//static void LoadAssemblyClasses(MonoAssembly* monoAssembly);
 	};
 
     

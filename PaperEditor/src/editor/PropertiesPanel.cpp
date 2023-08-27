@@ -177,13 +177,18 @@ struct ContentTable
 
 void PaperLayer::PropertiesPanel()
 {
-	if (!active_entity) return;
+	
 	if (properties_panel_first)
 		DockPanel("Properties", dock_id_right_bottom);
 
 	UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 
 	ImGui::Begin("Properties", &show_property_panel);
+	if (!active_entity)
+	{
+		ImGui::End();
+		return;
+	}
 	ImGui::Text("Name:");
 	ImGui::SameLine();
 	std::string name = active_entity.GetName();

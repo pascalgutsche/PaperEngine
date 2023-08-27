@@ -225,4 +225,13 @@ namespace Paper
 
         public EntityCamera EntityCamera => new EntityCamera(Entity.PaperID);
     }
+
+    public class ScriptComponent : Component
+    {
+        public string ScriptClassName
+        {
+            get => InternalCalls.ScriptComponent_GetScriptClassName(Entity.PaperID);
+            set => InternalCalls.ScriptComponent_SetScriptClassName(Entity.PaperID, value);
+        }
+    }
 }
