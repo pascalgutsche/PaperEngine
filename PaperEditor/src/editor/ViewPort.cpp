@@ -9,6 +9,7 @@
 
 #include <ImGuizmo/ImGuizmo.h>
 
+#include "SelectionManager.h"
 
 
 static void CameraMovement(const Shr<EditorCamera>& camera)
@@ -43,6 +44,8 @@ static void CameraMovement(const Shr<EditorCamera>& camera)
 #include "renderer/Renderer2D.h"
 void ViewPort::Panel(PaperLayer* peLayer)
 {
+	const Shr<Scene> activeScene = Scene::GetActive();
+	Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
 	if (FramebufferSpecification spec = framebuffer->GetSpecification();
 		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
 		(spec.width != viewport_size.x || spec.height != viewport_size.y))
@@ -50,8 +53,8 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
 
 		camera->aspect_ratio = viewport_size.x / viewport_size.y;
-		if (peLayer->activeScene)
-			peLayer->activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
+		if (activeScene)
+			activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
 	}
 
 	RenderCommand::ClearColor(glm::vec4(0.0f));
@@ -65,24 +68,24 @@ void ViewPort::Panel(PaperLayer* peLayer)
 
 	RenderCommand::ClearStats();
 
-	if (peLayer->activeScene)
+	if (activeScene)
 	{
 		switch (peLayer->sceneState)
 		{
 		case SceneState::Edit:
-			peLayer->activeScene->OnEditorUpdate(camera);
+			activeScene->OnEditorUpdate(camera);
 			Renderer2D::BeginRender(camera);
-			if (peLayer->active_entity)
+			if (selectedEntity)
 			{
-				Renderer2D::DrawLineRect(peLayer->active_entity.GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), peLayer->active_entity);
+				Renderer2D::DrawLineRect(selectedEntity.GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), (uint32_t)selectedEntity);
 			}
 			Renderer2D::EndRender();
 			break;
 		case SceneState::Play:
-			peLayer->activeScene->OnRuntimeUpdate();
+			activeScene->OnRuntimeUpdate();
 			break;
 		case SceneState::Simulate:
-			peLayer->activeScene->OnSimulationUpdate(camera);
+			activeScene->OnSimulationUpdate(camera);
 			break;
 		}
 	}
@@ -134,7 +137,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 	}
 
 	// Gizmos
-	if (peLayer->active_entity) //  && peLayer->GetGuizmoType() != -1
+	if (selectedEntity) //  && peLayer->GetGuizmoType() != -1
 	{
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist(ImGui::GetCurrentWindow()->DrawList);
@@ -146,7 +149,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		glm::mat4 cameraView = camera->GetViewMatrix();
 
 		// Entity transform
-		auto& tc = peLayer->active_entity.GetComponent<TransformComponent>();
+		auto& tc = selectedEntity.GetComponent<TransformComponent>();
 		glm::mat4 transform = tc.GetTransform();
 
 		// Snapping

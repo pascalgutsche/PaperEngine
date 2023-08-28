@@ -59,6 +59,8 @@
 //Core
 #include "EngineIncludes.h"
 
+namespace PaperED {}
+using namespace PaperED;
 
 #ifdef CORE_PLATFORM_WINDOWS
 #include <Windows.h>

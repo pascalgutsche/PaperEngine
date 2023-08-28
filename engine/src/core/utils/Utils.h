@@ -19,5 +19,15 @@ namespace Paper {
 
         char* ReadBytes(const std::filesystem::path& filepath, uint32_t* outSize);
 
+        template <typename T>
+        std::string TypeToStdString()
+        {
+            std::string name = typeid(T).name();
+            size_t index = name.find_last_of(':');
+            std::string typeName = name.substr(++index);
+            LOG_CORE_DEBUG(typeName);
+        	return typeName;
+        };
+
 	}
 }

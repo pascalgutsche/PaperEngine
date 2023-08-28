@@ -1,22 +1,17 @@
 ﻿#include "Editor.h"
 #include "DebuggingPanel.h"
 
+#include "editor/DockManager.h"
 #include "editor/PaperLayer.h"
+#include "editor/SelectionManager.h"
 
 #include "editor/WindowsOpen.h"
 
-void PaperLayer::ApplicationPanel()
+
+void ApplicationPanel::OnImGuiRender(bool& isOpen)
 {
-	static bool first = true;
 	const float dt = Application::GetDT();
-
-	const char* name = "Application: ";
-	std::stringstream stream;
-	if (first)
-		DockPanel(name, dock_id_right);
-
-	ImGui::Begin(name, &show_application_panel);
-
+	ImGui::Begin(panelName.c_str(), &isOpen);
 
 	static float time = 0;
 	static float timehelper = -1;
@@ -32,15 +27,15 @@ void PaperLayer::ApplicationPanel()
 	time += dt;
 
 	std::string entity_name1 = "None";
-	if (hovered_entity)
-		entity_name1 = hovered_entity.GetName();
-	ImGui::Text("Hovered Entity: %s", entity_name1.c_str());
+	//if (hovered_entity)
+	//	entity_name1 = hovered_entity.GetName();
+	//ImGui::Text("Hovered Entity: %s", entity_name1.c_str());
 
 	std::string entity_name2 = "None";
-	if (active_entity)
-		entity_name2 = active_entity.GetName();
+	if (SelectionManager::HasSelection())
+		entity_name2 = Scene::GetActive()->GetEntity(SelectionManager::GetSelection()).GetName();
 	ImGui::Text("Active Entity: %s", entity_name2.c_str());
-
+	std::stringstream stream;
 	if (ImGui::TreeNode("Time"))
 	{
 		ImGui::SliderFloat("Time", &history, 1, 5, "%.1f");
@@ -144,19 +139,22 @@ void PaperLayer::ApplicationPanel()
 	ImGui::EndDisabled();
 
 	ImGui::End();
-
-	first = false;
 }
 
-void PaperLayer::ViewPortDebugging()
+ViewportDebuggingPanel::ViewportDebuggingPanel(PaperLayer& paperLayer)
+	: paperLayer(paperLayer)
 {
-	ImGui::Begin("Viewporting", &show_viewport_debug_panel);
+}
 
-	ImGui::Text(("Last focused Viewport: " + lastFocusedViewPort->name).c_str());
+void ViewportDebuggingPanel::OnImGuiRender(bool& isOpen)
+{
+	ImGui::Begin(panelName.c_str(), &isOpen);
+
+	ImGui::Text(("Last focused Viewport: " + paperLayer.lastFocusedViewPort->name).c_str());
 
 	ImGui::Separator();
 
-	for (auto& viewport : viewports)
+	for (auto& viewport : paperLayer.viewports)
 	{
 		ImGui::Text(viewport.name.c_str());
 		ImGui::Checkbox("is_visible", &viewport.is_visible);
@@ -175,27 +173,23 @@ void PaperLayer::ViewPortDebugging()
 	ImGui::End();
 }
 
-SceneDebuggingPanel::SceneDebuggingPanel(PaperLayer* paperLayer)
-	: paperLayer(paperLayer)
+void SceneDebuggingPanel::OnImGuiRender(bool& isOpen)
 {
-}
+	const Shr<Scene> activeScene = Scene::GetActive();
+	ImGui::Begin(panelName.c_str(), &isOpen);
 
-void SceneDebuggingPanel::OnImGuiRender(bool& isOpen, bool firstRender)
-{
-	ImGui::Begin("SceneDebugger", &isOpen);
-
-	if (!paperLayer->activeScene)
+	if (!activeScene)
 	{
 		ImGui::Text("no activeScene active!");
 		ImGui::End();
 		return;
 	}
 
-	auto view = paperLayer->activeScene->Registry().view<TransformComponent>();
+	auto view = activeScene->Registry().view<TransformComponent>();
 	int i = 0;
 	for (auto [entity, transform] : view.each()) {
 		ImGui::PushID(i);
-		ImGui::Text(Entity(entity, paperLayer->activeScene.get()).GetName().c_str());
+		ImGui::Text(Entity(entity, activeScene.get()).GetName().c_str());
 		ImGui::InputFloat3("Position", &transform.position.x);
 		ImGui::InputFloat3("Scale", &transform.scale.x);
 		ImGui::InputFloat3("Rotation", &transform.rotation.x);

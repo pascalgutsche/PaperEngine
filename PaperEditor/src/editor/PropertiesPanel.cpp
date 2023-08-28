@@ -6,6 +6,8 @@
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
+#include "DockManager.h"
+#include "SelectionManager.h"
 #include "renderer/Font.h"
 #include "scripting/ScriptEngine.h"
 
@@ -103,15 +105,16 @@ template<typename ComponentType>
 using AddedComponentCallbackFn = std::function<void(Entity, ComponentType&)>;
 
 template<typename ComponentType>
-void DrawComponentToAddPopup(PaperLayer* _instance, const std::string& name, AddedComponentCallbackFn<ComponentType> on_added_component = nullptr)
+void DrawComponentToAddPopup(const std::string& name, AddedComponentCallbackFn<ComponentType> on_added_component = nullptr)
 {
-	if (_instance->active_entity.HasComponent<ComponentType>()) return;
+	Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+	if (selectedEntity.HasComponent<ComponentType>()) return;
 
 	if (ImGui::Selectable(name.c_str(), false))
 	{
-		ComponentType& component = _instance->active_entity.AddComponent<ComponentType>();
+		ComponentType& component = selectedEntity.AddComponent<ComponentType>();
 		if (on_added_component)
-			on_added_component(_instance->active_entity, component);
+			on_added_component(selectedEntity, component);
 
 		ImGui::CloseCurrentPopup();
 	}
@@ -121,14 +124,15 @@ template<typename ComponentType>
 using DrawComponentFn = std::function<void(ComponentType&, Entity)>;
 
 template<typename ComponentType>
-bool DrawRemoveButton(PaperLayer* _instance, bool treeOpen)
+bool DrawRemoveButton(bool treeOpen)
 {
+	Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
 	{
 		UI::ScopedStyle padding(ImGuiStyleVar_ItemInnerSpacing, ImVec2(2.0f, 2.0f));
 		if (ImGui::SmallButton("Remove"))
 		{
-			_instance->active_entity.RemoveComponent<ComponentType>();
+			selectedEntity.RemoveComponent<ComponentType>();
 			if (treeOpen) ImGui::TreePop();
 			return true;
 		}
@@ -137,17 +141,18 @@ bool DrawRemoveButton(PaperLayer* _instance, bool treeOpen)
 }
 
 template<typename ComponentType>
-void DrawComponent(PaperLayer* _instance, const std::string& name, bool canRemove, DrawComponentFn<ComponentType> draw_components_fn)
+void DrawComponent(const std::string& name, bool canRemove, DrawComponentFn<ComponentType> draw_components_fn)
 {
-	if (!_instance->active_entity.HasComponent<ComponentType>()) return;
+	Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+	if (selectedEntity.HasComponent<ComponentType>()) return;
 
 	bool tree_open = ImGui::TreeNode(name.c_str());
 
-	if (canRemove && DrawRemoveButton<ComponentType>(_instance, tree_open)) return;
+	if (canRemove && DrawRemoveButton<ComponentType>(tree_open)) return;
 
 	if (tree_open)
 	{
-		draw_components_fn(_instance->active_entity.GetComponent<ComponentType>(), _instance->active_entity);
+		draw_components_fn(selectedEntity.GetComponent<ComponentType>(), selectedEntity);
 		ImGui::Spacing();
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -177,37 +182,37 @@ struct ContentTable
 
 void PaperLayer::PropertiesPanel()
 {
-	
+	Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
 	if (properties_panel_first)
-		DockPanel("Properties", dock_id_right_bottom);
+		DockManager::DockPanel("Properties", DockLoc::RightBottom);
 
 	UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 
 	ImGui::Begin("Properties", &show_property_panel);
-	if (!active_entity)
+	if (!selectedEntity)
 	{
 		ImGui::End();
 		return;
 	}
 	ImGui::Text("Name:");
 	ImGui::SameLine();
-	std::string name = active_entity.GetName();
-	ImGui::InputText(("##" + active_entity.GetPaperID().toString()).c_str(), &name);
-	active_entity.SetName(name);
+	std::string name = selectedEntity.GetName();
+	ImGui::InputText(("##" + selectedEntity.GetPaperID().toString()).c_str(), &name);
+	selectedEntity.SetName(name);
 
-	ImGui::Text(("UUID: " + active_entity.GetPaperID().toString()).c_str());
+	ImGui::Text(("UUID: " + selectedEntity.GetPaperID().toString()).c_str());
 
 	if (ImGui::BeginPopup("components_add_popup"))
 	{
-		DrawComponentToAddPopup<CameraComponent>(this, "Camera Component");
-		DrawComponentToAddPopup<SpriteComponent>(this, "Sprite Component");
-		DrawComponentToAddPopup<LineComponent>(this, "Line Component");
-		DrawComponentToAddPopup<TextComponent>(this, "Text Component");
-		DrawComponentToAddPopup<ScriptComponent>(this, "Script Component");
+		DrawComponentToAddPopup<CameraComponent>("Camera Component");
+		DrawComponentToAddPopup<SpriteComponent>("Sprite Component");
+		DrawComponentToAddPopup<LineComponent>("Line Component");
+		DrawComponentToAddPopup<TextComponent>("Text Component");
+		DrawComponentToAddPopup<ScriptComponent>("Script Component");
 		ImGui::EndPopup();
 	}
 
-	DrawComponent<DataComponent>(this, "Tag Component", false, [](DataComponent& dc, Entity entity)
+	DrawComponent<DataComponent>("Tag Component", false, [](DataComponent& dc, Entity entity)
 		{
 			int i = 0;
 			for (auto& tag : dc.tags)
@@ -226,7 +231,7 @@ void PaperLayer::PropertiesPanel()
 		});
 
 
-	DrawComponent<TransformComponent>(this, "Transform Component", false, 
+	DrawComponent<TransformComponent>("Transform Component", false, 
 		[](TransformComponent& tc, Entity entity)
 	{
 		ContentTable transform_section(100);
@@ -237,7 +242,7 @@ void PaperLayer::PropertiesPanel()
 
 	});
 
-	DrawComponent<CameraComponent>(this, "Camera Component", true,
+	DrawComponent<CameraComponent>("Camera Component", true,
 		[](CameraComponent& cc, Entity entity)
 	{
 		EntityCamera& camera = cc.camera;
@@ -300,7 +305,7 @@ void PaperLayer::PropertiesPanel()
 
 	});
 
-	DrawComponent<SpriteComponent>(this, "Sprite Component", true,
+	DrawComponent<SpriteComponent>("Sprite Component", true,
 		[](SpriteComponent& sc, Entity entity)
 	{
 		{
@@ -395,7 +400,7 @@ void PaperLayer::PropertiesPanel()
 		
 	});
 
-	DrawComponent<LineComponent>(this, "Line Component", true, [](LineComponent& ln, Entity entity)
+	DrawComponent<LineComponent>("Line Component", true, [](LineComponent& ln, Entity entity)
 		{
 			{
 				ContentTable thickness_section(ImGui::CalcTextSize("Thickness").x);
@@ -411,7 +416,7 @@ void PaperLayer::PropertiesPanel()
 			}
 		});
 
-	DrawComponent<TextComponent>(this, "Text Component", true, [](TextComponent& texc, Entity entity)
+	DrawComponent<TextComponent>("Text Component", true, [](TextComponent& texc, Entity entity)
 		{
 			{
 				ContentTable text_section(ImGui::CalcTextSize("Text").x);
@@ -457,7 +462,7 @@ void PaperLayer::PropertiesPanel()
 		
 		});
 
-	DrawComponent<ScriptComponent>(this, "Script Component", true, [this](ScriptComponent& scrc, Entity entity)
+	DrawComponent<ScriptComponent>("Script Component", true, [this](ScriptComponent& scrc, Entity entity)
 		{
 			ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scrc.scriptClassName);
 			{
@@ -541,7 +546,7 @@ void PaperLayer::PropertiesPanel()
 								FillNameCol(varName);
 
 								if (entityID)
-									ImGui::Button(activeScene->GetEntity(entityID).GetName().c_str());
+									ImGui::Button(Scene::GetActive()->GetEntity(entityID).GetName().c_str());
 								else
 									ImGui::Button("null");
 

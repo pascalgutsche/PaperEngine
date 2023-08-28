@@ -70,8 +70,10 @@ namespace Paper {
 		return it != tagList.end();
 	}
 
-	PaperID& Entity::GetPaperID()
+	PaperID Entity::GetPaperID()
 	{
+		if (!*this)
+			return PaperID(0);
 		return GetComponent<DataComponent>().uuid;
 	}
 
@@ -84,34 +86,4 @@ namespace Paper {
 	{
 		GetComponent<DataComponent>().name = name;
 	}
-
-
-	//void Entity::Imgui(float dt) {
-	//	ImGui::Text("Transform:");
-	//	float speed = 0.5f;
-	//	if (Input::IsKeyPressed(KEY_LEFT_SHIFT) && Input::IsKeyPressed(KEY_LEFT_CONTROL))
-	//		speed = 0.001f;
-	//	else if (Input::IsKeyPressed(KEY_LEFT_SHIFT))
-	//		speed = 0.01f;
-	//	
-	//	ImGui::DragFloat(std::string("X:").c_str(), &this->transform.position.x, speed);
-	//	ImGui::DragFloat(std::string("Y:").c_str(), &this->transform.position.y, speed);
-	//	ImGui::DragFloat(std::string("Z:").c_str(), &this->transform.position.z, speed);
-	//	ImGui::DragFloat(std::string("Scale X:").c_str(), &this->transform.scale.x, speed);
-	//	ImGui::DragFloat(std::string("Scale Y:").c_str(), &this->transform.scale.y, speed);
-	//	ImGui::DragFloat(std::string("Scale Z:").c_str(), &this->transform.scale.z, speed);
-	//	float rot[]{ this->transform.rotation.x, this->transform.rotation.y, this->transform.rotation.z };
-	//	ImGui::DragFloat3(std::string("Rotation:").c_str(), rot, speed);
-	//	this->transform.rotation = glm::vec3(rot[0], rot[1], rot[2]);
-	//	
-	//
-	//	for (auto component : components) {
-	//		component->OnImgui(dt);
-	//	}
-	//}
-
-	
-
-	
-
 }

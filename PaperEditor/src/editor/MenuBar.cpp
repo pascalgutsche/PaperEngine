@@ -21,6 +21,7 @@ void MenuTabView()
 
 void PaperLayer::MainMenuBar()
 {
+	
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -81,7 +82,7 @@ void PaperLayer::MainMenuBar()
 
 			for (PanelData& panelData : panelManager.GetPanels() | std::views::values)
 			{
-				ImGui::MenuItem(panelData.strID.c_str(), nullptr, &panelData.isOpen);
+				ImGui::MenuItem(panelData.displayName.c_str(), nullptr, &panelData.isOpen);
 			}
 
 				//MenuItemPanel("Scene Debugger", nullptr, &show_scene_debugger_panel);
@@ -102,6 +103,7 @@ void PaperLayer::MainMenuBar()
 
 		if (ImGui::BeginMenu("Add"))
 		{
+			const Shr<Scene> activeScene = Scene::GetActive();
 			if (ImGui::MenuItem("Empty Entity"))
 				activeScene->CreateEntity("Entity");
 			if (ImGui::MenuItem("Sprite"))
@@ -117,7 +119,7 @@ void PaperLayer::MainMenuBar()
 		{
 			if (ImGui::MenuItem("New Scene"))
 			{
-				activeScene = MakeShr<Scene>();
+				Scene::SetActive(MakeShr<Scene>());
 			}
 
 			if (ImGui::MenuItem("Open Scene"))
@@ -132,6 +134,7 @@ void PaperLayer::MainMenuBar()
 
 			if (ImGui::MenuItem("Save Scene"))
 			{
+				const Shr<Scene> activeScene = Scene::GetActive();
 				YAMLSerializer::SceneSerialize(activeScene->GetPath(), activeScene);
 			}
 

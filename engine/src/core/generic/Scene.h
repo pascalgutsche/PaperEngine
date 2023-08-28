@@ -62,6 +62,9 @@ namespace Paper {
         void SetPaused(const bool paused) { isPaused = paused; }
 
         void StepFrames(const int frames = 1) { framesToStep = frames; }
+
+        static void SetActive(const Shr<Scene>& newActiveScene) { activeScene = newActiveScene; }
+        static Shr<Scene> GetActive() { return activeScene; }
     private:
         PaperID uuid;
         std::string name;
@@ -76,6 +79,8 @@ namespace Paper {
         //runtime
         bool isPaused = false;
         int framesToStep = 0;
+
+        inline static Shr<Scene> activeScene = nullptr;
     };
 
     

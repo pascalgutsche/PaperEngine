@@ -7,5 +7,5 @@ class NewProjectPanel : public EditorPanel
 public:
 	NewProjectPanel() = default;
 
-	void OnImGuiRender(bool& isOpen, bool firstRender) override;
+	void OnImGuiRender(bool& isOpen) override;
 };

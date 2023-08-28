@@ -1,4 +1,6 @@
 ﻿#include "Editor.h"
+
+#include "DockManager.h"
 #include "WindowsOpen.h"
 
 #include "PaperLayer.h"
@@ -66,7 +68,7 @@ void PaperLayer::AssetManagerPanel()
 	const char* name = "Asset Manager: ";
 
 	if (asset_manager_panel_first)
-		DockPanel(name, dock_id_down);
+		DockManager::DockPanel(name, DockLoc::Bottom);
 
 	const ImGuiTableFlags flags = ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX;
 

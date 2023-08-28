@@ -41,21 +41,13 @@ public:
 	void EntityDragging();
 	void Imgui(const float dt) override;
 
-	void DockPanel(std::string name, ImGuiID dock_id);
+	
 
-	ImGuiID dockspace_id = 0;
-	ImGuiID dock_id_main = 0;
-	ImGuiID dock_id_down = 0;
-	ImGuiID dock_id_left = 0;
-	ImGuiID dock_id_right = 0;
-	ImGuiID dock_id_right_bottom = 0;
-	ImGuiID dock_id_right2 = 0;
-	ImGuiID dock_id_left_bottom = 0;
-	ImGuiID dock_id_up = 0;
+	
 
 	Entity drag_entity;
 	Entity hovered_entity;
-	Entity active_entity;
+	//Entity active_entity;
 
 	int GetGuizmoType() const { return gizmo_type; }
 
@@ -67,9 +59,8 @@ public:
 //private:
 public: // temporary until proper rewrite
 
-	std::unordered_map<std::string, ImGuiID> dockPanelQueue;
 
-	Shr<Scene> activeScene = nullptr;
+	//Shr<Scene> activeScene = nullptr;
 	Shr<Scene> editorScene = nullptr;
 
 	void CheckSceneChange();
@@ -82,7 +73,6 @@ public: // temporary until proper rewrite
 	PanelManager panelManager;
 
 	void MainMenuBar();
-	void ApplicationPanel();
 	void AssetManagerPanel();
 	void OutlinerPanel();
 	void PropertiesPanel();
@@ -96,7 +86,6 @@ public: // temporary until proper rewrite
 	void DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size);
 	void EnableCamera(CameraModes mode);
 
-	void ViewPortDebugging();
 
 	bool first_frame = true;
 	bool viewport_panel_first = true;

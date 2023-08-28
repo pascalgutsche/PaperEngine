@@ -1,4 +1,6 @@
 ﻿#include "Editor.h"
+
+#include "DockManager.h"
 #include "PaperLayer.h"
 
 #include "WindowsOpen.h"
@@ -173,7 +175,7 @@ void PaperLayer::ViewPortPanel()
 	const char* name = "ViewPorts: ";
 
 	if (viewport_panel_first)
-		DockPanel(name, dock_id_main);
+		DockManager::DockPanel(name, DockLoc::Main);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);

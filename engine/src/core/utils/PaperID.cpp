@@ -37,6 +37,11 @@ namespace Paper
 		uuid = id;
 	}
 
+	bool PaperID::Empty() const
+	{
+		return !uuid;
+	}
+
 	uint64_t PaperID::toUInt64() const
 	{
 		return operator uint64_t();

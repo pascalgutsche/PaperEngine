@@ -1,5 +1,8 @@
 ﻿#include "Editor.h"
+
+#include "DockManager.h"
 #include "PaperLayer.h"
+#include "SelectionManager.h"
 
 #include "WindowsOpen.h"
 
@@ -47,10 +50,10 @@ void TwoDObjects(Shr<Scene>& activeScene, Entity& active_entity)
 			ImGui::TreePop();
 		}
 
-		auto text = activeScene->Registry().view<TextComponent>();
-		if (text.size() && ImGui::TreeNode("Text"))
+		auto texts = activeScene->Registry().view<TextComponent>();
+		if (texts.size() && ImGui::TreeNode("Text"))
 		{
-			for (auto [entt, text] : text.each()) {
+			for (auto [entt, text] : texts.each()) {
 				Entity entity(entt, activeScene.get());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
 					active_entity = entity;
@@ -81,10 +84,12 @@ void Cameras(Shr<Scene>& activeScene, Entity& active_entity)
 
 void PaperLayer::OutlinerPanel()
 {
+	Shr<Scene> activeScene = Scene::GetActive();
+	Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
 	std::string name = "Outliner";
 
 	if (outliner_panel_first)
-		DockPanel(name, dock_id_right);
+		DockManager::DockPanel(name, DockLoc::Right);
 
 	UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 
@@ -92,9 +97,9 @@ void PaperLayer::OutlinerPanel()
 
 	if (activeScene)
 	{
-		Entities(activeScene, active_entity);
-		TwoDObjects(activeScene, active_entity);
-		Cameras(activeScene, active_entity);
+		Entities(activeScene, selectedEntity);
+		TwoDObjects(activeScene, selectedEntity);
+		Cameras(activeScene, selectedEntity);
 	}
 
 

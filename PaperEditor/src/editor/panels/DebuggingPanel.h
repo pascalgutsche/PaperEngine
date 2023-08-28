@@ -3,13 +3,30 @@
 
 class PaperLayer;
 
-class SceneDebuggingPanel : public EditorPanel
+namespace PaperED
 {
-public:
-	SceneDebuggingPanel(PaperLayer* paperLayer); // tempory until proper rewrite of panel system
+	class ApplicationPanel : public EditorPanel
+	{
+	public:
+		void OnImGuiRender(bool& isOpen) override;
+	};
 
-	void OnImGuiRender(bool& isOpen, bool firstRender) override;
+	class ViewportDebuggingPanel : public EditorPanel
+	{
+	public:
+		ViewportDebuggingPanel(PaperLayer& paperLayer);
 
-private:
-	PaperLayer* paperLayer;
-};
+		void OnImGuiRender(bool& isOpen) override;
+
+	private:
+		PaperLayer& paperLayer;
+	};
+
+	class SceneDebuggingPanel : public EditorPanel
+	{
+	public:
+		void OnImGuiRender(bool& isOpen) override;
+
+	};
+}
+

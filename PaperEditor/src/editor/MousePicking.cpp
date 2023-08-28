@@ -3,6 +3,8 @@
 
 #include <ImGuizmo/ImGuizmo.h>
 
+#include "SelectionManager.h"
+
 void PaperLayer::MousePicking()
 {
 	hovered_entity = Entity();
@@ -27,7 +29,7 @@ void PaperLayer::MousePicking()
 	int pixelID = viewPort.framebuffer->ReadPixel(1, mouse_pos);
 	viewPort.framebuffer->Unbind();
 
-	pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, activeScene.get()) : Entity();
+	pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, Scene::GetActive().get()) : Entity();
 
 	///TODO: MOVE SOMWHERE ELSE
 
@@ -38,13 +40,13 @@ void PaperLayer::MousePicking()
 		pressedEntity = hovered_entity;
 	}
 
-	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && hovered_entity == active_entity && pressedEntity == hovered_entity && !drag_entity)
+	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && hovered_entity == Scene::GetActive()->GetEntity(SelectionManager::GetSelection()) && pressedEntity == hovered_entity && !drag_entity)
 	{
-		active_entity = Entity();
+		SelectionManager::Deselect();
 	}
 	else if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && pressedEntity == hovered_entity && !drag_entity)
 	{
-		active_entity = hovered_entity;
+		SelectionManager::Select(hovered_entity.GetPaperID());
 	}
 
 	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT))

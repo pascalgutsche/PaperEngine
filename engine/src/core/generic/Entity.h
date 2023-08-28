@@ -42,12 +42,13 @@ namespace Paper {
         bool RemoveTag(std::string tag);
         bool HasTag(std::string tag);
 
-    	PaperID& GetPaperID();
+    	PaperID GetPaperID();
         Scene* GetScene() const { return scene; }
 
         std::string GetName();
         void SetName(const std::string& name);
 
+        uint32_t GetEnttID() { return (uint32_t)entity; }
     private:
         Scene* scene = nullptr;
 

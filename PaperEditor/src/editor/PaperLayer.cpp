@@ -1,6 +1,8 @@
 #include "Editor.h"
 #include "PaperLayer.h"
 
+#include "DockManager.h"
+#include "SelectionManager.h"
 #include "WindowsOpen.h"
 
 #include "project/ProjectManager.h"
@@ -33,20 +35,13 @@ void PaperLayer::OnAttach()
 {
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.WindowMenuButtonPosition = ImGuiDir_None;
-	//style.FrameRounding = 12.0f;
-	//style.GrabRounding = 12.0f;
-	// scene =
-	//Shr<Scene> scene1 = MakeShr<Scene>();
-	//Paper::UUID uuid = scene1->CreateEntity("lol").GetUUID();
-	//
-	//scene1->GetEntity(uuid).AddComponent<SpriteComponent>();
-	//scene1->GetEntity(uuid).AddComponent<CircleComponent>();
-	//scene1->GetEntity(uuid).AddComponent<LineComponent>();
-	//scene1->GetEntity(uuid).AddComponent<TextComponent>();
-	//scene1->GetEntity(uuid).AddTag({ "A", "B", "C", "AA", "aB", "Ac" });
-	//
-	//YAMLSerializer::SceneSerialize("bunker.yaml", scene1);
-	panelManager.AddPanel<SceneDebuggingPanel>("SceneDebuggerPanel", false, this);
+
+	
+
+	panelManager.AddPanel<SceneDebuggingPanel>("Scene Debugger", false);
+	panelManager.AddPanel<ViewportDebuggingPanel>("Viewport Debugger", false, *this);
+	panelManager.AddPanel<ApplicationPanel>(true, DockLoc::Right);
+	Utils::TypeToStdString<ApplicationPanel>();
 }
 
 void PaperLayer::OnDetach()
@@ -88,19 +83,6 @@ void PaperLayer::OnEvent(Event& event)
 					ImGui::SetWindowFocus(port.name.c_str());
 					port.viewport_active = true;
 				}
-			}
-		}
-		if (e.GetButton() == MouseButton::BUTTON_LEFT && false)
-		{
-			if (hovered_entity == active_entity && gizmo_type == -1) 
-			{
-				active_entity = Entity();
-				LOG_DEBUG(11);
-			}
-			else if (!ImGuizmo::IsUsing()) 
-			{
-				active_entity = hovered_entity;
-				LOG_DEBUG(22);
 			}
 		}
 		
@@ -171,10 +153,11 @@ void PaperLayer::OnEvent(Event& event)
 				}
 				case Key::DELETEKEY:
 				{
-					if (active_entity)
+					if (SelectionManager::HasSelection())
 					{
-						activeScene->DestroyEntity(active_entity);
-						active_entity = Entity();
+						Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+						Scene::GetActive()->DestroyEntity(selectedEntity);
+						SelectionManager::Deselect();
 					}
 					break;
 				}
@@ -250,42 +233,17 @@ void PaperLayer::Imgui(const float dt)
 	ImGui::Begin("docking", nullptr, window_flags);
 	ImGui::PopStyleVar(3);
 
-	dockspace_id = ImGui::GetID("dockspace");
+	
 
 	
 	if (first_frame)
 	{
 		first_frame = false;
-		ImGui::DockBuilderRemoveNode(dockspace_id);
-		ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
-		ImGui::DockBuilderSetNodeSize(dockspace_id, ImVec2(Application::GetWindow()->GetWidth() + 500, Application::GetWindow()->GetHeight() + 500));
-
-		dock_id_main = dockspace_id;
-
-		dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main,       ImGuiDir_Right, 0.2f, nullptr, &dock_id_main);
-		dock_id_right_bottom = ImGui::DockBuilderSplitNode(dock_id_right,ImGuiDir_Down, 0.5f, nullptr, &dock_id_right);
-		dock_id_left = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Left, 0.2f, nullptr, &dock_id_main);
-		dock_id_down = ImGui::DockBuilderSplitNode(dock_id_main,        ImGuiDir_Down, 0.2f, nullptr, &dock_id_main);
-		dock_id_right2 = ImGui::DockBuilderSplitNode(dock_id_right,     ImGuiDir_Left, 0.2f, nullptr, &dock_id_right);
-		dock_id_left_bottom = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
-		dock_id_up = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Up, 0.04f, nullptr, &dock_id_main);
-
-		// Disable tab bar for custom toolbar
-		ImGuiDockNode* node = ImGui::DockBuilderGetNode(dock_id_main);
-		node->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-
-		node = ImGui::DockBuilderGetNode(dock_id_up);
-		node->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-
-		ImGui::DockBuilderFinish(dockspace_id);
+		DockManager::CreateNodes();
 	}
-	for (auto [key, val] : dockPanelQueue)
-	{
-		ImGui::DockBuilderDockWindow(key.c_str(), val);
-	}
-	dockPanelQueue.clear();
+	DockManager::Update();
 
-	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
+	ImGui::DockSpace(DockManager::dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
 	MainMenuBar();
 
 
@@ -309,8 +267,8 @@ void PaperLayer::Imgui(const float dt)
 	if (show_camera_settings_panel)
 		CameraSettingsPanel();
 
-	if (show_viewport_debug_panel)
-		ViewPortDebugging();
+	//if (show_viewport_debug_panel)
+	//	ViewPortDebugging();
 
 	//if (show_scene_debugger_panel)
 	//	SceneDebugger();
@@ -329,13 +287,7 @@ void PaperLayer::Imgui(const float dt)
 
 
 
-void PaperLayer::DockPanel(std::string name, ImGuiID dock_id)
-{
-	if (dockPanelQueue.find(name) == dockPanelQueue.end())
-	{
-		dockPanelQueue.emplace(name, dock_id);
-	}
-}
+
 
 bool PaperLayer::AnyCameraActive() const
 {
@@ -359,17 +311,15 @@ const ViewPort* PaperLayer::GetViewportFocused() const
 
 void PaperLayer::SwitchScene(const Shr<Scene>& scene)
 {
-	if (active_entity)
-		active_entity = scene->GetEntity(active_entity.GetPaperID());
-
 	if (hovered_entity)
 		hovered_entity = scene->GetEntity(hovered_entity.GetPaperID());
 
-	activeScene = scene;
+	Scene::SetActive(scene);
 }
 
 void PaperLayer::CheckSceneChange()
 {
+	const Shr<Scene> activeScene = Scene::GetActive();
 	if (!new_scene) return;
 
 	if (sceneState != SceneState::Edit)
@@ -440,7 +390,7 @@ void PaperLayer::ToolbarPanel()
 	const char* name = "##toolbar";
 	std::stringstream stream;
 	if (first)
-		DockPanel(name, dock_id_up);
+		DockManager::DockPanel(name, DockLoc::Top);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
@@ -463,6 +413,7 @@ void PaperLayer::ToolbarPanel()
 	const bool simulate = sceneState != SceneState::Play;
 	const bool pause = sceneState != SceneState::Edit;
 
+	const Shr<Scene> activeScene = Scene::GetActive();
 	const int countButtons = pause && activeScene->IsPaused() ? 3 : 2;
 	const float size = ImGui::GetWindowHeight() - 4;
 	ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5) - (((size * countButtons) + (ImGui::GetStyle().ItemSpacing.x * countButtons)) * 0.5));
@@ -541,22 +492,22 @@ void PaperLayer::OnScenePlay()
 {
 	sceneState = SceneState::Play;
 	SwitchScene(editorScene->Copy());
-	activeScene->OnRuntimeStart();
+	Scene::GetActive()->OnRuntimeStart();
 }
 
 void PaperLayer::OnSceneSimulate()
 {
 	sceneState = SceneState::Simulate;
 	SwitchScene(editorScene->Copy());
-	activeScene->OnSimulationStart();
+	Scene::GetActive()->OnSimulationStart();
 }
 
 void PaperLayer::OnSceneStop()
 {
 	if (sceneState == SceneState::Play)
-		activeScene->OnRuntimeStop();
+		Scene::GetActive()->OnRuntimeStop();
 	else if (sceneState == SceneState::Simulate)
-		activeScene->OnSimulationStop();
+		Scene::GetActive()->OnSimulationStop();
 
 	sceneState = SceneState::Edit;
 	SwitchScene(editorScene);

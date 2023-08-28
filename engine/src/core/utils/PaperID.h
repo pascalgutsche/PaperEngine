@@ -14,6 +14,8 @@ namespace Paper
 		void Set(std::string id);
 		void Set(uint64_t id);
 
+		bool Empty() const;
+
 		uint64_t toUInt64() const;
 		std::string toString() const;
 
@@ -24,6 +26,17 @@ namespace Paper
 			ss << std::setfill('0') << std::setw(16) << std::hex << uuid;
 			return ss.str();
 		}
+
+		bool operator==(const PaperID& other)
+		{
+			return uuid = other.uuid;
+		}
+
+		bool operator!=(const PaperID& other)
+		{
+			return !(*this == other);
+		}
+
 	private:
 		uint64_t uuid;
 	};
