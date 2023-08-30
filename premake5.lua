@@ -35,6 +35,7 @@ IncludeDir["YAMLCPP"] = "%{wks.location}/engine/lib/yaml-cpp/include"
 IncludeDir["ENTT"] = "%{wks.location}/engine/lib/entt/src"
 IncludeDir["MONO"] = "%{wks.location}/engine/lib/mono/include"
 IncludeDir["FILEWATCH"] = "%{wks.location}/engine/lib/filewatch"
+IncludeDir["NFD"] = "%{wks.location}/engine/lib/nativefiledialog-extended/include"
 
 LibraryDir = {}
 LibraryDir["MONO"] = "%{wks.location}/engine/lib/mono/lib/%{cfg.buildcfg}"
@@ -68,6 +69,7 @@ include "engine/lib/msdf-atlas-gen"
 include "engine/lib/spdlog"
 include "engine/lib/stb_image"
 include "engine/lib/yaml-cpp"
+include "engine/lib/nativefiledialog-extended"
 include "premake"
 group ""
 

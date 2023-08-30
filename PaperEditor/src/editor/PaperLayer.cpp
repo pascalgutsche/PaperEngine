@@ -3,17 +3,20 @@
 
 #include "DockManager.h"
 #include "SelectionManager.h"
-#include "WindowsOpen.h"
-
-#include "project/ProjectManager.h"
 
 #include "ViewPort.h"
 
 #include "ImGuizmo/ImGuizmo.h"
+#include "panels/AssetManagerPanel.h"
 #include "panels/DebuggingPanel.h"
+#include "panels/OutlinerPanel.h"
+#include "panels/ProjectPanel.h"
+#include "panels/PropertiesPanel.h"
+#include "project/ProjectSerializer.h"
 
 #include "renderer/Renderer2D.h"
 #include "scripting/ScriptEngine.h"
+#include "utils/FileSystem.h"
 
 
 PaperLayer::PaperLayer()
@@ -36,12 +39,20 @@ void PaperLayer::OnAttach()
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.WindowMenuButtonPosition = ImGuiDir_None;
 
-	
+	panelManager.paperLayer = this;
+
+	panelManager.AddPanel<ImGuiDemoPanel>("ImGui Demo", false);
 
 	panelManager.AddPanel<SceneDebuggingPanel>("Scene Debugger", false);
-	panelManager.AddPanel<ViewportDebuggingPanel>("Viewport Debugger", false, *this);
+	panelManager.AddPanel<CameraSettingsPanel>("Camera Debugger", false);
+	panelManager.AddPanel<ViewportDebuggingPanel>("Viewport Debugger", false);
 	panelManager.AddPanel<ApplicationPanel>(true, DockLoc::Right);
-	Utils::TypeToStdString<ApplicationPanel>();
+	panelManager.AddPanel<AssetManagerPanel>("Asset Manager", true, DockLoc::Bottom);
+	panelManager.AddPanel<OutlinerPanel>("Outliner", true, DockLoc::Right);
+	panelManager.AddPanel<PropertiesPanel>("Properties", true, DockLoc::RightBottom);
+	panelManager.AddPanel<NewProjectPanel>("New Project...", false);
+
+	ProjectSerializer::Serialize(MakeShr<Project>(), "resources/ProjectTemplate/Project.pproj");
 }
 
 void PaperLayer::OnDetach()
@@ -233,45 +244,14 @@ void PaperLayer::Imgui(const float dt)
 	ImGui::Begin("docking", nullptr, window_flags);
 	ImGui::PopStyleVar(3);
 
-	
+	{ static bool createNodes = DockManager::CreateNodes(); }
 
-	
-	if (first_frame)
-	{
-		first_frame = false;
-		DockManager::CreateNodes();
-	}
 	DockManager::Update();
 
 	ImGui::DockSpace(DockManager::dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
 	MainMenuBar();
 
-
 	ImGui::End();
-
-	if (show_imgui_demo)
-		ImGui::ShowDemoWindow(&show_imgui_demo);
-
-	if (show_asset_manager_panel)
-		AssetManagerPanel();
-
-	if (show_application_panel)
-		ApplicationPanel();
-
-	if (show_outliner_panel)
-		OutlinerPanel();
-
-	if (show_property_panel)
-		PropertiesPanel();
-
-	if (show_camera_settings_panel)
-		CameraSettingsPanel();
-
-	//if (show_viewport_debug_panel)
-	//	ViewPortDebugging();
-
-	//if (show_scene_debugger_panel)
-	//	SceneDebugger();
 
 	panelManager.OnImGuiRender();
 
@@ -285,8 +265,13 @@ void PaperLayer::Imgui(const float dt)
 
 }
 
+void PaperLayer::CreateProject(const std::filesystem::path& projPath, const std::string& projName)
+{
+	if (!std::filesystem::exists(projPath))
+		std::filesystem::create_directories(projPath);
 
 
+}
 
 
 bool PaperLayer::AnyCameraActive() const
@@ -342,7 +327,7 @@ void PaperLayer::CheckSceneChange()
 	{
 		if (activeScene->GetPath().empty())
 		{
-			activeScene->SetPath(ProjectManager::SaveFile(""));
+			activeScene->SetPath(FileSystem::SaveFile());
 		}
 		std::string filePath = activeScene->GetPath().string();
 		if (!filePath.empty())

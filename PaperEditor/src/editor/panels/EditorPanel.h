@@ -1,5 +1,7 @@
 #pragma once
 
+class PaperLayer;
+
 namespace PaperED
 {
 	class EditorPanel
@@ -12,6 +14,7 @@ namespace PaperED
 
 	protected:
 		std::string panelName;
+		PaperLayer* paperLayer;
 
 		friend class PanelManager;
 	};

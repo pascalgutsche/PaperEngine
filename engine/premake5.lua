@@ -36,7 +36,8 @@ project "engine"
 		"%{IncludeDir.STDUUID}",
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.BOOST}",
-		"%{IncludeDir.MONO}"
+		"%{IncludeDir.MONO}",
+		"%{IncludeDir.NFD}"
 	}
 
 	defines 
@@ -58,6 +59,7 @@ project "engine"
 		"stb_image",
 		"yaml-cpp",
 		"%{Library.MONO}",
+		"nfd",
 		"opengl32.lib"
 	}
 

@@ -25,7 +25,6 @@ namespace Paper {
             std::string name = typeid(T).name();
             size_t index = name.find_last_of(':');
             std::string typeName = name.substr(++index);
-            LOG_CORE_DEBUG(typeName);
         	return typeName;
         };
 

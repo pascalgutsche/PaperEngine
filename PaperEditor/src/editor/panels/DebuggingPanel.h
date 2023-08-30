@@ -14,12 +14,7 @@ namespace PaperED
 	class ViewportDebuggingPanel : public EditorPanel
 	{
 	public:
-		ViewportDebuggingPanel(PaperLayer& paperLayer);
-
 		void OnImGuiRender(bool& isOpen) override;
-
-	private:
-		PaperLayer& paperLayer;
 	};
 
 	class SceneDebuggingPanel : public EditorPanel
@@ -27,6 +22,18 @@ namespace PaperED
 	public:
 		void OnImGuiRender(bool& isOpen) override;
 
+	};
+
+	class CameraSettingsPanel : public EditorPanel
+	{
+	public:
+		void OnImGuiRender(bool& isOpen) override;
+	};
+
+	class ImGuiDemoPanel : public EditorPanel
+	{
+	public:
+		void OnImGuiRender(bool& isOpen) override;
 	};
 }
 

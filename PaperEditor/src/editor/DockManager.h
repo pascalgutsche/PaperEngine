@@ -11,16 +11,8 @@ namespace PaperED
 	{
 	public:
 		inline static ImGuiID dockspace_id = 0;
-		//inline static ImGuiID dock_id_main = 0;
-		//inline static ImGuiID dock_id_down = 0;
-		//inline static ImGuiID dock_id_left = 0;
-		//inline static ImGuiID dock_id_right = 0;
-		//inline static ImGuiID dock_id_right_bottom = 0;
-		//inline static ImGuiID dock_id_right2 = 0;
-		//inline static ImGuiID dock_id_left_bottom = 0;
-		//inline static ImGuiID dock_id_up = 0;
 
-		static void CreateNodes();
+		static bool CreateNodes();
 
 		static void Update();
 

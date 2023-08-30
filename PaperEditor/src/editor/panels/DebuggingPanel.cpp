@@ -1,12 +1,8 @@
 ﻿#include "Editor.h"
 #include "DebuggingPanel.h"
 
-#include "editor/DockManager.h"
 #include "editor/PaperLayer.h"
 #include "editor/SelectionManager.h"
-
-#include "editor/WindowsOpen.h"
-
 
 void ApplicationPanel::OnImGuiRender(bool& isOpen)
 {
@@ -141,20 +137,15 @@ void ApplicationPanel::OnImGuiRender(bool& isOpen)
 	ImGui::End();
 }
 
-ViewportDebuggingPanel::ViewportDebuggingPanel(PaperLayer& paperLayer)
-	: paperLayer(paperLayer)
-{
-}
-
 void ViewportDebuggingPanel::OnImGuiRender(bool& isOpen)
 {
 	ImGui::Begin(panelName.c_str(), &isOpen);
 
-	ImGui::Text(("Last focused Viewport: " + paperLayer.lastFocusedViewPort->name).c_str());
+	ImGui::Text(("Last focused Viewport: " + paperLayer->lastFocusedViewPort->name).c_str());
 
 	ImGui::Separator();
 
-	for (auto& viewport : paperLayer.viewports)
+	for (auto& viewport : paperLayer->viewports)
 	{
 		ImGui::Text(viewport.name.c_str());
 		ImGui::Checkbox("is_visible", &viewport.is_visible);
@@ -200,4 +191,54 @@ void SceneDebuggingPanel::OnImGuiRender(bool& isOpen)
 	}
 
 	ImGui::End();
+}
+
+void CameraSettingsPanel::OnImGuiRender(bool& isOpen)
+{
+	ImGui::Begin("Camera Settings", &isOpen, ImGuiWindowFlags_AlwaysAutoResize);
+
+	if (ImGui::BeginTabBar("##tabs"))
+	{
+		for (auto& viewport : paperLayer->viewports)
+		{
+			if (ImGui::BeginTabItem(viewport.name.c_str()))
+			{
+				const Shr<EditorCamera> camera = viewport.camera;
+
+				ImGui::DragFloat3("Position", &camera->position.x, 0.1f);
+				ImGui::DragFloat("Yaw", &camera->yaw, 0.1f);
+				ImGui::DragFloat("Pitch", &camera->pitch, 0.1f);
+				ImGui::DragFloat("Roll", &camera->roll, 0.1f);
+
+				ImGui::DragFloat("FOV", &camera->fov, 0.1f);
+
+				ImGui::DragFloat("Far-Plane", &camera->far_plane, 0.01f);
+				ImGui::DragFloat("Near-Plane", &camera->near_plane, 0.01f);
+				ImGui::DragFloat("Left_Plane", &camera->left_frostum, 0.01f);
+				ImGui::DragFloat("Right-Plane", &camera->right_frostum, 0.01f);
+				ImGui::DragFloat("Top-Plane", &camera->top_frostum, 0.01f);
+				ImGui::DragFloat("Bottom-Plane", &camera->bottom_frostum, 0.01f);
+
+				ImGui::DragFloat3("Target", &camera->target.x, 0.1f);
+
+
+				if (ImGui::Button("Reset Camera Values"))
+					camera->ResetValues();
+
+				ImGui::EndTabItem();
+
+			}
+		}
+
+
+		ImGui::EndTabBar();
+	};
+
+
+	ImGui::End();
+}
+
+void ImGuiDemoPanel::OnImGuiRender(bool& isOpen)
+{
+	ImGui::ShowDemoWindow(&isOpen);
 }

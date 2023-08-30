@@ -3,8 +3,6 @@
 #include "DockManager.h"
 #include "PaperLayer.h"
 
-#include "WindowsOpen.h"
-
 constexpr bool dynamicCameraCount = true;
 
 void PaperLayer::CameraMode()
@@ -164,7 +162,8 @@ void PaperLayer::EnableCamera(CameraModes mode)
 		viewports[i].is_visible = true;
 	}
 }
-
+static bool viewport_panel_first = true;
+static bool show_viewport_panel = true;
 void PaperLayer::ViewPortPanel()
 {
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;

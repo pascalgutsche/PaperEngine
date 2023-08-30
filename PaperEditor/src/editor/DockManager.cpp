@@ -3,7 +3,7 @@
 
 namespace PaperED
 {
-	void DockManager::CreateNodes()
+	bool DockManager::CreateNodes()
 	{
 		dockspace_id = ImGui::GetID("dockspace");
 		ImGui::DockBuilderRemoveNode(dockspace_id);
@@ -26,6 +26,7 @@ namespace PaperED
 		node->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
 
 		ImGui::DockBuilderFinish(dockspace_id);
+		return true;
 	}
 
 	void DockManager::Update()

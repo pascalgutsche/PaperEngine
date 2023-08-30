@@ -3,6 +3,8 @@
 #include "generic/Hash.h"
 #include "panels/EditorPanel.h"
 
+class PaperLayer;
+
 namespace PaperED
 {
 	enum class DockLoc;
@@ -52,6 +54,7 @@ namespace PaperED
 			}
 			panels[id] = panelData;
 			panels[id].panel->panelName = panelData.displayName;
+			panels[id].panel->paperLayer = paperLayer;
 
 			return std::dynamic_pointer_cast<TEditorPanel>(panels[id].panel);
 		}
@@ -86,5 +89,8 @@ namespace PaperED
 
 	private:
 		std::unordered_map<uint32_t, PanelData> panels;
+		PaperLayer* paperLayer = nullptr;
+
+		friend class PaperLayer;
 	};
 }

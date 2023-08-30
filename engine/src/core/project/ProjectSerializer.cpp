@@ -10,6 +10,7 @@ namespace Paper
 		const ProjectConfig& config = project->config;
 
 		YAML::Emitter out;
+		out << YAML::BeginMap;
 		out << YAML::Key << "ProjectConfig";
 		out << YAML::BeginMap;
 
@@ -18,6 +19,7 @@ namespace Paper
 		out << YAML::Key << "AssetPath" << YAML::Value << config.assetPath.string();
 		out << YAML::Key << "ScriptBinaryPath" << YAML::Value << config.scriptBinaryPath.string();
 
+		out << YAML::EndMap;
 		out << YAML::EndMap;
 
 		std::ofstream fout(filePath);

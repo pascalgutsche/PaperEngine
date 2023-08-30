@@ -35,7 +35,8 @@ project "PaperEditor"
 		"%{IncludeDir.STB_IMAGE}",
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.ENTT}",
-		"%{IncludeDir.FILEWATCH}"
+		"%{IncludeDir.FILEWATCH}",
+		"%{IncludeDir.NFD}"
 	}
 
 	defines 

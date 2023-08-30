@@ -42,7 +42,7 @@ public:
 	void Imgui(const float dt) override;
 
 	
-
+	void CreateProject(const std::filesystem::path& projPath, const std::string& projName);
 	
 
 	Entity drag_entity;
@@ -73,29 +73,14 @@ public: // temporary until proper rewrite
 	PanelManager panelManager;
 
 	void MainMenuBar();
-	void AssetManagerPanel();
-	void OutlinerPanel();
-	void PropertiesPanel();
 
 	void ToolbarPanel();
-
-	void CameraSettingsPanel();
 
 	void ViewPortPanel();
 	void CameraMode();
 	void DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size);
 	void EnableCamera(CameraModes mode);
 
-
-	bool first_frame = true;
-	bool viewport_panel_first = true;
-	bool application_panel_first = true;
-	bool scene_debugger_panel_first = true;
-	bool asset_manager_panel_first = true;
-	bool properties_panel_first = true;
-	bool outliner_panel_first = true;
-	bool camera_settings_panel_first = true;
-	bool viewport_debugging_panel_first = true;
 
 	ViewPort* viewPortCurrentlySimulating = nullptr;
 	ViewPort* lastFocusedViewPort = nullptr;
