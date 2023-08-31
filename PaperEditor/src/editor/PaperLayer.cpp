@@ -51,8 +51,6 @@ void PaperLayer::OnAttach()
 	panelManager.AddPanel<OutlinerPanel>("Outliner", true, DockLoc::Right);
 	panelManager.AddPanel<PropertiesPanel>("Properties", true, DockLoc::RightBottom);
 	panelManager.AddPanel<NewProjectPanel>("New Project...", false);
-
-	ProjectSerializer::Serialize(MakeShr<Project>(), "resources/ProjectTemplate/Project.pproj");
 }
 
 void PaperLayer::OnDetach()
@@ -267,10 +265,48 @@ void PaperLayer::Imgui(const float dt)
 
 void PaperLayer::CreateProject(const std::filesystem::path& projPath, const std::string& projName)
 {
+	if (projPath.empty() || projName.empty())
+	{
+		LOG_CORE_ERROR("cannot create project with empty name or path");
+		return;
+	}
+
 	if (!std::filesystem::exists(projPath))
 		std::filesystem::create_directories(projPath);
+	else
+	{
+		LOG_CORE_WARN("cannot create project because it already exists");
+		return;
+	}
 
+	std::filesystem::copy("resources/ProjectTemplate", projPath, std::filesystem::copy_options::recursive);
 
+	Utils::ReplaceTokenInFile(projPath / "premake5.lua", "$PROJ_NAME$", projName);
+	Utils::ReplaceTokenInFile(projPath / "premake5.lua", "$PROJ_PATH$", projPath.string());
+
+	Utils::ReplaceTokenInFile(projPath / "Project.pproj", "$PROJ_NAME$", projName);
+	Utils::ReplaceTokenInFile(projPath / "Project.pproj", "$PROJ_PATH$", projPath.string());
+
+	Utils::ReplaceTokenInFile(projPath / "Example.cs", "$PROJ_NAME$", projName);
+
+	std::filesystem::create_directories(projPath / "assets" / "fonts");
+	std::filesystem::create_directories(projPath / "assets" / "textures");
+	std::filesystem::create_directories(projPath / "assets" / "scenes");
+	std::filesystem::create_directories(projPath / "assets" / "scripts" / "Source");
+
+	FileSystem::Move(projPath / "Example.cs", projPath / "assets" / "scripts" / "Source" / "Example.cs");
+
+	GenerateProjectSolution(projPath);
+
+	//OpenProject() //TODO: IMPLEMENT
+}
+
+void PaperLayer::GenerateProjectSolution(const std::filesystem::path& projPath) const
+{
+	std::string buildPath = projPath.string();
+	std::replace(buildPath.begin(), buildPath.end(), '/', '\\'); // Only windows
+	buildPath += "\\build.bat";
+	system(buildPath.c_str());
 }
 
 

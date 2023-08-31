@@ -43,7 +43,8 @@ public:
 
 	
 	void CreateProject(const std::filesystem::path& projPath, const std::string& projName);
-	
+
+	void GenerateProjectSolution(const std::filesystem::path& projPath) const;
 
 	Entity drag_entity;
 	Entity hovered_entity;

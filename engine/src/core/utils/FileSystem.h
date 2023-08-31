@@ -6,6 +6,10 @@ namespace Paper
 	{
 	public:
 
+		static bool Exists(const std::filesystem::path& filePath);
+		static bool Move(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath);
+		static bool Rename(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath);
+
 		struct Filter
 		{
 			const char* name;

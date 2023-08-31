@@ -5,6 +5,25 @@
 
 namespace Paper
 {
+	bool FileSystem::Exists(const std::filesystem::path& filePath)
+	{
+		return std::filesystem::exists(filePath);
+	}
+
+	bool FileSystem::Move(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath)
+	{
+		return Rename(oldFilePath, newFilePath);
+	}
+
+	bool FileSystem::Rename(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath)
+	{
+		if (Exists(newFilePath))
+			return false;
+
+		std::filesystem::rename(oldFilePath, newFilePath);
+		return true;
+	}
+
 
 	std::filesystem::path FileSystem::OpenFile(const std::filesystem::path& defaultPath, const std::initializer_list<std::string>& filter)
 	{

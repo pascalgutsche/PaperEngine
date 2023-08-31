@@ -22,7 +22,8 @@ namespace PaperED
 			fullProjPath = fmt::format("{}\\{}", projPath, projName);
 		}
 
-		ImGui::Text(fmt::format("Project is created in: {}", fullProjPath).c_str());
+		ImGui::Text("Project is created in:");
+		ImGui::Text(fullProjPath.c_str());
 
 		ImGui::InputText("Name: ", &projName);
 		ImGui::InputText("Path: ", &projPath);
@@ -30,14 +31,25 @@ namespace PaperED
 		if (ImGui::Button("..."))
 			projPath = FileSystem::OpenFolder().string();
 
-		if (ImGui::Button("Cancel"))
+		std::function<void()> exitFn = [&]()
+		{
+			projName = "";
+			projPath = "";
 			isOpen = false;
+		};
+
+		if (ImGui::Button("Cancel"))
+			exitFn();
 
 		ImGui::SameLine();
 
 		if (ImGui::Button("Create"))
-			paperLayer->CreateProject(projPath, projName);
+		{
+			paperLayer->CreateProject(std::filesystem::path(projPath) / projName, projName);
+			exitFn();
+		}
 
 		ImGui::End();
 	}
+
 }

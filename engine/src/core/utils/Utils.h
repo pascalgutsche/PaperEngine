@@ -19,6 +19,9 @@ namespace Paper {
 
         char* ReadBytes(const std::filesystem::path& filepath, uint32_t* outSize);
 
+        void ReplaceToken(std::string& string, const std::string& token, const std::string& value);
+        void ReplaceTokenInFile(const std::filesystem::path& filePath, const std::string& token, const std::string& value);
+
         template <typename T>
         std::string TypeToStdString()
         {

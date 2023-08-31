@@ -2,6 +2,8 @@
 
 #include "utils/Utils.h"
 
+#include "Timer.h"
+
 namespace Paper {
     namespace Utils {
         std::string GetSystemDateInString() {
@@ -66,6 +68,38 @@ namespace Paper {
 
             *outSize = size;
             return buffer;
+        }
+
+        void ReplaceToken(std::string& string, const std::string& token, const std::string& value)
+        {
+            Timer timer;
+            size_t pos = 0;
+            while((pos = string.find(token, pos)) != std::string::npos)
+            {
+                string.replace(pos, token.length(), value);
+                if (timer.GetElapsedMillis() > 250.0f) break;
+            }
+        }
+
+        void ReplaceTokenInFile(const std::filesystem::path& filePath, const std::string& token,
+	        const std::string& value)
+        {
+            std::ifstream istream(filePath);
+            if (!istream.is_open())
+            {
+                LOG_CORE_ERROR("Could not find file '{}'", filePath.string());
+                return;
+            }
+
+            std::stringstream ss;
+            ss << istream.rdbuf();
+            istream.close();
+
+            std::string string = ss.str();
+            ReplaceToken(string, token, value);
+            std::ofstream ostream(filePath);
+            ostream << string;
+            ostream.close();
         }
     }
 }
