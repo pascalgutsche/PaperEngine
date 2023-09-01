@@ -43,6 +43,9 @@ public:
 
 	
 	void CreateProject(const std::filesystem::path& projPath, const std::string& projName);
+	void OpenProject(const std::filesystem::path& projPath);
+	void SaveProject() const;
+	void CloseProject() const;
 
 	void GenerateProjectSolution(const std::filesystem::path& projPath) const;
 

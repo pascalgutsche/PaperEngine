@@ -11,6 +11,7 @@ namespace PaperED
 
 		virtual void OnImGuiRender(bool& isOpen) = 0;
 		virtual void OnEvent(Event& e) {}
+		virtual void OnProjectChanged(const Shr<Project>& project) {}
 
 	protected:
 		std::string panelName;

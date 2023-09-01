@@ -7,7 +7,7 @@
 #include "ViewPort.h"
 
 #include "ImGuizmo/ImGuizmo.h"
-#include "panels/AssetManagerPanel.h"
+#include "panels/ContentBrowserPanel.h"
 #include "panels/DebuggingPanel.h"
 #include "panels/OutlinerPanel.h"
 #include "panels/ProjectPanel.h"
@@ -41,16 +41,22 @@ void PaperLayer::OnAttach()
 
 	panelManager.paperLayer = this;
 
-	panelManager.AddPanel<ImGuiDemoPanel>("ImGui Demo", false);
+	PanelManager::SetPanelOpenSetting(PanelOpenSetting::None);
+	panelManager.AddPanel<NewProjectPanel>("New Project...", false);
 
+	PanelManager::SetPanelOpenSetting(PanelOpenSetting::View);
+	panelManager.AddPanel<ImGuiDemoPanel>("ImGui Demo", false);
 	panelManager.AddPanel<SceneDebuggingPanel>("Scene Debugger", false);
 	panelManager.AddPanel<CameraSettingsPanel>("Camera Debugger", false);
 	panelManager.AddPanel<ViewportDebuggingPanel>("Viewport Debugger", false);
 	panelManager.AddPanel<ApplicationPanel>(true, DockLoc::Right);
-	panelManager.AddPanel<AssetManagerPanel>("Asset Manager", true, DockLoc::Bottom);
+	panelManager.AddPanel<ContentBrowserPanel>("Content Browser", true, DockLoc::Bottom);
 	panelManager.AddPanel<OutlinerPanel>("Outliner", true, DockLoc::Right);
 	panelManager.AddPanel<PropertiesPanel>("Properties", true, DockLoc::RightBottom);
-	panelManager.AddPanel<NewProjectPanel>("New Project...", false);
+
+	std::filesystem::path abs("D:\\dev\\Paper-Project\\Projects\\Sandbunker");
+	std::filesystem::path assets("assets");
+	LOG_CORE_DEBUG("{}", (abs / assets).string());
 }
 
 void PaperLayer::OnDetach()
@@ -298,7 +304,48 @@ void PaperLayer::CreateProject(const std::filesystem::path& projPath, const std:
 
 	GenerateProjectSolution(projPath);
 
-	//OpenProject() //TODO: IMPLEMENT
+	OpenProject(projPath);
+}
+
+void PaperLayer::OpenProject(const std::filesystem::path& projPath)
+{
+	if (!std::filesystem::exists(projPath))
+	{
+		LOG_CORE_ERROR("Project '{}' does not exist");
+		return;
+	}
+
+	std::filesystem::path projectFilePath = projPath;
+	if (std::filesystem::is_directory(projectFilePath))
+		projectFilePath = projectFilePath / "Project.pproj";
+
+	if (!std::filesystem::exists(projPath))
+	{
+		LOG_CORE_ERROR("Project '{}' does not exist");
+		return;
+	}
+
+	if (Project::GetActive())
+		CloseProject();
+
+	Shr<Project> project = ProjectSerializer::Deserilize(projectFilePath);
+	Project::SetActive(project);
+
+	panelManager.OnProjectChanged(project);
+}
+
+void PaperLayer::SaveProject() const
+{
+	if (!Project::GetActive()) return;
+
+	ProjectSerializer::Serialize(Project::GetActive(), Project::GetProjectPath() / "Project.pproj");
+}
+
+void PaperLayer::CloseProject() const
+{
+	SaveProject();
+
+	Project::SetActive(nullptr);
 }
 
 void PaperLayer::GenerateProjectSolution(const std::filesystem::path& projPath) const

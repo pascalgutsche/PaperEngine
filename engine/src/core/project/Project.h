@@ -23,33 +23,34 @@ namespace Paper
 
 		const ProjectConfig& GetConfig() const;
 
-		void SetActive(const Shr<Project>& project) const;
+		static void SetActive(const Shr<Project>& project);
+		static Shr<Project> GetActive();
 
-		static const std::string& GetProjectName()
+		static std::string GetProjectName()
 		{
 			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectName;
 		}
 
-		static const std::filesystem::path& GetProjectPath()
+		static std::filesystem::path GetProjectPath()
 		{
 			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectPath;
 		}
 
-		static const std::filesystem::path& GetAssetPath()
+		static std::filesystem::path GetAssetPath()
 		{
 			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectPath / activeProject->GetConfig().assetPath;
 		}
 
-		static const std::filesystem::path& GetScriptBinaryPath()
+		static std::filesystem::path GetScriptBinaryPath()
 		{
 			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectPath / activeProject->GetConfig().scriptBinaryPath;
 		}
 
-		static const std::filesystem::path& GetScriptBinaryFilePath()
+		static std::filesystem::path GetScriptBinaryFilePath()
 		{
 			CORE_ASSERT(activeProject, "");
 			return GetScriptBinaryPath() / std::format("{}.dll", GetProjectName());

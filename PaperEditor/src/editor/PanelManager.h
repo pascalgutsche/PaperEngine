@@ -10,6 +10,14 @@ namespace PaperED
 	enum class DockLoc;
 
 
+	enum class PanelOpenSetting
+	{
+		View, Edit,
+
+		None,
+		_COUNT
+	};
+
 	struct PanelData
 	{
 		std::string strID = "";
@@ -25,38 +33,30 @@ namespace PaperED
 	public:
 		void OnImGuiRender();
 		void OnEvent(Event& e);
+		void OnProjectChanged(const Shr<Project>& project);
 
-		std::unordered_map<uint32_t, PanelData>& GetPanels() { return panels; }
-
-		void RemovePanel(const std::string& strID)
-		{
-			uint32_t id = Hash::GenerateFNVHash(strID);
-
-			if (panels.contains(id))
-			{
-				LOG_CORE_ERROR("Trying to remove panel that did not exists: '{}'", strID);
-				return;
-			}
-			panels.erase(id);
-		};
+		void RemovePanel(const std::string& strID);
+		void OpenPanel(const std::string& strID);
 
 		template <typename TEditorPanel, typename... TArgs>
 		Shr<TEditorPanel> AddPanel(const PanelData& panelData)
 		{
 			static_assert(std::is_base_of<EditorPanel, TEditorPanel>::value, "TEditorPanel must be a derived of EditorPanel");
 
+			auto& panelsInSetting = panels[(size_t)panelOpenSetting];
+
 			uint32_t id = Hash::GenerateFNVHash(panelData.strID);
 
-			if (panels.contains(id))
+			if (panelsInSetting.contains(id))
 			{
 				LOG_CORE_ERROR("Trying to add panel '{}' multiple times", panelData.strID);
 				return nullptr;
 			}
-			panels[id] = panelData;
-			panels[id].panel->panelName = panelData.displayName;
-			panels[id].panel->paperLayer = paperLayer;
+			panelsInSetting[id] = panelData;
+			panelsInSetting[id].panel->panelName = panelData.displayName;
+			panelsInSetting[id].panel->paperLayer = paperLayer;
 
-			return std::dynamic_pointer_cast<TEditorPanel>(panels[id].panel);
+			return std::dynamic_pointer_cast<TEditorPanel>(panelsInSetting[id].panel);
 		}
 
 		template <typename TEditorPanel, typename... TArgs>
@@ -87,9 +87,15 @@ namespace PaperED
 			return AddPanel<TEditorPanel>({ .strID = strID, .displayName = displayName, .panel = MakeShr<TEditorPanel>(std::forward<TArgs>(args)...), .isOpen = isOpenByDefault, .initialDockLocation = initialDockLoc });
 		}
 
+		std::unordered_map<uint32_t, PanelData>& GetPanels(PanelOpenSetting setting) { return panels[(size_t)setting]; }
+
+		static void SetPanelOpenSetting(PanelOpenSetting setting) { CORE_ASSERT(setting != PanelOpenSetting::_COUNT, ""); panelOpenSetting = setting; };
+
 	private:
-		std::unordered_map<uint32_t, PanelData> panels;
+		std::array<std::unordered_map<uint32_t, PanelData>, (size_t)PanelOpenSetting::_COUNT> panels;
 		PaperLayer* paperLayer = nullptr;
+
+		inline static PanelOpenSetting panelOpenSetting = PanelOpenSetting::None;
 
 		friend class PaperLayer;
 	};

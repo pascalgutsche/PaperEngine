@@ -25,7 +25,7 @@ namespace Paper
 	}
 
 
-	std::filesystem::path FileSystem::OpenFile(const std::filesystem::path& defaultPath, const std::initializer_list<std::string>& filter)
+	std::filesystem::path FileSystem::OpenFile(const std::filesystem::path& defaultPath, const std::initializer_list<Filter>& filter)
 	{
 		NFD::UniquePath filePath;
 		nfdresult_t result = NFD::OpenDialog(filePath, (const nfdfilteritem_t*)filter.begin(), filter.size(), defaultPath.string().c_str());
@@ -61,7 +61,7 @@ namespace Paper
 		return "";
 	}
 
-	std::filesystem::path FileSystem::SaveFile(const std::filesystem::path& defaultPath, const std::initializer_list<std::string>& filter)
+	std::filesystem::path FileSystem::SaveFile(const std::filesystem::path& defaultPath, const std::initializer_list<Filter>& filter)
 	{
 		NFD::UniquePath filePath;
 		nfdresult_t result = NFD::SaveDialog(filePath, (const nfdfilteritem_t*)filter.begin(), filter.size());

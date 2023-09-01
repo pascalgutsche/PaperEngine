@@ -13,9 +13,14 @@ namespace Paper
 		return config;
 	}
 
-	void Project::SetActive(const Shr<Project>& project) const
+	void Project::SetActive(const Shr<Project>& project)
 	{
 		activeProject = project;
+	}
+
+	Shr<Project> Project::GetActive()
+	{
+		return activeProject;
 	}
 }
 

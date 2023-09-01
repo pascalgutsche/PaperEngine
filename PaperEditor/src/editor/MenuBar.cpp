@@ -1,8 +1,10 @@
 ﻿#include "Editor.h"
 
 #include "PaperLayer.h"
+#include "panels/ProjectPanel.h"
 #include "project/ProjectManager.h"
 #include "scripting/ScriptEngine.h"
+#include "utils/FileSystem.h"
 
 void MenuItemPanel(const char* name, const char* shortcut, bool* p_open)
 {
@@ -26,13 +28,13 @@ void PaperLayer::MainMenuBar()
 		{
 			if (ImGui::MenuItem("New Project...", "Ctrl+O"))
 			{
-				//NewProject();
+				panelManager.OpenPanel(Utils::TypeToStdString<NewProjectPanel>());
 			}
 
 			if (ImGui::MenuItem("Open Project...", "Ctrl+O"))
 			{
-				ProjectManager::OpenFile("PaperEngine Project(*.peproj)\0 * .peproj\0");
-				//ProjectManager::OpenFile("Image Files (*.png, *.jpg)\0*.png;*.jpg;\0");
+				std::filesystem::path projPath = FileSystem::OpenFile("", { {.name = "Paper Project", .spec = "pproj"} });
+				OpenProject(projPath);
 			}
 
 			ImGui::Separator();
@@ -58,9 +60,19 @@ void PaperLayer::MainMenuBar()
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Edit"))
+		{
+			for (PanelData& panelData : panelManager.GetPanels(PanelOpenSetting::Edit) | std::views::values)
+			{
+				ImGui::MenuItem(panelData.displayName.c_str(), nullptr, &panelData.isOpen);
+			}
+
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("View"))
 		{
-			for (PanelData& panelData : panelManager.GetPanels() | std::views::values)
+			for (PanelData& panelData : panelManager.GetPanels(PanelOpenSetting::View) | std::views::values)
 			{
 				ImGui::MenuItem(panelData.displayName.c_str(), nullptr, &panelData.isOpen);
 			}

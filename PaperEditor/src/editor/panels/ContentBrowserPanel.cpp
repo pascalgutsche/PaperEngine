@@ -1,6 +1,7 @@
 ﻿#include "Editor.h"
-#include "AssetManagerPanel.h"
+#include "ContentBrowserPanel.h"
 
+#include "project/Project.h"
 #include "renderer/Font.h"
 
 
@@ -57,19 +58,24 @@ namespace PaperED
 		}
 	}
 
-	void AssetManagerPanel::OnImGuiRender(bool& isOpen)
+	void ContentBrowserPanel::OnImGuiRender(bool& isOpen)
 	{
 		static float size = 120.0f;
-		static std::filesystem::path path = "assets/";
 
-		//std::filesystem::path itemPath;
 		bool itemClicked = false;
 
 		const ImGuiTableFlags flags = ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX;
 
 		ImGui::Begin(panelName.c_str(), &isOpen);
+
+	if (!Project::GetActive())
+		{
+			ImGui::End();
+			return;
+		}
+
 		std::stringstream ss;
-		for (const auto& pathPart : path)
+		for (const auto& pathPart : currentAssetsPath)
 		{
 			if (pathPart.string().empty()) continue;
 			ss << pathPart.string() << "/";
@@ -77,7 +83,7 @@ namespace PaperED
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.5, 3));
 			if (ImGui::Button(pathPart.filename().string().c_str()))
 			{
-				path = ss.str();
+				currentAssetsPath = ss.str();
 				ImGui::PopStyleColor();
 				ImGui::PopStyleVar();
 				break;
@@ -100,13 +106,13 @@ namespace PaperED
 			ImGui::TableNextRow();
 			std::vector<std::string> filenames;
 
-			while (!exists(path))
+			while (!std::filesystem::exists(Project::GetProjectPath() / currentAssetsPath))
 			{
-				path = path.parent_path();
-				if (path == "assets") break;
+				currentAssetsPath = currentAssetsPath.parent_path();
+				if (currentAssetsPath == Project::GetActive()->GetConfig().assetPath) break;
 			}
 			int i = 0;
-			for (const auto item : std::filesystem::directory_iterator(path))
+			for (const auto item : std::filesystem::directory_iterator(Project::GetProjectPath() / currentAssetsPath))
 			{
 				if (i >= cols)
 				{
@@ -123,7 +129,16 @@ namespace PaperED
 				if (displayIcon(item, size))
 				{
 					if (item.is_directory())
-						path = item.path();
+					{
+						std::string path = item.path().string();
+						size_t pos = path.find(Project::GetProjectPath().string());
+						if (pos != std::string::npos)
+						{
+							path.erase(path.begin() + pos, path.begin() + pos + Project::GetProjectPath().string().length() + 1); // +1 because the slash of the path
+						}
+						currentAssetsPath = path;
+						
+					}
 					else
 					{
 						//itemPath = path.string() + "/" + item.path().filename().string();
@@ -172,5 +187,10 @@ namespace PaperED
 		}
 
 		ImGui::End();
+	}
+
+	void ContentBrowserPanel::OnProjectChanged(const Shr<Project>& project)
+	{
+		currentAssetsPath = project->GetConfig().assetPath;
 	}
 }
