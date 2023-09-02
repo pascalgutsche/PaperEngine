@@ -209,6 +209,11 @@ namespace Paper
         return (float)glfwGetTime();
     }
 
+    void GLFWWindow::SetTitle(const std::string& title)
+    {
+        glfwSetWindowTitle(glfwWindow, title.c_str());
+    }
+
     void GLFWWindow::SetVSync(const bool enabled)
     {
         glfwSwapInterval(enabled);

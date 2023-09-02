@@ -26,7 +26,7 @@ PaperLayer::PaperLayer()
 	viewports.emplace_back("3");
 	viewports.emplace_back("4");
 
-	new_scene = YAMLSerializer::SceneDeserialize("assets/scenes/bunker.pescene");
+	//new_scene = YAMLSerializer::SceneDeserialize("assets/scenes/bunker.pescene");
 	
 }
 
@@ -54,27 +54,24 @@ void PaperLayer::OnAttach()
 	panelManager.AddPanel<OutlinerPanel>("Outliner", true, DockLoc::Right);
 	panelManager.AddPanel<PropertiesPanel>("Properties", true, DockLoc::RightBottom);
 
-	std::filesystem::path abs("D:\\dev\\Paper-Project\\Projects\\Sandbunker");
-	std::filesystem::path assets("assets");
-	LOG_CORE_DEBUG("{}", (abs / assets).string());
+	//TODO: implement proper startup project
+	OpenProject("D:/dev/Paper-Project/Projects/Sandbunker");
+	if (!Project::GetActive())
+		EmptyProject();
 }
 
 void PaperLayer::OnDetach()
 {
 }
 
-
-
 void PaperLayer::Update(const float dt)
 {
 	if (ScriptEngine::ShouldReloadAssemblies())
 	{
-		//if (sceneState != SceneState::Edit)
-		//	OnSceneStop();
 		ScriptEngine::ReloadAssemblies();
 	}
 
-	CheckSceneChange();
+	//CheckSceneChange();
 
 }
 
@@ -253,13 +250,13 @@ void PaperLayer::Imgui(const float dt)
 	DockManager::Update();
 
 	ImGui::DockSpace(DockManager::dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
-	MainMenuBar();
+	UI_MenuBar();
+	UI_Toolbar();
 
 	ImGui::End();
 
 	panelManager.OnImGuiRender();
 
-	ToolbarPanel();
 	ViewPortPanel();
 
 	MousePicking();
@@ -325,13 +322,34 @@ void PaperLayer::OpenProject(const std::filesystem::path& projPath)
 		return;
 	}
 
+	Shr<Project> project = ProjectSerializer::Deserialize(projectFilePath);
+
+	OpenProject(project);
+}
+
+void PaperLayer::OpenProject(const Shr<Project>& project)
+{
 	if (Project::GetActive())
 		CloseProject();
 
-	Shr<Project> project = ProjectSerializer::Deserilize(projectFilePath);
 	Project::SetActive(project);
 
 	panelManager.OnProjectChanged(project);
+
+	if (std::filesystem::exists(Project::GetScriptBinaryFilePath()))
+	{
+		ScriptEngine::AddAppAssembly(Project::GetScriptBinaryFilePath());
+	}
+
+	OpenScene(Project::GetStartScene());
+
+	ChangeWindowTitle();
+}
+
+void PaperLayer::EmptyProject()
+{
+	const Shr<Project> project = MakeShr<Project>();
+	OpenProject(project);
 }
 
 void PaperLayer::SaveProject() const
@@ -341,11 +359,54 @@ void PaperLayer::SaveProject() const
 	ProjectSerializer::Serialize(Project::GetActive(), Project::GetProjectPath() / "Project.pproj");
 }
 
-void PaperLayer::CloseProject() const
+void PaperLayer::CloseProject()
 {
+	if (!editorScene) return;
+
 	SaveProject();
 
+	Scene::SetActive(nullptr);
+
+	ScriptEngine::ResetEngine();
+
+	CORE_ASSERT(editorScene.use_count() == 1, "Something holds reference to editorScene");
+	editorScene = nullptr;
+
 	Project::SetActive(nullptr);
+}
+
+void PaperLayer::NewScene(const std::string& sceneName)
+{
+	OpenScene(MakeShr<Scene>(sceneName));
+}
+
+void PaperLayer::OpenScene(const Shr<Scene>& scene)
+{
+	if (!scene) return;
+
+	if (editorScene)
+		SaveScene();
+
+	panelManager.OnSceneChanged(scene);
+	editorScene = scene;
+
+	Scene::SetActive(scene);
+
+	ChangeWindowTitle();
+}
+
+void PaperLayer::SaveScene() const
+{
+	if (!editorScene || editorScene->GetPath().empty()) return;
+
+	SceneSerializer::Serialize(editorScene, editorScene->GetPath());
+}
+
+void PaperLayer::SaveSceneAs(const std::filesystem::path& filePath) const
+{
+	if (!editorScene) return;
+
+	SceneSerializer::Serialize(editorScene, filePath);
 }
 
 void PaperLayer::GenerateProjectSolution(const std::filesystem::path& projPath) const
@@ -385,6 +446,7 @@ void PaperLayer::SwitchScene(const Shr<Scene>& scene)
 	Scene::SetActive(scene);
 }
 
+#if 0
 void PaperLayer::CheckSceneChange()
 {
 	const Shr<Scene> activeScene = Scene::GetActive();
@@ -416,7 +478,7 @@ void PaperLayer::CheckSceneChange()
 		if (!filePath.empty())
 		{
 			activeScene->SetPath(filePath);
-			YAMLSerializer::SceneSerialize(filePath, activeScene);
+			SceneSerializer::Serialize(activeScene, filePath);
 			activeScene->SetClean();
 			editorScene = new_scene;
 			SwitchScene(editorScene);
@@ -432,6 +494,7 @@ void PaperLayer::CheckSceneChange()
 	}
 	ImGui::End();
 }
+#endif
 
 void HoverImageButton(std::string text)
 {
@@ -451,7 +514,7 @@ bool ToolTipButton(const Shr<Texture>& tex, float size, std::string tooltip = st
 	return state;
 }
 
-void PaperLayer::ToolbarPanel()
+void PaperLayer::UI_Toolbar()
 {
 	static bool first = true;
 
@@ -459,6 +522,12 @@ void PaperLayer::ToolbarPanel()
 	std::stringstream stream;
 	if (first)
 		DockManager::DockPanel(name, DockLoc::Top);
+
+	Shr<Texture> playButton = DataPool::GetTexture("resources/editor/viewport/Play.png", true);
+	Shr<Texture> simulateButton = DataPool::GetTexture("resources/editor/viewport/Simulate.png", true);
+	Shr<Texture> pauseButton = DataPool::GetTexture("resources/editor/viewport/Pause.png", true);
+	Shr<Texture> stopButton = DataPool::GetTexture("resources/editor/viewport/Stop.png", true);
+	Shr<Texture> stepButton = DataPool::GetTexture("resources/editor/viewport/Step.png", true);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
@@ -468,92 +537,107 @@ void PaperLayer::ToolbarPanel()
 
 	ImGui::Begin(name, nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-	if (!editorScene)
+	const float size = ImGui::GetWindowHeight() - 4;
+	if (editorScene && Scene::GetActive())
+	{
+		const bool play = sceneState != SceneState::Simulate;
+		const bool simulate = sceneState != SceneState::Play;
+		const bool pause = sceneState != SceneState::Edit;
+
+		const Shr<Scene> activeScene = Scene::GetActive();
+		const int countButtons = pause && activeScene->IsPaused() ? 3 : 2;
+		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5) - (((size * countButtons) + (ImGui::GetStyle().ItemSpacing.x * countButtons)) * 0.5));
+#
+		if (pause)
+		{
+			if (activeScene->IsPaused())
+			{
+				if (ToolTipButton(playButton, size, "Resume"))
+					activeScene->SetPaused(false);
+			}
+			else
+			{
+
+				if (ToolTipButton(pauseButton, size))
+					activeScene->SetPaused(true);
+			}
+		}
+
+		if (play)
+		{
+			if (pause)
+				ImGui::SameLine();
+
+			if (sceneState == SceneState::Edit)
+			{
+				if (ToolTipButton(playButton, size))
+					OnScenePlay();
+			}
+			else
+			{
+
+				if (ToolTipButton(stopButton, size))
+					OnSceneStop();
+			}
+		}
+
+		if (simulate)
+		{
+			if (play || sceneState != SceneState::Edit)
+				ImGui::SameLine();
+
+			if (sceneState == SceneState::Edit)
+			{
+				if (ToolTipButton(simulateButton, size))
+					OnSceneSimulate();
+			}
+			else
+			{
+				if (ToolTipButton(stopButton, size))
+					OnSceneStop();
+			}
+		}
+
+		if (pause && activeScene->IsPaused())
+		{
+			ImGui::SameLine();
+
+			if (ToolTipButton(stepButton, size))
+				activeScene->StepFrames();
+		}
+	}
+	else
+	{
 		ImGui::BeginDisabled();
 
-	Shr<Texture> playButton = DataPool::GetTexture("resources/editor/viewport/Play.png", true);
-	Shr<Texture> simulateButton = DataPool::GetTexture("resources/editor/viewport/Simulate.png", true);
-	Shr<Texture> pauseButton = DataPool::GetTexture("resources/editor/viewport/Pause.png", true);
-	Shr<Texture> stopButton = DataPool::GetTexture("resources/editor/viewport/Stop.png", true);
-	Shr<Texture> stepButton = DataPool::GetTexture("resources/editor/viewport/Step.png", true);
+		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5) - (((size * 2) + (ImGui::GetStyle().ItemSpacing.x * 2)) * 0.5));
 
-	const bool play = sceneState != SceneState::Simulate;
-	const bool simulate = sceneState != SceneState::Play;
-	const bool pause = sceneState != SceneState::Edit;
-
-	const Shr<Scene> activeScene = Scene::GetActive();
-	const int countButtons = pause && activeScene->IsPaused() ? 3 : 2;
-	const float size = ImGui::GetWindowHeight() - 4;
-	ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5) - (((size * countButtons) + (ImGui::GetStyle().ItemSpacing.x * countButtons)) * 0.5));
-#
-	if (pause)
-	{
-		if (activeScene->IsPaused())
-		{
-			if (ToolTipButton(playButton, size, "Resume"))
-				activeScene->SetPaused(false);
-		}
-		else
-		{
-
-			if (ToolTipButton(pauseButton, size))
-				activeScene->SetPaused(true);
-		}
-	}
-
-	if (play)
-	{
-		if (pause)
-			ImGui::SameLine();
-
-		if (sceneState == SceneState::Edit)
-		{
-			if (ToolTipButton(playButton, size))
-				OnScenePlay();
-		}
-		else
-		{
-
-			if (ToolTipButton(stopButton, size))
-				OnSceneStop();
-		}
-	}
-
-	if (simulate)
-	{
-		if (play || sceneState != SceneState::Edit)
-			ImGui::SameLine();
-
-		if (sceneState == SceneState::Edit)
-		{
-			if (ToolTipButton(simulateButton, size))
-				OnSceneSimulate();
-		}
-		else
-		{
-			if (ToolTipButton(stopButton, size))
-				OnSceneStop();
-		}
-	}
-
-	if (pause && activeScene->IsPaused())
-	{
+		ToolTipButton(playButton, size);
 		ImGui::SameLine();
+		ToolTipButton(simulateButton, size);
 
-		if (ToolTipButton(stepButton, size))
-			activeScene->StepFrames();
+		ImGui::EndDisabled();
 	}
-
 	ImGui::PopStyleVar(2);
 	ImGui::PopStyleColor(3);
-
-	if (!editorScene)
-		ImGui::EndDisabled();
 
 	ImGui::End();
 
 
 	first = false;
+}
+
+void PaperLayer::ChangeWindowTitle() const
+{
+	std::string title;
+	if (Project::GetActive() && Scene::GetActive())
+		title = fmt::format("PaperEditor - {0} - {1} - RenderAPI: {2}", Project::GetProjectName(), Scene::GetActive()->GetName(), RenderAPIToString(RenderAPI::GetAPI()));
+	else if (Project::GetActive())
+		title = fmt::format("PaperEditor - {0} - RenderAPI: {1}", Project::GetProjectName(), RenderAPIToString(RenderAPI::GetAPI()));
+	else
+		title = fmt::format("PaperEditor - RenderAPI: {0}", RenderAPIToString(RenderAPI::GetAPI()));
+
+	Application::GetInstance()->GetWindow()->SetTitle(title);
 }
 
 void PaperLayer::OnScenePlay()
@@ -579,4 +663,117 @@ void PaperLayer::OnSceneStop()
 
 	sceneState = SceneState::Edit;
 	SwitchScene(editorScene);
+}
+
+void PaperLayer::UI_MenuBar()
+{
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("New Project", "Ctrl+O"))
+			{
+				panelManager.OpenPanel(Utils::TypeToStdString<NewProjectPanel>());
+			}
+
+			if (ImGui::MenuItem("Open Project", "Ctrl+O"))
+			{
+				const std::filesystem::path projPath = FileSystem::OpenFolder("");
+				OpenProject(projPath);
+			}
+
+
+			if (ImGui::MenuItem("Save Project", "Ctrl+S"))
+			{
+				SaveProject();
+			}
+
+			if (ImGui::MenuItem("Save Project As...", "Ctrl+Shift+S", false, false))
+			{
+				//SaveProjectAs();
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("New Scene"))
+			{
+				NewScene();
+			}
+
+			if (ImGui::MenuItem("Open Scene"))
+			{
+				const std::filesystem::path filePath = FileSystem::OpenFile({{.name = "Paper Scene", .spec = "pscene"}});
+				const Shr<Scene> scene = SceneSerializer::Deserialize(filePath);
+				OpenScene(scene);
+			}
+
+			if (ImGui::MenuItem("Save Scene"))
+			{
+				SaveScene();
+			}
+
+			if (ImGui::MenuItem("Save Scene As..."))
+			{
+				const std::filesystem::path filePath = FileSystem::SaveFile({ {.name = "Paper Scene", .spec = "pscene"} });
+				SaveSceneAs(filePath);
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Exit"))
+				Application::GetInstance()->Exit();
+
+			if (ImGui::MenuItem("Restart"))
+				Application::GetInstance()->Exit(true);
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Edit"))
+		{
+			for (PanelData& panelData : panelManager.GetPanels(PanelOpenSetting::Edit) | std::views::values)
+			{
+				ImGui::MenuItem(panelData.displayName.c_str(), nullptr, &panelData.isOpen);
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("View"))
+		{
+			for (PanelData& panelData : panelManager.GetPanels(PanelOpenSetting::View) | std::views::values)
+			{
+				ImGui::MenuItem(panelData.displayName.c_str(), nullptr, &panelData.isOpen);
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Scripting"))
+		{
+			if (ImGui::MenuItem("Reload C# Assembly"))
+			{
+				ScriptEngine::ReloadAssemblies();
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Add"))
+		{
+			const Shr<Scene> activeScene = Scene::GetActive();
+			if (ImGui::MenuItem("Empty Entity"))
+				activeScene->CreateEntity("Entity");
+			if (ImGui::MenuItem("Sprite"))
+				activeScene->CreateEntity("Sprite").AddComponent<SpriteComponent>();
+			if (ImGui::MenuItem("Line"))
+				activeScene->CreateEntity("Line").AddComponent<LineComponent>();
+			if (ImGui::MenuItem("Text"))
+				activeScene->CreateEntity("Text").AddComponent<TextComponent>();
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
 }

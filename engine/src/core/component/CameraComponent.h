@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "camera/EntityCamera.h"
 
-#include "serializer/Serializable.h"
+#include "Serializable.h"
 
 namespace Paper
 {

@@ -2,6 +2,12 @@
 
 namespace Paper
 {
+	struct FileSpecFilter
+	{
+		const char* name;
+		const char* spec;
+	};
+
 	class FileSystem
 	{
 	public:
@@ -10,16 +16,12 @@ namespace Paper
 		static bool Move(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath);
 		static bool Rename(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath);
 
-		struct Filter
-		{
-			const char* name;
-			const char* spec;
-		};
+		
 
-		static std::filesystem::path OpenFile(const std::filesystem::path& defaultPath = "", const std::initializer_list<Filter>& filter = {});
+		static std::filesystem::path OpenFile(const std::initializer_list<FileSpecFilter>& filter = {}, const std::filesystem::path& defaultPath = "");
 		static std::filesystem::path OpenFolder(const std::filesystem::path& defaultPath = "");
 
-		static std::filesystem::path SaveFile(const std::filesystem::path& defaultPath = "", const std::initializer_list<Filter>& filter = {});
+		static std::filesystem::path SaveFile(const std::initializer_list<FileSpecFilter>& filter = {}, const std::filesystem::path& defaultPath = "");
 	};
 }
 

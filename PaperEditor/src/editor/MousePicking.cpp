@@ -29,7 +29,8 @@ void PaperLayer::MousePicking()
 	int pixelID = viewPort.framebuffer->ReadPixel(1, mouse_pos);
 	viewPort.framebuffer->Unbind();
 
-	pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, Scene::GetActive().get()) : Entity();
+	if (Scene::GetActive())
+		pixelID > -1 ? hovered_entity = Entity((entt::entity)pixelID, Scene::GetActive().get()) : Entity();
 
 	///TODO: MOVE SOMWHERE ELSE
 
@@ -40,7 +41,7 @@ void PaperLayer::MousePicking()
 		pressedEntity = hovered_entity;
 	}
 
-	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && hovered_entity == Scene::GetActive()->GetEntity(SelectionManager::GetSelection()) && pressedEntity == hovered_entity && !drag_entity)
+	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && hovered_entity == SelectionManager::GetSelection().ToEntity() && pressedEntity == hovered_entity && !drag_entity && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
 	{
 		SelectionManager::Deselect();
 	}

@@ -3,7 +3,7 @@
 #include "utility.h"
 
 #include "event/Event.h"
-#include "generic/Entity.h"
+#include "scene/Entity.h"
 
 #include "component/DataComponent.h"
 

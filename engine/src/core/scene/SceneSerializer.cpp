@@ -1,90 +1,20 @@
-#include "Engine.h"
-#include "YAMLSerializer.h"
+﻿#include "Engine.h"
+#include "SceneSerializer.h"
 
-#include "generic/Entity.h"
+#include "serializer/YAMLSerializer.h"
 
 #include "Components.h"
-#include "component/CameraComponent.h"
-#include "project/Project.h"
+#include "Entity.h"
+
 #include "scripting/ScriptEngine.h"
 
 namespace Paper
 {
-	YAMLSerializer::YAMLSerializer()
-	{
-	}
-
-	YAMLSerializer::~YAMLSerializer()
-	{
-	}
-
-	bool YAMLSerializer::AssetSerialize(const std::filesystem::path& filePath, const Asset3D& asset)
-	{
-		//YAML::Emitter out;
-		//out << YAML::BeginMap;
-		//out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-		//out << YAML::Key << "TextComponent";
-		//out << YAML::BeginMap << "TextComponent"; // TextComponent
-		//
-		//out << YAML::Key << "TextString" << YAML::Value << "textComponent.TextString";
-		//out << YAML::Key << "Color" << YAML::Value << "textComponent.Color";
-		//out << YAML::Key << "Kerning" << YAML::Value << 795348;
-		//out << YAML::Key << "LineSpacing" << YAML::Value << 59435.957;
-		//
-		//out << YAML::EndMap; // TextComponent
-		//out << YAML::EndSeq;
-		//out << YAML::EndMap;
-		//
-		//std::ofstream fout(filePath);
-		//fout << out.c_str();
-		//fout.close();
-		//
-		return true;
-	}
-
-	
-
-	bool YAMLSerializer::SceneSerialize(const std::filesystem::path& filePath, const Shr<Scene>& scene)
-	{
-		YAML::Emitter out;
-		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << scene->GetPaperID();
-		out << YAML::Key << "Name" << YAML::Value << scene->GetName();
-
-		std::string scene_path = scene->GetPath().string();
-		const std::string abs_path = std::filesystem::current_path().string() + "\\";
-		const size_t pos = scene_path.find(abs_path);
-		std::filesystem::path path(scene_path);
-		if (pos != std::string::npos)
-			path = std::filesystem::path(scene_path.erase(pos, abs_path.length()));
-
-		
-		out << YAML::Key << "Path" << YAML::Value << path.string();
-		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-		scene->registry.each([&](auto PaperID)
-			{
-				Entity entity = { PaperID, scene.get() };
-				if (!entity)
-					return;
-
-				EntitySerialize(entity, out);
-			});
-		out << YAML::EndSeq;
-		out << YAML::EndMap;
-
-
-		std::ofstream fout(filePath);
-		fout << out.c_str();
-		fout.close();
-
-		return true;
-	}
-
-	bool YAMLSerializer::EntitySerialize(Entity& entity, YAML::Emitter& out)
+	bool EntitySerialize(Entity& entity, YAML::Emitter& out)
 	{
 		CORE_ASSERT(entity.HasComponent<DataComponent>(), "")
 
-		out << YAML::BeginMap; // Entity
+			out << YAML::BeginMap; // Entity
 		//out << YAML::Key << "Entity" << YAML::Value << entity.GetPaperID();
 		//out << YAML::Key << "Name" << YAML::Value << entity.GetName();
 
@@ -129,63 +59,63 @@ namespace Paper
 
 					switch (type)
 					{
-					case ScriptFieldType::Bool: 
-						out << classFieldStorage->GetValue<bool>(true);
-						break;
-					case ScriptFieldType::Char: 
-						out << classFieldStorage->GetValue<char>(true);
-						break;
-					case ScriptFieldType::UChar: 
-						out << classFieldStorage->GetValue<unsigned char>(true);
-						break;
-					case ScriptFieldType::Int16: 
-						out << classFieldStorage->GetValue<int16_t>(true);
-						break;
-					case ScriptFieldType::UInt16: 
-						out << classFieldStorage->GetValue<uint16_t>(true);
-						break; 
-					case ScriptFieldType::Int32: 
-						out << classFieldStorage->GetValue<int32_t>(true);
-						break;
-					case ScriptFieldType::UInt32: 
-						out << classFieldStorage->GetValue<uint32_t>(true);
-						break;
-					case ScriptFieldType::Int64: 
-						out << classFieldStorage->GetValue<int64_t>(true);
-						break;
-					case ScriptFieldType::UInt64: 
-						out << classFieldStorage->GetValue<uint64_t>(true);
-						break;
-					case ScriptFieldType::Float: 
-						out << classFieldStorage->GetValue<float>(true);
-						break;
-					case ScriptFieldType::Double: 
-						out << classFieldStorage->GetValue<double>(true);
-						break;
-					case ScriptFieldType::String: 
-						out << classFieldStorage->GetValue<std::string>(true);
-						break;
-					case ScriptFieldType::Vec2: 
-						out << classFieldStorage->GetValue<glm::vec2>(true);
-						break;
-					case ScriptFieldType::Vec3: 
-						out << classFieldStorage->GetValue<glm::vec3>(true);
-						break;
-					case ScriptFieldType::Vec4: 
-						out << classFieldStorage->GetValue<glm::vec4>(true);
-						break;
-					case ScriptFieldType::Entity: 
-						out << classFieldStorage->GetValue<PaperID>(true).toString();
-						break;
-					default: 
-						out << 0;
-						break;
+						case ScriptFieldType::Bool:
+							out << classFieldStorage->GetValue<bool>(true);
+							break;
+						case ScriptFieldType::Char:
+							out << classFieldStorage->GetValue<char>(true);
+							break;
+						case ScriptFieldType::UChar:
+							out << classFieldStorage->GetValue<unsigned char>(true);
+							break;
+						case ScriptFieldType::Int16:
+							out << classFieldStorage->GetValue<int16_t>(true);
+							break;
+						case ScriptFieldType::UInt16:
+							out << classFieldStorage->GetValue<uint16_t>(true);
+							break;
+						case ScriptFieldType::Int32:
+							out << classFieldStorage->GetValue<int32_t>(true);
+							break;
+						case ScriptFieldType::UInt32:
+							out << classFieldStorage->GetValue<uint32_t>(true);
+							break;
+						case ScriptFieldType::Int64:
+							out << classFieldStorage->GetValue<int64_t>(true);
+							break;
+						case ScriptFieldType::UInt64:
+							out << classFieldStorage->GetValue<uint64_t>(true);
+							break;
+						case ScriptFieldType::Float:
+							out << classFieldStorage->GetValue<float>(true);
+							break;
+						case ScriptFieldType::Double:
+							out << classFieldStorage->GetValue<double>(true);
+							break;
+						case ScriptFieldType::String:
+							out << classFieldStorage->GetValue<std::string>(true);
+							break;
+						case ScriptFieldType::Vec2:
+							out << classFieldStorage->GetValue<glm::vec2>(true);
+							break;
+						case ScriptFieldType::Vec3:
+							out << classFieldStorage->GetValue<glm::vec3>(true);
+							break;
+						case ScriptFieldType::Vec4:
+							out << classFieldStorage->GetValue<glm::vec4>(true);
+							break;
+						case ScriptFieldType::Entity:
+							out << classFieldStorage->GetValue<PaperID>(true).toString();
+							break;
+						default:
+							out << 0;
+							break;
 					}
 
 					out << YAML::EndMap;
 
 				}
-				
+
 				out << YAML::EndMap;
 			}
 
@@ -204,6 +134,42 @@ namespace Paper
 
 		return true;
 	}
+
+	void SceneSerializer::Serialize(const Shr<Scene>& scene, const std::filesystem::path& filePath)
+	{
+		YAML::Emitter out;
+		out << YAML::BeginMap;
+		out << YAML::Key << "Scene" << YAML::Value << scene->GetPaperID();
+		out << YAML::Key << "Name" << YAML::Value << scene->GetName();
+
+		std::string scene_path = scene->GetPath().string();
+		const std::string abs_path = std::filesystem::current_path().string() + "\\";
+		const size_t pos = scene_path.find(abs_path);
+		std::filesystem::path path(scene_path);
+		if (pos != std::string::npos)
+			path = std::filesystem::path(scene_path.erase(pos, abs_path.length()));
+
+
+		out << YAML::Key << "Path" << YAML::Value << path.string();
+		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
+		scene->registry.each([&](auto PaperID)
+			{
+				Entity entity = { PaperID, scene.get() };
+				if (!entity)
+					return;
+
+				EntitySerialize(entity, out);
+			});
+		out << YAML::EndSeq;
+		out << YAML::EndMap;
+
+
+		std::ofstream fout(filePath);
+		fout << out.c_str();
+		fout.close();
+	}
+
+	
 
 	template <typename T>
 	void SetFieldStorage(YAML::Node& yamlScriptField, Shr<ScriptFieldStorage>& storage)
@@ -299,7 +265,7 @@ namespace Paper
 		return true;
 	}
 
-	Shr<Scene> YAMLSerializer::SceneDeserialize(const std::filesystem::path& filePath)
+	Shr<Scene> SceneSerializer::Deserialize(const std::filesystem::path& filePath)
 	{
 		Shr<Scene> scene = MakeShr<Scene>();
 
@@ -308,7 +274,7 @@ namespace Paper
 		{
 			data = YAML::LoadFile(filePath.string());
 		}
-		catch (YAML::ParserException e)
+		catch (YAML::Exception e)
 		{
 			LOG_CORE_ERROR("Failed to load file '{0}'\n\t{1}", filePath, e.what());
 			return nullptr;
@@ -380,9 +346,7 @@ namespace Paper
 			LOG_CORE_CRITICAL(ex.msg);
 			return nullptr;
 		}
-		//scene->SetClean();
+		scene->SetClean();
 		return scene;
 	}
 }
-
-

@@ -1,7 +1,7 @@
 #pragma once
 #include "utils/DataPool.h"
 
-#include "serializer/Serializable.h"
+#include "Serializable.h"
 
 namespace Paper
 {

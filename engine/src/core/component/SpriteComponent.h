@@ -4,7 +4,7 @@
 
 #include "renderer/Texture.h"
 
-#include "serializer/Serializable.h"
+#include "Serializable.h"
 #include "utils/DataPool.h"
 
 namespace Paper {

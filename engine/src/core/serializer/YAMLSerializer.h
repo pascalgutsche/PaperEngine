@@ -1,9 +1,4 @@
 #pragma once
-#include "Engine.h"
-
-#include "assets/Asset3D.h"
-#include "generic/Scene.h"
-
 #include "utils/PaperID.h"
 
 #include "yaml-cpp/yaml.h"
@@ -82,6 +77,7 @@ namespace YAML
 		}
 	};
 
+/*
 	template <>
 	struct convert<Vertex> {
 		static Node encode(const Vertex& rhs)
@@ -105,6 +101,7 @@ namespace YAML
 			return true;
 		}
 	};
+*/
 
 	template <>
 	struct convert<Paper::PaperID> {
@@ -118,6 +115,22 @@ namespace YAML
 		static bool decode(const Node& node, Paper::PaperID& rhs)
 		{
 			rhs.Set(node[0].as<std::string>());
+			return true;
+		}
+	};
+
+	template <>
+	struct convert<std::filesystem::path> {
+		static Node encode(const std::filesystem::path& rhs)
+		{
+			Node node;
+			node.push_back(rhs.string());
+			return node;
+		}
+
+		static bool decode(const Node& node, std::filesystem::path& rhs)
+		{
+			rhs = node[0].as<std::string>();
 			return true;
 		}
 	};
@@ -192,22 +205,10 @@ namespace Paper
 		return out << YAML::BeginSeq << uuid.toString() << YAML::EndSeq;
 	}
 
-	class Project;
-
-	class YAMLSerializer
+	inline YAML::Emitter& operator<<(YAML::Emitter& out, const std::filesystem::path& path)
 	{
-	public:
-		YAMLSerializer();
-		~YAMLSerializer();
-
-		static bool AssetSerialize(const std::filesystem::path& filePath, const Asset3D& asset);
-
-		static bool SceneSerialize(const std::filesystem::path& filePath, const Shr<Scene>& scene);
-		static bool EntitySerialize(Entity& entity, YAML::Emitter& out);
-
-		static Shr<Scene> SceneDeserialize(const std::filesystem::path& filePath);
-
-	};
+		return out << path.string();
+	}
 }
 
 

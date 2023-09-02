@@ -11,8 +11,6 @@ namespace Paper {
     class Entity;
 
     class Scene {
-        friend class Application;
-        friend class YAMLSerializer;
     public:
 
         Scene();
@@ -81,6 +79,9 @@ namespace Paper {
         int framesToStep = 0;
 
         inline static Shr<Scene> activeScene = nullptr;
+
+        friend class Application;
+        friend class SceneSerializer;
     };
 
     

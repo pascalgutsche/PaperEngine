@@ -34,6 +34,7 @@ namespace PaperED
 		void OnImGuiRender();
 		void OnEvent(Event& e);
 		void OnProjectChanged(const Shr<Project>& project);
+		void OnSceneChanged(const Shr<Scene>& scene);
 
 		void RemovePanel(const std::string& strID);
 		void OpenPanel(const std::string& strID);

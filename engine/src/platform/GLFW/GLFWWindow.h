@@ -27,6 +27,7 @@ namespace Paper
         float GetTime() const override;
 
         void SetEventCallback(const EventCallbackFunction& callback_function) override { windowData.callback = callback_function; }
+        void SetTitle(const std::string& title) override;
         void SetVSync(bool enabled) override;
         bool IsVSync() const override { return windowData.vsync; }
 

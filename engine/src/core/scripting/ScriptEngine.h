@@ -5,7 +5,7 @@
 #include "ScriptFieldStorage.h"
 
 #include "generic/Buffer.h"
-#include "generic/Entity.h"
+#include "scene/Entity.h"
 
 namespace Paper
 {
@@ -109,7 +109,13 @@ namespace Paper
 		static void Init();
 		static void Shutdown(bool appClose = false);
 
-		static void ReloadAssemblies();
+		static void ResetEngine();
+
+		static void AddAppAssembly(const std::filesystem::path& assemblyPath);
+		static void RemoveAppAssembly(const std::filesystem::path& assemblyPath);
+		static void ClearAppAssemblies();
+
+		static void ReloadAssemblies(bool bypassReloadScheduleCheck = false);
 
 		static bool ShouldReloadAssemblies();
 		static void ScheduleAssembliesReload();

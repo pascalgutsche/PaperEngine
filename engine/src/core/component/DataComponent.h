@@ -2,7 +2,7 @@
 #include "Engine.h"
 
 #include "utils/PaperID.h"
-#include "serializer/Serializable.h"
+#include "Serializable.h"
 
 namespace Paper
 {

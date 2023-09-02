@@ -13,6 +13,7 @@ namespace Paper {
 		POINT
 	};
 
+
 	class RenderAPI
 	{
 	public:
@@ -53,5 +54,18 @@ namespace Paper {
 
 	};
 
+	static std::string RenderAPIToString(RenderAPI::API api)
+	{
+		switch (api)
+		{
+			case RenderAPI::NONE: return "None";
+			case RenderAPI::OPENGL: return "OpenGL";
+			case RenderAPI::VULKAN: return "Vulkan";
+		}
+
+		CORE_ASSERT(false, "");
+
+		return "";
+	}
 }
 

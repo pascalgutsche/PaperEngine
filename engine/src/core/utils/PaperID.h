@@ -3,6 +3,8 @@
 
 namespace Paper
 {
+	class Entity;
+
 	class PaperID
 	{
 	public:
@@ -18,6 +20,7 @@ namespace Paper
 
 		uint64_t toUInt64() const;
 		std::string toString() const;
+		Entity ToEntity() const;
 
 		operator uint64_t() const { return uuid; }
 		operator std::string() const

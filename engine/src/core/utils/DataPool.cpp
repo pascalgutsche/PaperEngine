@@ -1,6 +1,8 @@
 #include "Engine.h"
 
 #include "utils/DataPool.h"
+
+#include "project/Project.h"
 #include "renderer/Shader.h"
 #include "renderer/Texture.h"
 #include "renderer/Font.h"
@@ -34,7 +36,11 @@ namespace Paper {
 
     Shr<Texture> DataPool::GetAssetTexture(std::string textureName, bool wholePath) {
         // set default path
-        const std::string path = wholePath ? textureName : "assets/textures/" + textureName;
+        std::filesystem::path texturePath;
+        if (wholePath)
+            texturePath = Project::GetProjectPath() / textureName;
+        else
+            texturePath = Project::GetAssetTexturesPath() / textureName;
 
         std::string texture_id = "assettexture_" + textureName;
 
@@ -44,7 +50,7 @@ namespace Paper {
 
         if (it == dataPool.end())
         {
-            texture = Texture::CreateTexture(path, textureName);
+            texture = Texture::CreateTexture(texturePath, textureName);
             dataPool.emplace(texture_id, texture);
         }
         else
@@ -83,8 +89,16 @@ namespace Paper {
         return GetFont("resources/fonts/mononoki.ttf", true);
     }
 
-    Shr<Font> DataPool::GetFont(std::string fontName, bool wholePath)
+    Shr<Font> DataPool::GetFont(std::string fontName, bool wholePath, bool isDefault)
 	{
+        std::filesystem::path fontPath;
+        if (wholePath)
+            fontPath = Project::GetProjectPath() / fontName;
+        else
+            fontPath = Project::GetAssetTexturesPath() / fontName;
+
+        if (isDefault)
+            fontPath = fontName;
         // set default path
         const std::string path = wholePath ? fontName : "assets/fonts/" + fontName;
 

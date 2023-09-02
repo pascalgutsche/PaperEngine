@@ -45,7 +45,7 @@ static void CameraMovement(const Shr<EditorCamera>& camera)
 void ViewPort::Panel(PaperLayer* peLayer)
 {
 	const Shr<Scene> activeScene = Scene::GetActive();
-	Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+	Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
 	if (FramebufferSpecification spec = framebuffer->GetSpecification();
 		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
 		(spec.width != viewport_size.x || spec.height != viewport_size.y))
@@ -131,7 +131,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 		{
 			const wchar_t* path = (const wchar_t*)payload->Data;
-			peLayer->new_scene = YAMLSerializer::SceneDeserialize(path);
+			peLayer->OpenScene(SceneSerializer::Deserialize(path));
 		}
 		ImGui::EndDragDropTarget();
 	}

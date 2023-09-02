@@ -182,7 +182,7 @@ namespace PaperED
 
 	void PropertiesPanel::OnImGuiRender(bool& isOpen)
 	{
-		Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+		Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
 
 		UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 

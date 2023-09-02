@@ -9,7 +9,7 @@ namespace Paper
 	{
 	public:
 		static void Serialize(const Shr<Project>& project, const std::filesystem::path& filePath);
-		static Shr<Project> Deserilize(const std::filesystem::path& filePath);
+		static Shr<Project> Deserialize(const std::filesystem::path& filePath);
 	};
 }
 

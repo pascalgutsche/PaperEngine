@@ -3,10 +3,6 @@
 #include "utility.h"
 
 #include "event/Event.h"
-#include "generic/Entity.h"
-#include "generic/Scene.h"
-
-#include "utils/DataPool.h"
 
 namespace Paper
 {

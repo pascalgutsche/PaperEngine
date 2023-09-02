@@ -4,8 +4,6 @@
 #include "EntryPoint.h"
 #include "editor/PaperLayer.h"
 
-#include "project/ProjectManager.h"
-
 #include <ImGuizmo/ImGuizmo.h>
 
 class PaperEditor : public Application {
@@ -22,8 +20,6 @@ public:
 	}
 
 	void Init() override {
-		ProjectManager::Init();
-		
 		AddLayer(new PaperLayer());
 	}
 

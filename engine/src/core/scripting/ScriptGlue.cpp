@@ -6,7 +6,7 @@
 
 #include "Components.h"
 
-#include "generic/Scene.h"
+#include "scene//Scene.h"
 #include "renderer/Font.h"
 #include "event/Input.h"
 

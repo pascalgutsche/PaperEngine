@@ -1,7 +1,7 @@
 Scene:
   - 81746288395453bd
 Name: "[Scene]"
-Path: assets\scenes\james.pescene
+Path: assets\scenes\james.pscene
 Entities:
   - Components:
       DataComponent:

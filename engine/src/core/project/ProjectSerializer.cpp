@@ -18,6 +18,7 @@ namespace Paper
 		out << YAML::Key << "Path" << YAML::Value << config.projectPath.string();
 		out << YAML::Key << "AssetPath" << YAML::Value << config.assetPath.string();
 		out << YAML::Key << "ScriptBinaryPath" << YAML::Value << config.scriptBinaryPath.string();
+		out << YAML::Key << "StartScene" << YAML::Value << config.startScene.string();
 
 		out << YAML::EndMap;
 		out << YAML::EndMap;
@@ -27,7 +28,7 @@ namespace Paper
 		fout.close();
 	}
 
-	Shr<Project> ProjectSerializer::Deserilize(const std::filesystem::path& filePath)
+	Shr<Project> ProjectSerializer::Deserialize(const std::filesystem::path& filePath)
 	{
 		Shr<Project> project = MakeShr<Project>();
 		ProjectConfig& config = project->config;
@@ -36,7 +37,7 @@ namespace Paper
 		{
 			data = YAML::LoadFile(filePath.string());
 		}
-		catch (YAML::ParserException e)
+		catch (YAML::Exception e)
 		{
 			LOG_CORE_ERROR("Failed to load project file '{0}'\n\t{1}", filePath, e.what());
 			return nullptr;
@@ -53,6 +54,9 @@ namespace Paper
 			config.projectPath = configNode["Path"].as<std::string>();
 			config.assetPath = configNode["AssetPath"].as<std::string>();
 			config.scriptBinaryPath = configNode["ScriptBinaryPath"].as<std::string>();
+
+			if (configNode["StartScene"])
+				config.startScene = configNode["StartScene"].as<std::string>();
 
 		}
 		catch (YAML::Exception& ex)

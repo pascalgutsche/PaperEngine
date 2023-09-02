@@ -6,6 +6,7 @@
 #include "imgui/ImGuiLayer.h"
 #include "renderer/RenderCommand.h"
 #include "scripting/ScriptEngine.h"
+#include "utils/DataPool.h"
 
 namespace Paper {
 

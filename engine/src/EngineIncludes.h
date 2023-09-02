@@ -12,10 +12,8 @@
 #include "core/event/ButtonCodes.h"
 
 #include "core/generic/Application.h"
-#include "core/generic/Scene.h"
 #include "core/camera/EditorCamera.h"
 #include "core/camera/EntityCamera.h"
-#include "core/generic/Entity.h"
 #include "core/generic/Sound.h"
 
 #include "core/imgui/ImGuiLayer.h"
@@ -28,11 +26,13 @@
 #include "core/renderer/FrameBuffer.h"
 #include "core/renderer/RenderCommand.h"
 
+#include "core/scene/Entity.h"
+#include "core/scene/Scene.h"
+
 #include "core/serializer/YAMLSerializer.h"
 
 #include "core/utils/Log.h"
 #include "core/utils/Utils.h"
-#include "core/utils/FileDialog.h"
 
 #include "utility.h"
 using namespace Paper;

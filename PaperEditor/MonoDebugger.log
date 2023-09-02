@@ -1,8 +1,8 @@
 VM start event not sent yet: dropping APPDOMAIN_CREATE
-[00000000000081FC] Thread started, obj=0000028B8B1B0130, tls=0000028B832CACC0.
+[0000000000007B88] Thread started, obj=000001D798CA0130, tls=000001D790DA88C0.
 VM start event not sent yet: dropping THREAD_START
-[00000000000081FC] Suspended.
-[00000000000081FC] Resumed.
+[0000000000007B88] Suspended.
+[0000000000007B88] Resumed.
 VM start event not sent yet: dropping ASSEMBLY_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -12,12 +12,12 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
-[0000000000004230] Thread started, obj=0000028B8B1B0278, tls=0000028B886C2060.
+[00000000000025B4] Thread started, obj=000001D798CA0278, tls=000001D7961DB530.
 VM start event not sent yet: dropping THREAD_START
-[0000000000004230] Suspended.
-[0000000000004230] Resumed.
+[00000000000025B4] Suspended.
 Debugger client is not connected: dropping VM_START
-[dbg] Agent thread started, pid=000000000000641C
+[00000000000025B4] Resumed.
+[dbg] Agent thread started, pid=0000000000004388
 VM start event not sent yet: dropping APPDOMAIN_CREATE
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -66,3 +66,321 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping ASSEMBLY_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+[0000000000002EC0] Thread started, obj=000001D798CA0508, tls=000001D7963B54A0.
+VM start event not sent yet: dropping THREAD_START
+[0000000000002EC0] Suspended.
+[0000000000002EC0] Resumed.
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_UNLOAD
+VM start event not sent yet: dropping ASSEMBLY_UNLOAD
+VM start event not sent yet: dropping APPDOMAIN_UNLOAD
+[0000000000002EC0] Thread terminated, obj=000001D798CA0508, tls=000001D7963B54A0 (domain=000001D790D42620).
+VM start event not sent yet: dropping THREAD_DEATH
+VM start event not sent yet: dropping APPDOMAIN_CREATE
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+[000000000000816C] Thread started, obj=000001D798CA0650, tls=000001D7A2034580.
+VM start event not sent yet: dropping THREAD_START
+[000000000000816C] Suspended.
+[000000000000816C] Resumed.
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_UNLOAD
+VM start event not sent yet: dropping ASSEMBLY_UNLOAD
+VM start event not sent yet: dropping APPDOMAIN_UNLOAD
+[000000000000816C] Thread terminated, obj=000001D798CA0650, tls=000001D7A2034580 (domain=000001D790D42620).
+VM start event not sent yet: dropping THREAD_DEATH
+VM start event not sent yet: dropping APPDOMAIN_CREATE
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+[0000000000003A90] Thread started, obj=000001D798CA0798, tls=000001D7968D1900.
+VM start event not sent yet: dropping THREAD_START
+[0000000000003A90] Suspended.
+[0000000000003A90] Resumed.
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_UNLOAD
+VM start event not sent yet: dropping ASSEMBLY_UNLOAD
+VM start event not sent yet: dropping APPDOMAIN_UNLOAD
+[0000000000003A90] Thread terminated, obj=000001D798CA0798, tls=000001D7968D1900 (domain=000001D790D42620).
+VM start event not sent yet: dropping THREAD_DEATH
+VM start event not sent yet: dropping APPDOMAIN_CREATE
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping EXCEPTION
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+[0000000000005900] Thread started, obj=000001D798CA08E0, tls=000001D7963A5670.
+VM start event not sent yet: dropping THREAD_START
+[0000000000005900] Suspended.
+[0000000000005900] Resumed.
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping ASSEMBLY_UNLOAD
+VM start event not sent yet: dropping ASSEMBLY_UNLOAD
+VM start event not sent yet: dropping APPDOMAIN_UNLOAD
+[0000000000005900] Thread terminated, obj=000001D798CA08E0, tls=000001D7963A5670 (domain=000001D790D42620).
+VM start event not sent yet: dropping THREAD_DEATH
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+VM start event not sent yet: dropping TYPE_LOAD
+[00000000000025B4] Thread terminated, obj=000001D798CA0278, tls=000001D7961DB530 (domain=000001D790D42620).
+VM start event not sent yet: dropping THREAD_DEATH
+VM start event not sent yet: dropping VM_DEATH
+Accepted connection on -1
+[dbg] Bad client connection
+[dbg] Can't attach, aborting debugger thread.
+[dbg] Debugger thread exited.

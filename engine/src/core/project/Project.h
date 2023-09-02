@@ -1,10 +1,11 @@
 #pragma once
 #include "Engine.h"
 
-#include "yaml-cpp/node/node.h"
+#include "scene/SceneSerializer.h"
 
 namespace Paper
 {
+	class Scene;
 
 	struct ProjectConfig
 	{
@@ -12,6 +13,7 @@ namespace Paper
 		std::filesystem::path projectPath;
 		std::filesystem::path assetPath = "assets";
 		std::filesystem::path scriptBinaryPath = "assets/scripts/bin";
+		std::filesystem::path startScene;
 	};
 
 	class Project
@@ -44,6 +46,18 @@ namespace Paper
 			return activeProject->GetConfig().projectPath / activeProject->GetConfig().assetPath;
 		}
 
+		static std::filesystem::path GetAssetScenesPath()
+		{
+			CORE_ASSERT(activeProject, "");
+			return GetAssetPath() / "scenes";
+		}
+
+		static std::filesystem::path GetAssetTexturesPath()
+		{
+			CORE_ASSERT(activeProject, "");
+			return GetAssetPath() / "textures";
+		}
+
 		static std::filesystem::path GetScriptBinaryPath()
 		{
 			CORE_ASSERT(activeProject, "");
@@ -53,7 +67,15 @@ namespace Paper
 		static std::filesystem::path GetScriptBinaryFilePath()
 		{
 			CORE_ASSERT(activeProject, "");
-			return GetScriptBinaryPath() / std::format("{}.dll", GetProjectName());
+			return GetScriptBinaryPath() / fmt::format("{}.dll", GetProjectName());
+		}
+
+		static Shr<Scene> GetStartScene()
+		{
+			CORE_ASSERT(activeProject, "");
+			if (!activeProject->GetConfig().startScene.empty())
+				return SceneSerializer::Deserialize(GetProjectPath() / activeProject->GetConfig().startScene);
+			return nullptr;
 		}
 
 	private:

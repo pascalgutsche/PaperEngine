@@ -1,10 +1,9 @@
 ﻿#pragma once
 #include "Engine.h"
 
-
 #include <gtx/quaternion.hpp>
 
-#include "serializer/Serializable.h"
+#include "Serializable.h"
 
 namespace Paper
 {

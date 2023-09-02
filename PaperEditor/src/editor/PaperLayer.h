@@ -3,6 +3,8 @@
 
 #include "PanelManager.h"
 #include "ViewPort.h"
+#include "project/Project.h"
+#include "scene/Entity.h"
 
 enum CameraModes
 {
@@ -44,8 +46,15 @@ public:
 	
 	void CreateProject(const std::filesystem::path& projPath, const std::string& projName);
 	void OpenProject(const std::filesystem::path& projPath);
+	void OpenProject(const Shr<Project>& project);
+	void EmptyProject();
 	void SaveProject() const;
-	void CloseProject() const;
+	void CloseProject();
+
+	void NewScene(const std::string& sceneName = "NewScene");
+	void OpenScene(const Shr<Scene>& scene);
+	void SaveScene() const;
+	void SaveSceneAs(const std::filesystem::path& filePath) const;
 
 	void GenerateProjectSolution(const std::filesystem::path& projPath) const;
 
@@ -67,8 +76,8 @@ public: // temporary until proper rewrite
 	//Shr<Scene> activeScene = nullptr;
 	Shr<Scene> editorScene = nullptr;
 
-	void CheckSceneChange();
-	Shr<Scene> new_scene = nullptr;
+	//void CheckSceneChange();
+	//Shr<Scene> new_scene = nullptr;
 
 	void MousePicking();
 
@@ -76,9 +85,10 @@ public: // temporary until proper rewrite
 
 	PanelManager panelManager;
 
-	void MainMenuBar();
+	void UI_MenuBar();
+	void UI_Toolbar();
 
-	void ToolbarPanel();
+	void ChangeWindowTitle() const;
 
 	void ViewPortPanel();
 	void CameraMode();

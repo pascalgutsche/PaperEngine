@@ -3,7 +3,7 @@
 #include "utility.h"
 
 #include "generic/Window.h"
-#include "generic/Scene.h"
+#include "scene/Scene.h"
 #include "layer/Layer.h"
 #include "layer/LayerStack.h"
 

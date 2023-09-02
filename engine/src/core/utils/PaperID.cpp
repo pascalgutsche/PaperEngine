@@ -1,6 +1,7 @@
 ﻿#include "Engine.h"
 #include "PaperID.h"
 
+#include "scene/Entity.h"
 
 namespace Paper
 {
@@ -50,5 +51,12 @@ namespace Paper
 	std::string PaperID::toString() const
 	{
 		return operator std::string();
+	}
+
+	Entity PaperID::ToEntity() const
+	{
+		if (Scene::GetActive())
+			return Scene::GetActive()->GetEntity(*this);
+		return {};
 	}
 }

@@ -3,11 +3,9 @@
 
 #include "editor/PaperLayer.h"
 
-#include "project/ProjectManager.h"
 #include "utils/FileSystem.h"
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
-#include <nfd.h>
 
 
 namespace PaperED

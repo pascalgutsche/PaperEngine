@@ -8,7 +8,7 @@
 
 #include "component/ScriptComponent.h"
 #include "generic/Application.h"
-#include "generic/Entity.h"
+#include "scene/Entity.h"
 
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
@@ -63,12 +63,6 @@ namespace Paper
 
         script_data->coreAssembly = ScriptAssembly("resources/scripts/scriptcore.dll", true, true);
         ScriptGlue::RegisterComponents();
-
-        std::filesystem::path sandbox = "SandboxProject/assets/scripts/bin/Sandbox.dll";
-        if (std::filesystem::exists(sandbox))
-			script_data->appAssemblies.emplace_back(sandbox, true);
-        else
-            LOG_CORE_CRITICAL("could not find sandbox dll");
 	}
 
 	void ScriptEngine::Shutdown(bool appClose)
@@ -78,14 +72,56 @@ namespace Paper
     	delete script_data;
 	}
 
-    void ScriptEngine::ReloadAssemblies()
-    {
-        //if no assemblies to reload just return
-        if (!script_data->assembliesReloadSchedule) return;
-        script_data->assembliesReloadSchedule = false;
+	void ScriptEngine::ResetEngine()
+	{
+        script_data->entityInstances.clear();
+        script_data->entityFieldStorage.clear();
+        script_data->appAssemblies.clear();
+        script_data->sceneContext = nullptr;
 
-        LOG_CORE_TRACE("Assembly change detected");
-    	LOG_CORE_TRACE("\t->Reloading script assemblies");
+        ReloadAssemblies(true);
+	}
+
+	void ScriptEngine::AddAppAssembly(const std::filesystem::path& assemblyPath)
+	{
+        if (!std::filesystem::exists(assemblyPath))
+        {
+            LOG_CORE_ERROR("Could not find app assembly '{}'", assemblyPath);
+            return;
+        }
+        script_data->appAssemblies.emplace_back(assemblyPath, true);
+    	ReloadAssemblies(true);
+	}
+
+	void ScriptEngine::RemoveAppAssembly(const std::filesystem::path& assemblyPath)
+	{
+        for (int i = 0; i < script_data->appAssemblies.size(); i++)
+        {
+	        if (script_data->appAssemblies[i].GetFilePath() == assemblyPath)
+	        {
+                script_data->appAssemblies.erase(script_data->appAssemblies.begin() + i);
+	        }
+        }
+    	ReloadAssemblies(true);
+	}
+
+	void ScriptEngine::ClearAppAssemblies()
+	{
+        script_data->appAssemblies.clear();
+        ReloadAssemblies(true);
+	}
+
+	void ScriptEngine::ReloadAssemblies(bool bypassReloadScheduleCheck)
+    {
+        if (!bypassReloadScheduleCheck)
+        {
+            //if no assemblies to reload just return
+            if (!script_data->assembliesReloadSchedule) return;
+            script_data->assembliesReloadSchedule = false;
+
+            LOG_CORE_TRACE("Assembly change detected");
+            LOG_CORE_TRACE("\t->Reloading script assemblies");
+        }
 
         //cache scriptfieldstorage and restore it later
         std::unordered_map<PaperID, std::unordered_map<CacheID, Buffer>> oldScriptFieldValues;

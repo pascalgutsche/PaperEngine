@@ -1,7 +1,6 @@
 #include "Engine.h"
-#include "generic/Entity.h"
 
-#include "Application.h"
+#include "Entity.h"
 
 #include "component/DataComponent.h"
 #include "component/TransformComponent.h"

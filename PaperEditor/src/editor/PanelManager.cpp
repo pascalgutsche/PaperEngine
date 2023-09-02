@@ -2,6 +2,7 @@
 #include "PanelManager.h"
 
 #include "DockManager.h"
+#include "project/Project.h"
 
 void PanelManager::OnImGuiRender()
 {
@@ -44,6 +45,17 @@ void PanelManager::OnProjectChanged(const Shr<Project>& project)
 		for (const PanelData& panelData : panels[i] | std::views::values)
 		{
 			panelData.panel->OnProjectChanged(project);
+		}
+	}
+}
+
+void PanelManager::OnSceneChanged(const Shr<Scene>& scene)
+{
+	for (size_t i = 0; i < (size_t)PanelOpenSetting::_COUNT; i++)
+	{
+		for (const PanelData& panelData : panels[i] | std::views::values)
+		{
+			panelData.panel->OnSceneChanged(scene);
 		}
 	}
 }

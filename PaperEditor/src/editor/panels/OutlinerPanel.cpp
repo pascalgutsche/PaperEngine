@@ -84,12 +84,11 @@ namespace PaperED
 	void OutlinerPanel::OnImGuiRender(bool& isOpen)
 	{
 		Shr<Scene> activeScene = Scene::GetActive();
-		Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
-		std::string name = "Outliner";
+		Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
 	
 		UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 	
-		ImGui::Begin(name.c_str(), &isOpen);
+		ImGui::Begin(panelName.c_str(), &isOpen);
 	
 		if (activeScene)
 		{

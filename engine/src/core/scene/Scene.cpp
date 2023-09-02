@@ -1,18 +1,15 @@
 #include "Engine.h"
 
-#include "generic/Application.h"
-#include "generic/Scene.h"
-
-#include <ranges>
+#include "Scene.h"
+#include "Entity.h"
 
 #include "camera/EntityCamera.h"
+#include "generic/Application.h"
 #include "renderer/Renderer2D.h"
 #include "renderer/Renderer3D.h"
-
 #include "scripting/ScriptEngine.h"
 
 #include "Components.h"
-
 
 namespace Paper {
 
@@ -159,9 +156,12 @@ namespace Paper {
 		}
 
 		//Render
-		Renderer2D::BeginRender(*entityCamera, cameraTransform);
-		Render();
-		Renderer2D::EndRender();
+		if (entityCamera)
+		{
+			Renderer2D::BeginRender(*entityCamera, cameraTransform);
+			Render();
+			Renderer2D::EndRender();
+		}
 	}
 
 	void Scene::OnSimulationStart()
