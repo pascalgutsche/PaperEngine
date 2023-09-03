@@ -21,7 +21,7 @@ namespace Paper
 		static std::filesystem::path OpenFile(const std::initializer_list<FileSpecFilter>& filter = {}, const std::filesystem::path& defaultPath = "");
 		static std::filesystem::path OpenFolder(const std::filesystem::path& defaultPath = "");
 
-		static std::filesystem::path SaveFile(const std::initializer_list<FileSpecFilter>& filter = {}, const std::filesystem::path& defaultPath = "");
+		static std::filesystem::path SaveFile(const std::initializer_list<FileSpecFilter>& filter = {}, const std::filesystem::path& defaultPath = "", const std::string& defaultName = "");
 	};
 }
 

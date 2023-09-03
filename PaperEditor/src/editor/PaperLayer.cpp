@@ -10,7 +10,6 @@
 #include "panels/ContentBrowserPanel.h"
 #include "panels/DebuggingPanel.h"
 #include "panels/OutlinerPanel.h"
-#include "panels/ProjectPanel.h"
 #include "panels/PropertiesPanel.h"
 #include "project/ProjectSerializer.h"
 
@@ -18,6 +17,10 @@
 #include "scripting/ScriptEngine.h"
 #include "utils/FileSystem.h"
 
+#include <imgui/misc/cpp/imgui_stdlib.h>
+
+
+#define NEW_PROJECT_POPUP_ID "NewProjectPopup"
 
 PaperLayer::PaperLayer()
 {
@@ -42,7 +45,6 @@ void PaperLayer::OnAttach()
 	panelManager.paperLayer = this;
 
 	PanelManager::SetPanelOpenSetting(PanelOpenSetting::None);
-	panelManager.AddPanel<NewProjectPanel>("New Project...", false);
 
 	PanelManager::SetPanelOpenSetting(PanelOpenSetting::View);
 	panelManager.AddPanel<ImGuiDemoPanel>("ImGui Demo", false);
@@ -58,6 +60,7 @@ void PaperLayer::OnAttach()
 	OpenProject("D:/dev/Paper-Project/Projects/Sandbunker");
 	if (!Project::GetActive())
 		EmptyProject();
+
 }
 
 void PaperLayer::OnDetach()
@@ -226,6 +229,12 @@ void PaperLayer::EntityDragging()
 	previousMousePos = mousePos;
 }
 
+bool openshit()
+{
+	ImGui::OpenPopup("new_project_popup");
+	return 1;
+}
+
 void PaperLayer::Imgui(const float dt)
 {
 	ImGuiDockNodeFlags dockflags = ImGuiDockNodeFlags_PassthruCentralNode;
@@ -252,10 +261,13 @@ void PaperLayer::Imgui(const float dt)
 	ImGui::DockSpace(DockManager::dockspace_id, ImVec2(0.0f, 0.0f), dockflags);
 	UI_MenuBar();
 	UI_Toolbar();
+	
 
 	ImGui::End();
 
 	panelManager.OnImGuiRender();
+
+	RenderPopups();
 
 	ViewPortPanel();
 
@@ -444,6 +456,74 @@ void PaperLayer::SwitchScene(const Shr<Scene>& scene)
 		hovered_entity = scene->GetEntity(hovered_entity.GetPaperID());
 
 	Scene::SetActive(scene);
+}
+
+void PaperLayer::ShowNewProjectPopup()
+{
+	ShowPopup("New Project...", [&]()
+	{
+		static std::string projName;
+		static std::string projPath;
+		std::string fullProjPath = "";
+		if (!projPath.empty())
+		{
+			fullProjPath = fmt::format("{}\\{}", projPath, projName);
+		}
+
+		ImGui::Text("Project is created in:");
+		ImGui::Text(fullProjPath.c_str());
+
+		ImGui::InputText("Name: ", &projName);
+		ImGui::InputText("Path: ", &projPath);
+		ImGui::SameLine();
+		if (ImGui::Button("..."))
+			projPath = FileSystem::OpenFolder().string();
+
+		std::function<void()> exitFn = [&]()
+		{
+			projName = "";
+			projPath = "";
+			ImGui::CloseCurrentPopup();
+		};
+
+		if (ImGui::Button("Cancel"))
+			exitFn();
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Create"))
+		{
+			CreateProject(std::filesystem::path(projPath) / projName, projName);
+			exitFn();
+		}
+	});
+}
+
+void PaperLayer::ShowNewScenePopup()
+{
+	ShowPopup("New Scene...", [&]()
+	{
+		static std::string sceneName;
+
+		ImGui::InputText("Name: ", &sceneName);
+
+		std::function<void()> exitFn = [&]()
+		{
+			sceneName = "";
+			ImGui::CloseCurrentPopup();
+		};
+
+		if (ImGui::Button("Cancel"))
+			exitFn();
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Create"))
+		{
+			NewScene(sceneName);
+			exitFn();
+		}
+	});
 }
 
 #if 0
@@ -674,12 +754,12 @@ void PaperLayer::UI_MenuBar()
 		{
 			if (ImGui::MenuItem("New Project", "Ctrl+O"))
 			{
-				panelManager.OpenPanel(Utils::TypeToStdString<NewProjectPanel>());
+				ShowNewProjectPopup();
 			}
 
 			if (ImGui::MenuItem("Open Project", "Ctrl+O"))
 			{
-				const std::filesystem::path projPath = FileSystem::OpenFolder("");
+				const std::filesystem::path projPath = FileSystem::OpenFile({ {.name = "Paper Project", .spec = "pproj"} });
 				OpenProject(projPath);
 			}
 
@@ -698,7 +778,7 @@ void PaperLayer::UI_MenuBar()
 
 			if (ImGui::MenuItem("New Scene"))
 			{
-				NewScene();
+				ShowNewScenePopup();
 			}
 
 			if (ImGui::MenuItem("Open Scene"))
@@ -715,7 +795,8 @@ void PaperLayer::UI_MenuBar()
 
 			if (ImGui::MenuItem("Save Scene As..."))
 			{
-				const std::filesystem::path filePath = FileSystem::SaveFile({ {.name = "Paper Scene", .spec = "pscene"} });
+				LOG_DEBUG(Project::GetAssetScenesPath().string());
+				const std::filesystem::path filePath = FileSystem::SaveFile({ {.name = "Paper Scene", .spec = "pscene"} }, Project::GetAssetScenesPath(), Scene::GetActive()->GetName() + ".pscene");
 				SaveSceneAs(filePath);
 			}
 

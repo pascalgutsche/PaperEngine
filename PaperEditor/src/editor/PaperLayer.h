@@ -29,6 +29,62 @@ enum class SceneState
 	Simulate
 };
 
+struct PopupData
+{
+	std::string title;
+	std::function<void()> renderFunc;
+
+	bool shouldOpen = true;
+	bool isOpen = false;
+};
+
+inline std::vector<PopupData> popups;
+
+inline void ShowPopup(const std::string& name, std::function<void()> renderFunc)
+{
+	PopupData data;
+	data.title = fmt::format("{0}##popup_{1}", name, popups.size());
+	data.renderFunc = renderFunc;
+	data.shouldOpen = true;
+	popups.push_back(data);
+}
+
+inline void RenderPopups()
+{
+	for (PopupData& data : popups)
+	{
+		if (data.shouldOpen && !ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopupId))
+		{
+			data.isOpen = true;
+			data.shouldOpen = false;
+			ImGui::OpenPopup(data.title.c_str());
+		}
+
+		if (!data.isOpen) continue;
+
+		if (!ImGui::IsPopupOpen(data.title.c_str()))
+		{
+			data.isOpen = false;
+			continue;
+		}
+
+		if (ImGui::BeginPopupModal(data.title.c_str(), &data.isOpen, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+		{
+			data.renderFunc();
+			ImGui::EndPopup();
+		}
+	}
+
+	for (int i = 0; i < popups.size(); i++)
+	{
+		if (!popups[i].isOpen && !popups[i].shouldOpen)
+		{
+			popups.erase(popups.begin() + i);
+		}
+	}
+
+}
+
 class PaperLayer : public Layer
 {
 	friend struct ViewPort;
@@ -69,19 +125,20 @@ public:
 
 	void SwitchScene(const Shr<Scene>& scene);
 
-//private:
-public: // temporary until proper rewrite
+	void ShowNewProjectPopup();
+	void ShowNewScenePopup();
 
+public:
 
-	//Shr<Scene> activeScene = nullptr;
 	Shr<Scene> editorScene = nullptr;
 
-	//void CheckSceneChange();
-	//Shr<Scene> new_scene = nullptr;
-
+	//---- to refactor
 	void MousePicking();
-
-	//PANELS
+	void ViewPortPanel();
+	void CameraMode();
+	void DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size);
+	void EnableCamera(CameraModes mode);
+	//----
 
 	PanelManager panelManager;
 
@@ -90,10 +147,8 @@ public: // temporary until proper rewrite
 
 	void ChangeWindowTitle() const;
 
-	void ViewPortPanel();
-	void CameraMode();
-	void DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size);
-	void EnableCamera(CameraModes mode);
+
+	
 
 
 	ViewPort* viewPortCurrentlySimulating = nullptr;
