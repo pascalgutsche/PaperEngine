@@ -1,0 +1,22 @@
+Scene:
+  - 2d20c733-b833-4f1b-bced-ef0e2365ec9d
+Name: "[Scene]"
+Path: D:\dev\C++\PaperEngine\PaperEditor\assets\scenes\bunker.pescene
+Entities:
+  - Components:
+      DataComponent:
+        UUID:
+          - e826dd79-1057-4941-9e99-f03f373b92ba
+        Name: lol
+        Tags:
+          []
+      SpriteComponent:
+        Color: [1, 1, 1, 1]
+        TexturePath: assets/textures/max.jpg
+        TilingFactor: 1
+        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+        RegisterAlphaPixels: false
+      TransformComponent:
+        Position: [0, 0, 0]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]

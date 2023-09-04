@@ -1,0 +1,116 @@
+Scene:
+  - 5edad886f3572dc9
+Name: "[Scene]"
+Path: assets\scenes\bunker.pscene
+Entities:
+  - Components:
+      DataComponent:
+        PaperID:
+          - ec02fe39ada8847b
+        Name: Camera
+        Tags:
+          []
+      ScriptComponent:
+        Name: Sandbox.Camera
+        ScriptFields:
+          Sandbox.Camera:
+            distanceFromFocusedEntity:
+              FieldType: 12
+              Value: 7
+            TC:
+              FieldType: 21
+              Value: 0
+            pos:
+              FieldType: 16
+              Value: [0, 0, 0]
+            focusedEntity:
+              FieldType: 19
+              Value: 38572d50362d94f7
+      TransformComponent:
+        Position: [0, 0, 6.30000019]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]
+      CameraComponent:
+        FixedAspectRatio: false
+        Primary: true
+        EntityCamera:
+          ProjectionMode: Perspective
+          PerspectiveFOV: 45
+          PerspectiveNear: 0.00999999978
+          PerspectiveFar: 1000
+          OrthographicSize: 10
+          OrthographicNear: -1
+          OrthographicFar: 1000
+  - Components:
+      DataComponent:
+        PaperID:
+          - 8c74b899f28bd08d
+        Name: Text Entity
+        Tags:
+          []
+      TextComponent:
+        Color: [1, 1, 1, 1]
+        Text: THIS IS A SAMPLE TEXT
+        FontPath: resources/fonts/mononoki.ttf
+        RegisterAlphaPixels: false
+      TransformComponent:
+        Position: [0, 0, 0]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]
+  - Components:
+      DataComponent:
+        PaperID:
+          - 38572d50362d94f7
+        Name: PlayerSprite
+        Tags:
+          []
+      SpriteComponent:
+        Color: [1, 1, 1, 1]
+        TexturePath: assets/textures/max.jpg
+        TilingFactor: 1
+        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+        RegisterAlphaPixels: false
+        Thickness: 1
+        Fade: 0.00499999989
+      ScriptComponent:
+        Name: Sandbox.Player
+        ScriptFields:
+          Sandbox.Player:
+            transformComponent:
+              FieldType: 21
+              Value: 0
+            spriteComponent:
+              FieldType: 22
+              Value: 0
+            count:
+              FieldType: 8
+              Value: 1
+            charVar:
+              FieldType: 4
+              Value: c
+            Speed:
+              FieldType: 12
+              Value: 3.00399995
+            entityCamera:
+              FieldType: 1
+              Value: 0
+      TransformComponent:
+        Position: [0, 1, 0]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]
+  - Components:
+      DataComponent:
+        PaperID:
+          - 16a27e5301e06a0c
+        Name: LineWhat
+        Tags:
+          []
+      LineComponent:
+        Color: [1, 1, 1, 1]
+        Thickness: 10
+        PositionA: [-0.5, 0, 0]
+        PositionB: [0.5, 0, 0]
+      TransformComponent:
+        Position: [2, 1, 3]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]

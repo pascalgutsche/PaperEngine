@@ -4,6 +4,10 @@ bin/**
 bin-int/**
 *.sln
 *.vcxproj
+*.csproj
 *.filters
 *.user
 imgui.ini
+PaperEditor/resources/scripts/ints/**
+PaperEditor/SandboxProject/assets/scripts/int/**
+PaperEditor/SandboxProject/assets/scripts/bin/**

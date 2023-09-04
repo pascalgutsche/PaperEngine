@@ -1,0 +1,151 @@
+Scene:
+  - 01387505447492ce
+Name: "[Scene]"
+Path: assets\scenes\bunker.pscene
+Entities:
+  - Components:
+      DataComponent:
+        PaperID:
+          - 8276f9e4d946cac1
+        Name: Sprite
+        Tags:
+          []
+      SpriteComponent:
+        Color: [1, 1, 1, 1]
+        TexturePath: D:\dev\Paper-Project\Projects\Sandbunker\assets\textures\max.jpg
+        TilingFactor: 1
+        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+        RegisterAlphaPixels: false
+        Thickness: 1
+        Fade: 0.00499999989
+      ScriptComponent:
+        Name: Sandbunker.Max
+        ScriptFields:
+          Sandbunker.Max:
+            x:
+              FieldType: 12
+              Value: 0
+            y:
+              FieldType: 12
+              Value: 0
+            speedX:
+              FieldType: 12
+              Value: 3
+            speedY:
+              FieldType: 12
+              Value: 3
+      TransformComponent:
+        Position: [-8.82967949, 5.73540354, -10.408617]
+        Scale: [5.40999985, 5.40999985, 5.40999985]
+        Rotation: [0, 0, 0]
+  - Components:
+      DataComponent:
+        PaperID:
+          - ec02fe39ada8847b
+        Name: Camera
+        Tags:
+          []
+      TransformComponent:
+        Position: [0, 0, 2.91147065]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]
+      CameraComponent:
+        FixedAspectRatio: false
+        Primary: true
+        EntityCamera:
+          ProjectionMode: Perspective
+          PerspectiveFOV: 90
+          PerspectiveNear: 0.00999999978
+          PerspectiveFar: 1000
+          OrthographicSize: 10
+          OrthographicNear: -1
+          OrthographicFar: 1000
+  - Components:
+      DataComponent:
+        PaperID:
+          - 8c74b899f28bd08d
+        Name: Text Entity
+        Tags:
+          []
+      TextComponent:
+        Color: [0, 1, 0.0287768841, 1]
+        Text: Hello my frinds
+        FontPath: resources/fonts/mononoki.ttf
+        RegisterAlphaPixels: false
+      TransformComponent:
+        Position: [12.3549995, 17.5652885, -14.7421827]
+        Scale: [7.97816181, 4.8739872, 2.00999999]
+        Rotation: [0, 0, 0]
+  - Components:
+      DataComponent:
+        PaperID:
+          - 38572d50362d94f7
+        Name: PlayerSprite
+        Tags:
+          []
+      SpriteComponent:
+        Color: [1, 1, 1, 1]
+        TexturePath: D:\dev\Paper-Project\Projects\Sandbunker\assets\textures\wallpaper.jpg
+        TilingFactor: 1
+        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+        RegisterAlphaPixels: false
+        Thickness: 1
+        Fade: 0.00499999989
+      TransformComponent:
+        Position: [0, 0, -25.5161266]
+        Scale: [124.316284, 124.316437, 124.316284]
+        Rotation: [0, -0.00496596098, 0]
+  - Components:
+      DataComponent:
+        PaperID:
+          - 33bdade81b95947e
+        Name: PlayerSprite
+        Tags:
+          []
+      SpriteComponent:
+        Color: [1, 1, 1, 1]
+        TexturePath: D:\dev\Paper-Project\Projects\Sandbunker\assets\textures\server-icon.png
+        TilingFactor: 1
+        TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+        RegisterAlphaPixels: false
+        Thickness: 1
+        Fade: 0.00499999989
+      ScriptComponent:
+        Name: Sandbunker.Max
+        ScriptFields:
+          Sandbox.Player:
+            transformComponent:
+              FieldType: 21
+              Value: 0
+            spriteComponent:
+              FieldType: 22
+              Value: 0
+            count:
+              FieldType: 8
+              Value: 1
+            Speed:
+              FieldType: 12
+              Value: 3.00399995
+            charVar:
+              FieldType: 4
+              Value: b
+            entityCamera:
+              FieldType: 1
+              Value: 0
+          Sandbunker.Max:
+            x:
+              FieldType: 12
+              Value: 0
+            y:
+              FieldType: 12
+              Value: 0
+            speedX:
+              FieldType: 12
+              Value: 3
+            speedY:
+              FieldType: 12
+              Value: 3
+      TransformComponent:
+        Position: [0.61877352, 1.32271028, -0.12266922]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]
