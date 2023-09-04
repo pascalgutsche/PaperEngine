@@ -60,7 +60,7 @@ void PaperLayer::OnAttach()
 	panelManager.AddPanel<PropertiesPanel>("Properties", true, DockLoc::RightBottom);
 
 	//TODO: implement proper startup project
-	OpenProject("D:/dev/Paper-Project/Projects/Sandbunker");
+	OpenProject("Sandbunker");
 	if (!Project::GetActive())
 		EmptyProject();
 
@@ -546,56 +546,6 @@ void PaperLayer::ShowNewScenePopup()
 		}
 	});
 }
-
-#if 0
-void PaperLayer::CheckSceneChange()
-{
-	const Shr<Scene> activeScene = Scene::GetActive();
-	if (!new_scene) return;
-
-	if (sceneState != SceneState::Edit)
-		OnSceneStop();
-
-	if (!activeScene || !activeScene->IsDirty())
-	{
-		editorScene = new_scene;
-		SwitchScene(editorScene);
-		new_scene = nullptr;
-		return;
-	}
-
-	const ImGuiIO& io = ImGui::GetIO();
-	ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f), ImGuiCond_Always);
-	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f + Application::GetWindow()->GetPosition().x, io.DisplaySize.y * 0.5f + Application::GetWindow()->GetPosition().y), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-	ImGui::Begin("UNSAVED SCENE", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-	ImGui::TextWrapped("Do you want to save the current scene?");
-	if (ImGui::Button("Yes"))
-	{
-		if (activeScene->GetPath().empty())
-		{
-			activeScene->SetPath(FileSystem::SaveFile());
-		}
-		std::string filePath = activeScene->GetPath().string();
-		if (!filePath.empty())
-		{
-			activeScene->SetPath(filePath);
-			SceneSerializer::Serialize(activeScene, filePath);
-			activeScene->SetClean();
-			editorScene = new_scene;
-			SwitchScene(editorScene);
-			new_scene = nullptr;
-		}
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("No"))
-	{
-		editorScene = new_scene;
-		SwitchScene(editorScene);
-		new_scene = nullptr;
-	}
-	ImGui::End();
-}
-#endif
 
 void HoverImageButton(std::string text)
 {
