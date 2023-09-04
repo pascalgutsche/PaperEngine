@@ -19,6 +19,8 @@
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
+#include "panels/SettingsPanel.h"
+
 
 #define NEW_PROJECT_POPUP_ID "NewProjectPopup"
 
@@ -45,6 +47,7 @@ void PaperLayer::OnAttach()
 	panelManager.paperLayer = this;
 
 	PanelManager::SetPanelOpenSetting(PanelOpenSetting::None);
+	panelManager.AddPanel<SettingsPanel>("Settings", false);
 
 	PanelManager::SetPanelOpenSetting(PanelOpenSetting::View);
 	panelManager.AddPanel<ImGuiDemoPanel>("ImGui Demo", false);
@@ -60,6 +63,8 @@ void PaperLayer::OnAttach()
 	OpenProject("D:/dev/Paper-Project/Projects/Sandbunker");
 	if (!Project::GetActive())
 		EmptyProject();
+
+	
 
 }
 
@@ -166,6 +171,28 @@ void PaperLayer::OnEvent(Event& event)
 						gizmo_type = ImGuizmo::OPERATION::SCALE;
 					break;
 				}
+				case Key::S:
+				{
+					if (e.IsModPressed(Mod::CONTROL) && e.IsModPressed(Mod::SHIFT))
+					{
+						const std::filesystem::path filePath = FileSystem::SaveFile({ {.name = "Paper Scene", .spec = "pscene"} }, Project::GetAssetScenesPath(), Scene::GetActive()->GetName() + ".pscene");
+						SaveSceneAs(filePath);
+					}
+					else if (e.IsModPressed(Mod::CONTROL))
+					{
+						SaveScene();
+					}
+					break;
+				}
+				case Key::D:
+				{
+					if (e.IsModPressed(Mod::CONTROL))
+					{
+						Entity duplicatedEntity = Scene::GetActive()->DuplicateEntity(SelectionManager::GetSelection().ToEntity());
+						SelectionManager::Select(duplicatedEntity.GetPaperID());
+					}
+					break;
+				}
 				case Key::DELETEKEY:
 				{
 					if (SelectionManager::HasSelection())
@@ -227,12 +254,6 @@ void PaperLayer::EntityDragging()
 	}
 
 	previousMousePos = mousePos;
-}
-
-bool openshit()
-{
-	ImGui::OpenPopup("new_project_popup");
-	return 1;
 }
 
 void PaperLayer::Imgui(const float dt)
@@ -411,7 +432,7 @@ void PaperLayer::SaveScene() const
 {
 	if (!editorScene || editorScene->GetPath().empty()) return;
 
-	SceneSerializer::Serialize(editorScene, editorScene->GetPath());
+	SceneSerializer::Serialize(editorScene, Project::GetProjectPath() / editorScene->GetPath());
 }
 
 void PaperLayer::SaveSceneAs(const std::filesystem::path& filePath) const
@@ -795,9 +816,15 @@ void PaperLayer::UI_MenuBar()
 
 			if (ImGui::MenuItem("Save Scene As..."))
 			{
-				LOG_DEBUG(Project::GetAssetScenesPath().string());
 				const std::filesystem::path filePath = FileSystem::SaveFile({ {.name = "Paper Scene", .spec = "pscene"} }, Project::GetAssetScenesPath(), Scene::GetActive()->GetName() + ".pscene");
 				SaveSceneAs(filePath);
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Settings"))
+			{
+				panelManager.OpenPanel<SettingsPanel>();
 			}
 
 			ImGui::Separator();
@@ -813,10 +840,19 @@ void PaperLayer::UI_MenuBar()
 
 		if (ImGui::BeginMenu("Edit"))
 		{
+
+			if (ImGui::MenuItem("Open Visual-Studio solution"))
+			{
+				FileSystem::OpenExternal(Project::GetProjectPath() / std::filesystem::path(Project::GetProjectName() + ".sln"));
+			}
+
+			ImGui::Separator();
+
 			for (PanelData& panelData : panelManager.GetPanels(PanelOpenSetting::Edit) | std::views::values)
 			{
 				ImGui::MenuItem(panelData.displayName.c_str(), nullptr, &panelData.isOpen);
 			}
+
 
 			ImGui::EndMenu();
 		}
@@ -852,6 +888,15 @@ void PaperLayer::UI_MenuBar()
 				activeScene->CreateEntity("Line").AddComponent<LineComponent>();
 			if (ImGui::MenuItem("Text"))
 				activeScene->CreateEntity("Text").AddComponent<TextComponent>();
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("_Debug_"))
+		{
+			if (ImGui::MenuItem("ShowNewProjectPopup()"))
+				ShowNewProjectPopup();
+			if (ImGui::MenuItem("ShowNewScenePopup()"))
+				ShowNewScenePopup();
 			ImGui::EndMenu();
 		}
 

@@ -6,6 +6,7 @@
 #include "util/Math.h"
 
 #include <glm/gtx/matrix_decompose.hpp>
+#include <gtx/string_cast.hpp>
 
 #include <ImGuizmo/ImGuizmo.h>
 
@@ -170,9 +171,9 @@ void ViewPort::Panel(PaperLayer* peLayer)
 			glm::vec3 translation, rotation, scale;
 			Math::DecomposeTransform(transform, translation, rotation, scale);
 
-			glm::vec3 deltaRotation = rotation - tc.rotation;
+			glm::vec3 deltaRotation = rotation - glm::radians(tc.rotation);
 			tc.position = translation;
-			tc.rotation += deltaRotation;
+			tc.rotation += glm::degrees(deltaRotation);
 			tc.scale = scale;
 		}
 	}

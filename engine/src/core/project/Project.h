@@ -24,6 +24,7 @@ namespace Paper
 		~Project() = default;
 
 		const ProjectConfig& GetConfig() const;
+		ProjectConfig& GetConfig();
 
 		static void SetActive(const Shr<Project>& project);
 		static Shr<Project> GetActive();

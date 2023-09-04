@@ -52,6 +52,22 @@ namespace Paper {
 		CopyComponent<Component...>(dst, src, dstEntityMap);
 	}
 
+	template <typename... Component>
+	static void CopyComponentIfExists(Entity dst, Entity src)
+	{
+		([&]()
+		{
+			if (src.HasComponent<Component>())
+				dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
+		}(), ...);
+	}
+
+	template<typename... Component>
+	static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Entity src)
+	{
+		CopyComponentIfExists<Component...>(dst, src);
+	}
+
 	Shr<Scene> Scene::Copy()
 	{
 		Shr<Scene> newScene = MakeShr<Scene>();
@@ -311,6 +327,13 @@ namespace Paper {
 		entity_map[id] = entity;
 
 		return entity;
+	}
+
+	Entity Scene::DuplicateEntity(Entity entity)
+	{
+		Entity dst = CreateEntity(entity.GetName());
+		CopyComponentIfExists(AllComponents{}, dst, entity);
+		return dst;
 	}
 
 	bool Scene::DestroyEntity(Entity entity)

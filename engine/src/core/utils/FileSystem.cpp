@@ -3,6 +3,8 @@
 
 #include "nfd.hpp"
 
+#include <shellapi.h>
+
 namespace Paper
 {
 	bool FileSystem::Exists(const std::filesystem::path& filePath)
@@ -21,6 +23,16 @@ namespace Paper
 			return false;
 
 		std::filesystem::rename(oldFilePath, newFilePath);
+		return true;
+	}
+
+	bool FileSystem::OpenExternal(const std::filesystem::path& filePath)
+	{
+		auto absolutePath = std::filesystem::canonical(filePath);
+		if (!Exists(absolutePath))
+			return false;
+
+		ShellExecute(NULL, L"open", absolutePath.c_str(), NULL, NULL, SW_SHOWNORMAL);
 		return true;
 	}
 

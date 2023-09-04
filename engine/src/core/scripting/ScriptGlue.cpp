@@ -272,10 +272,14 @@ namespace Paper
         Entity entity = scene->GetEntity(entityID);
         CORE_ASSERT(entity, "");
 
-        MonoObject* instance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID())->GetMonoInstance();
+        EntityInstance* entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
 
-        return instance;
-
+        if (entityInstance)
+        {
+			MonoObject* instance = entityInstance->GetMonoInstance();
+            return instance;
+        }
+        return nullptr;
     }
 
     //Components

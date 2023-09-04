@@ -8,13 +8,22 @@
 
 namespace Paper {
 	Entity::Entity(entt::entity entity, Scene* scene)
-		: scene(scene), entity(entity) { }
+		: scene(scene), entity(entity)
+	{
+		//debug
+		name = GetComponent<DataComponent>().name;
+		uuid = GetComponent<DataComponent>().uuid;
+	}
 
 	Entity::Entity(entt::entity entity, std::string name, Scene* scene)
 		: scene(scene), entity(entity)
 	{
 		AddComponent<DataComponent>(name);
 		AddComponent<TransformComponent>();
+
+		//debug
+		name = GetComponent<DataComponent>().name;
+		uuid = GetComponent<DataComponent>().uuid;
 	}
 
 	Entity::Entity(entt::entity entity, const PaperID& id, std::string name, Scene* scene)
@@ -23,6 +32,9 @@ namespace Paper {
 		AddComponent<DataComponent>(id, name);
 		AddComponent<TransformComponent>();
 
+		//debug
+		name = GetComponent<DataComponent>().name;
+		uuid = GetComponent<DataComponent>().uuid;
 	}
 
 	Entity* Entity::AddTag(std::string tag)

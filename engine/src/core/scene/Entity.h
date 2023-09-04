@@ -29,6 +29,9 @@ namespace Paper {
     	template<typename T, typename... ARGS>
         T& AddComponent(ARGS&... args);
 
+        template<typename T, typename... ARGS>
+        T& AddOrReplaceComponent(ARGS&... args);
+
     	template<typename T>
         bool RemoveComponent();
 
@@ -53,6 +56,10 @@ namespace Paper {
         Scene* scene = nullptr;
 
         entt::entity entity = entt::null;
+
+        //debug
+        std::string name;
+        PaperID uuid;
     };
 
     template <typename T>
@@ -73,6 +80,12 @@ namespace Paper {
     {
         CORE_ASSERT(!HasComponent<T>(), "Entity already has this Component");
         return scene->Registry().emplace<T>(entity, std::forward<ARGS>(args)...);
+    }
+
+    template <typename T, typename ... ARGS>
+    T& Entity::AddOrReplaceComponent(ARGS&... args)
+    {
+        return scene->Registry().emplace_or_replace<T>(entity, std::forward<ARGS>(args)...);
     }
 
     template <typename T>

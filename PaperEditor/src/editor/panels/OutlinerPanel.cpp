@@ -12,9 +12,11 @@ namespace PaperED
 			auto entities = activeScene->Registry().view<TransformComponent>();
 			for (auto entt : entities) {
 				Entity entity(entt, activeScene.get());
+				ImGui::PushID(entity.GetPaperID().toString().c_str());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
 					active_entity = entity;
 				}
+				ImGui::PopID();
 			}
 
 			ImGui::TreePop();
@@ -30,9 +32,11 @@ namespace PaperED
 			{
 				for (auto [entt, sprite] : sprites_s.each()) {
 					Entity entity(entt, activeScene.get());
+					ImGui::PushID(entity.GetPaperID().toString().c_str());
 					if (ImGui::Selectable(entity.GetName().c_str())) {
 						active_entity = entity;
 					}
+					ImGui::PopID();
 				}
 				ImGui::TreePop();
 			}
@@ -42,9 +46,11 @@ namespace PaperED
 			{
 				for (auto [entt, line] : lines.each()) {
 					Entity entity(entt, activeScene.get());
+					ImGui::PushID(entity.GetPaperID().toString().c_str());
 					if (ImGui::Selectable(entity.GetName().c_str())) {
 						active_entity = entity;
 					}
+					ImGui::PopID();
 				}
 				ImGui::TreePop();
 			}
@@ -54,9 +60,11 @@ namespace PaperED
 			{
 				for (auto [entt, text] : texts.each()) {
 					Entity entity(entt, activeScene.get());
+					ImGui::PushID(entity.GetPaperID().toString().c_str());
 					if (ImGui::Selectable(entity.GetName().c_str())) {
 						active_entity = entity;
 					}
+					ImGui::PopID();
 				}
 				ImGui::TreePop();
 			}
@@ -72,9 +80,11 @@ namespace PaperED
 			auto cameras = activeScene->Registry().view<CameraComponent>();
 			for (auto entt : cameras) {
 				Entity entity(entt, activeScene.get());
+				ImGui::PushID(entity.GetPaperID().toString().c_str());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
 					active_entity = entity;
 				}
+				ImGui::PopID();
 			}
 
 			ImGui::TreePop();
@@ -96,8 +106,10 @@ namespace PaperED
 			TwoDObjects(activeScene, selectedEntity);
 			Cameras(activeScene, selectedEntity);
 		}
-	
-	
+
+		if (selectedEntity != SelectionManager::GetSelection().ToEntity())
+			SelectionManager::Select(selectedEntity.GetPaperID());
+
 		ImGui::End();
 		
 	}

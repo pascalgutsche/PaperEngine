@@ -245,7 +245,11 @@ namespace Paper
 
     void ScriptEngine::OnCreateEntity(Entity entity)
     {
-        CORE_ASSERT(!script_data->entityInstances.contains(entity.GetPaperID()), "")
+        if (script_data->entityInstances.contains(entity.GetPaperID()))
+        {
+            LOG_CORE_WARN("script_data->entityInstances.contains(entity.GetPaperID()) has asserted");
+            return;
+        }
         const auto& scrc = entity.GetComponent<ScriptComponent>();
         if (GetEntityInheritClass(scrc.scriptClassName))
         {
@@ -263,7 +267,11 @@ namespace Paper
 
     void ScriptEngine::OnDestroyEntity(Entity entity)
     {
-        CORE_ASSERT(script_data->entityInstances.contains(entity.GetPaperID()), "");
+        if (!script_data->entityInstances.contains(entity.GetPaperID()))
+        {
+			LOG_CORE_WARN("!script_data->entityInstances.contains(entity.GetPaperID()) has asserted");
+            return;
+        }
         EntityInstance* entityInstance = GetEntityScriptInstance(entity.GetPaperID());
 
     	if (!entityInstance) return;
@@ -280,7 +288,11 @@ namespace Paper
 
     void ScriptEngine::OnUpdateEntity(Entity entity, float dt)
     {
-        CORE_ASSERT(script_data->entityInstances.contains(entity.GetPaperID()), "")
+        if (!script_data->entityInstances.contains(entity.GetPaperID()))
+        {
+            LOG_CORE_WARN("!script_data->entityInstances.contains(entity.GetPaperID()) has asserted");
+            return;
+        }
 
         GetEntityScriptInstance(entity.GetPaperID())->InvokeOnUpdate(dt);
     }

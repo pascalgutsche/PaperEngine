@@ -34,18 +34,37 @@ struct PopupData
 	std::string title;
 	std::function<void()> renderFunc;
 
+	std::string message;
+
+	uint32_t width = 500;
+	uint32_t height = 0;
+
 	bool shouldOpen = true;
 	bool isOpen = false;
+
+	bool autoresize = false;
+	bool okBtn = false;
 };
 
 inline std::vector<PopupData> popups;
 
-inline void ShowPopup(const std::string& name, std::function<void()> renderFunc)
+static void ShowMessagePopup(const std::string& title, const std::string& message)
 {
 	PopupData data;
-	data.title = fmt::format("{0}##popup_{1}", name, popups.size());
+	data.title = fmt::format("{0}##popup_message_{1}", title, popups.size());
+	data.message = message;
+	data.shouldOpen = true;
+	data.okBtn = true;
+	popups.push_back(data);
+}
+
+inline void ShowPopup(const std::string& title, std::function<void()> renderFunc)
+{
+	PopupData data;
+	data.title = fmt::format("{0}##popup_{1}", title, popups.size());
 	data.renderFunc = renderFunc;
 	data.shouldOpen = true;
+	data.autoresize = true;
 	popups.push_back(data);
 }
 
@@ -68,9 +87,28 @@ inline void RenderPopups()
 			continue;
 		}
 
-		if (ImGui::BeginPopupModal(data.title.c_str(), &data.isOpen, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+		uint32_t flags = ImGuiWindowFlags_NoSavedSettings;
+		if (data.autoresize) 
+			flags |= ImGuiWindowFlags_AlwaysAutoResize;
+		else
+			ImGui::SetNextWindowSize(ImVec2(data.width, data.height));
+
+		if (ImGui::BeginPopupModal(data.title.c_str(), &data.isOpen, flags))
 		{
-			data.renderFunc();
+			if (data.renderFunc)
+				data.renderFunc();
+			else
+			{
+				ImGui::TextWrapped(data.message.c_str());
+			}
+
+			if (data.okBtn)
+			{
+				ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x - (ImGui::CalcTextSize("Okay").x + 5));
+				if (ImGui::Button("Okay"))
+					ImGui::CloseCurrentPopup();
+			}
+
 			ImGui::EndPopup();
 		}
 	}

@@ -42,6 +42,7 @@ namespace Paper
         public T As<T>() where T : Entity, new()
         {
             object instance = InternalCalls.Entity_GetScriptInstance(PaperID);
+            if (instance == null) return null;
             return instance as T;
         }
 

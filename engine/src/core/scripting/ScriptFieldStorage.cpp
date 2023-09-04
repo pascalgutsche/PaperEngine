@@ -93,6 +93,7 @@ namespace Paper
 	void ScriptFieldStorage::SetRuntimeFieldValue(const void* value) const
 	{
 		//if (scriptField->type != ScriptFieldType::String && value.size > 0)
+		if (!managedField->isStatic)
 			runtimeInstance->SetFieldValue(managedField, value);
 	}
 }

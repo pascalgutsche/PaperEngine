@@ -7,7 +7,6 @@
 #include "renderer/Font.h"
 #include "scripting/ScriptEngine.h"
 
-#include <imgui/misc/cpp/imgui_stdlib.h>
 
 namespace PaperED
 {
@@ -145,7 +144,7 @@ namespace PaperED
 	void DrawComponent(const std::string& name, bool canRemove, DrawComponentFn<ComponentType> draw_components_fn)
 	{
 		Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
-		if (selectedEntity.HasComponent<ComponentType>()) return;
+		if (!selectedEntity.HasComponent<ComponentType>()) return;
 
 		bool tree_open = ImGui::TreeNode(name.c_str());
 

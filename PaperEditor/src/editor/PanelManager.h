@@ -39,6 +39,12 @@ namespace PaperED
 		void RemovePanel(const std::string& strID);
 		void OpenPanel(const std::string& strID);
 
+		template<typename TEditorPanel>
+		void OpenPanel()
+		{
+			OpenPanel(Utils::TypeToStdString<TEditorPanel>());
+		};
+
 		template <typename TEditorPanel, typename... TArgs>
 		Shr<TEditorPanel> AddPanel(const PanelData& panelData)
 		{

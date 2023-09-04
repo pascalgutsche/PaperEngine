@@ -38,7 +38,10 @@ namespace Paper {
 
         Entity CreateEntity(const std::string& name);
         Entity CreateEntity(const PaperID& id, const std::string& name);
-        bool DestroyEntity(Entity entity);
+
+        Entity DuplicateEntity(Entity entity);
+
+    	bool DestroyEntity(Entity entity);
 
         Entity GetEntity(const PaperID& id);
         Entity GetEntityByName(const std::string& name);
