@@ -27,8 +27,18 @@ namespace Paper {
 			case Geometry::RECTANGLE: return "Rectangle";
 			case Geometry::CIRCLE: return "Circle";
 		}
-		ASSERT(false, "")
+		CORE_ASSERT(false, "")
 		return "";
+	}
+
+	inline Geometry StringToGeometry(std::string geometry)
+	{
+		if (geometry == "None") return Geometry::NONE;
+		if (geometry == "Triangle") return Geometry::TRIANGLE;
+		if (geometry == "Rectangle") return Geometry::RECTANGLE;
+		if (geometry == "Circle") return Geometry::CIRCLE;
+		CORE_ASSERT(false, "");
+		return Geometry::NONE;
 	}
 
 	struct SpriteComponent : Serializable {

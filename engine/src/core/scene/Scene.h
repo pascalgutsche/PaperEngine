@@ -6,6 +6,9 @@
 
 #include "camera/EditorCamera.h"
 
+class b2Body;
+class b2World;
+
 namespace Paper {
 
     class Entity;
@@ -35,6 +38,9 @@ namespace Paper {
 
         void EditorRender(const Shr<EditorCamera>& camera);
         void Render();
+
+        void OnPhysics2DStart();
+        void OnPhysics2DStop();
 
         Entity CreateEntity(const std::string& name);
         Entity CreateEntity(const PaperID& id, const std::string& name);
@@ -76,11 +82,15 @@ namespace Paper {
 
         entt::registry registry;
         std::unordered_map<PaperID, entt::entity> entity_map;
+        std::unordered_map<PaperID, b2Body*> b2BodyMap;
 
         //runtime
         bool isPaused = false;
         int framesToStep = 0;
 
+        b2World* physicsWorld = nullptr;
+
+        //static
         inline static Shr<Scene> activeScene = nullptr;
 
         friend class Application;

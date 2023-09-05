@@ -7,6 +7,8 @@
 #include "renderer/Font.h"
 #include "scripting/ScriptEngine.h"
 
+#include "scene/Components.h"
+
 
 namespace PaperED
 {
@@ -205,6 +207,8 @@ namespace PaperED
 			DrawComponentToAddPopup<SpriteComponent>("Sprite Component");
 			DrawComponentToAddPopup<LineComponent>("Line Component");
 			DrawComponentToAddPopup<TextComponent>("Text Component");
+			DrawComponentToAddPopup<Rigidbody2DComponent>("Rigidbody2D Component");
+			DrawComponentToAddPopup<Collider2DComponent>("Collider2D Component");
 			DrawComponentToAddPopup<ScriptComponent>("Script Component");
 			ImGui::EndPopup();
 		}
@@ -306,7 +310,7 @@ namespace PaperED
 			[](SpriteComponent& sc, Entity entity)
 			{
 				{
-					std::string name = "Geometry Type";
+					std::string name = "Geometry";
 					ContentTable geometry_section(ImGui::CalcTextSize(name.c_str()).x);
 					FillNameCol(name);
 
@@ -414,164 +418,258 @@ namespace PaperED
 			});
 
 		DrawComponent<TextComponent>("Text Component", true, [](TextComponent& texc, Entity entity)
+		{
 			{
+				ContentTable text_section(ImGui::CalcTextSize("Text").x);
+				FillNameCol("Text");
+
+				ImGui::InputText(CONST_UI_ID, &texc.text);
+			}
+
+			{
+				std::string name = "RegisterAlphaPixels[temp]";
+				ContentTable pixelregister_section(ImGui::CalcTextSize(name.c_str()).x);
+				DrawCheckbox(name, texc.register_alpha_pixels_to_event);
+			}
+
+			{
+				ContentTable font_section(ImGui::CalcTextSize("Font").x);
+				FillNameCol("Font");
+
+
+				ImGui::Button(texc.font->GetFontName().c_str());
+
+				if (ImGui::BeginDragDropTarget())
 				{
-					ContentTable text_section(ImGui::CalcTextSize("Text").x);
-					FillNameCol("Text");
-
-					ImGui::InputText(CONST_UI_ID, &texc.text);
-				}
-
-				{
-					std::string name = "RegisterAlphaPixels[temp]";
-					ContentTable pixelregister_section(ImGui::CalcTextSize(name.c_str()).x);
-					DrawCheckbox(name, texc.register_alpha_pixels_to_event);
-				}
-
-				{
-					ContentTable font_section(ImGui::CalcTextSize("Font").x);
-					FillNameCol("Font");
-
-
-					ImGui::Button(texc.font->GetFontName().c_str());
-
-					if (ImGui::BeginDragDropTarget())
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FONT"))
 					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_FONT"))
-						{
-							const wchar_t* path = (const wchar_t*)payload->Data;
-							std::string file = std::filesystem::path(path).string();
+						const wchar_t* path = (const wchar_t*)payload->Data;
+						std::string file = std::filesystem::path(path).string();
 
-							texc.font = DataPool::GetFont(file, true);
-						}
-						ImGui::EndDragDropTarget();
+						texc.font = DataPool::GetFont(file, true);
 					}
+					ImGui::EndDragDropTarget();
 				}
+			}
 
+			{
+				ContentTable color_section(ImGui::CalcTextSize("Color").x);
+
+				FillNameCol("Color");
+
+				ImGui::ColorPicker4("##picker4", &texc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+			}
+
+
+		});
+
+		DrawComponent<Rigidbody2DComponent>("Rigidbody2D Component", true, [](Rigidbody2DComponent& rb2dc, Entity entity)
+		{
+			{
+				ContentTable bodyTypeSection(ImGui::CalcTextSize("BodyType").x);
+				FillNameCol("BodyType");
+
+				ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+				if (ImGui::BeginCombo(CONST_UI_ID, BodyTypeToString(rb2dc.type).c_str()))
 				{
-					ContentTable color_section(ImGui::CalcTextSize("Color").x);
-
-					FillNameCol("Color");
-
-					ImGui::ColorPicker4("##picker4", &texc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+					for (int i = 0; i < (int)Rigidbody2DComponent::BodyType::_SIZE; i++)
+					{
+						if (ImGui::Selectable(BodyTypeToString((Rigidbody2DComponent::BodyType)i).c_str(), rb2dc.type == (Rigidbody2DComponent::BodyType)i))
+						{
+							rb2dc.type = (Rigidbody2DComponent::BodyType)i;
+						}
+					}
+					ImGui::EndCombo();
 				}
+			}
 
+			{
+				std::string name = "FixedRotation";
+				ContentTable fixedRotationSection(ImGui::CalcTextSize(name.c_str()).x);
+				DrawCheckbox(name, rb2dc.fixedRotation);
+			}
 
-			});
+		});
+
+		DrawComponent<Collider2DComponent>("Collider2D Component", true, [](Collider2DComponent& c2dc, Entity entity)
+		{
+			{
+				std::string name = "Geometry";
+				ContentTable geometry_section(ImGui::CalcTextSize(name.c_str()).x);
+				FillNameCol(name);
+
+				ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+				if (ImGui::BeginCombo(CONST_UI_ID, GeometryToString(c2dc.geometry).c_str()))
+				{
+					for (int i = 0; i <= (int)Geometry::_LAST; i++)
+					{
+						if (ImGui::Selectable(GeometryToString((Geometry)i).c_str(), c2dc.geometry == (Geometry)i))
+						{
+							c2dc.geometry = (Geometry)i;
+						}
+					}
+					ImGui::EndCombo();
+				}
+			}
+
+			{
+				std::string name = "Offset";
+				ContentTable offsetSection(ImGui::CalcTextSize(name.c_str()).x);
+				Draw2FloatControl(name, c2dc.offset);
+			}
+
+			if (c2dc.geometry == Geometry::CIRCLE)
+			{
+				std::string name = "Radius";
+				ContentTable radiusSection(ImGui::CalcTextSize(name.c_str()).x);
+				DrawFloatControl(name, c2dc.radius);
+			}
+			else
+			{
+				std::string name = "Size";
+				ContentTable sizeSection(ImGui::CalcTextSize(name.c_str()).x);
+				Draw2FloatControl(name, c2dc.size);
+			}
+
+			{
+				std::string name = "Density";
+				ContentTable densitySection(ImGui::CalcTextSize(name.c_str()).x);
+				DrawFloatControl(name, c2dc.density);
+			}
+
+			{
+				std::string name = "Friction";
+				ContentTable frictionSection(ImGui::CalcTextSize(name.c_str()).x);
+				DrawFloatControl(name, c2dc.friction);
+			}
+
+			{
+				std::string name = "Bounciness";
+				ContentTable bouncinessSection(ImGui::CalcTextSize(name.c_str()).x);
+				DrawFloatControl(name, c2dc.bounciness);
+			}
+
+			{
+				std::string name = "BouncinessThreshold";
+				ContentTable bouncinessThresholdSection(ImGui::CalcTextSize(name.c_str()).x);
+				DrawFloatControl(name, c2dc.bouncinessThreshold);
+			}
+
+		});
 
 		DrawComponent<ScriptComponent>("Script Component", true, [this](ScriptComponent& scrc, Entity entity)
+		{
+			ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scrc.scriptClassName);
 			{
-				ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scrc.scriptClassName);
+				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
+				FillNameCol("C#-Class");
+
+
+				if (ImGui::Button(((managedClass ? managedClass->fullClassName : "") + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
-					ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
-					FillNameCol("C#-Class");
-
-
-					if (ImGui::Button(((managedClass ? managedClass->fullClassName : "") + CONST_UI_ID).c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
-					{
-						ImGui::OpenPopup("select_entity_scriptclass");
-					}
-
-					if (ImGui::BeginPopup("select_entity_scriptclass"))
-					{
-						const auto& classList = ScriptEngine::GetEntityInheritClasses();
-						for (const auto lmanagedClass : classList)
-						{
-							if (ImGui::Selectable(lmanagedClass->fullClassName.c_str(), managedClass == lmanagedClass) && managedClass != lmanagedClass)
-							{
-								scrc.scriptClassName = lmanagedClass->fullClassName;
-								ScriptEngine::CreateScriptEntity(entity);
-							}
-						}
-						ImGui::EndPopup();
-					}
+					ImGui::OpenPopup("select_entity_scriptclass");
 				}
+
+				if (ImGui::BeginPopup("select_entity_scriptclass"))
 				{
-
-					//Fields
-					EntityInstance* entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
-					if (managedClass)
+					const auto& classList = ScriptEngine::GetEntityInheritClasses();
+					for (const auto lmanagedClass : classList)
 					{
-						const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);
-						for (const auto& fieldStorage : storageFields)
+						if (ImGui::Selectable(lmanagedClass->fullClassName.c_str(), managedClass == lmanagedClass) && managedClass != lmanagedClass)
 						{
-							const auto& field = fieldStorage->GetField();
-							if (!field->HasFlag(ScriptFieldFlag::Public)) continue;
-							if (field->fieldType == ScriptFieldType::Invalid) continue;
+							scrc.scriptClassName = lmanagedClass->fullClassName;
+							ScriptEngine::CreateScriptEntity(entity);
+						}
+					}
+					ImGui::EndPopup();
+				}
+			}
+			{
 
-							std::string varName = std::format("{} {}", ScriptUtils::ScriptFieldTypeToString(field->fieldType), field->fieldName);
-							ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
+				//Fields
+				EntityInstance* entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
+				if (managedClass)
+				{
+					const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);
+					for (const auto& fieldStorage : storageFields)
+					{
+						const auto& field = fieldStorage->GetField();
+						if (!field->HasFlag(ScriptFieldFlag::Public)) continue;
+						if (field->fieldType == ScriptFieldType::Invalid) continue;
 
-							switch (field->fieldType)
+						std::string varName = std::format("{} {}", ScriptUtils::ScriptFieldTypeToString(field->fieldType), field->fieldName);
+						ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
+
+						switch (field->fieldType)
+						{
+							case ScriptFieldType::String:
 							{
-								case ScriptFieldType::String:
+								std::string dataString = fieldStorage->GetValue<std::string>();
+								FillNameCol(varName);
+								if (ImGui::InputText(CONST_UI_ID, &dataString) && field->IsWritable())
 								{
-									std::string dataString = fieldStorage->GetValue<std::string>();
-									FillNameCol(varName);
-									if (ImGui::InputText(CONST_UI_ID, &dataString) && field->IsWritable())
-									{
-										fieldStorage->SetValue(dataString);
-									};
-									break;
-								}
+									fieldStorage->SetValue(dataString);
+								};
+								break;
+							}
 
-								case ScriptFieldType::Float:
+							case ScriptFieldType::Float:
+							{
+								float dataFloat = fieldStorage->GetValue<float>();
+								if (DrawFloatControl(varName, dataFloat) && field->IsWritable())
 								{
-									float dataFloat = fieldStorage->GetValue<float>();
-									if (DrawFloatControl(varName, dataFloat) && field->IsWritable())
-									{
-										fieldStorage->SetValue(dataFloat);
-									};
-									break;
-								}
+									fieldStorage->SetValue(dataFloat);
+								};
+								break;
+							}
 
-								case ScriptFieldType::Char:
+							case ScriptFieldType::Char:
+							{
+								char dataChar = fieldStorage->GetValue<char>();
+								char data[] = { dataChar, 0 };
+								FillNameCol(varName);
+								if (ImGui::InputText(CONST_UI_ID, data, 2) && field->IsWritable())
 								{
-									char dataChar = fieldStorage->GetValue<char>();
-									char data[] = { dataChar, 0 };
-									FillNameCol(varName);
-									if (ImGui::InputText(CONST_UI_ID, data, 2) && field->IsWritable())
-									{
-										fieldStorage->SetValue(data[0]);
-									};
-									break;
-								}
+									fieldStorage->SetValue(data[0]);
+								};
+								break;
+							}
 
-								case ScriptFieldType::Entity:
+							case ScriptFieldType::Entity:
+							{
+								PaperID entityID = fieldStorage->GetValue<uint64_t>();
+								FillNameCol(varName);
+
+								if (entityID)
+									ImGui::Button(Scene::GetActive()->GetEntity(entityID).GetName().c_str());
+								else
+									ImGui::Button("null");
+
+								if (ImGui::BeginDragDropTarget())
 								{
-									PaperID entityID = fieldStorage->GetValue<uint64_t>();
-									FillNameCol(varName);
-
-									if (entityID)
-										ImGui::Button(Scene::GetActive()->GetEntity(entityID).GetName().c_str());
-									else
-										ImGui::Button("null");
-
-									if (ImGui::BeginDragDropTarget())
+									if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
 									{
-										if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
-										{
-											PaperID payloadEntityID = *(uint64_t*)payload->Data;
-											fieldStorage->SetValue(payloadEntityID.toUInt64());
+										PaperID payloadEntityID = *(uint64_t*)payload->Data;
+										fieldStorage->SetValue(payloadEntityID.toUInt64());
 
-											paperLayer->drag_entity = Entity();
-										}
-										ImGui::EndDragDropTarget();
+										paperLayer->drag_entity = Entity();
 									}
-
-									ImGui::SameLine();
-									if (ImGui::Button("X", GetButtonSize()))
-									{
-										fieldStorage->SetValue((uint64_t)0);
-									};
-
-									break;
+									ImGui::EndDragDropTarget();
 								}
+
+								ImGui::SameLine();
+								if (ImGui::Button("X", GetButtonSize()))
+								{
+									fieldStorage->SetValue((uint64_t)0);
+								};
+
+								break;
 							}
 						}
 					}
 				}
-			});
+			}
+		});
 
 		{
 			UI::ScopedStyle padding(ImGuiStyleVar_ItemInnerSpacing, ImVec2(2.0f, 2.0f));

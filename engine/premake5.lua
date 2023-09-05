@@ -37,7 +37,8 @@ project "engine"
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.BOOST}",
 		"%{IncludeDir.MONO}",
-		"%{IncludeDir.NFD}"
+		"%{IncludeDir.NFD}",
+		"%{IncludeDir.BOX2D}"
 	}
 
 	defines 
@@ -60,6 +61,7 @@ project "engine"
 		"yaml-cpp",
 		"%{Library.MONO}",
 		"nfd",
+		"box2d",
 		"opengl32.lib"
 	}
 

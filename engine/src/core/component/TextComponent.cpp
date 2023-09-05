@@ -14,7 +14,11 @@ namespace Paper
 
 			out << YAML::Key << "Color" << YAML::Value << color;
 			out << YAML::Key << "Text" << YAML::Value << text;
-			out << YAML::Key << "FontPath" << YAML::Value << font->GetFilePath();
+
+			if (font->IsDefault())
+				out << YAML::Key << "FontPath" << "__DEFAULT_FONT__";
+			else
+				out << YAML::Key << "FontPath" << YAML::Value << font->GetFilePath();
 			out << YAML::Key << "RegisterAlphaPixels" << YAML::Value << register_alpha_pixels_to_event;
 
 			out << YAML::EndMap; // SpriteComponent
@@ -33,7 +37,10 @@ namespace Paper
 		{
 			color = data["Color"].as<glm::vec4>();
 			text = data["Text"].as<std::string>();
-			font = DataPool::GetFont(data["FontPath"].as<std::string>());
+			if (data["FontPath"].as<std::string>() == "__DEFAULT_FONT__")
+				font = DataPool::GetDefaultFont();
+			else
+				font = DataPool::GetFont(data["FontPath"].as<std::string>());
 			register_alpha_pixels_to_event = data["RegisterAlphaPixels"].as<bool>();
 		}
 		catch (YAML::EmitterException& e)

@@ -413,12 +413,14 @@ void PaperLayer::NewScene(const std::string& sceneName)
 	OpenScene(MakeShr<Scene>(sceneName));
 }
 
-void PaperLayer::OpenScene(const Shr<Scene>& scene)
+void PaperLayer::OpenScene(const Shr<Scene>& scene, bool saveOldScene)
 {
 	if (!scene) return;
 
-	if (editorScene)
+	if (editorScene && saveOldScene)
 		SaveScene();
+
+	SelectionManager::Deselect();
 
 	panelManager.OnSceneChanged(scene);
 	editorScene = scene;

@@ -179,9 +179,13 @@ namespace Paper
 		while (MonoClassField* field = mono_class_get_fields(managedClass.monoClass, &fieldIterator))
 		{
 			std::string fieldName = mono_field_get_name(field);
-			if (fieldName.find(">k__BackingField") != std::string::npos) continue;
-			std::string fieldIDName = fmt::format("{}_{}", managedClass.fullClassName, fieldName);
+
+			if (fieldName.find(">k__BackingField") != std::string::npos) continue; //properties have this in their name
+			if (fieldName == "value__") continue; // enums have an additional field named 'value__'
+
+			std::string fieldIDName = fmt::format("{}::{}", managedClass.fullClassName, fieldName);
 			CacheID fieldID = Hash::GenerateFNVHash(fieldIDName);
+			LOG_CORE_DEBUG("{}::{}	ID: {}", managedClass.fullClassName, fieldName, fieldID);
 			ManagedField& managedField = cache->managedFields[fieldID];
 			managedField.fieldID = fieldID;
 			managedField.classID = managedClass.classID;

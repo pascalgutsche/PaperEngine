@@ -130,14 +130,7 @@ namespace PaperED
 				{
 					if (item.is_directory())
 					{
-						std::string path = item.path().string();
-						size_t pos = path.find(Project::GetProjectPath().string());
-						if (pos != std::string::npos)
-						{
-							path.erase(path.begin() + pos, path.begin() + pos + Project::GetProjectPath().string().length() + 1); // +1 because the slash of the path
-						}
-						currentAssetsPath = path;
-						
+						currentAssetsPath = Project::GetRelativePathFromProject(item.path());
 					}
 					else
 					{

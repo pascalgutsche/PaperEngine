@@ -79,6 +79,17 @@ namespace Paper
 			return nullptr;
 		}
 
+		static std::filesystem::path GetRelativePathFromProject(const std::filesystem::path& filePath)
+		{
+			std::string path = filePath.string();
+			const size_t pos = path.find(GetProjectPath().string());
+			if (pos != std::string::npos)
+			{
+				path.erase(path.begin() + pos, path.begin() + GetProjectPath().string().length() + 1); // +1 because the slash of the path
+			}
+			return path;
+		}
+
 	private:
 		ProjectConfig config;
 

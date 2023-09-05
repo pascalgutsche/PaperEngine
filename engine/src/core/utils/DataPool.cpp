@@ -86,7 +86,7 @@ namespace Paper {
 
     Shr<Font> DataPool::GetDefaultFont()
 	{
-        return GetFont("resources/fonts/mononoki.ttf", true);
+        return GetFont("resources/fonts/mononoki.ttf", true, true);
     }
 
     Shr<Font> DataPool::GetFont(std::string fontName, bool wholePath, bool isDefault)
@@ -99,8 +99,6 @@ namespace Paper {
 
         if (isDefault)
             fontPath = fontName;
-        // set default path
-        const std::string path = wholePath ? fontName : "assets/fonts/" + fontName;
 
         std::string fontID = "font_" + fontName;
 
@@ -111,7 +109,7 @@ namespace Paper {
         if (it == dataPool.end())
         {
             
-            font = MakeShr<Font>(path);
+            font = MakeShr<Font>(fontPath, isDefault);
             dataPool.emplace(fontID, font);
         }
         else

@@ -2,7 +2,7 @@
 
 #include "core/assets/Asset3D.h"
 
-#include "Components.h"
+#include "scene/Components.h"
 
 #include "core/event/KeyEvent.h"
 #include "core/event/MouseEvent.h"

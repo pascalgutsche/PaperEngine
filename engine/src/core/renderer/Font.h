@@ -14,7 +14,7 @@ namespace Paper
 	class Font
 	{
 	public:
-		Font(const std::filesystem::path& path);
+		Font(const std::filesystem::path& path, bool isDefault = false); // crappy workaround till asset rewrite
 		~Font();
 
 		MSDFData* GetMSDFData() const { return data; };
@@ -23,10 +23,15 @@ namespace Paper
 		std::string GetFilePath() const { return fontPath.string(); }
 		std::string GetFontName() const { return fontPath.filename().string(); }
 
+		//see ctr
+		bool IsDefault() const { return isDefault; }
 	private:
 		MSDFData* data;
 		std::filesystem::path fontPath;
 		Shr<Texture> atlasTexture;
+
+		//see ctr
+		bool isDefault;
 	};
 
 };

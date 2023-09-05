@@ -9,7 +9,7 @@
 class PaperEditor : public Application {
 public:
 	PaperEditor()
-		: Application(WindowProps("PaperEditor"))
+		: Application(WindowProps("PaperEditor", 2560, 1200))
 	{
 
 	}

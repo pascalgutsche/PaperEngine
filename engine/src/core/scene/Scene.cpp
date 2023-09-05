@@ -10,6 +10,11 @@
 #include "scripting/ScriptEngine.h"
 
 #include "Components.h"
+#include "box2d/b2_body.h"
+#include "box2d/b2_circle_shape.h"
+#include "box2d/b2_fixture.h"
+#include "box2d/b2_polygon_shape.h"
+#include "box2d/b2_world.h"
 
 namespace Paper {
 
@@ -106,6 +111,9 @@ namespace Paper {
 
 	void Scene::OnRuntimeStart()
 	{
+		//physics
+		OnPhysics2DStart();
+
 		//Scripting
 		{
 			ScriptEngine::OnRuntimeStart(this);
@@ -119,6 +127,10 @@ namespace Paper {
 
 	void Scene::OnRuntimeStop()
 	{
+		//physics
+		OnPhysics2DStop();
+
+		//scripting
 		{
 			auto view = registry.view<ScriptComponent>();
 			for (auto [e, script] : view.each()) {
@@ -152,7 +164,21 @@ namespace Paper {
 				}
 			}
 
-			//TODO: update physics
+			//physics
+			const uint32_t velocityIters = 6;
+			const uint32_t positionIters = 2;
+			physicsWorld->Step(Application::GetDT(), velocityIters, positionIters);
+
+			for (auto& [paperID, body] : b2BodyMap)
+			{
+				Entity entity = paperID.ToEntity();
+				auto& tc = entity.GetComponent<TransformComponent>();
+
+				const auto& position = body->GetPosition();
+				tc.position.x = position.x;
+				tc.position.y = position.y;
+				tc.rotation.z = glm::degrees(body->GetAngle());
+			}
 
 		}
 		//get primary camera
@@ -182,11 +208,12 @@ namespace Paper {
 
 	void Scene::OnSimulationStart()
 	{
-		
+		OnPhysics2DStart();
 	}
 
 	void Scene::OnSimulationStop()
 	{
+		OnPhysics2DStop();
 	}
 
 	void Scene::OnSimulationUpdate(const Shr<EditorCamera>& camera)
@@ -201,8 +228,21 @@ namespace Paper {
 
 		if (!isPaused || framesToStep-- > 0)
 		{
-			//TODO: update physics
+			//physics
+			const uint32_t velocityIters = 6;
+			const uint32_t positionIters = 2;
+			physicsWorld->Step(Application::GetDT(), velocityIters, positionIters);
 
+			for (auto& [paperID, body] : b2BodyMap)
+			{
+				Entity entity = paperID.ToEntity();
+				auto& tc = entity.GetComponent<TransformComponent>();
+
+				const auto& position = body->GetPosition();
+				tc.position.x = position.x;
+				tc.position.y = position.y;
+				tc.rotation.z = glm::degrees(body->GetAngle());
+			}
 		}
 
 		//render
@@ -312,6 +352,74 @@ namespace Paper {
 				Renderer2D::DrawString(data);
 			}
 		}
+	}
+
+	void Scene::OnPhysics2DStart()
+	{
+		physicsWorld = new b2World({ 0.0f, -9.81f });
+
+		auto view = registry.view<Rigidbody2DComponent>();
+		for (auto e : view)
+		{
+			Entity entity{ e, this };
+			auto& tc = entity.GetComponent<TransformComponent>();
+			auto& rb2dc = entity.GetComponent<Rigidbody2DComponent>();
+
+			b2BodyDef bodyDef;
+			bodyDef.fixedRotation = rb2dc.fixedRotation;
+			bodyDef.position = b2Vec2(tc.position.x, tc.position.y);
+			bodyDef.angle = glm::radians(tc.rotation.z);
+			bodyDef.type = (b2BodyType)rb2dc.type;
+			
+			b2Body* body = physicsWorld->CreateBody(&bodyDef);
+			b2BodyMap[entity.GetPaperID()] = body;
+
+			if (entity.HasComponent<Collider2DComponent>())
+			{
+				auto& c2dc = entity.GetComponent<Collider2DComponent>();
+
+				if (c2dc.geometry == Geometry::NONE) continue;
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.density = c2dc.density;
+				fixtureDef.friction = c2dc.friction;
+				fixtureDef.restitution = c2dc.bounciness;
+				fixtureDef.restitutionThreshold = c2dc.bouncinessThreshold;
+
+				if (c2dc.geometry == Geometry::CIRCLE)
+				{
+					b2CircleShape circleShape;
+					circleShape.m_p.Set(c2dc.offset.x, c2dc.offset.y);
+					circleShape.m_radius = c2dc.radius * tc.scale.x;
+					fixtureDef.shape = &circleShape;
+					body->CreateFixture(&fixtureDef);
+				}
+				else
+				{
+					b2PolygonShape polygonShape;
+					polygonShape.SetAsBox(c2dc.size.x * tc.scale.x, c2dc.size.y * tc.scale.y);
+					fixtureDef.shape = &polygonShape;
+					body->CreateFixture(&fixtureDef);
+				}
+			}
+			else
+			{
+				b2FixtureDef fixtureDef;
+				b2PolygonShape polygonShape;
+				polygonShape.SetAsBox(0.5f, 0.5f);
+				fixtureDef.shape = &polygonShape;
+				fixtureDef.density = 1.0f;
+				fixtureDef.isSensor = true;
+				body->CreateFixture(&fixtureDef);
+			}
+		}
+	}
+
+	void Scene::OnPhysics2DStop()
+	{
+		delete physicsWorld;
+		physicsWorld = nullptr;
+		b2BodyMap.clear();
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)

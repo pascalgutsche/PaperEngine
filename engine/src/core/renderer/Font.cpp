@@ -45,7 +45,7 @@ namespace Paper
 		delete data;
 	}
 
-	Font::Font(const std::filesystem::path& path)
+	Font::Font(const std::filesystem::path& path, bool isDefault)
 		: data(new MSDFData()), fontPath(path)
 	{
 		msdfgen::FreetypeHandle* ft = msdfgen::initializeFreetype();

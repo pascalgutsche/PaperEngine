@@ -4,7 +4,7 @@
 #include "ScriptEngine.h"
 #include "ScriptAssembly.h"
 
-#include "Components.h"
+#include "scene/Components.h"
 
 #include "scene//Scene.h"
 #include "renderer/Font.h"
