@@ -18,17 +18,14 @@
 
 namespace Paper {
 
-	Scene::Scene()
-		: uuid(PaperID()), name("[Scene]"), is_dirty(true) { }
-
 	Scene::Scene(const PaperID& uuid)
-		: uuid(uuid), name("[Scene]"), is_dirty(true) { }
+		: config{ .uuid = uuid } { }
 
 	Scene::Scene(const std::string& name)
-		: uuid(PaperID()), name(name), is_dirty(true) { }
+		: config{ .name = name } { }
 
 	Scene::Scene(const PaperID& uuid, const std::string& name)
-		: uuid(uuid), name(name), is_dirty(true) { }
+		: config{ .uuid = uuid, .name = name } { }
 
 	Scene::~Scene()
 	{
@@ -92,10 +89,7 @@ namespace Paper {
 
 		CopyComponent(AllComponents{},dstSceneRegistry, registry, newScene->entity_map);
 
-		newScene->name = name;
-		newScene->path = path;
-		newScene->is_dirty = false;
-		newScene->uuid = uuid;
+		newScene->SetConfig(config);
 
 		return newScene;
 	}
@@ -424,13 +418,11 @@ namespace Paper {
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
-		is_dirty = true;
 		return CreateEntity(PaperID(), name);
 	}
 
 	Entity Scene::CreateEntity(const PaperID& id, const std::string& name)
 	{
-		is_dirty = true;
 		Entity entity(registry.create(), id, name, this);
 		entity_map[id] = entity;
 
@@ -450,8 +442,6 @@ namespace Paper {
 
 		if (entity.HasComponent<ScriptComponent>())
 			ScriptEngine::OnDestroyEntity(entity);
-
-		is_dirty = true;
 
 		entity_map.erase(entity.GetPaperID());
 		registry.destroy(entity);

@@ -5,6 +5,7 @@
 
 #include "Components.h"
 #include "Entity.h"
+#include "project/Project.h"
 
 #include "scripting/ScriptEngine.h"
 #include "utils/Utils.h"
@@ -79,9 +80,21 @@ namespace Paper
 
 	void SceneSerializer::Serialize(const Shr<Scene>& scene, const std::filesystem::path& filePath)
 	{
+		std::string outString;
+		Serialize(scene, outString);
+
+		std::ofstream fout(filePath);
+		fout << outString.c_str();
+		fout.close();
+	}
+
+	void SceneSerializer::Serialize(const Shr<Scene>& scene, std::string& outString)
+	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << scene->GetPaperID();
+		out << YAML::Key << "Scene";
+		out << YAML::BeginMap;
+		out << YAML::Key << "PaperID" << YAML::Value << scene->GetPaperID();
 		out << YAML::Key << "Name" << YAML::Value << scene->GetName();
 
 		std::string scene_path = scene->GetPath().string();
@@ -104,11 +117,8 @@ namespace Paper
 			});
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
-
-
-		std::ofstream fout(filePath);
-		fout << out.c_str();
-		fout.close();
+		out << YAML::EndMap;
+		outString = out.c_str();
 	}
 
 	template <typename... Component>
@@ -153,17 +163,24 @@ namespace Paper
 
 		try
 		{
-			if (!data["Scene"])
+			auto sceneNode = data["Scene"];
+			if (!sceneNode)
 				return nullptr;
 
-			std::string scene_name = data["Name"].as<std::string>();
-			LOG_CORE_TRACE("Deserializing scene '{0}' from '{1}'", scene_name, filePath.string());
 
-			scene->name = scene_name;
-			if (data["Path"])
-				scene->path = data["Path"].as<std::string>();
+			SceneConfig config;
 
-			if (auto entities = data["Entities"])
+			config.name = sceneNode["Name"].as<std::string>();
+			LOG_CORE_TRACE("Deserializing scene '{0}' from '{1}'", config.name, filePath.string());
+
+			config.uuid = sceneNode["PaperID"].as<PaperID>();
+
+			if (sceneNode["Path"])
+				config.path = sceneNode["Path"].as<std::string>();
+
+			scene->SetConfig(config);
+
+			if (auto entities = sceneNode["Entities"])
 			{
 				for (auto entity : entities)
 				{
@@ -211,7 +228,18 @@ namespace Paper
 			LOG_CORE_CRITICAL(ex.msg);
 			return nullptr;
 		}
-		scene->SetClean();
 		return scene;
+	}
+
+	bool SceneSerializer::IsSceneDirty(const Shr<Scene>& scene)
+	{
+		std::string currentSerialization;
+		Serialize(scene, currentSerialization);
+
+		std::stringstream existingSerialisation;
+		std::fstream istream(Project::GetProjectPath() / scene->GetPath());
+		existingSerialisation << istream.rdbuf();
+
+		return currentSerialization != existingSerialisation.str();
 	}
 }

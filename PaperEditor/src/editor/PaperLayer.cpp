@@ -19,6 +19,7 @@
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
+#include "panels/ScenePanel.h"
 #include "panels/SettingsPanel.h"
 
 
@@ -56,6 +57,7 @@ void PaperLayer::OnAttach()
 	panelManager.AddPanel<ViewportDebuggingPanel>("Viewport Debugger", false);
 	panelManager.AddPanel<ApplicationPanel>(true, DockLoc::Right);
 	panelManager.AddPanel<ContentBrowserPanel>("Content Browser", true, DockLoc::Bottom);
+	panelManager.AddPanel<ScenePanel>("Scene", true, DockLoc::Right);
 	panelManager.AddPanel<OutlinerPanel>("Outliner", true, DockLoc::Right);
 	panelManager.AddPanel<PropertiesPanel>("Properties", true, DockLoc::RightBottom);
 
@@ -413,14 +415,15 @@ void PaperLayer::NewScene(const std::string& sceneName)
 	OpenScene(MakeShr<Scene>(sceneName));
 }
 
-void PaperLayer::OpenScene(const Shr<Scene>& scene, bool saveOldScene)
+void PaperLayer::OpenScene(Shr<Scene> scene)
 {
 	if (!scene) return;
 
-	if (editorScene && saveOldScene)
-		SaveScene();
-
-	SelectionManager::Deselect();
+	if (editorScene)
+	{
+		CloseSceneWithPopup(scene);
+		return;
+	}
 
 	panelManager.OnSceneChanged(scene);
 	editorScene = scene;
@@ -428,6 +431,33 @@ void PaperLayer::OpenScene(const Shr<Scene>& scene, bool saveOldScene)
 	Scene::SetActive(scene);
 
 	ChangeWindowTitle();
+}
+
+void PaperLayer::CloseScene()
+{
+	if (!editorScene) return;
+
+	SelectionManager::Deselect();
+
+	OnSceneStop();
+
+	Scene::SetActive(nullptr);
+
+	editorScene = nullptr;
+}
+
+void PaperLayer::CloseSceneWithPopup(Shr<Scene> potentialNewScene)
+{
+	if (!editorScene) return;
+
+	if (SceneSerializer::IsSceneDirty(editorScene))
+	{
+		ShowUnsavedScenePopup(potentialNewScene);
+		return;
+	}
+	CloseScene();
+	if (potentialNewScene)
+		OpenScene(potentialNewScene);
 }
 
 void PaperLayer::SaveScene() const
@@ -549,7 +579,54 @@ void PaperLayer::ShowNewScenePopup()
 	});
 }
 
-void HoverImageButton(std::string text)
+void PaperLayer::ShowUnsavedScenePopup(const Shr<Scene>& newScene)
+{
+	if (unsavedScenePopupCache)
+	{
+		LOG_WARN("Trying to open UnsavedScenePopup but there is already a scene in the cache!");
+		return;
+	}
+	unsavedScenePopupCache = newScene;
+	ShowPopup("Unsaved scene!", [&]()
+	{
+		bool buttonPressed = false;
+
+		ImGui::TextWrapped("Your current scene has unsaved changes.\nDo you want to save them?");
+
+		if (ImGui::Button("Yes"))
+		{
+			SaveScene();
+			CloseSceneWithPopup();
+			buttonPressed = true;
+		}
+		
+		ImGui::SameLine();
+
+		if (ImGui::Button("No"))
+		{
+			CloseScene();
+			buttonPressed = true;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel"))
+		{
+			ImGui::CloseCurrentPopup();
+			unsavedScenePopupCache = nullptr;
+		};
+
+		if (buttonPressed)
+		{
+			if (unsavedScenePopupCache)
+				OpenScene(unsavedScenePopupCache);
+			ImGui::CloseCurrentPopup();
+			unsavedScenePopupCache = nullptr;
+		}
+	});
+}
+
+void HoverImageButton(const std::string& text)
 {
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
 	{
@@ -709,6 +786,7 @@ void PaperLayer::OnSceneSimulate()
 
 void PaperLayer::OnSceneStop()
 {
+	if (sceneState == SceneState::Edit) return;
 	if (sceneState == SceneState::Play)
 		Scene::GetActive()->OnRuntimeStop();
 	else if (sceneState == SceneState::Simulate)

@@ -11,7 +11,7 @@ namespace Paper
 	struct DefaultValues
 	{
 		// GENERIC
-		inline static glm::vec3 position = glm::vec3(0.0f, 0.0f, 5.0f);
+		inline static glm::vec3 position = glm::vec3(0.0f, 0.0f, 30.0f);
 
 		inline static float pitch = 0.0f;
 		inline static float yaw = 0.0f;

@@ -146,7 +146,9 @@ public:
 	void CloseProject();
 
 	void NewScene(const std::string& sceneName = "NewScene");
-	void OpenScene(const Shr<Scene>& scene, bool saveOlsScene = false);
+	void OpenScene(Shr<Scene> scene);
+	void CloseScene();
+	void CloseSceneWithPopup(Shr<Scene> potentialNewScene = nullptr);
 	void SaveScene() const;
 	void SaveSceneAs(const std::filesystem::path& filePath) const;
 
@@ -165,6 +167,7 @@ public:
 
 	void ShowNewProjectPopup();
 	void ShowNewScenePopup();
+	void ShowUnsavedScenePopup(const Shr<Scene>& _newScene);
 
 public:
 
@@ -187,7 +190,7 @@ public:
 
 
 	
-
+	Shr<Scene> unsavedScenePopupCache;
 
 	ViewPort* viewPortCurrentlySimulating = nullptr;
 	ViewPort* lastFocusedViewPort = nullptr;

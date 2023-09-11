@@ -1,8 +1,8 @@
 VM start event not sent yet: dropping APPDOMAIN_CREATE
-[0000000000009E40] Thread started, obj=000001D120850130, tls=000001D1101B7AA0.
+[0000000000009730] Thread started, obj=000001B62B950130, tls=000001B626E369C0.
 VM start event not sent yet: dropping THREAD_START
-[0000000000009E40] Suspended.
-[0000000000009E40] Resumed.
+[0000000000009730] Suspended.
+[0000000000009730] Resumed.
 VM start event not sent yet: dropping ASSEMBLY_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -12,12 +12,12 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
-[0000000000005DC4] Thread started, obj=000001D120850278, tls=000001D1101B9A50.
+[00000000000046C8] Thread started, obj=000001B62B950278, tls=000001B626E845E0.
 VM start event not sent yet: dropping THREAD_START
-[0000000000005DC4] Suspended.
+[00000000000046C8] Suspended.
+[00000000000046C8] Resumed.
 Debugger client is not connected: dropping VM_START
-[0000000000005DC4] Resumed.
-[dbg] Agent thread started, pid=000000000000441C
+[dbg] Agent thread started, pid=0000000000004ACC
 VM start event not sent yet: dropping APPDOMAIN_CREATE
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -69,10 +69,10 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
-[0000000000007A68] Thread started, obj=000001D120850508, tls=000001D1101BAF70.
+[0000000000007830] Thread started, obj=000001B62B950508, tls=000001B62705A930.
 VM start event not sent yet: dropping THREAD_START
-[0000000000007A68] Suspended.
-[0000000000007A68] Resumed.
+[0000000000007830] Suspended.
+[0000000000007830] Resumed.
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -100,7 +100,7 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping ASSEMBLY_UNLOAD
 VM start event not sent yet: dropping ASSEMBLY_UNLOAD
 VM start event not sent yet: dropping APPDOMAIN_UNLOAD
-[0000000000007A68] Thread terminated, obj=000001D120850508, tls=000001D1101BAF70 (domain=000001D11021B650).
+[0000000000007830] Thread terminated, obj=000001B62B950508, tls=000001B62705A930 (domain=000001B61DC78370).
 VM start event not sent yet: dropping THREAD_DEATH
 VM start event not sent yet: dropping APPDOMAIN_CREATE
 VM start event not sent yet: dropping TYPE_LOAD
@@ -178,10 +178,10 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
-[0000000000008CF8] Thread started, obj=000001D120850650, tls=000001D1101BBA00.
+[00000000000079AC] Thread started, obj=000001B62B950650, tls=000001B61B287F70.
 VM start event not sent yet: dropping THREAD_START
-[0000000000008CF8] Suspended.
-[0000000000008CF8] Resumed.
+[00000000000079AC] Suspended.
+[00000000000079AC] Resumed.
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -195,7 +195,7 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping ASSEMBLY_UNLOAD
 VM start event not sent yet: dropping ASSEMBLY_UNLOAD
 VM start event not sent yet: dropping APPDOMAIN_UNLOAD
-[0000000000008CF8] Thread terminated, obj=000001D120850650, tls=000001D1101BBA00 (domain=000001D11021B650).
+[00000000000079AC] Thread terminated, obj=000001B62B950650, tls=000001B61B287F70 (domain=000001B61DC78370).
 VM start event not sent yet: dropping THREAD_DEATH
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
@@ -224,7 +224,7 @@ VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
 VM start event not sent yet: dropping TYPE_LOAD
-[0000000000005DC4] Thread terminated, obj=000001D120850278, tls=000001D1101B9A50 (domain=000001D11021B650).
+[00000000000046C8] Thread terminated, obj=000001B62B950278, tls=000001B626E845E0 (domain=000001B61DC78370).
 VM start event not sent yet: dropping THREAD_DEATH
 VM start event not sent yet: dropping VM_DEATH
 Accepted connection on -1

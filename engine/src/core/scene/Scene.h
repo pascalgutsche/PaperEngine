@@ -13,10 +13,20 @@ namespace Paper {
 
     class Entity;
 
+    struct SceneConfig
+    {
+        PaperID uuid;
+        std::string name = "NewScene";
+
+        std::filesystem::path path;
+
+        bool show2DColliders = false;
+    };
+
     class Scene {
     public:
 
-        Scene();
+        Scene() = default;
         Scene(const PaperID& uuid);
         Scene(const std::string& name);
         Scene(const PaperID& uuid, const std::string& name);
@@ -52,17 +62,19 @@ namespace Paper {
         Entity GetEntity(const PaperID& id);
         Entity GetEntityByName(const std::string& name);
 
-        PaperID GetPaperID() const { return uuid; }
-        std::string GetName() const { return name; }
+        PaperID GetPaperID() const { return config.uuid; }
+        std::string GetName() const { return config.name; }
 
-        std::filesystem::path GetPath() { return path; }
-        void SetPath(const std::filesystem::path& path ) { this->path = path; }
+        std::filesystem::path GetPath() { return config.path; }
+        void SetPath(const std::filesystem::path& path ) { config.path = path; }
 
         auto& Registry() { return registry; }
         auto& EntityMap() { return entity_map; }
 
-        bool IsDirty() const { return is_dirty; }
-        void SetClean() { is_dirty = false; }
+        SceneConfig& GetConfig() { return config; }
+        const SceneConfig& GetConfig() const { return config; }
+
+        void SetConfig(SceneConfig sceneConfig) { config = sceneConfig; }
 
         //runtime
         bool IsPaused() const { return isPaused; }
@@ -73,12 +85,7 @@ namespace Paper {
         static void SetActive(const Shr<Scene>& newActiveScene) { activeScene = newActiveScene; }
         static Shr<Scene> GetActive() { return activeScene; }
     private:
-        PaperID uuid;
-        std::string name;
-
-        bool is_dirty = false;
-
-        std::filesystem::path path;
+        SceneConfig config;
 
         entt::registry registry;
         std::unordered_map<PaperID, entt::entity> entity_map;

@@ -234,4 +234,22 @@ namespace Paper
             set => InternalCalls.ScriptComponent_SetScriptClassName(Entity.PaperID, value);
         }
     }
+
+    public class Rigidbody2DComponent : Component
+    {
+        public string ScriptClassName
+        {
+            get => InternalCalls.ScriptComponent_GetScriptClassName(Entity.PaperID);
+            set => InternalCalls.ScriptComponent_SetScriptClassName(Entity.PaperID, value);
+        }
+    }
+
+    public class Collider2DComponent : Component
+    {
+        public string ScriptClassName
+        {
+            get => InternalCalls.ScriptComponent_GetScriptClassName(Entity.PaperID);
+            set => InternalCalls.ScriptComponent_SetScriptClassName(Entity.PaperID, value);
+        }
+    }
 }
