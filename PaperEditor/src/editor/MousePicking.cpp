@@ -8,6 +8,13 @@
 void PaperLayer::MousePicking()
 {
 	hovered_entity = Entity();
+
+	if (sceneChanged)
+	{
+		sceneChanged = false;
+		return;
+	}
+
 	ViewPort* port = nullptr;
 	for (auto& viewport : viewports)
 		if (viewport.is_visible && viewport.viewport_hovered)

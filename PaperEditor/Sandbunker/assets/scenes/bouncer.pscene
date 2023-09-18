@@ -7,37 +7,6 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - f3d1502487799080
-          Name: Sprite
-          Tags:
-            []
-        TransformComponent:
-          Position: [-2.2880156, 8.30300617, -10.0053434]
-          Scale: [21.7341537, 0.99999404, 1]
-          Rotation: [0.144301295, -0.116840638, -39.3608398]
-        SpriteComponent:
-          Color: [1, 0, 0, 1]
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-        Rigidbody2DComponent:
-          Type: Static
-          FixedRotation: false
-        Collider2DComponent:
-          Geometry: Rectangle
-          Offset: [0, 0]
-          Size: [0.5, 0.5]
-          Radius: 0.5
-          Density: 1
-          Friction: 0.5
-          Bounciness: 0
-          BouncinessThreshold: 0.5
-    - Components:
-        DataComponent:
-          PaperID:
             - 00dff086136110b3
           Name: Sprite
           Tags:
@@ -74,7 +43,7 @@ Scene:
           Tags:
             []
         TransformComponent:
-          Position: [7.11373711, 22.0762157, -9.99999809]
+          Position: [1.48565197, 10.7369156, -9.99999809]
           Scale: [5.40999985, 5.40999985, 5.40999985]
           Rotation: [0, 0, 0]
         SpriteComponent:
@@ -86,377 +55,37 @@ Scene:
           RegisterAlphaPixels: false
           Thickness: 1
           Fade: 0.00499999989
-        ScriptComponent:
-          Name: Sandbunker.Max
-          ScriptFields:
-            Sandbunker.Max:
-              x:
-                FieldType: 12
-                Value: 0
-              x:
-                FieldType: 12
-                Value: 0
-              y:
-                FieldType: 12
-                Value: 0
-              y:
-                FieldType: 12
-                Value: 0
-              speedX:
-                FieldType: 12
-                Value: 3
-              speedX:
-                FieldType: 12
-                Value: 3
-              speedY:
-                FieldType: 12
-                Value: 3
-              speedY:
-                FieldType: 12
-                Value: 3
-        Rigidbody2DComponent:
-          Type: Dynamic
-          FixedRotation: false
-        Collider2DComponent:
+    - Components:
+        DataComponent:
+          PaperID:
+            - 4dd230575d755bba
+          Name: Sprite
+          Tags:
+            []
+        TransformComponent:
+          Position: [20.1082382, -33.4700089, 0.039381016]
+          Scale: [51.4981499, 51.4981499, 51.4981499]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 0, 0, 1]
+          TexturePath: assets\textures\Honecker-2113738823.jpg
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Circle
-          Offset: [0, 0]
-          Size: [0.5, 0.5]
-          Radius: 0.5
-          Density: 47.0999985
-          Friction: 0
-          Bounciness: 0.800000012
-          BouncinessThreshold: 0.5
-    - Components:
-        DataComponent:
-          PaperID:
-            - ec02fe39ada8847b
-          Name: Camera
-          Tags:
-            []
-        TransformComponent:
-          Position: [0, 0, 2.91147065]
-          Scale: [1, 1, 1]
-          Rotation: [0, 0, 0]
-        CameraComponent:
-          FixedAspectRatio: false
-          Primary: true
-          EntityCamera:
-            ProjectionMode: Perspective
-            PerspectiveFOV: 90
-            PerspectiveNear: 0.00999999978
-            PerspectiveFar: 1000
-            OrthographicSize: 10
-            OrthographicNear: -1
-            OrthographicFar: 1000
-    - Components:
-        DataComponent:
-          PaperID:
-            - 8c74b899f28bd08d
-          Name: Text Entity
-          Tags:
-            []
-        TransformComponent:
-          Position: [10.1240406, 24.8105125, -10]
-          Scale: [7.97816181, 4.8739872, 2.00999999]
-          Rotation: [0, 0, 0]
-        TextComponent:
-          Color: [0, 1, 0.0287768841, 1]
-          Text: Hello my frindos
-          FontPath: __DEFAULT_FONT__
-          RegisterAlphaPixels: false
-        Rigidbody2DComponent:
-          Type: Dynamic
-          FixedRotation: false
-        Collider2DComponent:
-          Geometry: Rectangle
-          Offset: [0, 0]
-          Size: [0.5, 0.5]
-          Radius: 0.5
-          Density: 1
-          Friction: 0.5
-          Bounciness: 5.4000001
-          BouncinessThreshold: 0.5
-    - Components:
-        DataComponent:
-          PaperID:
-            - 51ff45f8c5166af1
-          Name: PlayerSprite
-          Tags:
-            []
-        TransformComponent:
-          Position: [0, 0, -25.5161266]
-          Scale: [124.316284, 124.316437, 124.316284]
-          Rotation: [0, -0.00496596098, 0]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\wallpaper.jpg
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
           RegisterAlphaPixels: false
           Thickness: 1
-          Fade: 0.00499999989
+          Fade: 0.310000002
     - Components:
         DataComponent:
           PaperID:
-            - 33bdade81b95947e
-          Name: PlayerSprite
-          Tags:
-            []
-        TransformComponent:
-          Position: [-1.00758386, 19.3874111, -10]
-          Scale: [6.42599964, 6.42599964, 6.42599964]
-          Rotation: [0, 0, 0]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\server-icon.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-        ScriptComponent:
-          Name: Sandbunker.Max
-          ScriptFields:
-            Sandbox.Player:
-              transformComponent:
-                FieldType: 21
-                Value: 0
-              transformComponent:
-                FieldType: 21
-                Value: 0
-              transformComponent:
-                FieldType: 21
-                Value: 0
-              transformComponent:
-                FieldType: 21
-                Value: 0
-              spriteComponent:
-                FieldType: 22
-                Value: 0
-              spriteComponent:
-                FieldType: 22
-                Value: 0
-              spriteComponent:
-                FieldType: 22
-                Value: 0
-              spriteComponent:
-                FieldType: 22
-                Value: 0
-              count:
-                FieldType: 8
-                Value: 1
-              count:
-                FieldType: 8
-                Value: 1
-              count:
-                FieldType: 8
-                Value: 1
-              count:
-                FieldType: 8
-                Value: 1
-              Speed:
-                FieldType: 12
-                Value: 3.00399995
-              Speed:
-                FieldType: 12
-                Value: 3.00399995
-              Speed:
-                FieldType: 12
-                Value: 3.00399995
-              Speed:
-                FieldType: 12
-                Value: 3.00399995
-              charVar:
-                FieldType: 4
-                Value: b
-              charVar:
-                FieldType: 4
-                Value: b
-              charVar:
-                FieldType: 4
-                Value: b
-              charVar:
-                FieldType: 4
-                Value: b
-              entityCamera:
-                FieldType: 1
-                Value: 0
-              entityCamera:
-                FieldType: 1
-                Value: 0
-              entityCamera:
-                FieldType: 1
-                Value: 0
-              entityCamera:
-                FieldType: 1
-                Value: 0
-            Sandbunker.Max:
-              x:
-                FieldType: 12
-                Value: 0
-              x:
-                FieldType: 12
-                Value: 0
-              x:
-                FieldType: 12
-                Value: 0
-              x:
-                FieldType: 12
-                Value: 0
-              y:
-                FieldType: 12
-                Value: 0
-              y:
-                FieldType: 12
-                Value: 0
-              y:
-                FieldType: 12
-                Value: 0
-              y:
-                FieldType: 12
-                Value: 0
-              speedX:
-                FieldType: 12
-                Value: 3
-              speedX:
-                FieldType: 12
-                Value: 3
-              speedX:
-                FieldType: 12
-                Value: 3
-              speedX:
-                FieldType: 12
-                Value: 3
-              speedY:
-                FieldType: 12
-                Value: 3
-              speedY:
-                FieldType: 12
-                Value: 3
-              speedY:
-                FieldType: 12
-                Value: 3
-              speedY:
-                FieldType: 12
-                Value: 3
-        Rigidbody2DComponent:
-          Type: Dynamic
-          FixedRotation: false
-        Collider2DComponent:
-          Geometry: Rectangle
-          Offset: [0, 0]
-          Size: [0.5, 0.5]
-          Radius: 0.5
-          Density: 4
-          Friction: 0.5
-          Bounciness: 1
-          BouncinessThreshold: 0.5
-    - Components:
-        DataComponent:
-          PaperID:
-            - 8cf2e04619a529a6
+            - f3d1502487799080
           Name: Sprite
           Tags:
             []
         TransformComponent:
-          Position: [-11.0778685, 20.9852886, -10.0249405]
-          Scale: [13.0892811, 0.999996305, 1]
-          Rotation: [0.184654877, 0.0194732081, -84.3784866]
-        SpriteComponent:
-          Color: [1, 0, 0, 1]
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-        Rigidbody2DComponent:
-          Type: Static
-          FixedRotation: false
-        Collider2DComponent:
-          Geometry: Rectangle
-          Offset: [0, 0]
-          Size: [0.5, 0.5]
-          Radius: 0.5
-          Density: 1
-          Friction: 0.5
-          Bounciness: 0
-          BouncinessThreshold: 0.5
-    - Components:
-        DataComponent:
-          PaperID:
-            - c07ed2f93c244e34
-          Name: Sprite
-          Tags:
-            []
-        TransformComponent:
-          Position: [20.8288612, 16.4239597, -9.92665195]
-          Scale: [13.0892963, 0.999997139, 1]
-          Rotation: [0.170808479, -0.0728179514, -55.2698135]
-        SpriteComponent:
-          Color: [1, 0, 0, 1]
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-        Rigidbody2DComponent:
-          Type: Static
-          FixedRotation: false
-        Collider2DComponent:
-          Geometry: Rectangle
-          Offset: [0, 0]
-          Size: [0.5, 0.5]
-          Radius: 0.5
-          Density: 1
-          Friction: 0.5
-          Bounciness: 0
-          BouncinessThreshold: 0.5
-    - Components:
-        DataComponent:
-          PaperID:
-            - 137b0aa55cc36d6a
-          Name: Sprite
-          Tags:
-            []
-        TransformComponent:
-          Position: [8.95398808, 26.9180965, -9.95748234]
-          Scale: [21.7341614, 0.999990642, 1]
-          Rotation: [0.133759245, -0.128777325, -34.4452438]
-        SpriteComponent:
-          Color: [1, 0, 0, 1]
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-        Rigidbody2DComponent:
-          Type: Static
-          FixedRotation: false
-        Collider2DComponent:
-          Geometry: Rectangle
-          Offset: [0, 0]
-          Size: [0.5, 0.5]
-          Radius: 0.5
-          Density: 1
-          Friction: 0.5
-          Bounciness: 0
-          BouncinessThreshold: 0.5
-    - Components:
-        DataComponent:
-          PaperID:
-            - 9b2cd6e28efd2eaf
-          Name: Sprite
-          Tags:
-            []
-        TransformComponent:
-          Position: [-5.65111732, 29.5473328, -10.002121]
-          Scale: [13.0893364, 1.00000072, 1]
-          Rotation: [0.0635054931, 0.174484521, -148.359497]
+          Position: [-2.2880156, 8.30300617, -10.0053434]
+          Scale: [21.7341537, 0.99999404, 1]
+          Rotation: [0.144301295, -0.116840638, -39.3608398]
         SpriteComponent:
           Color: [1, 0, 0, 1]
           TilingFactor: 1

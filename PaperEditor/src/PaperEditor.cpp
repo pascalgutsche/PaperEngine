@@ -6,17 +6,19 @@
 
 #include <ImGuizmo/ImGuizmo.h>
 
+#include "nfd.hpp"
+
 class PaperEditor : public Application {
 public:
 	PaperEditor()
 		: Application(WindowProps("PaperEditor", 2560, 1200))
 	{
-
+		NFD::Init();
 	}
 	
 	~PaperEditor() override
 	{
-		
+		NFD::Quit();
 	}
 
 	void Init() override {

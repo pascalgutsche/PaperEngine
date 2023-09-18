@@ -379,7 +379,7 @@ namespace Paper {
 				{
 					EdgeRenderData data;
 					glm::mat4 transformMat = transform.GetTransform();
-					//glm::scale(transformMat, glm::vec3(collider.size, 1.0f));
+					glm::scale(transformMat, glm::vec3(collider.size, 1.0f));
 					glm::translate(transformMat, glm::vec3(collider.offset, 0.0f));
 					glm::vec3 position = transform.position + glm::vec3(collider.offset, 0.0f);
 					glm::vec3 scale = transform.scale * glm::vec3(collider.size * -2.0f, 1.0f);
@@ -388,7 +388,7 @@ namespace Paper {
 					Renderer2D::DrawLineRect(transformMat, color, -1);
 				}
 			}
-		}	
+		}
 	}
 
 	void Scene::OnPhysics2DStart()

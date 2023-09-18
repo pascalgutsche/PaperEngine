@@ -76,13 +76,12 @@ void PaperLayer::OnDetach()
 
 void PaperLayer::Update(const float dt)
 {
+#ifndef DISABLE_SCRIPT_ENGINE
 	if (ScriptEngine::ShouldReloadAssemblies())
 	{
 		ScriptEngine::ReloadAssemblies();
 	}
-
-	//CheckSceneChange();
-
+#endif
 }
 
 void PaperLayer::OnEvent(Event& event)
@@ -371,10 +370,12 @@ void PaperLayer::OpenProject(const Shr<Project>& project)
 
 	panelManager.OnProjectChanged(project);
 
+#ifndef DISABLE_SCRIPT_ENGINE
 	if (std::filesystem::exists(Project::GetScriptBinaryFilePath()))
 	{
 		ScriptEngine::AddAppAssembly(Project::GetScriptBinaryFilePath());
 	}
+#endif
 
 	OpenScene(Project::GetStartScene());
 
@@ -421,8 +422,7 @@ void PaperLayer::OpenScene(Shr<Scene> scene)
 
 	if (editorScene)
 	{
-		CloseSceneWithPopup(scene);
-		return;
+		CloseScene();
 	}
 
 	panelManager.OnSceneChanged(scene);
@@ -431,6 +431,7 @@ void PaperLayer::OpenScene(Shr<Scene> scene)
 	Scene::SetActive(scene);
 
 	ChangeWindowTitle();
+	sceneChanged = true;
 }
 
 void PaperLayer::CloseScene()
@@ -450,6 +451,11 @@ void PaperLayer::CloseSceneWithPopup(Shr<Scene> potentialNewScene)
 {
 	if (!editorScene) return;
 
+	//
+	CloseScene();
+	if (potentialNewScene)
+		OpenScene(potentialNewScene);
+	return;
 	if (SceneSerializer::IsSceneDirty(editorScene))
 	{
 		ShowUnsavedScenePopup(potentialNewScene);

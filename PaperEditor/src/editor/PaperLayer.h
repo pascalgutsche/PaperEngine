@@ -191,6 +191,7 @@ public:
 
 	
 	Shr<Scene> unsavedScenePopupCache;
+	bool sceneChanged = false;
 
 	ViewPort* viewPortCurrentlySimulating = nullptr;
 	ViewPort* lastFocusedViewPort = nullptr;

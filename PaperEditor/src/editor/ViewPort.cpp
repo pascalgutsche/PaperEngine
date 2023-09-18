@@ -12,34 +12,47 @@
 
 #include "SelectionManager.h"
 
+static constexpr float normalSpeed = 5.0f;
+
+static float GetCameraSpeed()
+{
+	float speed = normalSpeed;
+	if (Input::IsKeyDown(Key::LEFT_CONTROL))
+		speed /= 8 - glm::log(normalSpeed);
+	if (Input::IsKeyDown(Key::LEFT_SHIFT))
+		speed *= 8 - glm::log(normalSpeed);
+
+	return glm::clamp(speed, 2.0f, 10.0f);
+}
 
 static void CameraMovement(const Shr<EditorCamera>& camera)
 {
 	const float dt = Application::GetDT();
+	const float speed = GetCameraSpeed();
 	if (Input::IsKeyDown(Key::W))
 	{
-		camera->position.x += 5 * dt * camera->GetFront().z;
-		camera->position.z -= 5 * dt * camera->GetFront().x;
+		camera->position.x += speed * dt * camera->GetFront().z;
+		camera->position.z -= speed * dt * camera->GetFront().x;
 	}
 	if (Input::IsKeyDown(Key::A))
 	{
-		camera->position.x -= 5 * dt * camera->GetFront().x;
-		camera->position.z -= 5 * dt * camera->GetFront().z;
+		camera->position.x -= speed * dt * camera->GetFront().x;
+		camera->position.z -= speed * dt * camera->GetFront().z;
 	}
 	if (Input::IsKeyDown(Key::S))
 	{
-		camera->position.x -= 5 * dt * camera->GetFront().z;
-		camera->position.z += 5 * dt * camera->GetFront().x;
+		camera->position.x -= speed * dt * camera->GetFront().z;
+		camera->position.z += speed * dt * camera->GetFront().x;
 	}
 	if (Input::IsKeyDown(Key::D))
 	{
-		camera->position.x += 5 * dt * camera->GetFront().x;
-		camera->position.z += 5 * dt * camera->GetFront().z;
+		camera->position.x += speed * dt * camera->GetFront().x;
+		camera->position.z += speed * dt * camera->GetFront().z;
 	}
 	if (Input::IsKeyDown(Key::E))
-		camera->position.y += 5 * dt;
+		camera->position.y += speed * dt;
 	if (Input::IsKeyDown(Key::Q))
-		camera->position.y -= 5 * dt;
+		camera->position.y -= speed * dt;
 }
 
 #include "renderer/Renderer2D.h"
@@ -47,15 +60,20 @@ void ViewPort::Panel(PaperLayer* peLayer)
 {
 	const Shr<Scene> activeScene = Scene::GetActive();
 	Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
+
+	if (activeScene && viewport_size.x > 0.0f && viewport_size.y > 0.0f)
+		activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
+
 	if (FramebufferSpecification spec = framebuffer->GetSpecification();
 		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
 		(spec.width != viewport_size.x || spec.height != viewport_size.y))
 	{
+		const Shr<Scene> activeScene = Scene::GetActive();
 		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
 
 		camera->aspect_ratio = viewport_size.x / viewport_size.y;
-		if (activeScene)
-			activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
+		//if (activeScene)
+		//	activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
 	}
 
 	RenderCommand::ClearColor(glm::vec4(0.0f));
@@ -183,4 +201,9 @@ void ViewPort::Panel(PaperLayer* peLayer)
 
 
 	framebuffer->Unbind();
+}
+
+void ViewPort::Resize()
+{
+	
 }

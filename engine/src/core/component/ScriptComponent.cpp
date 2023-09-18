@@ -10,11 +10,11 @@ namespace Paper
 	{
 		try
 		{
+#ifndef DISABLE_SCRIPT_ENGINE
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap; // SpriteComponent
 
 			out << YAML::Key << "Name" << YAML::Value << ScriptEngine::GetEntityInheritClass(scriptClassName)->fullClassName;
-
 
 			const auto& entityFieldStorage = ScriptEngine::GetEntityFieldStorage(*serializedEntity);
 
@@ -94,12 +94,12 @@ namespace Paper
 					out << YAML::EndMap;
 
 				}
-
 				out << YAML::EndMap;
 			}
 
 			out << YAML::EndMap;
 			out << YAML::EndMap; // SpriteComponent
+#endif
 
 			return true;
 		}
@@ -209,7 +209,7 @@ namespace Paper
 		try
 		{
 			scriptClassName = data["Name"].as<std::string>();
-
+#ifndef DISABLE_SCRIPT_ENGINE
 			auto yamlScriptFields = data["ScriptFields"];
 
 			for (YAML::const_iterator yamlScriptClass = yamlScriptFields.begin(); yamlScriptClass != yamlScriptFields.end(); ++yamlScriptClass) {
@@ -217,6 +217,7 @@ namespace Paper
 			}
 
 			ScriptEngine::CreateScriptEntity(*serializedEntity);
+#endif
 		}
 		catch (YAML::EmitterException& e)
 		{

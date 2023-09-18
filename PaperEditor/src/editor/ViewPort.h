@@ -22,6 +22,8 @@ public:
 
 	void Panel(PaperLayer* peLayer);
 
+	void Resize();
+
 	glm::vec2 viewport_pos_abs{};
 
 	glm::vec2 viewport_size;

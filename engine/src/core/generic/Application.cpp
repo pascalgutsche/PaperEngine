@@ -2,6 +2,7 @@
 
 #include "generic/Application.h"
 
+#include "nfd.hpp"
 #include "event/Input.h"
 #include "imgui/ImGuiLayer.h"
 #include "renderer/RenderCommand.h"
@@ -24,14 +25,18 @@ namespace Paper {
 		SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		RenderCommand::Init();
+#ifndef DISABLE_SCRIPT_ENGINE
 		ScriptEngine::Init();
+#endif
 
 		imguiLayer = new ImGuiLayer();
 	}
 
 	Application::~Application()
 	{
+#ifndef DISABLE_SCRIPT_ENGINE
 		ScriptEngine::Shutdown(!this->restart);
+#endif
 		RenderCommand::Shutdown();
 		DataPool::ErasePool();
 		Log::Shutdown();

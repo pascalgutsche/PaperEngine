@@ -559,6 +559,7 @@ namespace PaperED
 
 		DrawComponent<ScriptComponent>("Script Component", true, [this](ScriptComponent& scrc, Entity entity)
 		{
+#ifndef DISABLE_SCRIPT_ENGINE
 			ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scrc.scriptClassName);
 			{
 				ContentTable scriptClassSection(ImGui::CalcTextSize("C#-Class").x);
@@ -585,7 +586,6 @@ namespace PaperED
 				}
 			}
 			{
-
 				//Fields
 				EntityInstance* entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
 				if (managedClass)
@@ -669,6 +669,7 @@ namespace PaperED
 					}
 				}
 			}
+#endif
 		});
 
 		{

@@ -81,7 +81,7 @@ namespace Paper
 	void SceneSerializer::Serialize(const Shr<Scene>& scene, const std::filesystem::path& filePath)
 	{
 		std::string outString;
-		Serialize(scene, outString);
+		Serialize(scene, outString, Project::GetRelativePathFromProject(filePath));
 
 		std::ofstream fout(filePath);
 		fout << outString.c_str();
@@ -89,6 +89,12 @@ namespace Paper
 	}
 
 	void SceneSerializer::Serialize(const Shr<Scene>& scene, std::string& outString)
+	{
+		Serialize(scene, outString, std::filesystem::path());
+	}
+
+	void SceneSerializer::Serialize(const Shr<Scene>& scene, std::string& outString,
+		const std::filesystem::path& newPath)
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
@@ -104,8 +110,10 @@ namespace Paper
 		if (pos != std::string::npos)
 			path = std::filesystem::path(scene_path.erase(pos, abs_path.length()));
 
-
-		out << YAML::Key << "Path" << YAML::Value << path.string();
+		if (newPath.empty())
+			out << YAML::Key <<	"Path" << YAML::Value << path.string();
+		else
+			out << YAML::Key <<	"Path" << YAML::Value << newPath;
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 		scene->registry.each([&](auto PaperID)
 			{
@@ -237,8 +245,13 @@ namespace Paper
 		Serialize(scene, currentSerialization);
 
 		std::stringstream existingSerialisation;
-		std::fstream istream(Project::GetProjectPath() / scene->GetPath());
+		std::ifstream istream(Project::GetProjectPath() / scene->GetPath());
 		existingSerialisation << istream.rdbuf();
+
+		LOG_CORE_ERROR("currentSerialisation: \n{}", currentSerialization);
+		LOG_CORE_DEBUG("existingSerialisation: \n{}", existingSerialisation.str());
+
+		LOG_CORE_DEBUG("Scene path: {}", Project::GetProjectPath() / scene->GetPath());
 
 		return currentSerialization != existingSerialisation.str();
 	}

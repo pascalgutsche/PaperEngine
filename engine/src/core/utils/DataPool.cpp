@@ -38,9 +38,9 @@ namespace Paper {
         // set default path
         std::filesystem::path texturePath;
         if (wholePath)
-            texturePath = Project::GetProjectPath() / textureName;
+            texturePath = Project::GetProjectPath() / (Project::GetRelativePathFromProject(textureName));
         else
-            texturePath = Project::GetAssetTexturesPath() / textureName;
+            texturePath = Project::GetAssetTexturesPath() / (Project::GetRelativePathFromProject(textureName));
 
         std::string texture_id = "assettexture_" + textureName;
 

@@ -23,7 +23,7 @@ namespace Sandbunker
             pos.X = (float)Math.Sin(x); ;
             pos.Y = (float)Math.Cos(y);
 
-            x += speedX * dt;
+            x += speedX * dt * 2;
             y += speedY * dt;
 
             if (x > Math.PI * 2)

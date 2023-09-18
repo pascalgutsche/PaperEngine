@@ -24,7 +24,7 @@ namespace PaperED
 		{
 			float textX = ImGui::CalcTextSize("Physics").x;
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvail().x - textX) / 2);
-			ImGui::Text("Physics");
+			ImGui::Checkbox("Show 2D Collider", &activeScene->GetConfig().show2DColliders);
 			ImGui::Separator();
 
 

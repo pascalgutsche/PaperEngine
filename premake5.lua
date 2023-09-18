@@ -15,6 +15,11 @@ workspace "PaperEngine"
 	{
 		"MultiProcessorCompile"
 	}
+	
+	defines
+	{
+		"DISABLE_SCRIPT_ENGINE"
+	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

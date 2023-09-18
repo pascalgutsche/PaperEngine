@@ -20,7 +20,8 @@ namespace Paper {
 
         std::filesystem::path path;
 
-        bool show2DColliders = false;
+        bool show2DColliders = true;
+        bool showCameraIcons = true;
     };
 
     class Scene {
