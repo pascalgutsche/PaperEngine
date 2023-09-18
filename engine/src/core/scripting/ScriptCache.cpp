@@ -16,9 +16,12 @@ namespace Paper
 {
 	struct Cache
 	{
-		std::unordered_map<uint32_t, ManagedClass> managedClasses;
-		std::unordered_map<uint32_t, ManagedField> managedFields;
-		std::unordered_map<uint32_t, std::vector<ManagedMethod>> managedMethods;
+		std::unordered_map<ClassCacheID, ManagedClass> managedClasses;
+		std::unordered_map<FieldCacheID, ManagedField> managedFields;
+		std::unordered_map<MethodCacheID, std::vector<ManagedMethod>> managedMethods;
+
+		std::unordered_map<FieldStorageCacheID, std::unordered_map<PaperID, std::unordered_map<ManagedField*, Buffer>>> fieldStorage;
+
 		std::vector<std::filesystem::path> assemblyPathsCached;
 	};
 
@@ -94,6 +97,13 @@ namespace Paper
 		cache->assemblyPathsCached.push_back(assembly->GetFilePath());
 	}
 
+	FieldStorageCacheID ScriptCache::CacheScriptFieldValue(FieldCacheID fieldID, Buffer value)
+	{
+		FieldStorageCacheID id = Hash::GenerateRandonHash();
+
+		return id;
+	}
+
 	std::vector<ManagedClass*> ScriptCache::GetManagedClasses()
 	{
 		std::vector<ManagedClass*> managedClasses;
@@ -138,6 +148,11 @@ namespace Paper
 				return &managedMethod;
 		}
 		return nullptr;
+	}
+
+	Buffer& ScriptCache::GetFieldStorage(PaperID paperID, ManagedField* managedField)
+	{
+		return cache->fieldStorage[paperID][managedField];
 	}
 
 

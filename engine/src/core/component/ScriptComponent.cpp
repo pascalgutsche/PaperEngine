@@ -1,6 +1,7 @@
 ﻿#include "Engine.h"
 #include "ScriptComponent.h"
 
+#include "scripting/ScriptCache.h"
 #include "scripting/ScriptEngine.h"
 
 
@@ -198,6 +199,8 @@ namespace Paper
 					break;
 				}
 			}
+
+			ScriptCache::GetFieldStorage(deserializedEntity.GetPaperID(), managedField) = 
 
 			scriptClassFieldStorages.emplace(scriptClassFieldStorages.begin() + index, fieldStorage);
 		}

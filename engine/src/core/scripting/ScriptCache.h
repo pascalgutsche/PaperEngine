@@ -1,8 +1,15 @@
 ﻿#pragma once
 #include "ManagedTypes.h"
+#include "scene/Entity.h"
 
 namespace Paper
 {
+	using ClassCacheID = uint32_t;
+	using FieldCacheID = uint32_t;
+	using MethodCacheID = uint32_t;
+
+	using FieldStorageCacheID = uint32_t;
+
 	class ScriptCache
 	{
 	public:
@@ -14,6 +21,8 @@ namespace Paper
 
 		static void CacheAssembly(ScriptAssembly* assembly);
 
+		static FieldStorageCacheID CacheScriptFieldValue(FieldCacheID fieldID, Buffer value);
+
 		static std::vector<ManagedClass*> GetManagedClasses();
 		static ManagedClass* GetManagedClass(CacheID classID);
 		static ManagedClass* GetManagedClassFromName(const std::string& fullClassName);
@@ -21,6 +30,7 @@ namespace Paper
 		static ManagedField* GetManagedField(CacheID fieldID);
 		static ManagedMethod* GetManagedMethod(ManagedClass* managedClass, const std::string& name, uint32_t parameterCount = 0);
 
+		static Buffer& GetFieldStorage(PaperID paperID, ManagedField* managedField);
 	private:
 		static CacheID CacheClass(const std::string& classNameSpace, const std::string& className, ScriptAssembly* assembly);
 		static std::vector<CacheID> CacheFields(ManagedClass& managedClass, ScriptAssembly* assembly);

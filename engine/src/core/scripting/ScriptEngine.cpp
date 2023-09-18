@@ -36,8 +36,6 @@ namespace Paper
 
         std::unordered_map<PaperID, EntityInstance> entityInstances;
 
-        std::unordered_map<PaperID, std::unordered_map<CacheID, EntityFieldStorage>> entityFieldStorage;
-
         bool assembliesReloadSchedule = false;
 
         bool debugEnabled = true;

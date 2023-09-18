@@ -25,5 +25,13 @@ namespace Paper
 
 			return hash;
 		}
+
+		static constexpr uint32_t GenerateRandonHash()
+		{
+			std::random_device device;
+			std::mt19937 gen(device());
+			std::uniform_int_distribution<uint32_t> distribution(0, std::numeric_limits<uint32_t>::max());
+			return distribution(gen);
+		}
 	};
 }
