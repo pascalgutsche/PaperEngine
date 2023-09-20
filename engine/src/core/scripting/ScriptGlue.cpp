@@ -14,6 +14,8 @@
 
 #include <glm/gtx/string_cast.hpp>
 
+#include "box2d/b2_body.h"
+
 namespace Paper
 {
     static std::unordered_map<MonoType*, std::function<bool(Entity)>> entityHasComponentFns;
@@ -619,6 +621,13 @@ namespace Paper
         scrc.scriptClassName = ScriptUtils::MonoStringToStdString(scriptClassName);
     }
 
+    static void Rigidbody2DComponent_ApplyImpulse(PaperID entityID, glm::vec2* impulse, bool wake)
+    {
+        Scene* scene = ScriptEngine::GetSceneContext();
+        CORE_ASSERT(scene, "");
+        scene->GetB2Body(entityID)->ApplyLinearImpulseToCenter({ impulse->x, impulse->y }, wake);
+    }
+
 	void ScriptGlue::RegisterFunctions()
 	{
         //Input
@@ -701,6 +710,8 @@ namespace Paper
 
     	SCR_ADD_INTRERNAL_CALL(ScriptComponent_GetScriptClassName);
     	SCR_ADD_INTRERNAL_CALL(ScriptComponent_SetScriptClassName);
+
+    	SCR_ADD_INTRERNAL_CALL(Rigidbody2DComponent_ApplyImpulse);
 	}
 
     template<typename... Component>

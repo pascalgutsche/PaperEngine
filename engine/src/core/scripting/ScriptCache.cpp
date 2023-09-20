@@ -197,7 +197,6 @@ namespace Paper
 
 			std::string fieldIDName = fmt::format("{}::{}", managedClass.fullClassName, fieldName);
 			CacheID fieldID = Hash::GenerateFNVHash(fieldIDName);
-			LOG_CORE_DEBUG("{}::{}	ID: {}", managedClass.fullClassName, fieldName, fieldID);
 			ManagedField& managedField = cache->managedFields[fieldID];
 			managedField.fieldID = fieldID;
 			managedField.classID = managedClass.classID;

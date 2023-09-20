@@ -7,14 +7,96 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
+            - 0e154754a433ebaf
+          Name: Sprite
+          Tags:
+            []
+        TransformComponent:
+          Position: [9.36657143, 12.6286888, -32.1291771]
+          Scale: [100.346992, 100.346992, 100.346992]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\putain.jpg
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 6c65eea7fd0288d8
+          Name: Sprite
+          Tags:
+            []
+        TransformComponent:
+          Position: [-5.87866068, 19.5182114, -10.0094223]
+          Scale: [21.7309761, 0.99975723, 1]
+          Rotation: [0.0206188038, 0.184540465, -161.984848]
+        SpriteComponent:
+          Color: [1, 0, 0, 1]
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+        Rigidbody2DComponent:
+          Type: Static
+          FixedRotation: false
+        Collider2DComponent:
+          Geometry: Rectangle
+          Offset: [0, 0]
+          Size: [0.5, 0.5]
+          Radius: 0.5
+          Density: 1
+          Friction: 0.5
+          Bounciness: 0
+          BouncinessThreshold: 0.5
+    - Components:
+        DataComponent:
+          PaperID:
+            - 30461bba15b81fcc
+          Name: Sprite
+          Tags:
+            []
+        TransformComponent:
+          Position: [10.7075129, 21.9566479, -9.95517159]
+          Scale: [21.7310658, 0.999769866, 1]
+          Rotation: [-0.0177654214, 0.184838101, -173.850204]
+        SpriteComponent:
+          Color: [1, 0, 0, 1]
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+        Rigidbody2DComponent:
+          Type: Static
+          FixedRotation: false
+        Collider2DComponent:
+          Geometry: Rectangle
+          Offset: [0, 0]
+          Size: [0.5, 0.5]
+          Radius: 0.5
+          Density: 1
+          Friction: 0.5
+          Bounciness: 0
+          BouncinessThreshold: 0.5
+    - Components:
+        DataComponent:
+          PaperID:
             - 1bf76707643b4f25
           Name: Sprite
           Tags:
             []
         TransformComponent:
-          Position: [11.3137417, 14.1124249, -9.95837402]
-          Scale: [21.7306671, 0.999798357, 1]
-          Rotation: [0.0885020941, 0.163250044, -139.897293]
+          Position: [12.5931034, 4.45689297, -9.96062279]
+          Scale: [21.7310658, 0.999769866, 1]
+          Rotation: [-0.0177654214, 0.184838101, -173.850204]
         SpriteComponent:
           Color: [1, 0, 0, 1]
           TilingFactor: 1
@@ -56,9 +138,24 @@ Scene:
           Thickness: 1
           Fade: 0.00499999989
         ScriptComponent:
-          Name: Sandbunker.Max
+          Name: Sandbox.Player
           ScriptFields:
-            Sandbunker.Max:
+            Sandbox.Player:
+              impulseSpeed:
+                FieldType: Float
+                Value: 278.399994
+        Rigidbody2DComponent:
+          Type: Dynamic
+          FixedRotation: false
+        Collider2DComponent:
+          Geometry: Circle
+          Offset: [0, 0]
+          Size: [0.5, 0.5]
+          Radius: 0.5
+          Density: 1
+          Friction: 0.5
+          Bounciness: 0
+          BouncinessThreshold: 0.5
     - Components:
         DataComponent:
           PaperID:
@@ -98,7 +195,7 @@ Scene:
           Tags:
             []
         TransformComponent:
-          Position: [-2.41992609e-07, 3.69513917, 22.0531731]
+          Position: [-2.41992609e-07, 13.2345543, 22.0531731]
           Scale: [1, 1, 1]
           Rotation: [0, 0, 0]
         CameraComponent:
@@ -112,3 +209,13 @@ Scene:
             OrthographicSize: 10
             OrthographicNear: -1
             OrthographicFar: 1000
+        ScriptComponent:
+          Name: Sandbox.Camera
+          ScriptFields:
+            Sandbox.Camera:
+              speed:
+                FieldType: Float
+                Value: 0
+              transformComponent:
+                FieldType: TransformComponent
+                Value: 0

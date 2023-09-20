@@ -6,83 +6,46 @@ namespace Sandbox
 {
     public class Player : Entity
     {
-        private TransformComponent transformComponent;
-        private SpriteComponent spriteComponent;
-        private int count = 1;
+        public float impulseSpeed = 3.0f;
 
-        public float Speed = 3.004f;
-
-        //public string bunker = "bunker123";
-
-        public char charVar = 'b';
-        private EntityCamera entityCamera;
+        private Rigidbody2DComponent rigidbody;
 
         public override void OnCreate()
         {
-            transformComponent = GetComponent<TransformComponent>();
-            spriteComponent = GetComponent<SpriteComponent>();
-            entityCamera = GetEntityByName("Camera").GetComponent<CameraComponent>().EntityCamera;
+            rigidbody = GetComponent<Rigidbody2DComponent>();
         }
-
-        public override void OnDestroy()
-        {
-        }
-
-        
 
         public override void OnUpdate(float dt)
         { 
            //TransformComponent tc = GetEntityByName("Camera").GetComponent<TransformComponent>();
-           Vec3 pos = transformComponent.Position;
+           Vec2 impulse = new Vec2(0.0f);
            
-           float speed = Speed * 5;
-           
-           if (Input.IsKeyDown(Key.W))
+           if (Input.IsKeyDown(Key.UP))
            {
-               pos.Z += speed * dt;
+               impulse.Y = 1.0f;
            }
-           if (Input.IsKeyDown(Key.A))
+           if (Input.IsKeyDown(Key.LEFT))
            {
-               pos.X += speed * dt;
+               impulse.X = -1.0f;
            }
-           if (Input.IsKeyDown(Key.S))
+           if (Input.IsKeyDown(Key.DOWN))
            {
-               pos.Z -= speed * dt;
+               impulse.Y = -1.0f;
            }
-           if (Input.IsKeyDown(Key.D))
+           if (Input.IsKeyDown(Key.RIGHT))
            {
-               pos.X -= speed * dt;
+               impulse.X = 1.0f;
            }
-           if (Input.IsKeyDown(Key.E))
-               pos.Y += speed * dt;
-           if (Input.IsKeyDown(Key.Q))
-               pos.Y -= speed * dt;
-           
-           transformComponent.Position = pos;
-           
-           Camera camera = GetEntityByName("Camera").As<Camera>();
-           if (camera != null)
+
+           if (Input.IsKeyDown(Key.SPACE))
            {
-               if (Input.IsKeyDown(Key.F))
-               {
-                   //camera.distanceFromFocusedEntity -= speed * dt;
-                   entityCamera.PerspectiveFOV -= speed;
-               }
-               if (Input.IsKeyDown(Key.G))
-               {
-                   //camera.distanceFromFocusedEntity += speed * dt;
-                   entityCamera.PerspectiveFOV += speed;
-               }
+               impulse.Y = 10.0f;
            }
-           
-           if (Input.IsKeyReleased(Key.P))
-           {
-               spriteComponent.Texture = new Texture("assets/textures/putain.jpg");
-               transformComponent.Scale = new Vec3(2.0f, 2.0f, 1.0f);
-               spriteComponent.Geometry = Geometry.Circle;
-               spriteComponent.Color = new Vec4(1.0f, 0.0f, 0.0f, 1.0f);
-               spriteComponent.TilingFactor = count++;
-           }
+
+           impulse.X *= impulseSpeed * dt;
+           impulse.Y *= impulseSpeed * dt;
+
+           rigidbody.ApplyImpulse(impulse, true);
         }
     }
 }

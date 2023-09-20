@@ -15,6 +15,7 @@ namespace Sandbunker
 
         public float speedX = 3.0f;
         public float speedY = 3.0f;
+
         public override void OnUpdate(float dt)
         {
             TransformComponent tc = GetComponent<TransformComponent>();

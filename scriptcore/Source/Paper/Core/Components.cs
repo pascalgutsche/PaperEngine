@@ -237,10 +237,9 @@ namespace Paper
 
     public class Rigidbody2DComponent : Component
     {
-        public string ScriptClassName
+        public void ApplyImpulse(Vec2 _Impulse, bool _Wake)
         {
-            get => InternalCalls.ScriptComponent_GetScriptClassName(Entity.PaperID);
-            set => InternalCalls.ScriptComponent_SetScriptClassName(Entity.PaperID, value);
+            InternalCalls.Rigidbody2DComponent_ApplyImpulse(Entity.PaperID, ref _Impulse, _Wake);
         }
     }
 

@@ -223,6 +223,13 @@ namespace Paper
 
         #endregion
 
+        #region Rigidbody2DComponent
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void Rigidbody2DComponent_ApplyImpulse(ulong _UUID, ref Vec2 _Impulse, bool _Wake);
+
+        #endregion
+
         #region CameraComponent
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

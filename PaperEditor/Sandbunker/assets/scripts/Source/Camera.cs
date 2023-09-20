@@ -6,30 +6,41 @@ namespace Sandbox
 {
     public class Camera : Entity
     {
-        public float distanceFromFocusedEntity = 5.0f;
-        
-        public Vec3 pos;
+        public float speed = 5.0f;
 
-        private TransformComponent TC;
-
-        public Entity focusedEntity;
+        private TransformComponent transformComponent;
 
         public override void OnCreate()
         {
-            //focusedEntity = GetEntityByName("PlayerSprite");
-            TC = GetComponent<TransformComponent>();
-            
+            transformComponent = GetComponent<TransformComponent>();
         }
 
         public override void OnUpdate(float dt)
         {
-            if(focusedEntity ==  null) return;
-            TransformComponent focusedEntityTC = focusedEntity.GetComponent<TransformComponent>();
-            
-            if (focusedEntityTC == null) return;
-            Vec3 fpos = focusedEntityTC.Position;
-            
-            TC.Position = new Vec3(fpos.X, fpos.Y, fpos.Z + distanceFromFocusedEntity);
+            Vec3 pos = transformComponent.Position;
+
+            if (Input.IsKeyDown(Key.W))
+            {
+                pos.Z -= speed * dt;
+            }
+            if (Input.IsKeyDown(Key.A))
+            {
+                pos.X -= speed * dt;
+            }
+            if (Input.IsKeyDown(Key.S))
+            {
+                pos.Z += speed * dt;
+            }
+            if (Input.IsKeyDown(Key.D))
+            {
+                pos.X += speed * dt;
+            }
+            if (Input.IsKeyDown(Key.E))
+                pos.Y += speed * dt;
+            if (Input.IsKeyDown(Key.Q))
+                pos.Y -= speed * dt;
+
+            transformComponent.Position = pos;
         }
     }
 }

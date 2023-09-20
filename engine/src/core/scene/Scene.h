@@ -63,6 +63,8 @@ namespace Paper {
         Entity GetEntity(const PaperID& id);
         Entity GetEntityByName(const std::string& name);
 
+        b2Body* GetB2Body(PaperID entityID) const;
+
         PaperID GetPaperID() const { return config.uuid; }
         std::string GetName() const { return config.name; }
 

@@ -511,4 +511,10 @@ namespace Paper {
 		}
 		return Entity();
 	}
+
+	b2Body* Scene::GetB2Body(PaperID entityID) const
+	{
+		if (!b2BodyMap.contains(entityID)) return nullptr;
+		return b2BodyMap.at(entityID);
+	}
 }
