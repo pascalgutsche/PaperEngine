@@ -26,7 +26,7 @@ namespace Paper
 			return hash;
 		}
 
-		static constexpr uint32_t GenerateRandonHash()
+		static uint32_t GenerateRandonHash()
 		{
 			std::random_device device;
 			std::mt19937 gen(device());

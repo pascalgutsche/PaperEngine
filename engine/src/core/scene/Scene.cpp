@@ -349,6 +349,7 @@ namespace Paper {
 				data.color = glm::vec4(1.0f);
 				data.transform = transform.GetTransform() * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.0f, -90.0f, 0.0f))));
 				data.enity_id = (entity_id)entity;
+				data.coreIDToAlphaPixels = true;
 
 				Renderer2D::DrawRectangle(data);
 			}

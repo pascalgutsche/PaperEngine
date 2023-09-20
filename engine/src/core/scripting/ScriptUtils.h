@@ -18,6 +18,7 @@ namespace Paper
         static bool IsPrimitive(ScriptFieldType type);
         static uint32_t ScriptFieldTypeSize(ScriptFieldType type);
         static std::string ScriptFieldTypeToString(ScriptFieldType type);
+        static ScriptFieldType StringToScriptFieldType(const std::string& string);
         static ScriptFieldType MonoTypeToScriptFieldType(MonoType* monoType);
 
         static ScriptFieldFlags GetFieldFlags(uint32_t monoFieldFlags);

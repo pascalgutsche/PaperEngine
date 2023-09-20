@@ -214,6 +214,41 @@ namespace Paper
         }
     }
 
+    ScriptFieldType ScriptUtils::StringToScriptFieldType(const std::string& string)
+    {
+        if (string == "<None>")           return ScriptFieldType::None;
+        if (string == "?")                return ScriptFieldType::Invalid;
+        if (string == "<WIP>")            return ScriptFieldType::Not_Supported;
+        if (string == "Bool")             return ScriptFieldType::Bool;
+        if (string == "Char")             return ScriptFieldType::Char;
+        if (string == "Unsigned Char")    return ScriptFieldType::UChar;
+        if (string == "Short")            return ScriptFieldType::Int16;
+        if (string == "Unsigned Short")   return ScriptFieldType::UInt16;
+        if (string == "Int")              return ScriptFieldType::Int32;
+        if (string == "Unsigned Int")     return ScriptFieldType::UInt32;
+        if (string == "Long")             return ScriptFieldType::Int64;
+        if (string == "Unsigned Long")    return ScriptFieldType::UInt64;
+        if (string == "Float")            return ScriptFieldType::Float;
+        if (string == "Double")           return ScriptFieldType::Double;
+        if (string == "String")           return ScriptFieldType::String;
+        if (string == "Vec2")             return ScriptFieldType::Vec2;
+        if (string == "Vec3")             return ScriptFieldType::Vec3;
+        if (string == "Vec4")             return ScriptFieldType::Vec4;
+        if (string == "PaperID")          return ScriptFieldType::PaperID;
+        if (string == "Entity")           return ScriptFieldType::Entity;
+        if (string == "DataComponent")    return ScriptFieldType::DataComponent;
+        if (string == "TransformComponent") return ScriptFieldType::TransformComponent;
+        if (string == "SpriteComponent")  return ScriptFieldType::SpriteComponent;
+        if (string == "LineComponent")    return ScriptFieldType::LineComponent;
+        if (string == "TextComponent")    return ScriptFieldType::TextComponent;
+        if (string == "CameraComponent")  return ScriptFieldType::CameraComponent;
+        if (string == "ScriptComponent")  return ScriptFieldType::ScriptComponent;
+
+        CORE_ASSERT(false, "");
+
+        return ScriptFieldType::Invalid;
+    }
+
     ScriptFieldType ScriptUtils::MonoTypeToScriptFieldType(MonoType* monoType)
     {
         char* typeName = mono_type_get_name(monoType);

@@ -1,99 +1,112 @@
 ﻿#include "Engine.h"
 #include "ScriptFieldStorage.h"
 
+#include "ScriptCache.h"
 #include "ScriptEngine.h"
 #include "ScriptUtils.h"
 
 namespace Paper
 {
 
-	ScriptFieldStorage::ScriptFieldStorage(ManagedField* managedField)
-		: managedField(managedField)
+	ScriptFieldStorage::ScriptFieldStorage(PaperID entityID, ManagedField* managedField)
+		: entityID(entityID), managedField(managedField)
 	{
 	}
 
-	void ScriptFieldStorage::SetRuntimeInstance(EntityInstance* instance)
+	ScriptFieldStorage::ScriptFieldStorage(PaperID entityID)
+		: entityID(entityID)
 	{
-		runtimeInstance = instance;
-		SetRuntimeFieldValue(data.data);
 	}
 
-	void ScriptFieldStorage::RemoveRuntimeInstance()
+	void ScriptFieldStorage::SetRuntimeInstance(EntityInstance* instance) const
 	{
-		runtimeInstance = nullptr;
+		instanceMap[entityID] = instance;
+		SetRuntimeFieldValue();
+	}
+
+	void ScriptFieldStorage::RemoveRuntimeInstance() const
+	{
+		instanceMap.erase(entityID);
+	}
+
+	void ScriptFieldStorage::ClearRuntimeMap()
+	{
+		instanceMap.clear();
 	}
 
 	template <>
 	std::string ScriptFieldStorage::GetValue<std::string>(bool onlyBuffer) const
 	{
-		if (runtimeInstance != nullptr)
+		if (!managedField)
 		{
-			Buffer valueBuffer;
-			GetRuntimeFieldValue(valueBuffer);
-
-			std::string value((char*)valueBuffer.data, valueBuffer.size / sizeof(char));
-			valueBuffer.Release();
-			return value;
+			LOG_CORE_WARN("You are trying to Call ScriptFieldStorage::SetValue<std::string> without constructing with Managedfield*");
+			return "";
 		}
 
-		if (data.size == 0)
-			return std::string();
+		Buffer buffer;
+		if (!onlyBuffer)
+			buffer = GetRuntimeFieldValue();
+		if (!buffer)
+		{
+			Buffer& storageBuffer = ScriptCache::GetFieldStorage(entityID, managedField);
+			buffer = Buffer::Copy(storageBuffer);
+		}
 
-		std::string val = std::string((const char*)data.data);
+		if (buffer.size == 0)
+			return {};
+
+		std::string val = std::string((const char*)buffer.data);
+		buffer.Release();
+
 		return val;
 	}
 
 	template <>
 	void ScriptFieldStorage::SetValue<std::string>(const std::string& value, bool onlyBuffer)
 	{
-		if (runtimeInstance && !onlyBuffer)
+		if (!managedField) 
 		{
-			//Buffer valueBuffer;
-			//valueBuffer.Allocate(value.size() + 1);
-			//valueBuffer.Nullify();
-			//valueBuffer.Write(value.data(), value.size());
-			SetRuntimeFieldValue(value.c_str());
-			//valueBuffer.Release();
+			LOG_CORE_WARN("You are trying to Call ScriptFieldStorage::SetValue<std::string> without constructing with Managedfield*");
 			return;
 		}
 
-		if (data.size <= value.size() * sizeof(char))
+
+		Buffer& buffer = ScriptCache::GetFieldStorage(entityID, managedField);
+		if (buffer.size <= value.size() * sizeof(char))
 		{
-			data.Release();
-			data.Allocate((value.length() * 2) * sizeof(char));
+			buffer.Release();
+			buffer.Allocate((value.length() * 2) * sizeof(char));
 		}
 
-		data.Nullify();
-		memcpy(data.data, value.c_str(), value.length() * sizeof(char));
+		buffer.Nullify();
+		memcpy(buffer.data, value.c_str(), value.length() * sizeof(char));
+
+		if (!onlyBuffer)
+			SetRuntimeFieldValue();
 	}
 
-	Buffer ScriptFieldStorage::GetValueBuffer() const
+	Buffer ScriptFieldStorage::GetRuntimeFieldValue() const
 	{
-		if (runtimeInstance == nullptr)
-			return data;
-
-		Buffer result;
-		GetRuntimeFieldValue(result);
-		return result;
+		if (!instanceMap.contains(entityID)) return {};
+		const EntityInstance* runtimeInstance = instanceMap.at(entityID);
+		return runtimeInstance->GetFieldValue(managedField);
 	}
 
-	void ScriptFieldStorage::SetValueBuffer(const Buffer& buffer)
+	void ScriptFieldStorage::SetRuntimeFieldValue() const
 	{
-		if (runtimeInstance != nullptr)
-			SetRuntimeFieldValue(buffer.data);
-		else
-			data = Buffer::Copy(buffer);
-	}
-
-	void ScriptFieldStorage::GetRuntimeFieldValue(Buffer& outBuffer) const
-	{
-		outBuffer = runtimeInstance->GetFieldValue(managedField);
-	}
-
-	void ScriptFieldStorage::SetRuntimeFieldValue(const void* value) const
-	{
-		//if (scriptField->type != ScriptFieldType::String && value.size > 0)
-		if (!managedField->isStatic)
-			runtimeInstance->SetFieldValue(managedField, value);
+		if (!instanceMap.contains(entityID)) return;
+		const EntityInstance* runtimeInstance = instanceMap.at(entityID);
+		if (managedField)
+		{
+			Buffer& buffer = ScriptCache::GetFieldStorage(entityID, managedField);
+			runtimeInstance->SetFieldValue(managedField, buffer.data);
+			return;
+		}
+		const auto managedFields = ScriptClass(runtimeInstance->GetManagedClass()).GetManagedFields();
+		for (ManagedField* field : managedFields)
+		{
+			const Buffer& buffer = ScriptCache::GetFieldStorage(entityID, field);
+			runtimeInstance->SetFieldValue(field, buffer.data);
+		}
 	}
 }

@@ -590,54 +590,55 @@ namespace PaperED
 				EntityInstance* entityInstance = ScriptEngine::GetEntityScriptInstance(entity.GetPaperID());
 				if (managedClass)
 				{
-					const auto& storageFields = ScriptEngine::GetActiveEntityFieldStorage(entity);
-					for (const auto& fieldStorage : storageFields)
+					const auto& managedFields = ScriptClass(ScriptEngine::GetEntityInheritClass(scrc.scriptClassName)).GetManagedFields();
+					for (auto* managedField : managedFields)
 					{
-						const auto& field = fieldStorage->GetField();
-						if (!field->HasFlag(ScriptFieldFlag::Public)) continue;
-						if (field->fieldType == ScriptFieldType::Invalid) continue;
+						ScriptFieldStorage fieldStorage = ScriptFieldStorage(entity.GetPaperID(), managedField);
 
-						std::string varName = std::format("{} {}", ScriptUtils::ScriptFieldTypeToString(field->fieldType), field->fieldName);
+						if (!managedField->HasFlag(ScriptFieldFlag::Public)) continue;
+						if (managedField->fieldType == ScriptFieldType::Invalid) continue;
+
+						std::string varName = std::format("{} {}", ScriptUtils::ScriptFieldTypeToString(managedField->fieldType), managedField->fieldName);
 						ContentTable fieldSection(ImGui::CalcTextSize(varName.c_str()).x);
 
-						switch (field->fieldType)
+						switch (managedField->fieldType)
 						{
 							case ScriptFieldType::String:
 							{
-								std::string dataString = fieldStorage->GetValue<std::string>();
+								std::string dataString = fieldStorage.GetValue<std::string>();
 								FillNameCol(varName);
-								if (ImGui::InputText(CONST_UI_ID, &dataString) && field->IsWritable())
+								if (ImGui::InputText(CONST_UI_ID, &dataString) && managedField->IsWritable())
 								{
-									fieldStorage->SetValue(dataString);
-								};
+									fieldStorage.SetValue(dataString);
+								}
 								break;
 							}
 
 							case ScriptFieldType::Float:
 							{
-								float dataFloat = fieldStorage->GetValue<float>();
-								if (DrawFloatControl(varName, dataFloat) && field->IsWritable())
+								float dataFloat = fieldStorage.GetValue<float>();
+								if (DrawFloatControl(varName, dataFloat) && managedField->IsWritable())
 								{
-									fieldStorage->SetValue(dataFloat);
-								};
+									fieldStorage.SetValue(dataFloat);
+								}
 								break;
 							}
 
 							case ScriptFieldType::Char:
 							{
-								char dataChar = fieldStorage->GetValue<char>();
+								char dataChar = fieldStorage.GetValue<char>();
 								char data[] = { dataChar, 0 };
 								FillNameCol(varName);
-								if (ImGui::InputText(CONST_UI_ID, data, 2) && field->IsWritable())
+								if (ImGui::InputText(CONST_UI_ID, data, 2) && managedField->IsWritable())
 								{
-									fieldStorage->SetValue(data[0]);
+									fieldStorage.SetValue(data[0]);
 								};
 								break;
 							}
 
 							case ScriptFieldType::Entity:
 							{
-								PaperID entityID = fieldStorage->GetValue<uint64_t>();
+								PaperID entityID = fieldStorage.GetValue<uint64_t>();
 								FillNameCol(varName);
 
 								if (entityID)
@@ -650,7 +651,7 @@ namespace PaperED
 									if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
 									{
 										PaperID payloadEntityID = *(uint64_t*)payload->Data;
-										fieldStorage->SetValue(payloadEntityID.toUInt64());
+										fieldStorage.SetValue(payloadEntityID.toUInt64());
 
 										paperLayer->drag_entity = Entity();
 									}
@@ -660,7 +661,7 @@ namespace PaperED
 								ImGui::SameLine();
 								if (ImGui::Button("X", GetButtonSize()))
 								{
-									fieldStorage->SetValue((uint64_t)0);
+									fieldStorage.SetValue((uint64_t)0);
 								};
 
 								break;

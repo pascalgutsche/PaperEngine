@@ -20,7 +20,7 @@ namespace Paper
 		std::unordered_map<FieldCacheID, ManagedField> managedFields;
 		std::unordered_map<MethodCacheID, std::vector<ManagedMethod>> managedMethods;
 
-		std::unordered_map<FieldStorageCacheID, std::unordered_map<PaperID, std::unordered_map<ManagedField*, Buffer>>> fieldStorage;
+		std::unordered_map<PaperID, std::unordered_map<ManagedField*, Buffer>> fieldStorage;
 
 		std::vector<std::filesystem::path> assemblyPathsCached;
 	};
@@ -45,6 +45,10 @@ namespace Paper
 		cache->managedClasses.clear();
 		cache->managedFields.clear();
 		cache->managedMethods.clear();
+
+		cache->fieldStorage.clear();
+		ScriptFieldStorage::ClearRuntimeMap();
+
 		cache->assemblyPathsCached.clear();
 	}
 
@@ -95,13 +99,6 @@ namespace Paper
 		}
 
 		cache->assemblyPathsCached.push_back(assembly->GetFilePath());
-	}
-
-	FieldStorageCacheID ScriptCache::CacheScriptFieldValue(FieldCacheID fieldID, Buffer value)
-	{
-		FieldStorageCacheID id = Hash::GenerateRandonHash();
-
-		return id;
 	}
 
 	std::vector<ManagedClass*> ScriptCache::GetManagedClasses()

@@ -1,5 +1,7 @@
 ﻿#pragma once
+#include "ScriptEngine.h"
 #include "ScriptUtils.h"
+#include "ScriptCache.h"
 
 #include "generic/Buffer.h"
 #include "utils/PaperID.h"
@@ -12,26 +14,35 @@ namespace Paper
 	class ScriptFieldStorage
 	{
 	public:
-		ScriptFieldStorage(ManagedField* scriptField);
+		ScriptFieldStorage(PaperID entityID, ManagedField* managedField);
+		ScriptFieldStorage(PaperID entityID);
 
-		void SetRuntimeInstance(EntityInstance* instance);
-		void RemoveRuntimeInstance();
+		void SetRuntimeInstance(EntityInstance* instance) const;
+		void RemoveRuntimeInstance() const;
+
+		static void ClearRuntimeMap();
 
 		template <typename T>
 		T GetValue(bool onlyBuffer = false) const
 		{
-			if (runtimeInstance && !onlyBuffer)
+			if (!managedField)
 			{
-				Buffer valueBuffer;
-				GetRuntimeFieldValue(valueBuffer);
+				LOG_CORE_WARN("You are trying to Call ScriptFieldStorage::SetValue without constructing with Managedfield*");
+				return T();
+			}
+
+			Buffer valueBuffer = GetRuntimeFieldValue();
+			if (!onlyBuffer && valueBuffer)
+			{
 				T value = T();
 				memcpy(&value, valueBuffer.data, valueBuffer.size);
 				valueBuffer.Release();
 				return value;
 			}
 
-			if (!data) return T();
-			return data.Read<T>();
+			Buffer& buffer = ScriptCache::GetFieldStorage(entityID, managedField);
+			if (!buffer) return T();
+			return buffer.Read<T>();
 		}
 
 		template<>
@@ -40,34 +51,39 @@ namespace Paper
 		template <typename T>
 		void SetValue(const T& value, bool onlyBuffer = false)
 		{
-			if (runtimeInstance && !onlyBuffer)
+			if (!managedField)
 			{
-				Buffer val;
-				val.Allocate(sizeof(T));
-				SetRuntimeFieldValue(&value);
+				LOG_CORE_WARN("You are trying to Call ScriptFieldStorage::SetValue without constructing with Managedfield*");
 				return;
 			}
 
-			data.Write(&value, sizeof(T));
+			Buffer& buffer = ScriptCache::GetFieldStorage(entityID, managedField);
+			if (!buffer)
+			{
+				buffer.Allocate(sizeof(T));
+				buffer.Nullify();
+			}
+			buffer.Write(&value, sizeof(T));
+
+			if (!onlyBuffer)
+				SetRuntimeFieldValue();
+
 		}
 
 		template<>
 		void SetValue<std::string>(const std::string& value, bool onlyBuffer);
 
-		Buffer GetValueBuffer() const;
-		void SetValueBuffer(const Buffer& buffer);
-
 		ManagedField* GetField() const { return managedField; }
 
 	private:
+		PaperID entityID = PaperID(0);
 		ManagedField* managedField = nullptr;
-		Buffer data = Buffer::Copy(managedField->initialFieldValue);
 
-		void GetRuntimeFieldValue(Buffer& outBuffer) const;
-		void SetRuntimeFieldValue(const void* value) const;
-
-		EntityInstance* runtimeInstance = nullptr;
+		Buffer GetRuntimeFieldValue() const;
+		void SetRuntimeFieldValue() const;
 
 		friend class ScriptEngine;
+
+		static inline std::unordered_map<PaperID, EntityInstance*> instanceMap;
 	};
 }

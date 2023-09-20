@@ -7,14 +7,14 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 00dff086136110b3
+            - 1bf76707643b4f25
           Name: Sprite
           Tags:
             []
         TransformComponent:
-          Position: [14.2981987, 7.40772581, -9.95328522]
-          Scale: [21.7341537, 0.999990702, 1]
-          Rotation: [-0.0465039276, -0.179756388, 26.1468506]
+          Position: [11.3137417, 14.1124249, -9.95837402]
+          Scale: [21.7306671, 0.999798357, 1]
+          Rotation: [0.0885020941, 0.163250044, -139.897293]
         SpriteComponent:
           Color: [1, 0, 0, 1]
           TilingFactor: 1
@@ -55,37 +55,21 @@ Scene:
           RegisterAlphaPixels: false
           Thickness: 1
           Fade: 0.00499999989
+        ScriptComponent:
+          Name: Sandbunker.Max
+          ScriptFields:
+            Sandbunker.Max:
     - Components:
         DataComponent:
           PaperID:
-            - 4dd230575d755bba
+            - e0034a93faf86c6b
           Name: Sprite
           Tags:
             []
         TransformComponent:
-          Position: [20.1082382, -33.4700089, 0.039381016]
-          Scale: [51.4981499, 51.4981499, 51.4981499]
-          Rotation: [0, 0, 0]
-        SpriteComponent:
-          Color: [1, 0, 0, 1]
-          TexturePath: assets\textures\Honecker-2113738823.jpg
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Circle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.310000002
-    - Components:
-        DataComponent:
-          PaperID:
-            - f3d1502487799080
-          Name: Sprite
-          Tags:
-            []
-        TransformComponent:
-          Position: [-2.2880156, 8.30300617, -10.0053434]
-          Scale: [21.7341537, 0.99999404, 1]
-          Rotation: [0.144301295, -0.116840638, -39.3608398]
+          Position: [-6.61414814, 9.69503021, -10.0181675]
+          Scale: [21.7341309, 0.999990582, 1]
+          Rotation: [0.135051966, -0.127420649, -35.0234642]
         SpriteComponent:
           Color: [1, 0, 0, 1]
           TilingFactor: 1
@@ -106,3 +90,25 @@ Scene:
           Friction: 0.5
           Bounciness: 0
           BouncinessThreshold: 0.5
+    - Components:
+        DataComponent:
+          PaperID:
+            - 55a0fa24fdc28f43
+          Name: Camera
+          Tags:
+            []
+        TransformComponent:
+          Position: [-2.41992609e-07, 3.69513917, 22.0531731]
+          Scale: [1, 1, 1]
+          Rotation: [0, 0, 0]
+        CameraComponent:
+          FixedAspectRatio: false
+          Primary: true
+          EntityCamera:
+            ProjectionMode: Perspective
+            PerspectiveFOV: 45
+            PerspectiveNear: 0.00999999978
+            PerspectiveFar: 1000
+            OrthographicSize: 10
+            OrthographicNear: -1
+            OrthographicFar: 1000

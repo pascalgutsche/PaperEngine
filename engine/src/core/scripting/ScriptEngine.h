@@ -9,8 +9,6 @@
 
 namespace Paper
 {
-	using EntityFieldStorage = std::vector<Shr<ScriptFieldStorage>>;
-
 	class ScriptClass
 	{
 	public:
@@ -135,8 +133,6 @@ namespace Paper
 
 		static Scene* GetSceneContext();
 		static EntityInstance* GetEntityScriptInstance(PaperID entityID);
-		static const EntityFieldStorage& GetActiveEntityFieldStorage(Entity entity);
-		static std::unordered_map<CacheID, EntityFieldStorage>& GetEntityFieldStorage(Entity entity);
 		static MonoDomain* GetDomain();
 		static ScriptAssembly* GetCoreAssembly();
 		static std::vector<ScriptAssembly*> GetAppAssemblies();
@@ -154,8 +150,6 @@ namespace Paper
 	private:
 		static void InitMono();
 		static void ShutdownMono(bool appClose);
-
-		static EntityFieldStorage& GetActiveEntityFieldStorageInternal(Entity entity);
 	};
 
     

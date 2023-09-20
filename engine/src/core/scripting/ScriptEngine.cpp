@@ -73,9 +73,10 @@ namespace Paper
 	void ScriptEngine::ResetEngine()
 	{
         script_data->entityInstances.clear();
-        script_data->entityFieldStorage.clear();
-        script_data->appAssemblies.clear();
+    	script_data->appAssemblies.clear();
         script_data->sceneContext = nullptr;
+
+        ScriptCache::ClearCache();
 
         ReloadAssemblies(true);
 	}
@@ -195,6 +196,7 @@ namespace Paper
         script_data->sceneContext = nullptr;
 
         script_data->entityInstances.clear();
+        ScriptFieldStorage::ClearRuntimeMap();
     }
 
     void ScriptEngine::CreateScriptEntity(Entity entity)
@@ -205,25 +207,16 @@ namespace Paper
         
         if (!GetEntityInheritClass(sc.scriptClassName))
         {
-            LOG_CORE_ERROR("tried to destroy script entity with entity '{}' because script was null", entity.GetPaperID());
+            LOG_CORE_ERROR("failed to destroy script entity with entity '{}' because script was null", entity.GetPaperID());
             return;
         }
 
-        auto& entityFieldStorages = GetActiveEntityFieldStorageInternal(entity);
-
-		
-        const auto& scriptFields = ScriptClass(GetEntityInheritClass(sc.scriptClassName)).GetManagedFields();
-        for (auto field : scriptFields)
+        for (auto* managedField : ScriptClass(GetEntityInheritClass(sc.scriptClassName)).GetManagedFields())
         {
-            bool found = false;
-            for (auto& fieldStorage : entityFieldStorages)
-            {
-                if (fieldStorage->GetField() == field)
-                    found = true;
-            }
-
-            if (!found)
-                entityFieldStorages.push_back(MakeShr<ScriptFieldStorage>(field));
+	        if (!ScriptCache::GetFieldStorage(entity.GetPaperID(), managedField))
+	        {
+                ScriptCache::GetFieldStorage(entity.GetPaperID(), managedField) = managedField->initialFieldValue;
+	        }
         }
     }
 
@@ -238,7 +231,6 @@ namespace Paper
             LOG_CORE_ERROR("tried to destroy script entity with entity '{}' because script was null", entity.GetPaperID());
             return;
         }
-        script_data->entityFieldStorage.erase(entity.GetPaperID());
     }
 
     void ScriptEngine::OnCreateEntity(Entity entity)
@@ -255,9 +247,8 @@ namespace Paper
             script_data->entityInstances[entity.GetPaperID()] = instance;
 
             //apply class variables defined in editor
-            if (script_data->entityFieldStorage.contains(entity.GetPaperID()))
-                for (const auto& fieldStorage : GetActiveEntityFieldStorage(entity))
-                    fieldStorage->SetRuntimeInstance(GetEntityScriptInstance(entity.GetPaperID()));
+            ScriptFieldStorage storage(entity.GetPaperID());
+            storage.SetRuntimeInstance(GetEntityScriptInstance(entity.GetPaperID()));
 
             instance.InvokeOnCreate();
         }
@@ -277,9 +268,8 @@ namespace Paper
         entityInstance->InvokeOnDestroy();
 
         //remove runtime instance of field storages
-        if (script_data->entityFieldStorage.contains(entity.GetPaperID()))
-            for (const auto& fieldStorage : GetActiveEntityFieldStorage(entity))
-                fieldStorage->RemoveRuntimeInstance();
+        ScriptFieldStorage storage(entity.GetPaperID());
+        storage.RemoveRuntimeInstance();
 
         script_data->entityInstances.erase(entity.GetPaperID());
     }
@@ -320,22 +310,6 @@ namespace Paper
     {
         if (!script_data->entityInstances.contains(entityID)) return nullptr;
         return &script_data->entityInstances.at(entityID);
-    }
-
-    const EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorage(Entity entity)
-    {
-        ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
-        if (!script_data->entityFieldStorage.contains(entity.GetPaperID()) || !script_data->entityFieldStorage.at(entity.GetPaperID()).contains(GetEntityInheritClass(sc.scriptClassName)->classID))
-        {
-            LOG_CORE_ERROR("Does not have field storage for entity '{}'", entity.GetPaperID().toString());
-            return EntityFieldStorage();
-        }
-        return script_data->entityFieldStorage.at(entity.GetPaperID()).at(GetEntityInheritClass(sc.scriptClassName)->classID);
-    }
-
-    std::unordered_map<CacheID, EntityFieldStorage>& ScriptEngine::GetEntityFieldStorage(Entity entity)
-    {
-        return script_data->entityFieldStorage[entity.GetPaperID()];
     }
 
     MonoDomain* ScriptEngine::GetDomain()
@@ -421,12 +395,6 @@ namespace Paper
 			mono_jit_cleanup(script_data->rootDomain);
 			script_data->rootDomain = nullptr;
         }
-    }
-
-    EntityFieldStorage& ScriptEngine::GetActiveEntityFieldStorageInternal(Entity entity)
-    {
-        ScriptComponent& sc = entity.GetComponent<ScriptComponent>();
-        return script_data->entityFieldStorage[entity.GetPaperID()][GetEntityInheritClass(sc.scriptClassName)->classID];
     }
 
     ScriptAssembly* ScriptEngine::GetCoreAssembly()

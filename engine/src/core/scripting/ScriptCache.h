@@ -21,8 +21,6 @@ namespace Paper
 
 		static void CacheAssembly(ScriptAssembly* assembly);
 
-		static FieldStorageCacheID CacheScriptFieldValue(FieldCacheID fieldID, Buffer value);
-
 		static std::vector<ManagedClass*> GetManagedClasses();
 		static ManagedClass* GetManagedClass(CacheID classID);
 		static ManagedClass* GetManagedClassFromName(const std::string& fullClassName);
