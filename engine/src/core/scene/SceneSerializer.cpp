@@ -152,8 +152,6 @@ namespace Paper
 		DeserializeEntity<Component...>(entity, data);
 	}
 
-	
-
 	Shr<Scene> SceneSerializer::Deserialize(const std::filesystem::path& filePath)
 	{
 		Shr<Scene> scene = MakeShr<Scene>();

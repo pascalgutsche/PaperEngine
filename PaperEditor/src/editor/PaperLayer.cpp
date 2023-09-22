@@ -19,6 +19,7 @@
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
+#include "imgui_internal.h"
 #include "panels/ScenePanel.h"
 #include "panels/SettingsPanel.h"
 

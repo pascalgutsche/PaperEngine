@@ -17,7 +17,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\putain.jpg
+          TexturePath: assets\textures\Honecker-2113738823.jpg
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -213,9 +213,6 @@ Scene:
           Name: Sandbox.Camera
           ScriptFields:
             Sandbox.Camera:
-              speed:
-                FieldType: Float
-                Value: 0
               transformComponent:
                 FieldType: TransformComponent
                 Value: 0

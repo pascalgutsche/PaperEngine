@@ -1,0 +1,5 @@
+ProjectConfig:
+  Name: $PROJ_NAME$
+  Path: $PROJ_PATH$
+  AssetPath: assets
+  ScriptBinaryPath: assets/scripts/bin

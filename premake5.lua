@@ -89,3 +89,7 @@ group ""
 group "editor"
 include "PaperEditor"
 group ""
+
+group "runtime"
+include "PaperRuntime"
+group ""
