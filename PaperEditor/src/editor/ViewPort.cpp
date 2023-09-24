@@ -108,6 +108,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 			break;
 		}
 	}
+	framebuffer->Unbind();
 
 	if (peLayer->lastFocusedViewPort == this)
 	{
@@ -144,6 +145,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 
 	uint32_t textureID = framebuffer->GetColorID(0);
 	ImGui::Image((void*)textureID, ImVec2(viewport_size.x, viewport_size.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+	ImGui::SetItemAllowOverlap();
 
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -154,6 +156,30 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		}
 		ImGui::EndDragDropTarget();
 	}
+
+	//entityCamera preview
+	ImGui::SetCursorPos(ImVec2(ImGui::GetWindowContentRegionMax().x - previewPadding.x - previewSize.x, ImGui::GetWindowContentRegionMax().y - previewPadding.y - previewSize.y));
+
+	previewFramebuffer->Bind();
+	RenderCommand::ClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	RenderCommand::Clear();
+	activeScene->OnRuntimeRender(previewEntityID);
+	previewFramebuffer->Unbind();
+
+	uint32_t previewTextureID = previewFramebuffer->GetColorID(0);
+	ImGui::Image((void*)previewTextureID, previewSize, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+		{
+			PaperID entityID = *(uint64_t*)payload->Data;
+			previewEntityID = entityID;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	
 
 	// Gizmos
 	if (selectedEntity) //  && peLayer->GetGuizmoType() != -1
@@ -200,7 +226,6 @@ void ViewPort::Panel(PaperLayer* peLayer)
 
 
 
-	framebuffer->Unbind();
 }
 
 void ViewPort::Resize()

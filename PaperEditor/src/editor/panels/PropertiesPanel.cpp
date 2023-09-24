@@ -287,7 +287,7 @@ namespace PaperED
 
 					float size = camera.GetOrthographicSize();
 					DrawFloatControl("Size", size, 0, 0, 1.0f, 10.0f, { "SI" });
-					if (size != camera.GetPerspectiveFOV()) camera.SetPerspectiveFOV(size);
+					if (size != camera.GetOrthographicSize()) camera.SetOrthographicSize(size);
 
 					float nearPlane = camera.GetOrthographicNearClip();
 					DrawFloatControl("Near Plane", nearPlane, 0, 0, 1.0f, -1.0f, { "NP" });

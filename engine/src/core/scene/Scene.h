@@ -40,6 +40,7 @@ namespace Paper {
         void OnRuntimeStart();
         void OnRuntimeStop();
         void OnRuntimeUpdate();
+        void OnRuntimeRender(PaperID cameraEntityID = 0);
 
     	void OnSimulationStart();
         void OnSimulationStop();

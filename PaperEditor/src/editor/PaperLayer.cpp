@@ -83,6 +83,11 @@ void PaperLayer::Update(const float dt)
 		ScriptEngine::ReloadAssemblies();
 	}
 #endif
+
+	if (!ImGui::IsDragDropActive())
+	{
+		drag_entity = Entity();
+	}
 }
 
 void PaperLayer::OnEvent(Event& event)

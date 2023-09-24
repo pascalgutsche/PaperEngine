@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine.h"
+#include <memory>
 
 #ifdef CORE_ENABLE_ASSERTS
 

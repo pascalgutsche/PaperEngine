@@ -182,10 +182,28 @@ namespace Paper {
 			}
 
 		}
+
+		OnRuntimeRender();
+	}
+
+	void Scene::OnRuntimeRender(PaperID cameraEntityID)
+	{
 		//get primary camera
 		EntityCamera* entityCamera = nullptr;
 		glm::mat4 cameraTransform;
 
+		if (cameraEntityID)
+		{
+			Entity cameraEntity = GetEntity(cameraEntityID);
+			if (cameraEntity.HasComponent<CameraComponent>())
+			{
+				const auto& tc = cameraEntity.GetComponent<TransformComponent>();
+				auto& cc = cameraEntity.GetComponent<CameraComponent>();
+				entityCamera = &cc.camera;
+				cameraTransform = tc.GetTransform();
+			}
+		}
+		else
 		{
 			auto view = registry.view<CameraComponent, TransformComponent>();
 			for (auto [entity, camera, transform] : view.each()) {

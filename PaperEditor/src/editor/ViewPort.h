@@ -7,8 +7,14 @@ struct ViewPort
 public:
 	Shr<EditorCamera> camera;
 	Shr<Framebuffer> framebuffer;
+	Shr<Framebuffer> previewFramebuffer;
+
+	PaperID previewEntityID = 0;
 
 	std::string name;
+
+	static inline ImVec2 previewPadding = ImVec2(5.0f, 5.0f);
+	static inline ImVec2 previewSize = ImVec2(400, 200);
 
 	ViewPort(const std::string& name)
 		: camera(MakeShr<EditorCamera>()), name(name), viewport_size(), viewport_bounds{}
@@ -18,6 +24,10 @@ public:
 		spec.width = Application::GetWindow()->GetWidth();
 		spec.height = Application::GetWindow()->GetHeight();
 		framebuffer = Framebuffer::CreateBuffer(spec);
+
+		spec.width = previewSize.x;
+		spec.height = previewSize.y;
+		previewFramebuffer = Framebuffer::CreateBuffer(spec);
 	}
 
 	void Panel(PaperLayer* peLayer);

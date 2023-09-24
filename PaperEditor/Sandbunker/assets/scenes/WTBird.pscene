@@ -135,3 +135,25 @@ Scene:
           Position: [0, 0, 0]
           Scale: [1, 1, 1]
           Rotation: [0, 0, 0]
+    - Components:
+        DataComponent:
+          PaperID:
+            - 2abab6e141bcf92d
+          Name: Camera
+          Tags:
+            []
+        TransformComponent:
+          Position: [10, 3, 10]
+          Scale: [1, 1, 1]
+          Rotation: [0, 0, 0]
+        CameraComponent:
+          FixedAspectRatio: false
+          Primary: true
+          EntityCamera:
+            ProjectionMode: Orthographic
+            PerspectiveFOV: 10
+            PerspectiveNear: 0.00999999978
+            PerspectiveFar: 1000
+            OrthographicSize: 9
+            OrthographicNear: -1
+            OrthographicFar: 1000

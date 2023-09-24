@@ -28,6 +28,8 @@ namespace Paper
 
 	bool FileSystem::OpenExternal(const std::filesystem::path& filePath)
 	{
+		if (!Exists(filePath))
+			return false;
 		auto absolutePath = std::filesystem::canonical(filePath);
 		if (!Exists(absolutePath))
 			return false;
