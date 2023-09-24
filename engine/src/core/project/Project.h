@@ -85,7 +85,7 @@ namespace Paper
 			const size_t pos = path.find(GetProjectPath().string());
 			if (pos != std::string::npos)
 			{
-				path.erase(path.begin() + pos, path.begin() + GetProjectPath().string().length() + 1); // +1 because the slash of the path
+				path.erase(path.begin(), path.begin() + pos + GetProjectPath().string().length() + 1); // +1 because the slash of the path
 			}
 			return path;
 		}
