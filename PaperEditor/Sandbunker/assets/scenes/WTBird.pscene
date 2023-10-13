@@ -7,8 +7,48 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 23775ff2362162e3
+            - 47ae4cfd8f275966
+          Name: TOWER0
+          Tags:
+            []
+        TransformComponent:
+          Position: [2.17033744, 6.09840298, 0.5]
+          Scale: [1, -4.61999989, 1]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 3d9ce46d44232b87
           Name: Sprite
+          Tags:
+            []
+        TransformComponent:
+          Position: [0, 3, 1]
+          Scale: [2.48000002, 1, 1]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\aircraft.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 23775ff2362162e3
+          Name: BC2
           Tags:
             []
         TransformComponent:
@@ -28,7 +68,7 @@ Scene:
         DataComponent:
           PaperID:
             - 90b5f37239d232d3
-          Name: Sprite
+          Name: BC6
           Tags:
             []
         TransformComponent:
@@ -48,7 +88,7 @@ Scene:
         DataComponent:
           PaperID:
             - 89d86b4f1a1dce88
-          Name: Sprite
+          Name: BC1
           Tags:
             []
         TransformComponent:
@@ -68,7 +108,7 @@ Scene:
         DataComponent:
           PaperID:
             - e162a0e901ee98c4
-          Name: Sprite
+          Name: BC0
           Tags:
             []
         TransformComponent:
@@ -88,7 +128,7 @@ Scene:
         DataComponent:
           PaperID:
             - c1f30070327004b5
-          Name: Sprite
+          Name: BC5
           Tags:
             []
         TransformComponent:
@@ -108,7 +148,7 @@ Scene:
         DataComponent:
           PaperID:
             - 70080090a6e34476
-          Name: Sprite
+          Name: BC4
           Tags:
             []
         TransformComponent:
@@ -128,13 +168,20 @@ Scene:
         DataComponent:
           PaperID:
             - 09637133322330e8
-          Name: Entity
+          Name: Controller
           Tags:
             []
         TransformComponent:
           Position: [0, 0, 0]
           Scale: [1, 1, 1]
           Rotation: [0, 0, 0]
+        ScriptComponent:
+          Name: Sandbunker.WTController
+          ScriptFields:
+            Sandbunker.WTController:
+              transformComponent:
+                FieldType: TransformComponent
+                Value: 0
     - Components:
         DataComponent:
           PaperID:
@@ -157,3 +204,43 @@ Scene:
             OrthographicSize: 9
             OrthographicNear: -1
             OrthographicFar: 1000
+    - Components:
+        DataComponent:
+          PaperID:
+            - f69a2ea8823960b7
+          Name: BC7
+          Tags:
+            []
+        TransformComponent:
+          Position: [59.5, 0, 0]
+          Scale: [-20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 4dd298f23be992ee
+          Name: BC3
+          Tags:
+            []
+        TransformComponent:
+          Position: [59.5, 6, 0]
+          Scale: [-20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
