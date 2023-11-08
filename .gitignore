@@ -7,6 +7,7 @@ bin-int/**
 *.csproj
 *.filters
 *.user
+*.log
 imgui.ini
 PaperEditor/resources/scripts/ints/**
 PaperEditor/SandboxProject/assets/scripts/int/**
