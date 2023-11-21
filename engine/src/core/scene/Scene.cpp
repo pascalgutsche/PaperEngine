@@ -228,10 +228,28 @@ namespace Paper {
 	void Scene::OnSimulationStart()
 	{
 		OnPhysics2DStart();
+
+		{
+			ScriptEngine::OnRuntimeStart(this);
+			auto view = registry.view<ScriptComponent>();
+			for (auto [e, script] : view.each()) {
+				Entity entity(e, this);
+				ScriptEngine::OnCreateEntity(entity);
+			}
+		}
 	}
 
 	void Scene::OnSimulationStop()
 	{
+		{
+			auto view = registry.view<ScriptComponent>();
+			for (auto [e, script] : view.each()) {
+				Entity entity(e, this);
+				ScriptEngine::OnDestroyEntity(entity);
+			}
+		}
+		ScriptEngine::OnRuntimeStop();
+
 		OnPhysics2DStop();
 	}
 
@@ -247,6 +265,16 @@ namespace Paper {
 
 		if (!isPaused || framesToStep-- > 0)
 		{
+			//scripting
+			float dt = Application::GetDT();
+			{
+				auto view = registry.view<ScriptComponent>();
+				for (auto [e, script] : view.each()) {
+					Entity entity(e, this);
+					ScriptEngine::OnUpdateEntity(entity, dt);
+				}
+			}
+
 			//physics
 			const uint32_t velocityIters = 6;
 			const uint32_t positionIters = 2;
@@ -412,7 +440,8 @@ namespace Paper {
 
 	void Scene::OnPhysics2DStart()
 	{
-		physicsWorld = new b2World({ 0.0f, -9.81f });
+		//physicsWorld = new b2World({ 0.0f, -9.81f });
+		physicsWorld = new b2World({ 0.0f, -4.0f });
 
 		auto view = registry.view<Rigidbody2DComponent>();
 		for (auto e : view)

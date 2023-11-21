@@ -1,4 +1,6 @@
 ﻿#include "Editor.h"
+
+#include "imgui/UI.h"
 #include "DebuggingPanel.h"
 
 #include "editor/PaperLayer.h"
@@ -236,6 +238,39 @@ void CameraSettingsPanel::OnImGuiRender(bool& isOpen)
 
 
 	ImGui::End();
+
+
+	ImGui::Begin("loool");
+
+	if (UI::BeginImageTreeNode("lol", DataPool::GetTexture("resources/editor/icons/gear.png", true), {14, 14}))
+	{
+		UI::BeginPropertyGrid();
+		static bool val = false;
+		UI::Property("Test1", val);
+		static bool val1 = false;
+		UI::Property("test2", val1);
+
+		UI::EndPropertyGrid();
+
+		UI::EndTreeNode();
+	}
+
+	//UI::BeginPropertyGrid();
+	//static bool val = false;
+	//UI::Property("Chkdsfhdjkdjkghdfjjheckbox", val);
+	//static bool val1 = false;
+	//UI::Property("Chkdsfhdjkdjkghdfjjheckbox", val1);
+	//
+	//if (UI::PropertyTreeNode("lol", true))
+	//{
+	//	ImGui::Text("Bunker");
+	//	ImGui::TreePop();
+	//}
+	//
+	//UI::EndPropertyGrid();
+
+	ImGui::End();
+
 }
 
 void ImGuiDemoPanel::OnImGuiRender(bool& isOpen)

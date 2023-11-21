@@ -133,23 +133,34 @@ namespace Paper {
 
 		ImGuiStyle& style = ImGui::GetStyle();
 		/// Temporary
-		ImGui::StyleColorsDark();
-		SetDarkThemeV2Colors();
+		if (true) //Darkmode
+		{
+			SetDarkThemeV2Colors();
+			auto& colors = style.Colors;
+			style.Colors[ImGuiCol_WindowBg] = ImVec4(0.15f, 0.15f, 0.15f, style.Colors[ImGuiCol_WindowBg].w);
+			colors[ImGuiCol_DockingPreview] = ImVec4{ 0.4f, 0.4f, 0.9f, 1.0f };
+			colors[ImGuiCol_WindowBg] = ImVec4{ 0.0f, 0.0f, 0.0f, 1.0f };
+			colors[ImGuiCol_TitleBg] = ImVec4{ 0.0f, 0.0f, 0.0f, 1.0f };
+			colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.0f, 0.1f, 0.1f, 1.0f };
+		}
+		else
+		{
+			ImGui::StyleColorsLight();
+
+		}
 
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			style.WindowRounding = 0.0f;
+			style.FrameRounding = 5.0f;
+			style.GrabRounding = 2.0f;
+			style.WindowRounding = 5.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
-		style.Colors[ImGuiCol_WindowBg] = ImVec4(0.15f, 0.15f, 0.15f, style.Colors[ImGuiCol_WindowBg].w);
+		
 		/// 
 		//ImGui::StyleColorsClassic();
-		//auto& colors = style.Colors;
-		//colors[ImGuiCol_DockingPreview] = ImVec4{ 0.4f, 0.4f, 0.9f, 1.0f };
-		//colors[ImGuiCol_WindowBg] = ImVec4{ 0.0f, 0.0f, 0.0f, 1.0f };
-		//colors[ImGuiCol_TitleBg] = ImVec4{ 0.0f, 0.0f, 0.0f, 1.0f };
-		//colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.0f, 0.1f, 0.1f, 1.0f };
+		
 
 		//fonts
 		ImFontAtlas* fontAtlas = io.Fonts;

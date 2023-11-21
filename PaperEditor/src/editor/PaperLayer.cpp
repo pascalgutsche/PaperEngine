@@ -52,9 +52,9 @@ void PaperLayer::OnAttach()
 	panelManager.AddPanel<SettingsPanel>("Settings", false);
 
 	PanelManager::SetPanelOpenSetting(PanelOpenSetting::View);
-	panelManager.AddPanel<ImGuiDemoPanel>("ImGui Demo", false);
+	panelManager.AddPanel<ImGuiDemoPanel>("ImGui Demo", true); // false
 	panelManager.AddPanel<SceneDebuggingPanel>("Scene Debugger", false);
-	panelManager.AddPanel<CameraSettingsPanel>("Camera Debugger", false);
+	panelManager.AddPanel<CameraSettingsPanel>("Camera Debugger", true); // false
 	panelManager.AddPanel<ViewportDebuggingPanel>("Viewport Debugger", false);
 	panelManager.AddPanel<ApplicationPanel>(true, DockLoc::Right);
 	panelManager.AddPanel<ContentBrowserPanel>("Content Browser", true, DockLoc::Bottom);

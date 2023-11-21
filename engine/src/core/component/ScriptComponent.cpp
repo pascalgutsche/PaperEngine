@@ -211,7 +211,7 @@ namespace Paper
 			case ScriptFieldType::Vec4:		return StoreValueInBuffer<glm::vec4>(yamlScriptField, type);
 			case ScriptFieldType::Entity:
 			{
-				uint64_t entityID = PaperID(yamlScriptField["Value"].as<std::string>()).toUInt64();
+				uint64_t entityID = yamlScriptField["Value"].as<PaperID>();
 				uint32_t size = ScriptUtils::ScriptFieldTypeSize(type);
 
 				Buffer buffer;

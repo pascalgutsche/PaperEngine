@@ -31,5 +31,17 @@ namespace Paper {
         	return typeName;
         };
 
+        inline std::string ToUpper(std::string string)
+        {
+        	std::ranges::transform(string, string.begin(), ::toupper);
+            return string;
+        }
+
+        inline std::string ToLower(std::string string)
+        {
+            std::ranges::transform(string, string.begin(), ::tolower);
+            return string;
+        }
+
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.DirectoryServices.ActiveDirectory;
 using System.Runtime;
 using Paper;
@@ -13,6 +14,10 @@ namespace Sandbunker
 
         private Entity[] background;
 
+        private Entity[] towers;
+
+        private Entity airbunker;
+
         public override void OnCreate()
         {
             transformComponent = GetComponent<TransformComponent>();
@@ -25,39 +30,47 @@ namespace Sandbunker
             background[5] = GetEntityByName("BC5");
             background[6] = GetEntityByName("BC6");
             background[7] = GetEntityByName("BC7");
+
+            towers = new Entity[34];
+            for (int i = 0; i < 34; i++)
+            {
+                towers[i] = GetEntityByName("TOWER" + i);
+            }
+
+            airbunker = GetEntityByName("AIRBUNKER");
         }
 
         public override void OnUpdate(float dt)
         {
             foreach (Entity bc in background)
             {
-                Vec3 pos = bc.GetComponent<TransformComponent>().Position;
-                if (Input.IsKeyDown(Key.W))
-                {
-                    pos.Z -= speed * dt;
-                }
-                if (Input.IsKeyDown(Key.A))
-                {
-                    pos.X -= speed * dt;
-                }
-                if (Input.IsKeyDown(Key.S))
-                {
-                    pos.Z += speed * dt;
-                }
-                if (Input.IsKeyDown(Key.D))
-                {
-                    pos.X += speed * dt;
-                }
-                if (Input.IsKeyDown(Key.E))
-                    pos.Y += speed * dt;
-                if (Input.IsKeyDown(Key.Q))
-                    pos.Y -= speed * dt;
-
-                if (pos.X < -15)
-                    pos.X += 80;
-
-                bc.GetComponent<TransformComponent>().Position = pos;
+                Move(bc, dt);
             }
+
+            foreach (Entity tw in towers)
+            {
+                Move(tw, dt);
+            }
+
+            if (Input.IsKeyPressed(Key.SPACE))
+            {
+
+                airbunker.GetComponent<Rigidbody2DComponent>().ApplyImpulse(new Vec2(0, 1), true);
+            }
+        }
+
+        private void Move(Entity entity, float dt)
+        {
+            Vec3 pos = entity.GetComponent<TransformComponent>().Position;
+            pos.X -= speed * dt;
+            
+            if (pos.X < -15)
+                pos.X += 80;
+
+            
+
+            entity.GetComponent<TransformComponent>().Position = pos;
+
         }
     }
 }

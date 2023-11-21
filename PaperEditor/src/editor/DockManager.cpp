@@ -17,7 +17,7 @@ namespace PaperED
 		dockIDs[(size_t)DockLoc::Top] = ImGui::DockBuilderSplitNode(dockIDs[(size_t)DockLoc::Main], ImGuiDir_Up, 0.04f, nullptr, &dockIDs[(size_t)DockLoc::Main]);
 		dockIDs[(size_t)DockLoc::LeftBottom] = ImGui::DockBuilderSplitNode(dockIDs[(size_t)DockLoc::Left], ImGuiDir_Down, 0.5f, nullptr, &dockIDs[(size_t)DockLoc::Left]);
 		dockIDs[(size_t)DockLoc::RightBottom] = ImGui::DockBuilderSplitNode(dockIDs[(size_t)DockLoc::Right], ImGuiDir_Down, 0.5f, nullptr, &dockIDs[(size_t)DockLoc::Right]);
-
+			
 		// Disable tab bar for custom toolbar
 		ImGuiDockNode* node = ImGui::DockBuilderGetNode(dockIDs[(size_t)DockLoc::Main]);
 		node->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;

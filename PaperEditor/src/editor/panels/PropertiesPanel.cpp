@@ -1,6 +1,8 @@
 ﻿#include "Editor.h"
 #include "PropertiesPanel.h"
 
+#include "imgui/UI.h"
+
 #include "editor/SelectionManager.h"
 
 #include "editor/PaperLayer.h"
@@ -148,7 +150,7 @@ namespace PaperED
 		Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
 		if (!selectedEntity.HasComponent<ComponentType>()) return;
 
-		bool tree_open = ImGui::TreeNode(name.c_str());
+		bool tree_open = UI::BeginImageTreeNode(name.c_str());
 
 		if (canRemove && DrawRemoveButton<ComponentType>(tree_open)) return;
 
@@ -213,7 +215,7 @@ namespace PaperED
 			ImGui::EndPopup();
 		}
 
-		DrawComponent<DataComponent>("Tag Component", false, [](DataComponent& dc, Entity entity)
+		DrawComponent<DataComponent>("Tag", false, [](DataComponent& dc, Entity entity)
 			{
 				int i = 0;
 				for (auto& tag : dc.tags)
@@ -232,7 +234,7 @@ namespace PaperED
 			});
 
 
-		DrawComponent<TransformComponent>("Transform Component", false,
+		DrawComponent<TransformComponent>("Transform", false,
 			[](TransformComponent& tc, Entity entity)
 			{
 				ContentTable transform_section(100);
@@ -243,7 +245,7 @@ namespace PaperED
 
 			});
 
-		DrawComponent<CameraComponent>("Camera Component", true,
+		DrawComponent<CameraComponent>("Camera", true,
 			[](CameraComponent& cc, Entity entity)
 			{
 				EntityCamera& camera = cc.camera;
@@ -306,7 +308,7 @@ namespace PaperED
 
 			});
 
-		DrawComponent<SpriteComponent>("Sprite Component", true,
+		DrawComponent<SpriteComponent>("Sprite", true,
 			[](SpriteComponent& sc, Entity entity)
 			{
 				{
@@ -401,7 +403,7 @@ namespace PaperED
 
 			});
 
-		DrawComponent<LineComponent>("Line Component", true, [](LineComponent& ln, Entity entity)
+		DrawComponent<LineComponent>("Line", true, [](LineComponent& ln, Entity entity)
 			{
 				{
 					ContentTable thickness_section(ImGui::CalcTextSize("Thickness").x);
@@ -417,7 +419,7 @@ namespace PaperED
 				}
 			});
 
-		DrawComponent<TextComponent>("Text Component", true, [](TextComponent& texc, Entity entity)
+		DrawComponent<TextComponent>("Text", true, [](TextComponent& texc, Entity entity)
 		{
 			{
 				ContentTable text_section(ImGui::CalcTextSize("Text").x);
@@ -463,7 +465,7 @@ namespace PaperED
 
 		});
 
-		DrawComponent<Rigidbody2DComponent>("Rigidbody2D Component", true, [](Rigidbody2DComponent& rb2dc, Entity entity)
+		DrawComponent<Rigidbody2DComponent>("Rigidbody2D", true, [](Rigidbody2DComponent& rb2dc, Entity entity)
 		{
 			{
 				ContentTable bodyTypeSection(ImGui::CalcTextSize("BodyType").x);
@@ -491,7 +493,7 @@ namespace PaperED
 
 		});
 
-		DrawComponent<Collider2DComponent>("Collider2D Component", true, [](Collider2DComponent& c2dc, Entity entity)
+		DrawComponent<Collider2DComponent>("Collider2D", true, [](Collider2DComponent& c2dc, Entity entity)
 		{
 			{
 				std::string name = "Geometry";
@@ -557,7 +559,7 @@ namespace PaperED
 
 		});
 
-		DrawComponent<ScriptComponent>("Script Component", true, [this](ScriptComponent& scrc, Entity entity)
+		DrawComponent<ScriptComponent>("Script", true, [this](ScriptComponent& scrc, Entity entity)
 		{
 #ifndef DISABLE_SCRIPT_ENGINE
 			ManagedClass* managedClass = ScriptEngine::GetEntityInheritClass(scrc.scriptClassName);

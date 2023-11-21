@@ -9,17 +9,17 @@ namespace Paper::UI
 	static char s_IDBuffer[16] = "##";
 	static char s_LabelIDBuffer[1024];
 
-	const char* GenerateID()
-	{
-		_itoa_s(s_Counter++, s_IDBuffer + 2, sizeof(s_IDBuffer) - 2, 16);
-		return s_IDBuffer;
-	}
+	//const char* GenerateID()
+	//{
+	//	_itoa_s(s_Counter++, s_IDBuffer + 2, sizeof(s_IDBuffer) - 2, 16);
+	//	return s_IDBuffer;
+	//}
 
-	const char* GenerateLabelID(std::string_view label)
-	{
-		*fmt::format_to_n(s_LabelIDBuffer, std::size(s_LabelIDBuffer), "{}##{}", label, s_Counter++).out = 0;
-		return s_LabelIDBuffer;
-	}
+	//const char* GenerateLabelID(std::string_view label)
+	//{
+	//	*fmt::format_to_n(s_LabelIDBuffer, std::size(s_LabelIDBuffer), "{}##{}", label, s_Counter++).out = 0;
+	//	return s_LabelIDBuffer;
+	//}
 
 	
 }
