@@ -7,11 +7,27 @@
 namespace Paper::UI
 {
 
-	inline bool CheckBox(std::string name, bool& val)
+	inline bool CheckBox(const std::string& name, bool& val)
 	{
-		bool checked = ImGui::Checkbox(name.c_str(), &val);
+		const bool moddified = ImGui::Checkbox(name.c_str(), &val);
 		UI::DrawItemActivityOutline();
-		return checked;
+		return moddified;
+	}
+
+	struct FloatControlSettings
+	{
+		float speed = 1;
+		float min = 0;
+		float max = 0;
+		std::string format = "%.3f";
+		ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+	};
+
+	inline bool FloatControl(std::string name, float& val, FloatControlSettings settings = {})
+	{
+		const bool modified = ImGui::DragFloat(name.c_str(), &val, settings.speed, settings.min, settings.max, settings.format.c_str(), settings.flags);
+		UI::DrawItemActivityOutline();
+		return modified;
 	}
 
 
@@ -38,27 +54,6 @@ namespace Paper::UI
 		PopID();
 	}
 
-
-	inline bool Property(const std::string& label, bool& val)
-	{
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-
-		ImGui::PushID(label.c_str());
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text(label.c_str());
-
-		ImGui::TableNextColumn();
-
-		ImGui::PushItemWidth(-1);
-		bool activated = CheckBox("", val);
-		ImGui::PopItemWidth();
-		ImGui::PopID();
-		ImGui::TableSetColumnIndex(0);
-
-		return activated;
-	}
-
 	inline bool BeginTreeNode(std::string label, bool defaultOpen = false)
 	{
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -79,6 +74,7 @@ namespace Paper::UI
 
 		ScopedStyle frameRounding(ImGuiStyleVar_FrameRounding, 2.0f);
 		ScopedStyle framePadding(ImGuiStyleVar_FramePadding, ImVec2( 6.0f, 6.0f ));
+		ScopedStyle cellPadding(ImGuiStyleVar_CellPadding, ImVec2( 6.0f, 60.0f ));
 
 		ImGui::PushID(label.c_str());
 		ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
@@ -121,10 +117,78 @@ namespace Paper::UI
 		ImGui::TreePop();
 	}
 
-	inline bool PropertyImageTreenode()
+	inline void BeginPropertyElementInternal(const std::string& label)
 	{
-		
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+
+		ImGui::PushID(label.c_str());
+
+		UI::ShiftCursorY(8);
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text(label.c_str());
+		UI::ShiftCursorY(8);
+
+		ImGui::TableNextColumn();
+
+		UI::ShiftCursorY(6);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.0f, 2.0f));
 	}
+
+	inline void EndPropertyElementInternal()
+	{
+		ImGui::PopStyleVar();
+		UI::ShiftCursorY(6);
+
+		ImGui::PopID();
+
+		ImGui::TableSetColumnIndex(0);
+	}
+
+	inline bool Property(const std::string& label, bool& val)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		const bool modified = CheckBox("", val);
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, float& val)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+		bool modified = FloatControl("", val);
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, glm::vec2& val)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		float wigetWidth = ImGui::GetContentRegionAvail().x / 2;
+
+		bool modified = false;
+
+		ImGui::SetNextItemWidth(wigetWidth);
+		modified |= FloatControl("", val[0]);
+
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(wigetWidth);
+		modified |= FloatControl("", val[1]);
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	
 
 	
 }

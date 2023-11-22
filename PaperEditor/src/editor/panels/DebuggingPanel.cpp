@@ -245,10 +245,15 @@ void CameraSettingsPanel::OnImGuiRender(bool& isOpen)
 	if (UI::BeginImageTreeNode("lol", DataPool::GetTexture("resources/editor/icons/gear.png", true), {14, 14}))
 	{
 		UI::BeginPropertyGrid();
-		static bool val = false;
-		UI::Property("Test1", val);
-		static bool val1 = false;
-		UI::Property("test2", val1);
+
+		static bool boolVar = false;
+		UI::Property("bool", boolVar);
+
+		static float float1 = 1.0f;
+		UI::Property("float1", float1);
+
+		static glm::vec2 float2 = glm::vec2(1.0f);
+		UI::Property("float2", float2);
 
 		UI::EndPropertyGrid();
 
