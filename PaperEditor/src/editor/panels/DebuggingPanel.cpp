@@ -246,14 +246,40 @@ void CameraSettingsPanel::OnImGuiRender(bool& isOpen)
 	{
 		UI::BeginPropertyGrid();
 
+		//BOOL SEC
 		static bool boolVar = false;
 		UI::Property("bool", boolVar);
 
+		
+		//FLOAT SEC
 		static float float1 = 1.0f;
 		UI::Property("float1", float1);
 
 		static glm::vec2 float2 = glm::vec2(1.0f);
 		UI::Property("float2", float2);
+
+		static glm::vec3 float3 = glm::vec3(1.0f);
+		UI::Property("float3", float3);
+
+		static glm::vec4 float4 = glm::vec4(1.0f);
+		UI::Property("float4", float4);
+
+		//INT SEC
+		static int int1 = 1.0f;
+		UI::Property("int1", int1);
+
+		static glm::ivec2 int2 = glm::ivec2(1.0f);
+		UI::Property("int2", int2);
+
+		static glm::ivec3 int3 = glm::ivec3(1.0f);
+		UI::Property("int3", int3);
+
+		static glm::ivec4 int4 = glm::ivec4(1.0f);
+		UI::Property("int4", int4);
+
+		//STRING SEC
+		static std::string string1 = "bunker";
+		UI::Property("string1", string1);
 
 		UI::EndPropertyGrid();
 

@@ -30,6 +30,29 @@ namespace Paper::UI
 		return modified;
 	}
 
+	struct IntControlSettings
+	{
+		float speed = 1;
+		float min = 0;
+		float max = 0;
+		std::string format = "%d";
+		ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+	};
+
+	inline bool IntControl(std::string name, int& val, IntControlSettings settings = {})
+	{
+		const bool modified = ImGui::DragInt(name.c_str(), &val, settings.speed, settings.min, settings.max, settings.format.c_str(), settings.flags);
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
+
+	inline bool StringControl(std::string name, std::string& val)
+	{
+		const bool modified = ImGui::InputText(name.c_str(), &val);
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
+
 
 	inline void BeginPropertyGrid()
 	{
@@ -63,7 +86,7 @@ namespace Paper::UI
 		return ImGui::TreeNodeEx(label.c_str(), flags);
 	}
 
-	inline bool BeginImageTreeNode(std::string label, Shr<Texture> image = nullptr, ImVec2 size = { 0.0f, 0.0f }, bool defaultOpen = false)
+	inline bool BeginImageTreeNode(std::string label, Shr<Texture> image = nullptr, ImVec2 size = { 0.0f, 0.0f }, bool defaultOpen = true)
 	{
 		Shr<Texture> gearTexture = DataPool::GetTexture("resources/editor/icons/gear.png", true);
 
@@ -170,18 +193,198 @@ namespace Paper::UI
 
 	inline bool Property(const std::string& label, glm::vec2& val)
 	{
+		constexpr int c = 2;
+
 		UI::BeginPropertyElementInternal(label);
 
-		float wigetWidth = ImGui::GetContentRegionAvail().x / 2;
+		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 2;
 
 		bool modified = false;
 
-		ImGui::SetNextItemWidth(wigetWidth);
-		modified |= FloatControl("", val[0]);
+		for (int i = 0; i < c; i++)
+		{
+			if (i > 0)
+			{
+				ImGui::SameLine();
+				UI::ShiftCursorX(4);
+			}
 
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(wigetWidth);
-		modified |= FloatControl("", val[1]);
+			ImGui::SetNextItemWidth(wigetWidth);
+			UI::ScopedID id(i);
+			modified |= FloatControl("", val[i]);
+		}
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, glm::vec3& val)
+	{
+		constexpr int c = 3;
+
+		UI::BeginPropertyElementInternal(label);
+
+		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 2;
+
+		bool modified = false;
+
+		for (int i = 0; i < c; i++)
+		{
+			if (i > 0)
+			{
+				ImGui::SameLine();
+				UI::ShiftCursorX(4);
+			}
+
+			ImGui::SetNextItemWidth(wigetWidth);
+			UI::ScopedID id(i);
+			modified |= FloatControl("", val[i]);
+		}
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, glm::vec4& val)
+	{
+		constexpr int c = 4;
+
+		UI::BeginPropertyElementInternal(label);
+
+		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 3;
+
+		bool modified = false;
+
+		for (int i = 0; i < c; i++)
+		{
+			if (i > 0)
+			{
+				ImGui::SameLine();
+				UI::ShiftCursorX(4);
+			}
+
+			ImGui::SetNextItemWidth(wigetWidth);
+			UI::ScopedID id(i);
+			modified |= FloatControl("", val[i]);
+		}
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, int& val)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+		bool modified = IntControl("", val);
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, glm::ivec2& val)
+	{
+		constexpr int c = 2;
+
+		UI::BeginPropertyElementInternal(label);
+
+		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 2;
+
+		bool modified = false;
+
+		for (int i = 0; i < c; i++)
+		{
+			if (i > 0)
+			{
+				ImGui::SameLine();
+				UI::ShiftCursorX(4);
+			}
+
+			ImGui::SetNextItemWidth(wigetWidth);
+			UI::ScopedID id(i);
+			modified |= IntControl("", val[i]);
+		}
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, glm::ivec3& val)
+	{
+		constexpr int c = 3;
+
+		UI::BeginPropertyElementInternal(label);
+
+		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 2;
+
+		bool modified = false;
+
+		for (int i = 0; i < c; i++)
+		{
+			if (i > 0)
+			{
+				ImGui::SameLine();
+				UI::ShiftCursorX(4);
+			}
+
+			ImGui::SetNextItemWidth(wigetWidth);
+			UI::ScopedID id(i);
+			modified |= IntControl("", val[i]);
+		}
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, glm::ivec4& val)
+	{
+		constexpr int c = 4;
+
+		UI::BeginPropertyElementInternal(label);
+
+		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 3;
+
+		bool modified = false;
+
+		for (int i = 0; i < c; i++)
+		{
+			if (i > 0)
+			{
+				ImGui::SameLine();
+				UI::ShiftCursorX(4);
+			}
+
+			ImGui::SetNextItemWidth(wigetWidth);
+			UI::ScopedID id(i);
+			modified |= IntControl("", val[i]);
+		}
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool Property(const std::string& label, std::string& val)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		float wigetWidth = ImGui::GetContentRegionAvail().x;
+
+		bool modified = false;
+
+		{
+			ImGui::SetNextItemWidth(wigetWidth);
+			UI::ScopedID id(0);
+			modified |= StringControl("", val);
+		}
+
 
 		UI::EndPropertyElementInternal();
 
