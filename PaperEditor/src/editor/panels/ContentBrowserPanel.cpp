@@ -145,7 +145,7 @@ namespace PaperED
 					switch (isItemType(item))
 					{
 						case FileType::Texture:
-							ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM_TEXTURE", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
+							ImGui::SetDragDropPayload("TEXTURE", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
 							ImGui::Image((void*)DataPool::GetAssetTexture(item.path().string(), true)->GetID(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 							break;
 

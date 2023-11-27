@@ -237,12 +237,13 @@ namespace PaperED
 		DrawComponent<TransformComponent>("Transform", false,
 			[](TransformComponent& tc, Entity entity)
 			{
-				ContentTable transform_section(100);
+				UI::BeginPropertyGrid();
 
-				Draw3FloatControl("Position", tc.position);
-				Draw3FloatControl("Rotation", tc.rotation);
-				Draw3FloatControl("Scale", tc.scale, glm::vec3(0), glm::vec3(0), glm::vec3(1), glm::vec3(1));
+				UI::Property("Position", tc.position);
+				UI::Property("Rotation", tc.rotation);
+				UI::Property("Scale", tc.scale, glm::vec3(1.0f, 1.0f, 1.0f));
 
+				UI::EndPropertyGrid();
 			});
 
 		DrawComponent<CameraComponent>("Camera", true,
@@ -311,100 +312,51 @@ namespace PaperED
 		DrawComponent<SpriteComponent>("Sprite", true,
 			[](SpriteComponent& sc, Entity entity)
 			{
-				{
-					std::string name = "Geometry";
-					ContentTable geometry_section(ImGui::CalcTextSize(name.c_str()).x);
-					FillNameCol(name);
+				UI::BeginPropertyGrid();
 
-					ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-					if (ImGui::BeginCombo(CONST_UI_ID, GeometryToString(sc.geometry).c_str()))
-					{
-						for (int i = 0; i <= (int)Geometry::_LAST; i++)
-						{
-							if (ImGui::Selectable(GeometryToString((Geometry)i).c_str(), sc.geometry == (Geometry)i))
-							{
-								sc.geometry = (Geometry)i;
-							}
-						}
-						ImGui::EndCombo();
-					}
-				}
+				UI::PropertyDropdown("Geometry", { "None", "Triangle", "Rectangle", "Circle" }, sc.geometry);
 
 				if (sc.geometry == Geometry::CIRCLE)
 				{
-					ContentTable pixelregister_section(ImGui::CalcTextSize("Thickness").x);
-					DrawFloatControl("Thickness", sc.thickness, 0, 0, 0.1f, 1.0f, { "TH" });
-					DrawFloatControl("Fade", sc.fade, 0, 0, 0.001f, 0.005f, { "FA" });
+					UI::Property("Thickness", sc.thickness, 1.0f);
+					UI::Property("Fade", sc.fade, 0.005f);
 				}
 
+				UI::Property("RegisterAlphaPixels", sc.register_alpha_pixels_to_event);
 
+
+				UI::PropertyTexture("Texture", sc.texture, 100);
+				UI::DragDropTarget(sc.texture);
+
+				UI::Property("Tiling Factor", sc.tiling_factor, 1.0f);
+
+				glm::vec2 uv0 = sc.tex_coords[0];
+				glm::vec2 uv1 = sc.tex_coords[2];
+
+				UI::Property("UV0", uv0, { 0, 0 });
+				UI::Property("UV1", uv1, { 1.0f, 1.0f });
+
+				if (uv0 != sc.tex_coords[0] || uv1 != sc.tex_coords[2])
 				{
-					std::string name = "RegisterAlphaPixels[temp]";
-					ContentTable pixelregister_section(ImGui::CalcTextSize(name.c_str()).x);
-					DrawCheckbox(name, sc.register_alpha_pixels_to_event);
+					sc.tex_coords[0] = uv0;
+					sc.tex_coords[1] = { uv1.x, uv0.y };
+					sc.tex_coords[2] = uv1;
+					sc.tex_coords[3] = { uv0.x, uv1.y };
 				}
 
-				{
-					ContentTable texture_section(ImGui::CalcTextSize("Texture").x);
-					FillNameCol("Texture");
+				UI::PropertyColor("Color", sc.color);
 
-					ImVec2 size(50, 50);
-
-					if (sc.texture)
-						ImGui::ImageButton((ImTextureID)sc.texture->GetID(), size, ImVec2(0, 1), ImVec2(1, 0));
-					else
-						ImGui::Button("null", size);
-
-					if (ImGui::BeginDragDropTarget())
-					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_TEXTURE"))
-						{
-							const wchar_t* path = (const wchar_t*)payload->Data;
-							std::string file = std::filesystem::path(path).string();
-
-							sc.texture = DataPool::GetAssetTexture(file, true);
-						}
-						ImGui::EndDragDropTarget();
-					}
-				}
-
-				{
-					std::string name = "Tiling Factor";
-					ContentTable tilingfactor_section(ImGui::CalcTextSize(name.c_str()).x);
-
-					DrawFloatControl(name, sc.tiling_factor, 0, 0, 1.0f, 1.0f, { "TF" });
-				}
-
-				{
-					ContentTable uv_section(ImGui::CalcTextSize("UV_0").x);
-
-					glm::vec2 uv0 = sc.tex_coords[0];
-					glm::vec2 uv1 = sc.tex_coords[2];
-
-					Draw2FloatControl("UV_0", uv0, { 0.0f, 0.0f }, { 1.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f });
-					Draw2FloatControl("UV_1", uv1, { 0.0f, 0.0f }, { 1.0f, 1.0f }, { 1.0f, 1.0f }, { 1.0f, 1.0f });
-
-					if (uv0 != sc.tex_coords[0] || uv1 != sc.tex_coords[2])
-					{
-						sc.tex_coords[0] = uv0;
-						sc.tex_coords[1] = { uv1.x, uv0.y };
-						sc.tex_coords[2] = uv1;
-						sc.tex_coords[3] = { uv0.x, uv1.y };
-					}
-				}
-
-				{
-					ContentTable color_section(ImGui::CalcTextSize("Color").x);
-
-					FillNameCol("Color");
-
-					ImGui::ColorPicker4("##picker4", &sc.color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
-				}
+				UI::EndPropertyGrid();
 
 			});
 
 		DrawComponent<LineComponent>("Line", true, [](LineComponent& ln, Entity entity)
 			{
+				UI::BeginPropertyGrid();
+
+				UI::Property("Thickness", ln.thickness, 1.0f, {0.05f, 0.1f, 10.0f}); //speed 0.05f
+				
+				UI::EndPropertyGrid();
 				{
 					ContentTable thickness_section(ImGui::CalcTextSize("Thickness").x);
 					DrawFloatControl("Thickness", ln.thickness, 0.1f, 10.0f, 0.05f, 1.0f, { "TH" });

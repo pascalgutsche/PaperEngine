@@ -30,6 +30,12 @@ namespace PaperED
 		void OnImGuiRender(bool& isOpen) override;
 	};
 
+	class UIDebuggerPanel : public EditorPanel
+	{
+	public:
+		void OnImGuiRender(bool& isOpen) override;
+	};
+
 	class ImGuiDemoPanel : public EditorPanel
 	{
 	public:

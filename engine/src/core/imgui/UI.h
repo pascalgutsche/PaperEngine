@@ -6,41 +6,91 @@
 
 namespace Paper::UI
 {
+	inline float GetAvailableContentSpace()
+	{
+		return ImGui::GetContentRegionAvail().x - 10;
+	}
+
+	inline bool BeginDropdown(const std::string& label, const std::string& preview)
+	{
+		const bool modified = ImGui::BeginCombo(label.c_str(), preview.c_str());
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
+
+	inline void EndDropdown()
+	{
+		ImGui::EndCombo();
+	}
+
+	inline bool Selectable(const std::string& value, bool isSelected)
+	{
+		bool modified = ImGui::Selectable(value.c_str(), isSelected);
+
+		//UI::DrawItemActivityOutline();
+		return modified;
+	}
+
+	inline bool Button(const std::string& label, ImVec2 size = ImVec2(0, 0))
+	{
+		const bool modified = ImGui::Button(label.c_str(), size);
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
+
+	inline bool ImageButton(const Shr<Texture>& texture, ImVec2 size = ImVec2(0, 0))
+	{
+		CORE_ASSERT(texture, "");
+		const bool modified = ImGui::ImageButton((void*)texture->GetID(), size, {0, 1}, {1, 0});
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
 
 	inline bool CheckBox(const std::string& name, bool& val)
 	{
-		const bool moddified = ImGui::Checkbox(name.c_str(), &val);
+		const bool modified = ImGui::Checkbox(name.c_str(), &val);
 		UI::DrawItemActivityOutline();
-		return moddified;
+		return modified;
 	}
 
-	struct FloatControlSettings
+	template <typename T>
+	struct ControlSettings
 	{
-		float speed = 1;
-		float min = 0;
-		float max = 0;
-		std::string format = "%.3f";
+		T speed = T(1.0f);
+		T min = T();
+		T max = T();
+		std::string format = "";
 		ImGuiSliderFlags flags = ImGuiSliderFlags_None;
 	};
 
-	inline bool FloatControl(std::string name, float& val, FloatControlSettings settings = {})
+	template <>
+	struct ControlSettings<bool>
 	{
+		
+	};
+
+	template <>
+	struct ControlSettings<std::string>
+	{
+
+	};
+
+	
+
+	inline bool FloatControl(std::string name, float& val, ControlSettings<float> settings = {})
+	{
+		if (settings.format.empty())
+			settings.format = "%.1f";
+
 		const bool modified = ImGui::DragFloat(name.c_str(), &val, settings.speed, settings.min, settings.max, settings.format.c_str(), settings.flags);
 		UI::DrawItemActivityOutline();
 		return modified;
 	}
 
-	struct IntControlSettings
+	inline bool IntControl(std::string name, int& val, ControlSettings<int> settings = {1, 0, 0, "%d"})
 	{
-		float speed = 1;
-		float min = 0;
-		float max = 0;
-		std::string format = "%d";
-		ImGuiSliderFlags flags = ImGuiSliderFlags_None;
-	};
-
-	inline bool IntControl(std::string name, int& val, IntControlSettings settings = {})
-	{
+		if (settings.format.empty())
+			settings.format = "%d";
 		const bool modified = ImGui::DragInt(name.c_str(), &val, settings.speed, settings.min, settings.max, settings.format.c_str(), settings.flags);
 		UI::DrawItemActivityOutline();
 		return modified;
@@ -49,6 +99,20 @@ namespace Paper::UI
 	inline bool StringControl(std::string name, std::string& val)
 	{
 		const bool modified = ImGui::InputText(name.c_str(), &val);
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
+
+	inline bool ColorPicker3(std::string name, glm::vec3& color)
+	{
+		bool modified = ImGui::ColorPicker3(name.c_str(), &color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
+
+	inline bool ColorPicker4(std::string name, glm::vec4& color)
+	{
+		bool modified = ImGui::ColorPicker4(name.c_str(), & color.x, ImGuiColorEditFlags_AlphaPreviewHalf);
 		UI::DrawItemActivityOutline();
 		return modified;
 	}
@@ -145,6 +209,7 @@ namespace Paper::UI
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
 
+		
 		ImGui::PushID(label.c_str());
 
 		UI::ShiftCursorY(8);
@@ -158,46 +223,90 @@ namespace Paper::UI
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.0f, 2.0f));
 	}
 
-	inline void EndPropertyElementInternal()
+	using PropertyStatusField = uint32_t;
+
+	enum PropertyStatus
 	{
+		ROW_HOVERED = BIT(0),
+		ROW_CLICKED_LEFT = BIT(1),
+		ROW_CLICKED_MIDDLE = BIT(2),
+		ROW_CLICKED_RIGHT = BIT(3),
+		//ROW_DOWN = BIT(4)
+	};
+
+	inline PropertyStatusField EndPropertyElementInternal()
+	{
+		PropertyStatusField status = 0;
+
 		ImGui::PopStyleVar();
 		UI::ShiftCursorY(6);
 
 		ImGui::PopID();
 
+		const int rowHeight = 40.0f;
+
+		const ImVec2 rowAreaMin = ImGui::TableGetCellBgRect(ImGui::GetCurrentTable(), 0).Min;
+		const ImVec2 rowAreaMax = { ImGui::TableGetCellBgRect(ImGui::GetCurrentTable(), ImGui::TableGetColumnCount() - 1).Max.x - 20,
+									rowAreaMin.y + rowHeight };
+
+		//ImGui::Text(fmt::format("RowAreaMin {0}, {1}", rowAreaMin.x, rowAreaMin.y).c_str());
+		//ImGui::Text(fmt::format("RowAreaMax {0}, {1}", rowAreaMax.x, rowAreaMax.y).c_str());
+		//ImGui::Text(fmt::format("CurserPos {0}, {1}", ImGui::GetMousePos().x, ImGui::GetMousePos().y).c_str());
+
+		//ImGui::PushClipRect(rowAreaMin, rowAreaMax, false);
+		//bool isRowHovered, held;
+		//bool isRowClicked = ImGui::ButtonBehavior(ImRect(rowAreaMin, rowAreaMax), ImGui::GetID(UI::GenerateID()),
+		//	&isRowHovered, &held, ImGuiButtonFlags_AllowItemOverlap | ImGuiButtonFlags_PressedOnClickRelease | ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
+
+		if (ImGui::GetMousePos().x >= rowAreaMin.x && ImGui::GetMousePos().y >= rowAreaMin.y 
+			&& ImGui::GetMousePos().x <= rowAreaMax.x && ImGui::GetMousePos().y <= rowAreaMax.y)
+		{
+			if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+				status |= ROW_CLICKED_LEFT;
+			if (ImGui::IsMouseReleased(ImGuiMouseButton_Middle))
+				status |= ROW_CLICKED_MIDDLE;
+			if (ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+				status |= ROW_CLICKED_RIGHT;
+
+			if (status == 0)
+				status |= ROW_HOVERED;
+		}
+
+		//ImGui::PopClipRect();
+
 		ImGui::TableSetColumnIndex(0);
+
+		return status;
 	}
 
-	inline bool Property(const std::string& label, bool& val)
+	template <typename TUnderlying, typename T>
+	inline ControlSettings<TUnderlying> GetControlSetting(ControlSettings<T> setting, int slot)
 	{
-		UI::BeginPropertyElementInternal(label);
+		return { setting.speed[slot], setting.min[slot], setting.max[slot], setting.format, setting.flags };
+	}
+	
+	inline bool PropertyInternal(const std::string& label, bool& val, ControlSettings<bool> settings = {})
+	{
 
 		const bool modified = CheckBox("", val);
 
-		UI::EndPropertyElementInternal();
-
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, float& val)
+	inline bool PropertyInternal(const std::string& label, float& val, ControlSettings<float> settings = {})
 	{
-		UI::BeginPropertyElementInternal(label);
-
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-		bool modified = FloatControl("", val);
-
-		UI::EndPropertyElementInternal();
+		ImGui::SetNextItemWidth(GetAvailableContentSpace());
+		bool modified = FloatControl("", val, settings);
 
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, glm::vec2& val)
+	inline bool PropertyInternal(const std::string& label, glm::vec2& val, ControlSettings<glm::vec2> settings = {})
 	{
 		constexpr int c = 2;
 
-		UI::BeginPropertyElementInternal(label);
 
-		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 2;
+		float wigetWidth = GetAvailableContentSpace() / c - 2;
 
 		bool modified = false;
 
@@ -211,21 +320,18 @@ namespace Paper::UI
 
 			ImGui::SetNextItemWidth(wigetWidth);
 			UI::ScopedID id(i);
-			modified |= FloatControl("", val[i]);
+			modified |= FloatControl("", val[i], GetControlSetting<float, glm::vec2>(settings, i));
 		}
-
-		UI::EndPropertyElementInternal();
 
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, glm::vec3& val)
+	inline bool PropertyInternal(const std::string& label, glm::vec3& val, ControlSettings<glm::vec3> settings = {})
 	{
 		constexpr int c = 3;
 
-		UI::BeginPropertyElementInternal(label);
 
-		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 2;
+		float wigetWidth = GetAvailableContentSpace() / c - 2;
 
 		bool modified = false;
 
@@ -239,21 +345,19 @@ namespace Paper::UI
 
 			ImGui::SetNextItemWidth(wigetWidth);
 			UI::ScopedID id(i);
-			modified |= FloatControl("", val[i]);
+			modified |= FloatControl("", val[i], GetControlSetting<float, glm::vec3>(settings, i));
 		}
 
-		UI::EndPropertyElementInternal();
 
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, glm::vec4& val)
+	inline bool PropertyInternal(const std::string& label, glm::vec4& val, ControlSettings<glm::vec4> settings = {})
 	{
 		constexpr int c = 4;
 
-		UI::BeginPropertyElementInternal(label);
 
-		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 3;
+		float wigetWidth = GetAvailableContentSpace() / c - 3;
 
 		bool modified = false;
 
@@ -267,33 +371,29 @@ namespace Paper::UI
 
 			ImGui::SetNextItemWidth(wigetWidth);
 			UI::ScopedID id(i);
-			modified |= FloatControl("", val[i]);
+			modified |= FloatControl("", val[i], GetControlSetting<float, glm::vec4>(settings, i));
 		}
 
-		UI::EndPropertyElementInternal();
 
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, int& val)
+	inline bool PropertyInternal(const std::string& label, int& val, ControlSettings<int> settings = {})
 	{
-		UI::BeginPropertyElementInternal(label);
 
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-		bool modified = IntControl("", val);
+		ImGui::SetNextItemWidth(GetAvailableContentSpace());
+		bool modified = IntControl("", val, settings);
 
-		UI::EndPropertyElementInternal();
 
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, glm::ivec2& val)
+	inline bool PropertyInternal(const std::string& label, glm::ivec2& val, ControlSettings<glm::ivec2> settings = {})
 	{
 		constexpr int c = 2;
 
-		UI::BeginPropertyElementInternal(label);
 
-		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 2;
+		float wigetWidth = GetAvailableContentSpace() / c - 2;
 
 		bool modified = false;
 
@@ -307,21 +407,18 @@ namespace Paper::UI
 
 			ImGui::SetNextItemWidth(wigetWidth);
 			UI::ScopedID id(i);
-			modified |= IntControl("", val[i]);
+			modified |= IntControl("", val[i], GetControlSetting<int, glm::ivec2>(settings, i));
 		}
 
-		UI::EndPropertyElementInternal();
 
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, glm::ivec3& val)
+	inline bool PropertyInternal(const std::string& label, glm::ivec3& val, ControlSettings<glm::ivec3> settings = {})
 	{
 		constexpr int c = 3;
 
-		UI::BeginPropertyElementInternal(label);
-
-		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 2;
+		float wigetWidth = GetAvailableContentSpace() / c - 2;
 
 		bool modified = false;
 
@@ -335,21 +432,19 @@ namespace Paper::UI
 
 			ImGui::SetNextItemWidth(wigetWidth);
 			UI::ScopedID id(i);
-			modified |= IntControl("", val[i]);
+			modified |= IntControl("", val[i], GetControlSetting<int, glm::ivec3>(settings, i));
 		}
 
-		UI::EndPropertyElementInternal();
 
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, glm::ivec4& val)
+	inline bool PropertyInternal(const std::string& label, glm::ivec4& val, ControlSettings<glm::ivec4> settings = {})
 	{
 		constexpr int c = 4;
 
-		UI::BeginPropertyElementInternal(label);
 
-		float wigetWidth = ImGui::GetContentRegionAvail().x / c - 3;
+		float wigetWidth = GetAvailableContentSpace() / c - 3;
 
 		bool modified = false;
 
@@ -363,19 +458,17 @@ namespace Paper::UI
 
 			ImGui::SetNextItemWidth(wigetWidth);
 			UI::ScopedID id(i);
-			modified |= IntControl("", val[i]);
+			modified |= IntControl("", val[i], GetControlSetting<int, glm::ivec4>(settings, i));
 		}
 
-		UI::EndPropertyElementInternal();
 
 		return modified;
 	}
 
-	inline bool Property(const std::string& label, std::string& val)
+	inline bool PropertyInternal(const std::string& label, std::string& val, ControlSettings<std::string> settings = {})
 	{
-		UI::BeginPropertyElementInternal(label);
 
-		float wigetWidth = ImGui::GetContentRegionAvail().x;
+		float wigetWidth = GetAvailableContentSpace();
 
 		bool modified = false;
 
@@ -386,12 +479,148 @@ namespace Paper::UI
 		}
 
 
-		UI::EndPropertyElementInternal();
 
 		return modified;
 	}
 
 	
 
+	template <typename T>
+	inline bool Property(const std::string& label, T& val, T defaultVal = T(), ControlSettings<T> settings = {})
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		bool modified = PropertyInternal(label, val, settings);
+
+		if ((UI::EndPropertyElementInternal() & ROW_CLICKED_RIGHT) && ImGui::IsKeyDown(ImGuiKey_LeftShift))
+			val = defaultVal;
+
+		return modified;
+	}
+	
+
+	template <typename TEnum, typename TUnderlyingType = uint32_t>
+	inline bool PropertyDropdown(const std::string& label, std::vector<std::string> list, TEnum& selected)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		TUnderlyingType index = (TUnderlyingType)selected;
+		std::string current = list[index];
+
+		bool modified = false;
+
+
+		ImGui::SetNextItemWidth(GetAvailableContentSpace());
+
+		if (UI::BeginDropdown(fmt::format("##{}", label), current))
+		{
+			for (int i = 0; i < list.size(); i++)
+			{
+				bool isSelected = current == list[i];
+				if(UI::Selectable(list[i].c_str(), isSelected))
+				{
+					selected = (TEnum)i;
+					modified = true;
+				}
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			UI::EndDropdown();
+		}
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool PropertyTexture(const std::string& label, Shr<Texture>& texture, ImVec2 size)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		bool modified = false;
+
+		if (texture)
+			modified = UI::ImageButton(texture, size);
+		else
+			modified = UI::Button("null", size);
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool PropertyTexture(const std::string& label, Shr<Texture>& texture, float maxHeight)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		bool modified = false;
+
+		ImVec2 size;
+
+		size.x = GetAvailableContentSpace();
+		size.y = GetAvailableContentSpace() / texture->GetRatio();
+		if (size.y > maxHeight)
+		{
+			size.y = maxHeight;
+			size.x = size.y * texture->GetRatio();
+		}
+
+		
+
+		if (texture)
+			modified = UI::ImageButton(texture, size);
+		else
+			modified = UI::Button("null", size);
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline const ImGuiPayload* DragDropTargetInternal(const char* type)
+	{
+		const ImGuiPayload* payload = nullptr;
+		if (ImGui::BeginDragDropTarget())
+		{
+			payload = ImGui::AcceptDragDropPayload(type);
+			
+			ImGui::EndDragDropTarget();
+		}
+		return payload;
+	}
+
+	inline bool DragDropTarget(Shr<Texture>& texture)
+	{
+		if (const ImGuiPayload* payload = DragDropTargetInternal("TEXTURE"))
+		{
+			const wchar_t* path = (const wchar_t*)payload->Data;
+			std::string file = std::filesystem::path(path).string();
+
+			texture = DataPool::GetAssetTexture(file, true);
+			return true;
+		}
+		return false;
+	}
+
+	inline bool PropertyColor(const std::string& label, glm::vec3& color)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		bool modified = UI::ColorPicker3("", color);
+
+		UI::EndPropertyElementInternal();
+		return modified;
+	}
+
+	inline bool PropertyColor(const std::string& label, glm::vec4& color)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		bool modified = UI::ColorPicker4("", color);
+
+		UI::EndPropertyElementInternal();
+		return modified;
+	}
+
+	
 	
 }

@@ -239,8 +239,12 @@ void CameraSettingsPanel::OnImGuiRender(bool& isOpen)
 
 	ImGui::End();
 
+}
 
-	ImGui::Begin("loool");
+void UIDebuggerPanel::OnImGuiRender(bool& isOpen)
+{
+
+	ImGui::Begin("loool", &isOpen);
 
 	if (UI::BeginImageTreeNode("lol", DataPool::GetTexture("resources/editor/icons/gear.png", true), {14, 14}))
 	{
@@ -280,6 +284,19 @@ void CameraSettingsPanel::OnImGuiRender(bool& isOpen)
 		//STRING SEC
 		static std::string string1 = "bunker";
 		UI::Property("string1", string1);
+
+		//DROPDOWN SEC
+		enum Test
+		{
+			Test1,
+			Test2,
+			Test3,
+			Test4
+		};
+		static Test test = Test1;
+		UI::PropertyDropdown("test", {"Test1", "Test2", "Test3", "Test4"}, test);
+
+		
 
 		UI::EndPropertyGrid();
 

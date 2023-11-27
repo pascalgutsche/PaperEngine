@@ -169,7 +169,7 @@ namespace Paper {
 		//set default range (uft-8)
 		fontConfig.GlyphRanges = fontAtlas->GetGlyphRangesDefault();
 
-		fontAtlas->AddFontFromFileTTF("resources/fonts/mononoki.ttf", 18, &fontConfig);
+		fontAtlas->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 22, &fontConfig);
 
 		//any new fonts were added to the font pool
 		fontConfig.MergeMode = true;
