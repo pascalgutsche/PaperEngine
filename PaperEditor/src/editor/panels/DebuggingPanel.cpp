@@ -244,7 +244,7 @@ void CameraSettingsPanel::OnImGuiRender(bool& isOpen)
 void UIDebuggerPanel::OnImGuiRender(bool& isOpen)
 {
 
-	ImGui::Begin("loool", &isOpen);
+	ImGui::Begin("UI Debugger", &isOpen);
 
 	if (UI::BeginImageTreeNode("lol", DataPool::GetTexture("resources/editor/icons/gear.png", true), {14, 14}))
 	{
@@ -279,7 +279,7 @@ void UIDebuggerPanel::OnImGuiRender(bool& isOpen)
 		UI::Property("int3", int3);
 
 		static glm::ivec4 int4 = glm::ivec4(1.0f);
-		UI::Property("int4", int4);
+		UI::Property("int4", int4, {});
 
 		//STRING SEC
 		static std::string string1 = "bunker";

@@ -318,8 +318,8 @@ namespace PaperED
 
 				if (sc.geometry == Geometry::CIRCLE)
 				{
-					UI::Property("Thickness", sc.thickness, 1.0f);
-					UI::Property("Fade", sc.fade, 0.005f);
+					UI::Property("Thickness", sc.thickness, 1.0f, { 0.01f, 0.0f, 1.0f, "%.2f" });
+					UI::Property("Fade", sc.fade, 0.005f, {0.001f, 0.0f, FLT_MAX, "%.3f"});
 				}
 
 				UI::Property("RegisterAlphaPixels", sc.register_alpha_pixels_to_event);
@@ -328,13 +328,13 @@ namespace PaperED
 				UI::PropertyTexture("Texture", sc.texture, 100);
 				UI::DragDropTarget(sc.texture);
 
-				UI::Property("Tiling Factor", sc.tiling_factor, 1.0f);
+				UI::Property("Tiling Factor", sc.tiling_factor, 1.0f, { .speed = 0.1f, .format = "%.1f" });
 
 				glm::vec2 uv0 = sc.tex_coords[0];
 				glm::vec2 uv1 = sc.tex_coords[2];
 
-				UI::Property("UV0", uv0, { 0, 0 });
-				UI::Property("UV1", uv1, { 1.0f, 1.0f });
+				UI::Property("UV0", uv0, { 0, 0 }, { glm::vec2(0.01f), glm::vec2(0), glm::vec2(1.0f), "%.2f"});
+				UI::Property("UV1", uv1, { 1.0f, 1.0f }, { glm::vec2(0.01f), glm::vec2(0), glm::vec2(1.0f), "%.2f"});
 
 				if (uv0 != sc.tex_coords[0] || uv1 != sc.tex_coords[2])
 				{
