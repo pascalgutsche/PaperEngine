@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "imgui/ImGuiLayer.h"
 #include "imgui/ImGuiUtils.h"
+#include "renderer/Font.h"
 #include "utils/Utils.h"
 
 namespace Paper::UI
@@ -31,9 +32,9 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool Button(const std::string& label, ImVec2 size = ImVec2(0, 0))
+	inline bool Button(const std::string& text, ImVec2 size = ImVec2(0, 0))
 	{
-		const bool modified = ImGui::Button(label.c_str(), size);
+		const bool modified = ImGui::Button(text.c_str(), size);
 		UI::DrawItemActivityOutline();
 		return modified;
 	}
@@ -72,7 +73,7 @@ namespace Paper::UI
 	template <>
 	struct ControlSettings<std::string>
 	{
-
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_None;
 	};
 
 	
@@ -96,9 +97,23 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool StringControl(std::string name, std::string& val)
+	inline bool StringControl(std::string name, std::string& val, ControlSettings<std::string> settings)
 	{
-		const bool modified = ImGui::InputText(name.c_str(), &val);
+		const bool modified = ImGui::InputText(name.c_str(), &val, settings.flags);
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
+
+	inline bool StringControlRaw(std::string name, char* val, size_t size, ControlSettings<std::string> settings)
+	{
+		const bool modified = ImGui::InputText(name.c_str(), val, size, settings.flags);
+		UI::DrawItemActivityOutline();
+		return modified;
+	}
+
+	inline bool MultilineTextInput(std::string name, std::string& val, ImVec2 size, ImGuiInputTextFlags flags)
+	{
+		bool modified = ImGui::InputTextMultiline(name.c_str(), &val, size, flags);
 		UI::DrawItemActivityOutline();
 		return modified;
 	}
@@ -117,6 +132,7 @@ namespace Paper::UI
 		return modified;
 	}
 
+	
 
 	inline void BeginPropertyGrid()
 	{
@@ -126,7 +142,7 @@ namespace Paper::UI
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::BeginTable(GenerateID(), 2, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable); //
-		ImGui::TableSetupColumn("name", 0); // ImGui::GetContentRegionAvail().x / 3
+		ImGui::TableSetupColumn("name"); // ImGui::GetContentRegionAvail().x / 3
 		//float space_left = space_name_column > 0 ? ImGui::GetContentRegionAvail().x - space_name_column : 0;
 		ImGui::TableSetupColumn("value"); //, ImGuiTableColumnFlags_IndentEnable | ImGuiTableColumnFlags_NoClip
 		
@@ -285,7 +301,7 @@ namespace Paper::UI
 		return { setting.speed[slot], setting.min[slot], setting.max[slot], setting.format, setting.flags };
 	}
 	
-	inline bool PropertyInternal(const std::string& label, bool& val, ControlSettings<bool> settings = {})
+	inline bool PropertyInternal(bool& val, ControlSettings<bool> settings = {})
 	{
 
 		const bool modified = CheckBox("", val);
@@ -293,7 +309,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, float& val, ControlSettings<float> settings = {})
+	inline bool PropertyInternal(float& val, ControlSettings<float> settings = {})
 	{
 		ImGui::SetNextItemWidth(GetAvailableContentSpace());
 		bool modified = FloatControl("", val, settings);
@@ -301,7 +317,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, glm::vec2& val, ControlSettings<glm::vec2> settings = {})
+	inline bool PropertyInternal(glm::vec2& val, ControlSettings<glm::vec2> settings = {})
 	{
 		constexpr int c = 2;
 
@@ -326,7 +342,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, glm::vec3& val, ControlSettings<glm::vec3> settings = {})
+	inline bool PropertyInternal(glm::vec3& val, ControlSettings<glm::vec3> settings = {})
 	{
 		constexpr int c = 3;
 
@@ -352,7 +368,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, glm::vec4& val, ControlSettings<glm::vec4> settings = {})
+	inline bool PropertyInternal(glm::vec4& val, ControlSettings<glm::vec4> settings = {})
 	{
 		constexpr int c = 4;
 
@@ -378,7 +394,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, int& val, ControlSettings<int> settings = {})
+	inline bool PropertyInternal(int& val, ControlSettings<int> settings = {})
 	{
 
 		ImGui::SetNextItemWidth(GetAvailableContentSpace());
@@ -388,7 +404,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, glm::ivec2& val, ControlSettings<glm::ivec2> settings = {})
+	inline bool PropertyInternal(glm::ivec2& val, ControlSettings<glm::ivec2> settings = {})
 	{
 		constexpr int c = 2;
 
@@ -414,7 +430,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, glm::ivec3& val, ControlSettings<glm::ivec3> settings = {})
+	inline bool PropertyInternal(glm::ivec3& val, ControlSettings<glm::ivec3> settings = {})
 	{
 		constexpr int c = 3;
 
@@ -439,7 +455,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, glm::ivec4& val, ControlSettings<glm::ivec4> settings = {})
+	inline bool PropertyInternal(glm::ivec4& val, ControlSettings<glm::ivec4> settings = {})
 	{
 		constexpr int c = 4;
 
@@ -465,36 +481,63 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyInternal(const std::string& label, std::string& val, ControlSettings<std::string> settings = {})
+	inline bool PropertyInternal(std::string& val, ControlSettings<std::string> settings = {})
 	{
-
 		float wigetWidth = GetAvailableContentSpace();
 
-		bool modified = false;
-
-		{
-			ImGui::SetNextItemWidth(wigetWidth);
-			UI::ScopedID id(0);
-			modified |= StringControl("", val);
-		}
-
-
+		ImGui::SetNextItemWidth(wigetWidth);
+		bool modified = StringControl("", val, settings);
 
 		return modified;
 	}
-
-	
 
 	template <typename T>
 	inline bool Property(const std::string& label, T& val, T defaultVal = T(), ControlSettings<T> settings = {})
 	{
 		UI::BeginPropertyElementInternal(label);
 
-		bool modified = PropertyInternal(label, val, settings);
+		bool modified = PropertyInternal(val, settings);
 
 		if ((UI::EndPropertyElementInternal() & ROW_CLICKED_RIGHT) && ImGui::IsKeyDown(ImGuiKey_LeftShift))
 			val = defaultVal;
 
+		return modified;
+	}
+
+	inline bool PropertyInputRaw(const std::string& label, char* val, size_t size, ControlSettings<std::string> settings = {})
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		float wigetWidth = GetAvailableContentSpace();
+
+		ImGui::SetNextItemWidth(wigetWidth);
+		bool modified = StringControlRaw("", val, size, settings);
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool PropertyMultiline(const std::string& label, std::string& val, ImVec2 size = ImVec2(0, 0), ImGuiInputTextFlags flags = ImGuiInputTextFlags_None)
+	{
+		UI::BeginPropertyElementInternal(label);
+		bool modified = UI::MultilineTextInput("", val, size, flags | ImGuiInputTextFlags_Multiline);
+
+		UI::EndPropertyElementInternal();
+		return modified;
+	}
+
+	inline bool PropertyMultiline(const std::string& label, std::string& val, float height, ImGuiInputTextFlags flags = ImGuiInputTextFlags_None)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		ImVec2 size;
+		size.x = GetAvailableContentSpace();
+		size.y = height;
+
+		bool modified = UI::MultilineTextInput("", val, size, flags | ImGuiInputTextFlags_Multiline);
+
+		UI::EndPropertyElementInternal();
 		return modified;
 	}
 	
@@ -576,6 +619,24 @@ namespace Paper::UI
 		return modified;
 	}
 
+	inline bool PropertyFont(const std::string& label, Shr<Font>& font)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+		ImGui::SetNextItemWidth(GetAvailableContentSpace());
+
+		std::string buttonText = "";
+
+		if (font)
+			buttonText = font->GetFontName();
+
+		bool modified = UI::Button(buttonText);
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
 	inline const ImGuiPayload* DragDropTargetInternal(const char* type)
 	{
 		const ImGuiPayload* payload = nullptr;
@@ -601,6 +662,29 @@ namespace Paper::UI
 		return false;
 	}
 
+	inline bool DragDropTarget(Shr<Font>& font)
+	{
+		if (const ImGuiPayload* payload = DragDropTargetInternal("FONT"))
+		{
+			const wchar_t* path = (const wchar_t*)payload->Data;
+			std::string file = std::filesystem::path(path).string();
+
+			font = DataPool::GetFont(file, true);
+			return true;
+		}
+		return false;
+	}
+
+	inline bool DragDropTarget(PaperID& paperID)
+	{
+		if (const ImGuiPayload* payload = DragDropTargetInternal("ENTITY"))
+		{
+			paperID = *(uint64_t*)payload->Data;
+			return true;
+		}
+		return false;
+	}
+
 	inline bool PropertyColor(const std::string& label, glm::vec3& color)
 	{
 		UI::BeginPropertyElementInternal(label);
@@ -618,6 +702,41 @@ namespace Paper::UI
 		bool modified = UI::ColorPicker4("", color);
 
 		UI::EndPropertyElementInternal();
+		return modified;
+	}
+
+	inline bool PropertyButton(const std::string& label, const std::string& text)
+	{
+		UI::BeginPropertyElementInternal(label);
+
+
+		bool modified = UI::Button(text, ImVec2(GetAvailableContentSpace(), 0));
+
+		UI::EndPropertyElementInternal();
+
+		return modified;
+	}
+
+	inline bool PropertyPaperID(const std::string& label, PaperID& paperID)
+	{
+		UI::BeginPropertyElementInternal(label);
+		
+		ImGui::SetNextItemWidth(GetAvailableContentSpace());
+
+		std::string buttonText = paperID.toString();
+		if (paperID.ToEntity())
+			buttonText = paperID.ToEntity().GetName();
+
+		bool modified = UI::Button(buttonText);
+
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Right) && ImGui::IsKeyDown(ImGuiKey_LeftShift))
+		{
+			paperID = 0;
+		}
+
+
+		UI::EndPropertyElementInternal();
+
 		return modified;
 	}
 

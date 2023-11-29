@@ -7,12 +7,12 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - bc3a220326ea52fc
-          Name: TOWER9
+            - 98299e86a1a43789
+          Name: TOWER33
           Tags:
             []
         TransformComponent:
-          Position: [16.9951439, 0.15602088, 0.499998093]
+          Position: [67.9468384, 0.324991703, 0.5]
           Scale: [1, 4.62002277, 1]
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
@@ -27,72 +27,12 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - fc9d3cb06c797266
-          Name: TOWER7
+            - 30f734ffb5faab17
+          Name: TOWER32
           Tags:
             []
         TransformComponent:
-          Position: [10.6560755, 0.512071133, 0.500003815]
-          Scale: [1, 4.61999989, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - d5109f0467952161
-          Name: TOWER11
-          Tags:
-            []
-        TransformComponent:
-          Position: [22.1799812, 0.691322327, 0.499998093]
-          Scale: [1, 4.62002277, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 9df58c1a3d0d0560
-          Name: TOWER5
-          Tags:
-            []
-        TransformComponent:
-          Position: [4.58087826, 0.720445871, 0.500001848]
-          Scale: [1, 4.62002277, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - c4d61029c31881c6
-          Name: TOWER2
-          Tags:
-            []
-        TransformComponent:
-          Position: [-2.63308525, 6.73641205, 0.5]
+          Position: [61.5523033, 7.56732655, 0.5]
           Scale: [1.00000942, 4.62002087, 1]
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
@@ -107,12 +47,52 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - dbcc025ac7b225f8
-          Name: TOWER3
+            - b1fa5afdfd14fa59
+          Name: TOWER34
           Tags:
             []
         TransformComponent:
-          Position: [-1.93610191, 0.353229761, 0.5]
+          Position: [65.6443176, 7.60111284, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 2b1a3655ee945288
+          Name: TOWER30
+          Tags:
+            []
+        TransformComponent:
+          Position: [57.5222626, 6.72283363, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - b7e2185c8b53555f
+          Name: TOWER27
+          Tags:
+            []
+        TransformComponent:
+          Position: [56.2040672, 0.00979065895, 0.5]
           Scale: [1, 4.62002277, 1]
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
@@ -127,14 +107,14 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - ea1e81198ddf3bff
-          Name: TOWER1
+            - 58f9eca2daf11aa6
+          Name: TOWER29
           Tags:
             []
         TransformComponent:
-          Position: [-7.97878075, 0.148815393, 0.499998093]
-          Scale: [1, 4.62001657, 1]
-          Rotation: [0, 0, 1.62081397]
+          Position: [60.5018539, -0.0552155972, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
           TexturePath: assets\textures\WTBird\tower.png
@@ -147,37 +127,17 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 4dd298f23be992ee
-          Name: BC3
+            - ceb21fa31a512df5
+          Name: TOWER31
           Tags:
             []
         TransformComponent:
-          Position: [59.5, 6, 0]
-          Scale: [-20, 6, 5.88110971]
-          Rotation: [0, 0, 0]
+          Position: [64.5653, 0.260206938, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
-          TilingFactor: 1
-          TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - f69a2ea8823960b7
-          Name: BC7
-          Tags:
-            []
-        TransformComponent:
-          Position: [59.5, 0, 0]
-          Scale: [-20, 6, 5.88110971]
-          Rotation: [0, 0, 0]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TexturePath: assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -187,64 +147,17 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 2abab6e141bcf92d
-          Name: Camera
+            - 2349a3a28a3b000a
+          Name: TOWER18
           Tags:
             []
         TransformComponent:
-          Position: [8.27899361, 3, 10.1891403]
-          Scale: [1, 1, 1]
-          Rotation: [0, 0, 0]
-        CameraComponent:
-          FixedAspectRatio: false
-          Primary: true
-          EntityCamera:
-            ProjectionMode: Orthographic
-            PerspectiveFOV: 10
-            PerspectiveNear: 0.00999999978
-            PerspectiveFar: 1000
-            OrthographicSize: 9
-            OrthographicNear: -1
-            OrthographicFar: 1000
-    - Components:
-        DataComponent:
-          PaperID:
-            - 09637133322330e8
-          Name: Controller
-          Tags:
-            []
-        TransformComponent:
-          Position: [0, 0, 0]
-          Scale: [1, 1, 1]
-          Rotation: [0, 0, 0]
-        ScriptComponent:
-          Name: Sandbunker.WTController
-          ScriptFields:
-            Sandbunker.WTController:
-              speed:
-                FieldType: Float
-                Value: 0
-              transformComponent:
-                FieldType: TransformComponent
-                Value: 0
-              airbunker:
-                FieldType: Entity
-                Value:
-                  - 0000000000000001
-    - Components:
-        DataComponent:
-          PaperID:
-            - 70080090a6e34476
-          Name: BC4
-          Tags:
-            []
-        TransformComponent:
-          Position: [-0.5, 0, 0]
-          Scale: [20, 6, 5.88110971]
-          Rotation: [0, 0, 0]
+          Position: [36.8301315, 7.11049843, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TexturePath: assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -254,77 +167,17 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - c1f30070327004b5
-          Name: BC5
+            - c15e7179b8340d35
+          Name: TOWER20
           Tags:
             []
         TransformComponent:
-          Position: [19.5, 0, 0]
-          Scale: [20, 6, 5.88110971]
-          Rotation: [0, 0, 0]
+          Position: [40.4894905, 8.01353264, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
-          TilingFactor: 1
-          TexCoords: [1, 0, 0, 0, 0, 1, 1, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - e162a0e901ee98c4
-          Name: BC0
-          Tags:
-            []
-        TransformComponent:
-          Position: [-0.5, 6, 0]
-          Scale: [20, 6, 5.88110971]
-          Rotation: [0, 0, 0]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
-          TilingFactor: 1
-          TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 89d86b4f1a1dce88
-          Name: BC1
-          Tags:
-            []
-        TransformComponent:
-          Position: [19.5, 6, 0]
-          Scale: [20, 6, 5.88110971]
-          Rotation: [0, 0, 0]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
-          TilingFactor: 1
-          TexCoords: [1, 1, 0, 1, 0, 0, 1, 0]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 90b5f37239d232d3
-          Name: BC6
-          Tags:
-            []
-        TransformComponent:
-          Position: [39.5, 0, 0]
-          Scale: [20, 6, 5.88110971]
-          Rotation: [0, 0, 0]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TexturePath: assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -334,19 +187,379 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 23775ff2362162e3
-          Name: BC2
+            - 0ed2c2ef06de563a
+          Name: TOWER22
           Tags:
             []
         TransformComponent:
-          Position: [39.5, 6, 0]
-          Scale: [20, 6, 5.88110971]
-          Rotation: [0, 0, 0]
+          Position: [43.4508247, 7.32193422, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TexturePath: assets\textures\WTBird\tower.png
           TilingFactor: 1
-          TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - fd314e6bb6ad722b
+          Name: TOWER24
+          Tags:
+            []
+        TransformComponent:
+          Position: [68.9610825, 7.7900238, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 0a6f4a48f4f208c7
+          Name: TOWER26
+          Tags:
+            []
+        TransformComponent:
+          Position: [50.1657104, 7.20377731, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 4e0395d146b0b46b
+          Name: TOWER28
+          Tags:
+            []
+        TransformComponent:
+          Position: [54.0339584, 7.19698334, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - ac4216482ece155b
+          Name: TOWER13
+          Tags:
+            []
+        TransformComponent:
+          Position: [26.3915348, -0.0606052876, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - c8c80aa1045bdde6
+          Name: TOWER15
+          Tags:
+            []
+        TransformComponent:
+          Position: [30.6928024, 0.268515944, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 1dce4d2d3383ff97
+          Name: TOWER17
+          Tags:
+            []
+        TransformComponent:
+          Position: [35.3425713, 0.333124399, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 74c7b7eacff346a3
+          Name: TOWER19
+          Tags:
+            []
+        TransformComponent:
+          Position: [39.2669296, -0.309155822, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 8aa3adcff68532fd
+          Name: TOWER21
+          Tags:
+            []
+        TransformComponent:
+          Position: [43.6903381, 0.241031647, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 2c71799eacce8317
+          Name: TOWER23
+          Tags:
+            []
+        TransformComponent:
+          Position: [47.6007118, -0.0976350307, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - dad30a7f13bcaabd
+          Name: TOWER25
+          Tags:
+            []
+        TransformComponent:
+          Position: [52.1007042, 0.179552317, 0.5]
+          Scale: [1, 4.62002277, 1]
+          Rotation: [0, 0, -0.438907713]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 3f4cf4d652f2d903
+          Name: TOWER4
+          Tags:
+            []
+        TransformComponent:
+          Position: [2.46489, 6.80670643, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 22ecd0199e632b4a
+          Name: TOWER6
+          Tags:
+            []
+        TransformComponent:
+          Position: [7.48368645, 6.44738913, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 550cd4b025a41e56
+          Name: TOWER8
+          Tags:
+            []
+        TransformComponent:
+          Position: [13.964325, 6.27491093, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 9cf561283ebc206c
+          Name: TOWER10
+          Tags:
+            []
+        TransformComponent:
+          Position: [20.4482956, 6.85513496, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - e6f126f4b76626c9
+          Name: TOWER12
+          Tags:
+            []
+        TransformComponent:
+          Position: [26.2110538, 7.14129925, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 15b944b99bef179f
+          Name: TOWER14
+          Tags:
+            []
+        TransformComponent:
+          Position: [29.5544128, 7.32022476, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 69f31a4a4fa7d0f7
+          Name: TOWER16
+          Tags:
+            []
+        TransformComponent:
+          Position: [33.2328033, 6.59374905, 0.5]
+          Scale: [1.00000942, 4.62002087, 1]
+          Rotation: [0, 0, 175.425003]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 47ae4cfd8f275966
+          Name: TOWER0
+          Tags:
+            []
+        TransformComponent:
+          Position: [-6.87276506, 6.32966995, 0.5]
+          Scale: [0.999875069, 4.61948633, 1]
+          Rotation: [0, 0, -174.829666]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\tower.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
           RegisterAlphaPixels: false
           Thickness: 1
@@ -386,14 +599,221 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 47ae4cfd8f275966
-          Name: TOWER0
+            - 23775ff2362162e3
+          Name: BC2
           Tags:
             []
         TransformComponent:
-          Position: [-6.87276506, 6.32966995, 0.5]
-          Scale: [0.999875069, 4.61948633, 1]
-          Rotation: [0, 0, -174.829666]
+          Position: [39.5, 6, 0]
+          Scale: [20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 90b5f37239d232d3
+          Name: BC6
+          Tags:
+            []
+        TransformComponent:
+          Position: [39.5, 0, 0]
+          Scale: [20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 89d86b4f1a1dce88
+          Name: BC1
+          Tags:
+            []
+        TransformComponent:
+          Position: [19.5, 6, 0]
+          Scale: [20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [1, 1, 0, 1, 0, 0, 1, 0]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - e162a0e901ee98c4
+          Name: BC0
+          Tags:
+            []
+        TransformComponent:
+          Position: [-0.5, 6, 0]
+          Scale: [20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - c1f30070327004b5
+          Name: BC5
+          Tags:
+            []
+        TransformComponent:
+          Position: [19.5, 0, 0]
+          Scale: [20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [1, 0, 0, 0, 0, 1, 1, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 70080090a6e34476
+          Name: BC4
+          Tags:
+            []
+        TransformComponent:
+          Position: [-0.5, 0, 0]
+          Scale: [20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 09637133322330e8
+          Name: Controller
+          Tags:
+            []
+        TransformComponent:
+          Position: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Rotation: [0, 0, 0]
+        ScriptComponent:
+          Name: Sandbunker.WTController
+          ScriptFields:
+            Sandbunker.WTController:
+              speed:
+                FieldType: Float
+                Value: 0
+              transformComponent:
+                FieldType: TransformComponent
+                Value: 0
+              airbunker:
+                FieldType: Entity
+                Value:
+                  - 0000000000000000
+    - Components:
+        DataComponent:
+          PaperID:
+            - 2abab6e141bcf92d
+          Name: Camera
+          Tags:
+            []
+        TransformComponent:
+          Position: [8.27899361, 3, 10.1891403]
+          Scale: [1, 1, 1]
+          Rotation: [0, 0, 0]
+        CameraComponent:
+          FixedAspectRatio: false
+          Primary: true
+          EntityCamera:
+            ProjectionMode: Orthographic
+            PerspectiveFOV: 10
+            PerspectiveNear: 0.00999999978
+            PerspectiveFar: 1000
+            OrthographicSize: 9
+            OrthographicNear: -1
+            OrthographicFar: 1000
+    - Components:
+        DataComponent:
+          PaperID:
+            - f69a2ea8823960b7
+          Name: BC7
+          Tags:
+            []
+        TransformComponent:
+          Position: [59.5, 0, 0]
+          Scale: [-20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - 4dd298f23be992ee
+          Name: BC3
+          Tags:
+            []
+        TransformComponent:
+          Position: [59.5, 6, 0]
+          Scale: [-20, 6, 5.88110971]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TexturePath: assets\textures\WTBird\skyline.png
+          TilingFactor: 1
+          TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
+    - Components:
+        DataComponent:
+          PaperID:
+            - ea1e81198ddf3bff
+          Name: TOWER1
+          Tags:
+            []
+        TransformComponent:
+          Position: [-7.97878075, 0.148815393, 0.499998093]
+          Scale: [1, 4.62001657, 1]
+          Rotation: [0, 0, 1.62081397]
         SpriteComponent:
           Color: [1, 1, 1, 1]
           TexturePath: assets\textures\WTBird\tower.png
@@ -406,152 +826,12 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 69f31a4a4fa7d0f7
-          Name: TOWER16
+            - dbcc025ac7b225f8
+          Name: TOWER3
           Tags:
             []
         TransformComponent:
-          Position: [33.2328033, 6.59374905, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 15b944b99bef179f
-          Name: TOWER14
-          Tags:
-            []
-        TransformComponent:
-          Position: [29.5544128, 7.32022476, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - e6f126f4b76626c9
-          Name: TOWER12
-          Tags:
-            []
-        TransformComponent:
-          Position: [26.2110538, 7.14129925, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 9cf561283ebc206c
-          Name: TOWER10
-          Tags:
-            []
-        TransformComponent:
-          Position: [20.4482956, 6.85513496, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 550cd4b025a41e56
-          Name: TOWER8
-          Tags:
-            []
-        TransformComponent:
-          Position: [13.964325, 6.27491093, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 22ecd0199e632b4a
-          Name: TOWER6
-          Tags:
-            []
-        TransformComponent:
-          Position: [7.48368645, 6.44738913, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 3f4cf4d652f2d903
-          Name: TOWER4
-          Tags:
-            []
-        TransformComponent:
-          Position: [2.46489, 6.80670643, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - dad30a7f13bcaabd
-          Name: TOWER25
-          Tags:
-            []
-        TransformComponent:
-          Position: [52.1007042, 0.179552317, 0.5]
+          Position: [-1.93610191, 0.353229761, 0.5]
           Scale: [1, 4.62002277, 1]
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
@@ -566,132 +846,12 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 2c71799eacce8317
-          Name: TOWER23
+            - c4d61029c31881c6
+          Name: TOWER2
           Tags:
             []
         TransformComponent:
-          Position: [47.6007118, -0.0976350307, 0.5]
-          Scale: [1, 4.62002277, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 8aa3adcff68532fd
-          Name: TOWER21
-          Tags:
-            []
-        TransformComponent:
-          Position: [43.6903381, 0.241031647, 0.5]
-          Scale: [1, 4.62002277, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 74c7b7eacff346a3
-          Name: TOWER19
-          Tags:
-            []
-        TransformComponent:
-          Position: [39.2669296, -0.309155822, 0.5]
-          Scale: [1, 4.62002277, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 1dce4d2d3383ff97
-          Name: TOWER17
-          Tags:
-            []
-        TransformComponent:
-          Position: [35.3425713, 0.333124399, 0.5]
-          Scale: [1, 4.62002277, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - c8c80aa1045bdde6
-          Name: TOWER15
-          Tags:
-            []
-        TransformComponent:
-          Position: [30.6928024, 0.268515944, 0.5]
-          Scale: [1, 4.62002277, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - ac4216482ece155b
-          Name: TOWER13
-          Tags:
-            []
-        TransformComponent:
-          Position: [26.3915348, -0.0606052876, 0.5]
-          Scale: [1, 4.62002277, 1]
-          Rotation: [0, 0, -0.438907713]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 4e0395d146b0b46b
-          Name: TOWER28
-          Tags:
-            []
-        TransformComponent:
-          Position: [54.0339584, 7.19698334, 0.5]
+          Position: [-2.63308525, 6.73641205, 0.5]
           Scale: [1.00000942, 4.62002087, 1]
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
@@ -706,112 +866,12 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 0a6f4a48f4f208c7
-          Name: TOWER26
+            - 9df58c1a3d0d0560
+          Name: TOWER5
           Tags:
             []
         TransformComponent:
-          Position: [50.1657104, 7.20377731, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - fd314e6bb6ad722b
-          Name: TOWER24
-          Tags:
-            []
-        TransformComponent:
-          Position: [68.9610825, 7.7900238, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 0ed2c2ef06de563a
-          Name: TOWER22
-          Tags:
-            []
-        TransformComponent:
-          Position: [43.4508247, 7.32193422, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - c15e7179b8340d35
-          Name: TOWER20
-          Tags:
-            []
-        TransformComponent:
-          Position: [40.4894905, 8.01353264, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 2349a3a28a3b000a
-          Name: TOWER18
-          Tags:
-            []
-        TransformComponent:
-          Position: [36.8301315, 7.11049843, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - ceb21fa31a512df5
-          Name: TOWER31
-          Tags:
-            []
-        TransformComponent:
-          Position: [64.5653, 0.260206938, 0.5]
+          Position: [4.58087826, 0.720445871, 0.500001848]
           Scale: [1, 4.62002277, 1]
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
@@ -826,12 +886,12 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 58f9eca2daf11aa6
-          Name: TOWER29
+            - d5109f0467952161
+          Name: TOWER11
           Tags:
             []
         TransformComponent:
-          Position: [60.5018539, -0.0552155972, 0.5]
+          Position: [22.1799812, 0.691322327, 0.499998093]
           Scale: [1, 4.62002277, 1]
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
@@ -846,13 +906,13 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - b7e2185c8b53555f
-          Name: TOWER27
+            - fc9d3cb06c797266
+          Name: TOWER7
           Tags:
             []
         TransformComponent:
-          Position: [56.2040672, 0.00979065895, 0.5]
-          Scale: [1, 4.62002277, 1]
+          Position: [10.6560755, 0.512071133, 0.500003815]
+          Scale: [1, 4.61999989, 1]
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
@@ -866,72 +926,12 @@ Scene:
     - Components:
         DataComponent:
           PaperID:
-            - 2b1a3655ee945288
-          Name: TOWER30
+            - bc3a220326ea52fc
+          Name: TOWER9
           Tags:
             []
         TransformComponent:
-          Position: [57.5222626, 6.72283363, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - b1fa5afdfd14fa59
-          Name: TOWER34
-          Tags:
-            []
-        TransformComponent:
-          Position: [65.6443176, 7.60111284, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 30f734ffb5faab17
-          Name: TOWER32
-          Tags:
-            []
-        TransformComponent:
-          Position: [61.5523033, 7.56732655, 0.5]
-          Scale: [1.00000942, 4.62002087, 1]
-          Rotation: [0, 0, 175.425003]
-        SpriteComponent:
-          Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
-          TilingFactor: 1
-          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
-          Geometry: Rectangle
-          RegisterAlphaPixels: false
-          Thickness: 1
-          Fade: 0.00499999989
-    - Components:
-        DataComponent:
-          PaperID:
-            - 98299e86a1a43789
-          Name: TOWER33
-          Tags:
-            []
-        TransformComponent:
-          Position: [67.9468384, 0.324991703, 0.5]
+          Position: [16.9951439, 0.15602088, 0.499998093]
           Scale: [1, 4.62002277, 1]
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:

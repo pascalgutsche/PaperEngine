@@ -150,7 +150,7 @@ namespace PaperED
 							break;
 
 						case FileType::Font:
-							ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM_FONT", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
+							ImGui::SetDragDropPayload("FONT", item_path, (wcslen(item_path) + 1) * sizeof(wchar_t));
 							ImGui::Text(DataPool::GetFont(item.path().string(), true)->GetFontName().c_str());
 							break;
 

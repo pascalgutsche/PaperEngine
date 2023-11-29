@@ -253,18 +253,18 @@ void UIDebuggerPanel::OnImGuiRender(bool& isOpen)
 		//BOOL SEC
 		static bool boolVar = false;
 		UI::Property("bool", boolVar);
-
+		
 		
 		//FLOAT SEC
 		static float float1 = 1.0f;
 		UI::Property("float1", float1);
-
+		
 		static glm::vec2 float2 = glm::vec2(1.0f);
 		UI::Property("float2", float2);
-
+		
 		static glm::vec3 float3 = glm::vec3(1.0f);
 		UI::Property("float3", float3);
-
+		
 		static glm::vec4 float4 = glm::vec4(1.0f);
 		UI::Property("float4", float4);
 

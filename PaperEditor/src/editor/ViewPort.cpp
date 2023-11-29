@@ -173,7 +173,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY"))
 			{
 				PaperID entityID = *(uint64_t*)payload->Data;
 				previewEntityID = entityID;
