@@ -64,6 +64,7 @@
 //Core
 #include "core/utils/Log.h"
 #include "utility.h"
+#include "utils/Shr.h"
 
 
 #ifdef CORE_PLATFORM_WINDOWS

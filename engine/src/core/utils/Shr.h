@@ -13,9 +13,16 @@ namespace Paper
 
 		uint32_t GetShrCount() const { return shrCount.load(); }
 	private:
-		void IncCount();
+		void IncCount()
+		{
+			++shrCount;
+		};
+		void DecCount()
+		{
+			--shrCount;
+		};
 
-		std::atomic<uint32_t>
+		std::atomic<uint32_t> shrCount;
 	};
 
 	template <typename T>
@@ -57,12 +64,12 @@ namespace Paper
 		Shr(const Shr<T>& other)
 			: instance(other.instance)
 		{
-			IncRef();
+			IncShr();
 		}
 
 		~Shr()
 		{
-			DecRef();
+			DecShr();
 		}
 
 		template<typename T2>
@@ -71,13 +78,50 @@ namespace Paper
 			return Shr<T2>(*this);
 		}
 
+		T* Raw()
+		{
+			return instance;
+		}
+
+		const T* Raw() const
+		{
+			return instance;
+		}
+
+		operator bool() { return instance != nullptr; }
+		operator bool() const { return instance != nullptr; }
+
+		T* operator->() {return instance; }
+		const T* operator->() const {return instance; }
+
+		T& operator*() { return *instance; }
+		const T& operator*() const { return *instance; }
+
+
 		template <typename... TArgs>
 		static Shr<T> Create(TArgs&&... args)
 		{
 			return Shr<T>(new T(std::forward<TArgs>(args)...));
 		}
 
-	private: 
+	private:
+
+		void IncShr()
+		{
+			if (instance)
+				instance->IncCount();
+		}
+
+		void DecShr()
+		{
+			if (instance)
+			{
+				instance->DecCount();
+				if (instance->GetShrCount() <= 0)
+					delete instance;
+			}
+		}
+
 		T* instance;
 	};
 

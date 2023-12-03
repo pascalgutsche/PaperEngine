@@ -3,6 +3,32 @@
 
 namespace PaperED
 {
+
+	class ContentBrowserItem : public ShrCounted
+	{
+	public:
+		enum class ItemType
+		{
+			Directory,
+			Asset
+		};
+
+
+	protected:
+		ItemType type;
+
+	};
+
+	class ContentBrowserDir : public ContentBrowserItem
+	{
+		
+	};
+
+	class ContentBrowserAsset : public ContentBrowserItem
+	{
+		
+	};
+
 	class ContentBrowserPanel : public EditorPanel
 	{
 	public:
