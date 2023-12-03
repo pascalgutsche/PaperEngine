@@ -5,9 +5,9 @@ class PaperLayer;
 struct ViewPort
 {
 public:
-	Shr<EditorCamera> camera;
-	Shr<Framebuffer> framebuffer;
-	Shr<Framebuffer> previewFramebuffer;
+	Ref<EditorCamera> camera;
+	Ref<Framebuffer> framebuffer;
+	Ref<Framebuffer> previewFramebuffer;
 
 	PaperID previewEntityID = 0;
 

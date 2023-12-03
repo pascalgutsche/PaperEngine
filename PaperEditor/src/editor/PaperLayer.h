@@ -140,15 +140,15 @@ public:
 	
 	void CreateProject(const std::filesystem::path& projPath, const std::string& projName);
 	void OpenProject(const std::filesystem::path& projPath);
-	void OpenProject(const Shr<Project>& project);
+	void OpenProject(const Ref<Project>& project);
 	void EmptyProject();
 	void SaveProject() const;
 	void CloseProject();
 
 	void NewScene(const std::string& sceneName = "NewScene");
-	void OpenScene(Shr<Scene> scene);
+	void OpenScene(Ref<Scene> scene);
 	void CloseScene();
-	void CloseSceneWithPopup(Shr<Scene> potentialNewScene = nullptr);
+	void CloseSceneWithPopup(Ref<Scene> potentialNewScene = nullptr);
 	void SaveScene() const;
 	void SaveSceneAs(const std::filesystem::path& filePath) const;
 
@@ -163,15 +163,15 @@ public:
 	bool AnyCameraActive() const;
 	const ViewPort* GetViewportFocused() const;
 
-	void SwitchScene(const Shr<Scene>& scene);
+	void SwitchScene(const Ref<Scene>& scene);
 
 	void ShowNewProjectPopup();
 	void ShowNewScenePopup();
-	void ShowUnsavedScenePopup(const Shr<Scene>& _newScene);
+	void ShowUnsavedScenePopup(const Ref<Scene>& _newScene);
 
 public:
 
-	Shr<Scene> editorScene = nullptr;
+	Ref<Scene> editorScene = nullptr;
 
 	//---- to refactor
 	void MousePicking();
@@ -190,7 +190,7 @@ public:
 
 
 	
-	Shr<Scene> unsavedScenePopupCache;
+	Ref<Scene> unsavedScenePopupCache;
 	bool sceneChanged = false;
 
 	ViewPort* viewPortCurrentlySimulating = nullptr;

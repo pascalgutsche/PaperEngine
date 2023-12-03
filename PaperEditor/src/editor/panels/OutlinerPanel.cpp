@@ -5,7 +5,7 @@
 
 namespace PaperED
 {
-	void Entities(Shr<Scene>& activeScene, Entity& active_entity)
+	void Entities(Ref<Scene>& activeScene, Entity& active_entity)
 	{
 		if (ImGui::TreeNode("Entities"))
 		{
@@ -23,7 +23,7 @@ namespace PaperED
 		}
 	}
 
-	void TwoDObjects(Shr<Scene>& activeScene, Entity& active_entity)
+	void TwoDObjects(Ref<Scene>& activeScene, Entity& active_entity)
 	{
 		if (ImGui::TreeNode("2D-Object"))
 		{
@@ -73,7 +73,7 @@ namespace PaperED
 		}
 	}
 
-	void Cameras(Shr<Scene>& activeScene, Entity& active_entity)
+	void Cameras(Ref<Scene>& activeScene, Entity& active_entity)
 	{
 		if (ImGui::TreeNode("Cameras"))
 		{
@@ -93,7 +93,7 @@ namespace PaperED
 
 	void OutlinerPanel::OnImGuiRender(bool& isOpen)
 	{
-		Shr<Scene> activeScene = Scene::GetActive();
+		Ref<Scene> activeScene = Scene::GetActive();
 		Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
 	
 		UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));

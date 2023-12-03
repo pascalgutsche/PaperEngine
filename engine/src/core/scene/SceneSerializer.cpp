@@ -78,7 +78,7 @@ namespace Paper
 		return true;
 	}
 
-	void SceneSerializer::Serialize(const Shr<Scene>& scene, const std::filesystem::path& filePath)
+	void SceneSerializer::Serialize(const Ref<Scene>& scene, const std::filesystem::path& filePath)
 	{
 		std::string outString;
 		Serialize(scene, outString, Project::GetRelativePathFromProject(filePath));
@@ -88,12 +88,12 @@ namespace Paper
 		fout.close();
 	}
 
-	void SceneSerializer::Serialize(const Shr<Scene>& scene, std::string& outString)
+	void SceneSerializer::Serialize(const Ref<Scene>& scene, std::string& outString)
 	{
 		Serialize(scene, outString, std::filesystem::path());
 	}
 
-	void SceneSerializer::Serialize(const Shr<Scene>& scene, std::string& outString,
+	void SceneSerializer::Serialize(const Ref<Scene>& scene, std::string& outString,
 		const std::filesystem::path& newPath)
 	{
 		YAML::Emitter out;
@@ -152,9 +152,9 @@ namespace Paper
 		DeserializeEntity<Component...>(entity, data);
 	}
 
-	Shr<Scene> SceneSerializer::Deserialize(const std::filesystem::path& filePath)
+	Ref<Scene> SceneSerializer::Deserialize(const std::filesystem::path& filePath)
 	{
-		Shr<Scene> scene = MakeShr<Scene>();
+		Ref<Scene> scene = MakeShr<Scene>();
 
 		YAML::Node data;
 		try
@@ -237,7 +237,7 @@ namespace Paper
 		return scene;
 	}
 
-	bool SceneSerializer::IsSceneDirty(const Shr<Scene>& scene)
+	bool SceneSerializer::IsSceneDirty(const Ref<Scene>& scene)
 	{
 		std::string currentSerialization;
 		Serialize(scene, currentSerialization);

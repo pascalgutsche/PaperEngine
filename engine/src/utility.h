@@ -18,10 +18,10 @@
 namespace Paper {
 
 	template<typename T>
-	using Shr = std::shared_ptr<T>;
+	using Ref = std::shared_ptr<T>;
 
 	template<typename T, typename ... Args>
-	constexpr Shr<T> MakeShr(Args&& ... args)
+	constexpr Ref<T> MakeShr(Args&& ... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}

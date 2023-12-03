@@ -48,7 +48,7 @@ namespace Paper {
 
         static FRAMEWORK GetFramework() { return framework; }
 
-    	static Shr<Window> Create(const WindowProps& windowProps = WindowProps());
+    	static Ref<Window> Create(const WindowProps& windowProps = WindowProps());
 
     private:
         static FRAMEWORK framework;

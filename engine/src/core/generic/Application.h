@@ -48,7 +48,7 @@ namespace Paper {
 		static bool IsResizing() { return GetInstance()->resizing; }
 		static void SetEventCallback(const EventCallbackFunction& callbackFunction) { GetInstance()->window->SetEventCallback(callbackFunction); }
 
-		static Shr<Window> GetWindow() { return GetInstance()->window; }
+		static Ref<Window> GetWindow() { return GetInstance()->window; }
 		static Scene* GetActiveScene() { return GetInstance()->currentScene; }
 		static ImGuiLayer& GetImGuiLayer() { return *GetInstance()->imguiLayer; }
 		static LayerStack& GetLayerStack() { return GetInstance()->layerStack; }
@@ -60,7 +60,7 @@ namespace Paper {
 
 	private:
 		static Application* instance;
-		Shr<Window> window = nullptr;
+		Ref<Window> window = nullptr;
 		ImGuiLayer* imguiLayer = nullptr;
 		Scene* currentScene = nullptr;
 		Scene* queuedScene = nullptr;

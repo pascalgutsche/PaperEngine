@@ -38,7 +38,7 @@ void PanelManager::OnEvent(Event& e)
 	}
 }
 
-void PanelManager::OnProjectChanged(const Shr<Project>& project)
+void PanelManager::OnProjectChanged(const Ref<Project>& project)
 {
 	for (size_t i = 0; i < (size_t)PanelOpenSetting::_COUNT; i++)
 	{
@@ -49,7 +49,7 @@ void PanelManager::OnProjectChanged(const Shr<Project>& project)
 	}
 }
 
-void PanelManager::OnSceneChanged(const Shr<Scene>& scene)
+void PanelManager::OnSceneChanged(const Ref<Scene>& scene)
 {
 	for (size_t i = 0; i < (size_t)PanelOpenSetting::_COUNT; i++)
 	{

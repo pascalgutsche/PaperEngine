@@ -8,7 +8,7 @@
 
 namespace Paper {
 
-    Shr<Texture> Texture::CreateTexture(std::filesystem::path filePath, std::string name)
+    Ref<Texture> Texture::CreateTexture(std::filesystem::path filePath, std::string name)
     {
 		switch (RenderAPI::GetAPI())
 		{
@@ -22,7 +22,7 @@ namespace Paper {
     }
 
 
-	Shr<Texture> Texture::CreateTexture(TextureSpecification specification)
+	Ref<Texture> Texture::CreateTexture(TextureSpecification specification)
 	{
 		switch (RenderAPI::GetAPI())
 		{

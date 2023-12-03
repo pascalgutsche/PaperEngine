@@ -8,7 +8,7 @@ namespace Paper
 {
 	RenderAPI::API RenderAPI::api = OPENGL;
 
-	Shr<RenderAPI> RenderAPI::CreateAPI()
+	Ref<RenderAPI> RenderAPI::CreateAPI()
 	{
 		switch (RenderAPI::GetAPI())
 		{

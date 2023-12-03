@@ -38,7 +38,7 @@ namespace Paper
 
     private:
         GLFWwindow* glfwWindow;
-        Shr<Context> context;
+        Ref<Context> context;
 
         bool cursorEnabled = true;
 

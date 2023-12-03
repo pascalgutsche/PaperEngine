@@ -23,6 +23,6 @@ namespace Paper {
         virtual void UploadIntArray(const char* varName, int arrayLength, int array[]) = 0;
         virtual void UploadTexture(const char* varName, int slot) = 0;
 
-        static Shr<Shader> CreateShader(std::string filePath);
+        static Ref<Shader> CreateShader(std::string filePath);
     };
 }

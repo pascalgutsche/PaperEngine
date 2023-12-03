@@ -17,7 +17,7 @@ namespace Paper {
         glm::mat4 transform = glm::mat4(1.0f);
         glm::vec4 color = DEFAULT_COLOR;
 
-        Shr<Texture> texture = nullptr;
+        Ref<Texture> texture = nullptr;
         std::array<glm::vec2, 4> texCoords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
         float tilingFactor = 1.0f;
 
@@ -34,7 +34,7 @@ namespace Paper {
         float thickness = 1.0f;
         float fade = 0.005f;
 
-        Shr<Texture> texture = nullptr;
+        Ref<Texture> texture = nullptr;
         std::array<glm::vec2, 4> texCoords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
         float tilingFactor = 1.0f;
 
@@ -63,7 +63,7 @@ namespace Paper {
         glm::vec4 color = DEFAULT_COLOR;
 
         std::string text = "";
-        Shr<Font> font = DataPool::GetDefaultFont();
+        Ref<Font> font = DataPool::GetDefaultFont();
 
         entity_id enity_id = 0;
         entity_id uiID = 0;
@@ -82,7 +82,7 @@ namespace Paper {
         static void Init();
         static void Shutdown();
 
-        static void BeginRender(const Shr<EditorCamera>& camera);
+        static void BeginRender(const Ref<EditorCamera>& camera);
         static void BeginRender(const EntityCamera& camera, glm::mat4 transform);
         static void EndRender();
 

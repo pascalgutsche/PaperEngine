@@ -7,7 +7,7 @@
 
 namespace Paper
 {
-	Shr<RenderAPI> RenderCommand::rendererAPI = RenderAPI::CreateAPI();
+	Ref<RenderAPI> RenderCommand::rendererAPI = RenderAPI::CreateAPI();
 	SharedRenderData RenderCommand::sharedData;
 
 	void RenderCommand::Init()
@@ -27,7 +27,7 @@ namespace Paper
 		Renderer3D::Shutdown();
 	}
 
-	void RenderCommand::UploadCamera(const Shr<EditorCamera>& editorCamera)
+	void RenderCommand::UploadCamera(const Ref<EditorCamera>& editorCamera)
 	{
 		sharedData.cameraData.uProjection = editorCamera->GetProjectionMatrix();
 		sharedData.cameraData.uView = editorCamera->GetViewMatrix();
@@ -71,12 +71,12 @@ namespace Paper
 		return rendererAPI->IsDepthTestingEnabled();
 	}
 
-	void RenderCommand::DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount)
+	void RenderCommand::DrawElements(Ref<VertexArray>& vertexArray, uint32_t elementCount)
 	{
 		rendererAPI->DrawElements(vertexArray, elementCount);
 	}
 
-	void RenderCommand::DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount, float thickness)
+	void RenderCommand::DrawLines(Ref<VertexArray>& vertexArray, uint32_t vertexCount, float thickness)
 	{
 		rendererAPI->DrawLines(vertexArray, vertexCount, thickness);
 	}

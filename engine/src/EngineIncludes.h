@@ -1,6 +1,5 @@
 #pragma once
 
-#include "core/assets/Asset3D.h"
 
 #include "scene/Components.h"
 

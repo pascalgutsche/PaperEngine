@@ -164,7 +164,7 @@ FT_BEGIN_HEADER
       add ecx, 8000h
       add eax, ecx
       adc edx, 0
-      shr eax, 16
+      Ref eax, 16
       shl edx, 16
       add eax, edx
       mov result, eax

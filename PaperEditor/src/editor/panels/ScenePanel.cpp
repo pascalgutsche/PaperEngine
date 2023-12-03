@@ -5,7 +5,7 @@ namespace PaperED
 {
 	void ScenePanel::OnImGuiRender(bool& isOpen)
 	{
-		Shr<Scene> activeScene = Scene::GetActive();
+		Ref<Scene> activeScene = Scene::GetActive();
 
 		ImGui::Begin(panelName.c_str(), &isOpen);
 

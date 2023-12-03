@@ -18,9 +18,9 @@ namespace Paper
 		void EnableDepthTesting(bool enabled) override;
 		bool IsDepthTestingEnabled() override;
 
-		void DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount) override;
+		void DrawElements(Ref<VertexArray>& vertexArray, uint32_t elementCount) override;
 		
-		void DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount, float thickness) override;
+		void DrawLines(Ref<VertexArray>& vertexArray, uint32_t vertexCount, float thickness) override;
 		void SetLineWidth(float thickness) override;
 
 	private:

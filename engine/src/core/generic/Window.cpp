@@ -8,7 +8,7 @@ namespace Paper {
 
     FRAMEWORK Window::framework = GLFW;
 
-    Shr<Window> Window::Create(const WindowProps& windowProps)
+    Ref<Window> Window::Create(const WindowProps& windowProps)
     {
 	    switch (Window::GetFramework())
 	    {

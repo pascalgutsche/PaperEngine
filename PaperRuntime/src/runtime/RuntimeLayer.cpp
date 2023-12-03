@@ -70,7 +70,7 @@ void RuntimeLayer::Imgui(const float dt)
 	framebuffer->Unbind();
 
 
-	const Shr<Scene> activeScene = Scene::GetActive();
+	const Ref<Scene> activeScene = Scene::GetActive();
 	glm::vec2 windowSize(Application::GetWindow()->GetWidth(), Application::GetWindow()->GetHeight());
 	if (activeScene && windowSize.x > 0.0f && windowSize.y > 0.0f)
 		activeScene->OnViewportResize(windowSize.x, windowSize.y);
@@ -79,7 +79,7 @@ void RuntimeLayer::Imgui(const float dt)
 		windowSize.x > 0.0f && windowSize.y > 0.0f && // zero sized framebuffer is invalid
 		(spec.width != windowSize.x || spec.height != windowSize.y))
 	{
-		const Shr<Scene> activeScene = Scene::GetActive();
+		const Ref<Scene> activeScene = Scene::GetActive();
 		framebuffer->Resize((uint32_t)windowSize.x, (uint32_t)windowSize.y);
 
 		//camera->aspect_ratio = windowSize.x / windowSize.y;
@@ -130,12 +130,12 @@ void RuntimeLayer::UseProject(const std::filesystem::path& projPath)
 		return;
 	}
 
-	Shr<Project> project = ProjectSerializer::Deserialize(projectFilePath);
+	Ref<Project> project = ProjectSerializer::Deserialize(projectFilePath);
 
 	UseProject(project);
 }
 
-void RuntimeLayer::UseProject(const Shr<Project>& project)
+void RuntimeLayer::UseProject(const Ref<Project>& project)
 {
 	if (Project::GetActive())
 		CloseProject();
@@ -161,7 +161,7 @@ void RuntimeLayer::CloseProject()
 	Project::SetActive(nullptr);
 }
 
-void RuntimeLayer::OpenScene(Shr<Scene> scene)
+void RuntimeLayer::OpenScene(Ref<Scene> scene)
 {
 	if (!scene) return;
 

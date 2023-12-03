@@ -14,7 +14,7 @@ namespace Paper
 
 		virtual void SwapBuffer() = 0;
 
-		static Shr<Context> CreateContext(void* window);
+		static Ref<Context> CreateContext(void* window);
 	};
 }
 

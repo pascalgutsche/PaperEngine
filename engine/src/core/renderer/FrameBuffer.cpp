@@ -7,7 +7,7 @@
 
 namespace Paper {
 
-	Shr<Framebuffer> Framebuffer::CreateBuffer(const FramebufferSpecification& specification)
+	Ref<Framebuffer> Framebuffer::CreateBuffer(const FramebufferSpecification& specification)
 	{
 		switch (RenderAPI::GetAPI())
 		{

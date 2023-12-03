@@ -79,7 +79,7 @@ namespace Paper
         std::string filePath_std(filePath_c);
         mono_free(filePath_c);
 
-        Shr<Texture> texture = DataPool::GetAssetTexture(filePath_std, true);
+        Ref<Texture> texture = DataPool::GetAssetTexture(filePath_std, true);
         TextureData localData;
         if (texture)
         {

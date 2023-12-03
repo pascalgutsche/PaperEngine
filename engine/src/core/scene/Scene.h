@@ -33,7 +33,7 @@ namespace Paper {
         Scene(const PaperID& uuid, const std::string& name);
         ~Scene();
 
-        Shr<Scene> Copy();
+        Ref<Scene> Copy();
 
         void OnViewportResize(uint32_t width, uint32_t height);
 
@@ -44,11 +44,11 @@ namespace Paper {
 
     	void OnSimulationStart();
         void OnSimulationStop();
-        void OnSimulationUpdate(const Shr<EditorCamera>& camera);
+        void OnSimulationUpdate(const Ref<EditorCamera>& camera);
 
-        void OnEditorUpdate(const Shr<EditorCamera>& camera);
+        void OnEditorUpdate(const Ref<EditorCamera>& camera);
 
-        void EditorRender(const Shr<EditorCamera>& camera);
+        void EditorRender(const Ref<EditorCamera>& camera);
         void Render();
 
         void OnPhysics2DStart();
@@ -86,8 +86,8 @@ namespace Paper {
 
         void StepFrames(const int frames = 1) { framesToStep = frames; }
 
-        static void SetActive(const Shr<Scene>& newActiveScene) { activeScene = newActiveScene; }
-        static Shr<Scene> GetActive() { return activeScene; }
+        static void SetActive(const Ref<Scene>& newActiveScene) { activeScene = newActiveScene; }
+        static Ref<Scene> GetActive() { return activeScene; }
     private:
         SceneConfig config;
 
@@ -102,7 +102,7 @@ namespace Paper {
         b2World* physicsWorld = nullptr;
 
         //static
-        inline static Shr<Scene> activeScene = nullptr;
+        inline static Ref<Scene> activeScene = nullptr;
 
         friend class Application;
         friend class SceneSerializer;

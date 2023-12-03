@@ -71,9 +71,9 @@ namespace Paper {
 		CopyComponentIfExists<Component...>(dst, src);
 	}
 
-	Shr<Scene> Scene::Copy()
+	Ref<Scene> Scene::Copy()
 	{
-		Shr<Scene> newScene = MakeShr<Scene>();
+		Ref<Scene> newScene = MakeShr<Scene>();
 
 		auto& dstSceneRegistry = newScene->registry;
 
@@ -253,7 +253,7 @@ namespace Paper {
 		OnPhysics2DStop();
 	}
 
-	void Scene::OnSimulationUpdate(const Shr<EditorCamera>& camera)
+	void Scene::OnSimulationUpdate(const Ref<EditorCamera>& camera)
 	{
 		//Update rotation in transform component
 		{
@@ -298,13 +298,13 @@ namespace Paper {
 		Renderer2D::EndRender();
 	}
 
-	void Scene::OnEditorUpdate(const Shr<EditorCamera>& camera)
+	void Scene::OnEditorUpdate(const Ref<EditorCamera>& camera)
 	{
 		//render
 		EditorRender(camera);
 	}
 
-	void Scene::EditorRender(const Shr<EditorCamera>& camera)
+	void Scene::EditorRender(const Ref<EditorCamera>& camera)
 	{
 		Renderer2D::BeginRender(camera);
 		Render();

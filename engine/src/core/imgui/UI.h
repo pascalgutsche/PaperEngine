@@ -39,7 +39,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool ImageButton(const Shr<Texture>& texture, ImVec2 size = ImVec2(0, 0))
+	inline bool ImageButton(const Ref<Texture>& texture, ImVec2 size = ImVec2(0, 0))
 	{
 		CORE_ASSERT(texture, "");
 		const bool modified = ImGui::ImageButton((void*)texture->GetID(), size, {0, 1}, {1, 0});
@@ -166,9 +166,9 @@ namespace Paper::UI
 		return ImGui::TreeNodeEx(label.c_str(), flags);
 	}
 
-	inline bool BeginImageTreeNode(std::string label, Shr<Texture> image = nullptr, ImVec2 size = { 0.0f, 0.0f }, bool defaultOpen = true)
+	inline bool BeginImageTreeNode(std::string label, Ref<Texture> image = nullptr, ImVec2 size = { 0.0f, 0.0f }, bool defaultOpen = true)
 	{
-		Shr<Texture> gearTexture = DataPool::GetTexture("resources/editor/icons/gear.png", true);
+		Ref<Texture> gearTexture = DataPool::GetTexture("resources/editor/icons/gear.png", true);
 
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap;
 		if (defaultOpen)
@@ -575,7 +575,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyTexture(const std::string& label, Shr<Texture>& texture, ImVec2 size)
+	inline bool PropertyTexture(const std::string& label, Ref<Texture>& texture, ImVec2 size)
 	{
 		UI::BeginPropertyElementInternal(label);
 
@@ -591,7 +591,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyTexture(const std::string& label, Shr<Texture>& texture, float maxHeight)
+	inline bool PropertyTexture(const std::string& label, Ref<Texture>& texture, float maxHeight)
 	{
 		UI::BeginPropertyElementInternal(label);
 
@@ -619,7 +619,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyFont(const std::string& label, Shr<Font>& font)
+	inline bool PropertyFont(const std::string& label, Ref<Font>& font)
 	{
 		UI::BeginPropertyElementInternal(label);
 
@@ -649,7 +649,7 @@ namespace Paper::UI
 		return payload;
 	}
 
-	inline bool DragDropTarget(Shr<Texture>& texture)
+	inline bool DragDropTarget(Ref<Texture>& texture)
 	{
 		if (const ImGuiPayload* payload = DragDropTargetInternal("TEXTURE"))
 		{
@@ -662,7 +662,7 @@ namespace Paper::UI
 		return false;
 	}
 
-	inline bool DragDropTarget(Shr<Font>& font)
+	inline bool DragDropTarget(Ref<Font>& font)
 	{
 		if (const ImGuiPayload* payload = DragDropTargetInternal("FONT"))
 		{

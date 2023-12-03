@@ -25,7 +25,7 @@ static float GetCameraSpeed()
 	return glm::clamp(speed, 2.0f, 10.0f);
 }
 
-static void CameraMovement(const Shr<EditorCamera>& camera)
+static void CameraMovement(const Ref<EditorCamera>& camera)
 {
 	const float dt = Application::GetDT();
 	const float speed = GetCameraSpeed();
@@ -58,7 +58,7 @@ static void CameraMovement(const Shr<EditorCamera>& camera)
 #include "renderer/Renderer2D.h"
 void ViewPort::Panel(PaperLayer* peLayer)
 {
-	const Shr<Scene> activeScene = Scene::GetActive();
+	const Ref<Scene> activeScene = Scene::GetActive();
 	Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
 
 	if (activeScene && viewport_size.x > 0.0f && viewport_size.y > 0.0f)
@@ -68,7 +68,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		viewport_size.x > 0.0f && viewport_size.y > 0.0f && // zero sized framebuffer is invalid
 		(spec.width != viewport_size.x || spec.height != viewport_size.y))
 	{
-		const Shr<Scene> activeScene = Scene::GetActive();
+		const Ref<Scene> activeScene = Scene::GetActive();
 		framebuffer->Resize((uint32_t)viewport_size.x, (uint32_t)viewport_size.y);
 
 		camera->aspect_ratio = viewport_size.x / viewport_size.y;

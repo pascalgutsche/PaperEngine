@@ -69,25 +69,25 @@ namespace Paper {
 		static constexpr uint32_t MAX_ELEMENTS = 60000;
 		static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
 
-		Shr<Shader> edgeGeometryShader;
-		Shr<Shader> lineGeometryShader;
-		Shr<Shader> circleGeometryShader;
-		Shr<Shader> textShader;
+		Ref<Shader> edgeGeometryShader;
+		Ref<Shader> lineGeometryShader;
+		Ref<Shader> circleGeometryShader;
+		Ref<Shader> textShader;
 
-		Shr<VertexArray> rectangleVertexArray;
-		Shr<VertexBuffer> rectangleVertexBuffer;
+		Ref<VertexArray> rectangleVertexArray;
+		Ref<VertexBuffer> rectangleVertexBuffer;
 
-		Shr<VertexArray> lineVertexArray;
-		Shr<VertexBuffer> lineVertexBuffer;
+		Ref<VertexArray> lineVertexArray;
+		Ref<VertexBuffer> lineVertexBuffer;
 
-		Shr<VertexArray> triangleVertexArray;
-		Shr<VertexBuffer> triangleVertexBuffer;
+		Ref<VertexArray> triangleVertexArray;
+		Ref<VertexBuffer> triangleVertexBuffer;
 
-		Shr<VertexArray> circleVertexArray;
-		Shr<VertexBuffer> circleVertexBuffer;
+		Ref<VertexArray> circleVertexArray;
+		Ref<VertexBuffer> circleVertexBuffer;
 
-		Shr<VertexArray> textVertexArray;
-		Shr<VertexBuffer> textVertexBuffer;
+		Ref<VertexArray> textVertexArray;
+		Ref<VertexBuffer> textVertexBuffer;
 		
 		uint32_t rectangleElementCount = 0;
 		EdgeVertex* rectangleVertexBufferBase = nullptr;
@@ -109,13 +109,13 @@ namespace Paper {
 		TextVertex* textVertexBufferBase = nullptr;
 		TextVertex* textVertexBufferPtr = nullptr;
 
-		std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
+		std::array<Ref<Texture>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
 		uint32_t rectangleTextureSlotIndex = 0;
 
-		std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> triangleTextureSlots;
+		std::array<Ref<Texture>, MAX_TEXTURE_SLOTS> triangleTextureSlots;
 		uint32_t triangleTextureSlotIndex = 0;
 
-		std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> circleTextureSlots;
+		std::array<Ref<Texture>, MAX_TEXTURE_SLOTS> circleTextureSlots;
 		uint32_t circleTextureSlotIndex = 0;
 
 		float lineWidth = 1.0f;
@@ -123,7 +123,7 @@ namespace Paper {
 		glm::vec4 rectangleVertexData[4];
 		glm::vec4 triangleVertexData[3];
 
-		Shr<Texture> fontAtlasTexture;
+		Ref<Texture> fontAtlasTexture;
 	};
 
 	static RenderData2D data;
@@ -230,7 +230,7 @@ namespace Paper {
 			offsetRectangle += 4;
 		}
 
-		Shr<ElementBuffer> rectangleElementbuffer = ElementBuffer::CreateBuffer(rectangleElements, data.MAX_ELEMENTS);
+		Ref<ElementBuffer> rectangleElementbuffer = ElementBuffer::CreateBuffer(rectangleElements, data.MAX_ELEMENTS);
 		data.rectangleVertexArray->SetElementBuffer(rectangleElementbuffer);
 		delete[] rectangleElements;
 
@@ -246,7 +246,7 @@ namespace Paper {
 			offsetTriangle += 3;
 		}
 		
-		Shr<ElementBuffer> triangleElementbuffer = ElementBuffer::CreateBuffer(triangleElements, data.MAX_ELEMENTS);
+		Ref<ElementBuffer> triangleElementbuffer = ElementBuffer::CreateBuffer(triangleElements, data.MAX_ELEMENTS);
 		data.triangleVertexArray->SetElementBuffer(triangleElementbuffer);
 		delete[] triangleElements;
 
@@ -285,7 +285,7 @@ namespace Paper {
 		delete[] data.textVertexBufferBase;
 	}
 
-	void Renderer2D::BeginRender(const Shr<EditorCamera>& camera)
+	void Renderer2D::BeginRender(const Ref<EditorCamera>& camera)
 	{
 		camera->Calculate();
 		RenderCommand::UploadCamera(camera);
@@ -726,7 +726,7 @@ namespace Paper {
 
 		const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
 		const auto& metrics = fontGeometry.getMetrics();
-		Shr<Texture> fontAtlas = font->GetAtlasTexture();
+		Ref<Texture> fontAtlas = font->GetAtlasTexture();
 
 		data.fontAtlasTexture = fontAtlas;
 

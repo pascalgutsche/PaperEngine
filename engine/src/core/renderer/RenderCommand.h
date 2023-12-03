@@ -18,7 +18,7 @@ namespace Paper
 			glm::mat4 uView;
 		};
 		CameraData cameraData;
-		Shr<UniformBuffer> cameraUniformBuffer;
+		Ref<UniformBuffer> cameraUniformBuffer;
 
 		struct Stats
 		{
@@ -34,7 +34,7 @@ namespace Paper
 	class RenderCommand
 	{
 	private:
-		static Shr<RenderAPI> rendererAPI;
+		static Ref<RenderAPI> rendererAPI;
 
 	public:
 		static SharedRenderData sharedData;
@@ -42,7 +42,7 @@ namespace Paper
 		static void Init();
 		static void Shutdown();
 
-		static void UploadCamera(const Shr<EditorCamera>& camera);
+		static void UploadCamera(const Ref<EditorCamera>& camera);
 		static void UploadCamera(const EntityCamera& entityCamera, const glm::mat4& viewMatrix);
 		static SharedRenderData::Stats& GetStats();
 		static void ClearStats();
@@ -51,8 +51,8 @@ namespace Paper
 		static void Clear();
 		static void EnableDepthTesting(bool enable);
 		static bool IsDepthTestingEnabled();
-		static void DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount);
-		static void DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount, float thickness);
+		static void DrawElements(Ref<VertexArray>& vertexArray, uint32_t elementCount);
+		static void DrawLines(Ref<VertexArray>& vertexArray, uint32_t vertexCount, float thickness);
 		static void SetViewPort(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 		static void SetLineThickness(float width);
 		static void SetPolygonModel(Polygon pol);

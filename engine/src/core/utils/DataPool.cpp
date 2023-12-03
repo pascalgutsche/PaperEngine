@@ -12,7 +12,7 @@ namespace Paper {
     // declare static maps in order to find a reference
     Map DataPool::dataPool;
 
-    Shr<Shader> DataPool::GetShader(std::string shaderName) {
+    Ref<Shader> DataPool::GetShader(std::string shaderName) {
         // set default path
         std::string path = "resources/shaders/" + shaderName + ".glsl";
         std::string shader_id = "shader_" + shaderName;
@@ -34,7 +34,7 @@ namespace Paper {
         return shader;
     }
 
-    Shr<Texture> DataPool::GetAssetTexture(std::string textureName, bool wholePath) {
+    Ref<Texture> DataPool::GetAssetTexture(std::string textureName, bool wholePath) {
         // set default path
         std::filesystem::path texturePath;
         if (wholePath)
@@ -61,7 +61,7 @@ namespace Paper {
         return texture;
     }
 
-    Shr<Texture> DataPool::GetTexture(std::string textureName, bool wholePath) {
+    Ref<Texture> DataPool::GetTexture(std::string textureName, bool wholePath) {
         // set default path
         const std::filesystem::path path = wholePath ? textureName : "resources/textures/" + textureName;
 
@@ -84,12 +84,12 @@ namespace Paper {
         return texture;
     }
 
-    Shr<Font> DataPool::GetDefaultFont()
+    Ref<Font> DataPool::GetDefaultFont()
 	{
         return GetFont("resources/fonts/mononoki.ttf", true, true);
     }
 
-    Shr<Font> DataPool::GetFont(std::string fontName, bool wholePath, bool isDefault)
+    Ref<Font> DataPool::GetFont(std::string fontName, bool wholePath, bool isDefault)
 	{
         std::filesystem::path fontPath;
         if (wholePath)

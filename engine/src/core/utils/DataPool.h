@@ -16,13 +16,13 @@ namespace Paper {
 
     public:
         // get current shader with the specific string (name)
-        static Shr<Shader> GetShader(std::string shaderName);
+        static Ref<Shader> GetShader(std::string shaderName);
         // search for a texture with the specific string (name)
-        static Shr<Texture> GetAssetTexture(std::string textureName, bool wholePath = false);
-        static Shr<Texture> GetTexture(std::string textureName, bool wholePath = false);
+        static Ref<Texture> GetAssetTexture(std::string textureName, bool wholePath = false);
+        static Ref<Texture> GetTexture(std::string textureName, bool wholePath = false);
 
-        static Shr<Font> GetDefaultFont();
-        static Shr<Font> GetFont(std::string fontName, bool wholePath = false, bool isDefault = false);
+        static Ref<Font> GetDefaultFont();
+        static Ref<Font> GetFont(std::string fontName, bool wholePath = false, bool isDefault = false);
 
         static void ErasePool();
     };

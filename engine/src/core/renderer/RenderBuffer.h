@@ -126,7 +126,7 @@ namespace Paper
 
 		virtual ~VertexBuffer() = default;
 
-		static Shr<VertexBuffer> CreateBuffer(BufferLayout& layout, uint32_t size);
+		static Ref<VertexBuffer> CreateBuffer(BufferLayout& layout, uint32_t size);
 	};
 
 	class ElementBuffer
@@ -139,7 +139,7 @@ namespace Paper
 
 		virtual ~ElementBuffer() = default;
 
-		static Shr<ElementBuffer> CreateBuffer(uint32_t* data, uint32_t count);
+		static Ref<ElementBuffer> CreateBuffer(uint32_t* data, uint32_t count);
 	};
 
 	class UniformBuffer
@@ -152,7 +152,7 @@ namespace Paper
 
 		virtual ~UniformBuffer() = default;
 
-		static Shr<UniformBuffer> CreateBuffer(uint32_t binding);
+		static Ref<UniformBuffer> CreateBuffer(uint32_t binding);
 	};
 
 	class StorageBuffer
@@ -165,6 +165,6 @@ namespace Paper
 
 		virtual ~StorageBuffer() = default;
 
-		static Shr<StorageBuffer> CreateBuffer(uint32_t binding);
+		static Ref<StorageBuffer> CreateBuffer(uint32_t binding);
 	};
 }

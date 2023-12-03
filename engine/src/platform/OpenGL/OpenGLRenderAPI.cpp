@@ -87,7 +87,7 @@ namespace Paper
 		return depthTestingEnabled;
 	}
 
-	void OpenGLRenderAPI::DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount)
+	void OpenGLRenderAPI::DrawElements(Ref<VertexArray>& vertexArray, uint32_t elementCount)
 	{
 		vertexArray->Bind();
 		uint32_t count = elementCount ? elementCount : vertexArray->GetElementBuffer()->GetElementCount();
@@ -95,7 +95,7 @@ namespace Paper
 		vertexArray->Unbind();
 	}
 	
-	void OpenGLRenderAPI::DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount, float thickness)
+	void OpenGLRenderAPI::DrawLines(Ref<VertexArray>& vertexArray, uint32_t vertexCount, float thickness)
 	{
 		vertexArray->Bind();
 		SetLineWidth(thickness);

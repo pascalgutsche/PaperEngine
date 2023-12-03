@@ -26,8 +26,8 @@ namespace Paper
 		const ProjectConfig& GetConfig() const;
 		ProjectConfig& GetConfig();
 
-		static void SetActive(const Shr<Project>& project);
-		static Shr<Project> GetActive();
+		static void SetActive(const Ref<Project>& project);
+		static Ref<Project> GetActive();
 
 		static std::string GetProjectName()
 		{
@@ -71,7 +71,7 @@ namespace Paper
 			return GetScriptBinaryPath() / fmt::format("{}.dll", GetProjectName());
 		}
 
-		static Shr<Scene> GetStartScene()
+		static Ref<Scene> GetStartScene()
 		{
 			CORE_ASSERT(activeProject, "");
 			if (!activeProject->GetConfig().startScene.empty())
@@ -93,7 +93,7 @@ namespace Paper
 	private:
 		ProjectConfig config;
 
-		static inline Shr<Project> activeProject = nullptr;
+		static inline Ref<Project> activeProject = nullptr;
 
 		friend class ProjectSerializer;
 	};

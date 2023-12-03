@@ -6,7 +6,7 @@
 #include "OpenGL/OpenGLContext.h"
 
 namespace Paper {
-	Shr<Context> Context::CreateContext(void* window)
+	Ref<Context> Context::CreateContext(void* window)
 	{
 		switch (RenderAPI::GetAPI())
 		{

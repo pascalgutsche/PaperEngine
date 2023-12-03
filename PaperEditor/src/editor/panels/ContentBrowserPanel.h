@@ -8,7 +8,7 @@ namespace PaperED
 	public:
 		void OnImGuiRender(bool& isOpen) override;
 
-		void OnProjectChanged(const Shr<Project>& project) override;
+		void OnProjectChanged(const Ref<Project>& project) override;
 
 	private:
 		std::filesystem::path currentAssetsPath = "";

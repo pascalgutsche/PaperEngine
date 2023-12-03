@@ -5,7 +5,7 @@
 
 namespace Paper
 {
-	void ProjectSerializer::Serialize(const Shr<Project>& project, const std::filesystem::path& filePath)
+	void ProjectSerializer::Serialize(const Ref<Project>& project, const std::filesystem::path& filePath)
 	{
 		const ProjectConfig& config = project->config;
 
@@ -28,9 +28,9 @@ namespace Paper
 		fout.close();
 	}
 
-	Shr<Project> ProjectSerializer::Deserialize(const std::filesystem::path& filePath)
+	Ref<Project> ProjectSerializer::Deserialize(const std::filesystem::path& filePath)
 	{
-		Shr<Project> project = MakeShr<Project>();
+		Ref<Project> project = MakeShr<Project>();
 		ProjectConfig& config = project->config;
 		YAML::Node data;
 		try

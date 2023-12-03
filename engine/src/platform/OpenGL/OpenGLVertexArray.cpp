@@ -37,7 +37,7 @@ namespace Paper
 		glDeleteVertexArrays(1, &vaoID);
 	}
 
-	void OpenGLVertexArray::SetVertexBuffer(Shr<VertexBuffer>& vertexBuffer)
+	void OpenGLVertexArray::SetVertexBuffer(Ref<VertexBuffer>& vertexBuffer)
 	{
 		Bind();
 		vertexBuffer->Bind();
@@ -83,7 +83,7 @@ namespace Paper
 		Unbind();
 	}
 
-	void OpenGLVertexArray::SetElementBuffer(Shr<ElementBuffer>& elementBuffer)
+	void OpenGLVertexArray::SetElementBuffer(Ref<ElementBuffer>& elementBuffer)
 	{
 		Bind();
 		elementBuffer->Bind();

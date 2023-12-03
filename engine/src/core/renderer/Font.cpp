@@ -13,7 +13,7 @@ namespace Paper
 {
 	template<typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
 	
-	static Shr<Texture> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
+	static Ref<Texture> CreateAndCacheAtlas(const std::string& fontName, float fontSize, const std::vector<msdf_atlas::GlyphGeometry>& glyphs,
 		const msdf_atlas::FontGeometry& fontGeometry, uint32_t width, uint32_t height)
 	{
 		msdf_atlas::GeneratorAttributes attributes;
@@ -34,7 +34,7 @@ namespace Paper
 
 		spec.GenerateMips = false;
 
-		Shr<Texture> texture = Texture::CreateTexture(spec);
+		Ref<Texture> texture = Texture::CreateTexture(spec);
 		texture->SetData((void*)bitmap.pixels, bitmap.width * bitmap.height * 3);
 
 		return texture;
@@ -129,9 +129,9 @@ namespace Paper
 
 	//replaced by DataPool
 	
-	//Shr<Font> Font::GetFont(std::string fontPath)
+	//Ref<Font> Font::GetFont(std::string fontPath)
 	//{
-	//	static Shr<Font> DefaultFont;
+	//	static Ref<Font> DefaultFont;
 	//
 	//	if (!DefaultFont)
 	//	{

@@ -7,7 +7,7 @@
 
 namespace Paper
 {
-	Shr<VertexBuffer> VertexBuffer::CreateBuffer(BufferLayout& layout, uint32_t size)
+	Ref<VertexBuffer> VertexBuffer::CreateBuffer(BufferLayout& layout, uint32_t size)
 	{
 		switch (RenderAPI::GetAPI())
 		{
@@ -20,7 +20,7 @@ namespace Paper
 		return nullptr;
 	}
 
-	Shr<ElementBuffer> ElementBuffer::CreateBuffer(uint32_t* data, uint32_t count)
+	Ref<ElementBuffer> ElementBuffer::CreateBuffer(uint32_t* data, uint32_t count)
 	{
 		switch (RenderAPI::GetAPI())
 		{
@@ -33,7 +33,7 @@ namespace Paper
 		return nullptr;
 	}
 
-	Shr<UniformBuffer> UniformBuffer::CreateBuffer(uint32_t binding)
+	Ref<UniformBuffer> UniformBuffer::CreateBuffer(uint32_t binding)
 	{
 		switch (RenderAPI::GetAPI())
 		{
@@ -46,7 +46,7 @@ namespace Paper
 			return nullptr;
 	}
 
-	Shr<StorageBuffer> StorageBuffer::CreateBuffer(uint32_t binding)
+	Ref<StorageBuffer> StorageBuffer::CreateBuffer(uint32_t binding)
 	{
 		switch (RenderAPI::GetAPI())
 		{

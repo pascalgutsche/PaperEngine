@@ -22,7 +22,7 @@ namespace PaperED
 	{
 		std::string strID = "";
 		std::string displayName = "Editor Panel";
-		Shr<EditorPanel> panel = nullptr;
+		Ref<EditorPanel> panel = nullptr;
 		bool isOpen = false;
 		bool firstRender = true;
 		DockLoc initialDockLocation = DockLoc::NONE;
@@ -33,8 +33,8 @@ namespace PaperED
 	public:
 		void OnImGuiRender();
 		void OnEvent(Event& e);
-		void OnProjectChanged(const Shr<Project>& project);
-		void OnSceneChanged(const Shr<Scene>& scene);
+		void OnProjectChanged(const Ref<Project>& project);
+		void OnSceneChanged(const Ref<Scene>& scene);
 
 		void RemovePanel(const std::string& strID);
 		void OpenPanel(const std::string& strID);
@@ -46,7 +46,7 @@ namespace PaperED
 		};
 
 		template <typename TEditorPanel, typename... TArgs>
-		Shr<TEditorPanel> AddPanel(const PanelData& panelData)
+		Ref<TEditorPanel> AddPanel(const PanelData& panelData)
 		{
 			static_assert(std::is_base_of<EditorPanel, TEditorPanel>::value, "TEditorPanel must be a derived of EditorPanel");
 
@@ -67,28 +67,28 @@ namespace PaperED
 		}
 
 		template <typename TEditorPanel, typename... TArgs>
-		Shr<TEditorPanel> AddPanel(bool isOpenByDefault, TArgs&&... args)
+		Ref<TEditorPanel> AddPanel(bool isOpenByDefault, TArgs&&... args)
 		{
 			std::string strID = Utils::TypeToStdString<TEditorPanel>();
 			return AddPanel<TEditorPanel>({ .strID = strID, .displayName = strID, .panel = MakeShr<TEditorPanel>(std::forward<TArgs>(args)...), .isOpen = isOpenByDefault });
 		}
 
 		template <typename TEditorPanel, typename... TArgs>
-		Shr<TEditorPanel> AddPanel(bool isOpenByDefault, DockLoc initialDockLoc, TArgs&&... args)
+		Ref<TEditorPanel> AddPanel(bool isOpenByDefault, DockLoc initialDockLoc, TArgs&&... args)
 		{
 			std::string strID = Utils::TypeToStdString<TEditorPanel>();
 			return AddPanel<TEditorPanel>({ .strID = strID, .displayName = strID, .panel = MakeShr<TEditorPanel>(std::forward<TArgs>(args)...), .isOpen = isOpenByDefault, .initialDockLocation = initialDockLoc });
 		}
 
 		template <typename TEditorPanel, typename... TArgs>
-		Shr<TEditorPanel> AddPanel(const char* displayName, bool isOpenByDefault, TArgs&&... args)
+		Ref<TEditorPanel> AddPanel(const char* displayName, bool isOpenByDefault, TArgs&&... args)
 		{
 			std::string strID = Utils::TypeToStdString<TEditorPanel>();
 			return AddPanel<TEditorPanel>({ .strID = strID, .displayName = displayName, .panel = MakeShr<TEditorPanel>(std::forward<TArgs>(args)...), .isOpen = isOpenByDefault });
 		}
 
 		template <typename TEditorPanel, typename... TArgs>
-		Shr<TEditorPanel> AddPanel(const char* displayName, bool isOpenByDefault, DockLoc initialDockLoc, TArgs&&... args)
+		Ref<TEditorPanel> AddPanel(const char* displayName, bool isOpenByDefault, DockLoc initialDockLoc, TArgs&&... args)
 		{
 			std::string strID = Utils::TypeToStdString<TEditorPanel>();
 			return AddPanel<TEditorPanel>({ .strID = strID, .displayName = displayName, .panel = MakeShr<TEditorPanel>(std::forward<TArgs>(args)...), .isOpen = isOpenByDefault, .initialDockLocation = initialDockLoc });

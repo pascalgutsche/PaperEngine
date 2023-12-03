@@ -7,7 +7,7 @@
 
 namespace Paper {
 
-	Shr<VertexArray> VertexArray::CreateArray()
+	Ref<VertexArray> VertexArray::CreateArray()
 	{
 		switch (RenderAPI::GetAPI())
 		{

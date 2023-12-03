@@ -42,9 +42,9 @@ namespace Paper {
 
         virtual ~Texture() = default;
 
-        static Shr<Texture> CreateTexture(std::filesystem::path filePath, std::string name);
+        static Ref<Texture> CreateTexture(std::filesystem::path filePath, std::string name);
 
-        static Shr<Texture> CreateTexture(TextureSpecification specification);
+        static Ref<Texture> CreateTexture(TextureSpecification specification);
     };
 
 }

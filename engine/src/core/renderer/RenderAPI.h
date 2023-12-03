@@ -40,12 +40,12 @@ namespace Paper {
 		virtual void EnableDepthTesting(bool enable) = 0;
 		virtual bool IsDepthTestingEnabled() = 0;
 
-		virtual void DrawElements(Shr<VertexArray>& vertexArray, uint32_t elementCount = 0) = 0;
+		virtual void DrawElements(Ref<VertexArray>& vertexArray, uint32_t elementCount = 0) = 0;
 
-		virtual void DrawLines(Shr<VertexArray>& vertexArray, uint32_t vertexCount, float thicknesss) = 0;
+		virtual void DrawLines(Ref<VertexArray>& vertexArray, uint32_t vertexCount, float thicknesss) = 0;
 		virtual void SetLineWidth(float thickness) = 0;
 
-		static Shr<RenderAPI> CreateAPI();
+		static Ref<RenderAPI> CreateAPI();
 
 		static API GetAPI() { return api; }
 

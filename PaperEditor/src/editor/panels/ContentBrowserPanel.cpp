@@ -182,7 +182,7 @@ namespace PaperED
 		ImGui::End();
 	}
 
-	void ContentBrowserPanel::OnProjectChanged(const Shr<Project>& project)
+	void ContentBrowserPanel::OnProjectChanged(const Ref<Project>& project)
 	{
 		currentAssetsPath = project->GetConfig().assetPath;
 	}

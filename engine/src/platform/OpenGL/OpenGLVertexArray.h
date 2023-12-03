@@ -12,11 +12,11 @@ namespace Paper
 		void Bind() override;
 		void Unbind() override;
 
-		void SetVertexBuffer(Shr<VertexBuffer>& vertexBuffer) override;
-		void SetElementBuffer(Shr<ElementBuffer>& elementBuffer) override;
+		void SetVertexBuffer(Ref<VertexBuffer>& vertexBuffer) override;
+		void SetElementBuffer(Ref<ElementBuffer>& elementBuffer) override;
 
-		Shr<VertexBuffer>& GetVertexBuffer()override { return vertexBuffer; }
-		Shr<ElementBuffer>& GetElementBuffer() override { return elementBuffer; }
+		Ref<VertexBuffer>& GetVertexBuffer()override { return vertexBuffer; }
+		Ref<ElementBuffer>& GetElementBuffer() override { return elementBuffer; }
 
         OpenGLVertexArray();
 		~OpenGLVertexArray() override;
@@ -24,7 +24,7 @@ namespace Paper
 		uint32_t vaoID;
 		uint32_t vboIndex = 0;
 
-		Shr<VertexBuffer> vertexBuffer;
-		Shr<ElementBuffer> elementBuffer;
+		Ref<VertexBuffer> vertexBuffer;
+		Ref<ElementBuffer> elementBuffer;
 	};
 }

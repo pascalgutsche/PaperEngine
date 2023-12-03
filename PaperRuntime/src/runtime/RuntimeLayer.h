@@ -17,10 +17,10 @@ public:
 	void Imgui(const float dt) override;
 
 	void UseProject(const std::filesystem::path& projPath);
-	void UseProject(const Shr<Project>& project);
+	void UseProject(const Ref<Project>& project);
 	void CloseProject();
 
-	void OpenScene(Shr<Scene> scene);
+	void OpenScene(Ref<Scene> scene);
 	void CloseScene();
 public:
 
@@ -28,6 +28,6 @@ public:
 
 	bool sceneChanged = false;
 
-	Shr<Framebuffer> framebuffer;
+	Ref<Framebuffer> framebuffer;
 };
 

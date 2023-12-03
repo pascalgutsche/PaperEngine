@@ -67,6 +67,6 @@ namespace Paper {
 		virtual void BindAttachmentAsTexture(uint32_t attachment, uint32_t slot) = 0;
 
 		virtual FramebufferSpecification& GetSpecification() = 0;
-		static Shr<Framebuffer> CreateBuffer(const FramebufferSpecification& specification);
+		static Ref<Framebuffer> CreateBuffer(const FramebufferSpecification& specification);
 	};
 }

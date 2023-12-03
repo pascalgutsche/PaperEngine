@@ -99,7 +99,7 @@ void ApplicationPanel::OnImGuiRender(bool& isOpen)
 		if (ImGui::TreeNode("Textures in use"))
 		{
 			/*
-			for (Shr<Texture> texture : Renderer2D::GetTexturesInUse())
+			for (Ref<Texture> texture : Renderer2D::GetTexturesInUse())
 			{
 
 				ImGui::Selectable(texture->GetName().c_str(), false);
@@ -168,7 +168,7 @@ void ViewportDebuggingPanel::OnImGuiRender(bool& isOpen)
 
 void SceneDebuggingPanel::OnImGuiRender(bool& isOpen)
 {
-	const Shr<Scene> activeScene = Scene::GetActive();
+	const Ref<Scene> activeScene = Scene::GetActive();
 	ImGui::Begin(panelName.c_str(), &isOpen);
 
 	if (!activeScene)
@@ -205,7 +205,7 @@ void CameraSettingsPanel::OnImGuiRender(bool& isOpen)
 		{
 			if (ImGui::BeginTabItem(viewport.name.c_str()))
 			{
-				const Shr<EditorCamera> camera = viewport.camera;
+				const Ref<EditorCamera> camera = viewport.camera;
 
 				ImGui::DragFloat3("Position", &camera->position.x, 0.1f);
 				ImGui::DragFloat("Yaw", &camera->yaw, 0.1f);

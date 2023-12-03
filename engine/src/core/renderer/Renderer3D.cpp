@@ -27,16 +27,16 @@ namespace Paper {
         static constexpr uint32_t MAX_ELEMENTS = 60000;
         static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
 
-        Shr<Shader> edgeGeometryShader;
+        Ref<Shader> edgeGeometryShader;
 
-        Shr<VertexArray> cubeVertexArray;
-        Shr<VertexBuffer> cubeVertexBuffer;
+        Ref<VertexArray> cubeVertexArray;
+        Ref<VertexBuffer> cubeVertexBuffer;
         
         uint32_t cubeElementCount = 0;
         EdgeVertex* cubeVertexBufferBase = nullptr;
         EdgeVertex* cubeVertexBufferPtr = nullptr;
 
-        std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> cubeTextureSlots;
+        std::array<Ref<Texture>, MAX_TEXTURE_SLOTS> cubeTextureSlots;
         uint32_t cubeTextureSlotIndex = 0;
 
         std::array<glm::vec3, 24> cubePositionData;
@@ -47,7 +47,7 @@ namespace Paper {
             glm::vec3 position;
         };
 
-        Shr<StorageBuffer> storageBuffer;
+        Ref<StorageBuffer> storageBuffer;
         
     };
 
@@ -94,7 +94,7 @@ namespace Paper {
             offsetCube += 4;
         }
 
-        Shr<ElementBuffer> cubeElementbuffer = ElementBuffer::CreateBuffer(cubeElements, data.MAX_ELEMENTS);
+        Ref<ElementBuffer> cubeElementbuffer = ElementBuffer::CreateBuffer(cubeElements, data.MAX_ELEMENTS);
         data.cubeVertexArray->SetElementBuffer(cubeElementbuffer);
         delete[] cubeElements;
 
