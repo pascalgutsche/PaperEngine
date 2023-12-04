@@ -4,9 +4,107 @@
 #include "project/Project.h"
 #include "renderer/Font.h"
 
+#include "imgui/ImGuiLayer.h"
+#include "imgui/imgui_internal.h"
+#include "imgui/UI.h"
 
 namespace PaperED
 {
+	ContentBrowserItem::ContentBrowserItem(ItemType type, AssetHandle handle, std::string name, Ref<Texture> icon)
+		: itemType(type), itemID(handle), itemName(name), itemIcon(icon)
+	{
+	}
+
+	void ContentBrowserItem::Render()
+	{
+		const float thumbnailSize = 128.0f;
+
+		const float textLineHeight = ImGui::GetTextLineHeightWithSpacing();
+		const float infoPanelHeight = textLineHeight * 1.6;
+
+		ImVec2 topLeft = ImGui::GetCursorScreenPos();
+		ImVec2 thumbnailBottomRight = { topLeft.x + thumbnailSize, topLeft.y + thumbnailSize };
+		ImVec2 infoTopLeft = { topLeft.x, topLeft.y + thumbnailSize };
+		ImVec2 bottomRight = { topLeft.x + thumbnailSize, topLeft.y + thumbnailSize + infoPanelHeight};
+
+		ImVec2 cursor = ImGui::GetMousePos();
+
+		//LOG_DEBUG("TopLeft: {}, {}; BottomRight: {}, {}; Cursor: {} {}", topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, cursor.x, cursor.y);
+
+		auto drawShadow = [](const ImVec2& topLeft, const ImVec2& bottomRight, bool directory)
+		{
+			auto* drawList = ImGui::GetWindowDrawList();
+			const ImRect itemRect = UI::RectOffset(ImRect(topLeft, bottomRight), 1.0f, 1.0f);
+			drawList->AddRect(itemRect.Min, itemRect.Max, Colors::Theme::propertyField, 6.0f, directory ? 0 : ImDrawFlags_RoundCornersAll, 6.0f);
+		};
+
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+		drawShadow(topLeft, bottomRight, false);
+		//drawList->AddRectFilled(topLeft, bottomRight, Colors::Theme::backgroundDark);
+		drawList->AddRectFilled(topLeft, bottomRight, Colors::Theme::background, 6.0f, ImDrawFlags_RoundCornersAll);
+
+		//draw thumbnail
+
+		UI::ImageButton(itemIcon, IM_COL32(255, 255, 255, 225),
+			IM_COL32(200, 200, 200, 255),
+			IM_COL32(255, 200, 200, 255),
+			ImVec2(thumbnailSize, thumbnailSize));
+
+		//draw infobox
+
+		if (itemType == ItemType::Directory)
+		{
+			ImGui::BeginVertical((std::string("InfoPanel") + m_DisplayName).c_str(), ImVec2(thumbnailSize - edgeOffset * 2.0f, infoPanelHeight - edgeOffset));
+			{
+				// Centre align directory name
+				ImGui::BeginHorizontal(m_FileName.c_str(), ImVec2(thumbnailSize - 2.0f, 0.0f));
+				ImGui::Spring();
+				{
+					ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + (thumbnailSize - edgeOffset * 3.0f));
+					const float textWidth = std::min(ImGui::CalcTextSize(m_DisplayName.c_str()).x, thumbnailSize);
+					if (m_IsRenaming)
+					{
+						ImGui::SetNextItemWidth(thumbnailSize - edgeOffset * 3.0f);
+						renamingWidget();
+					}
+					else
+					{
+						ImGui::SetNextItemWidth(textWidth);
+						ImGui::Text(m_DisplayName.c_str());
+					}
+					ImGui::PopTextWrapPos();
+				}
+				ImGui::Spring();
+				ImGui::EndHorizontal();
+
+				ImGui::Spring();
+			}
+			ImGui::EndVertical();
+		}
+	}
+
+	void ContentBrowserPanel::OnImGuiRender(bool& isOpen)
+	{
+		if (!ImGui::Begin(panelName.c_str(), &isOpen))
+		{
+			ImGui::End();
+			return;
+		}
+
+		ContentBrowserItem item(ContentBrowserItem::ItemType::Asset, PaperID(), "Bunker", DataPool::GetTexture("file_icon.png"));
+		item.Render();
+
+
+		ImGui::End();
+	}
+
+	void ContentBrowserPanel::OnProjectChanged(const Ref<Project>& project)
+	{
+		
+	}
+
+
+	/*
 	enum FileType
 	{
 		Texture,
@@ -186,4 +284,5 @@ namespace PaperED
 	{
 		currentAssetsPath = project->GetConfig().assetPath;
 	}
+	*/
 }

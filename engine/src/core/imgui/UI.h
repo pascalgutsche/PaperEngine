@@ -132,7 +132,28 @@ namespace Paper::UI
 		return modified;
 	}
 
-	
+	//BUTTONS
+
+	inline bool ImageButton(const Ref<Texture>& image, ImU32 tintNormal, ImU32 tintHovered, ImU32 tintPressed, ImVec2 size)
+	{
+		bool pressed = ImGui::InvisibleButton(UI::GenerateID(), size);
+
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+		ImU32 tint;
+		if (ImGui::IsItemActive())
+			tint = tintPressed;
+		else if (ImGui::IsItemHovered())
+			tint = tintHovered;
+		else
+			tint = tintNormal;
+			
+		drawList->AddImage((void*)image->GetID(), ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), ImVec2(0, 0), ImVec2(1, 1), tint);
+
+		return pressed;
+	}
+
+	//PROPERTIES
 
 	inline void BeginPropertyGrid()
 	{
