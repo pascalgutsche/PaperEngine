@@ -75,13 +75,14 @@ namespace PaperED
 
 		ImGui::Text(itemName.c_str());
 
-		/* AssetText
 		std::string assetText = "SCENE";
 		ImVec2 assetTextLength = ImGui::CalcTextSize(assetText.c_str());
 
-		ImGui::SetCursorScreenPos({ bottomRight.x - assetTextLength.x - 5, bottomRight.y - assetTextLength.y - 2 });
+		ImGui::SetCursorScreenPos({ bottomRight.x - assetTextLength.x, bottomRight.y - assetTextLength.y });
 		ImGui::Text(assetText.c_str());
-		*/
+		
+		//LOG_DEBUG("{}", ImGui::GetItemRectMin().y);
+
 
 		ImGui::EndGroup();
 		//if (itemType == ItemType::Directory)

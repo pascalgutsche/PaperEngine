@@ -134,23 +134,32 @@ namespace Paper::UI
 
 	//BUTTONS
 
-	inline bool ImageButton(const Ref<Texture>& image, ImU32 tintNormal, ImU32 tintHovered, ImU32 tintPressed, ImVec2 size)
+	inline void ImageEffects(const Ref<Texture>& image, ImRect imageArea, ImVec4 tintNormal, ImVec4 tintHovered, ImVec4 tintPressed, ImRect effectArea = ImRect())
 	{
-		bool pressed = ImGui::InvisibleButton(UI::GenerateID(), size);
-
 		ImDrawList* drawList = ImGui::GetWindowDrawList();
 
-		ImU32 tint;
-		if (ImGui::IsItemActive())
-			tint = tintPressed;
-		else if (ImGui::IsItemHovered())
-			tint = tintHovered;
-		else
-			tint = tintNormal;
-			
-		drawList->AddImage((void*)image->GetID(), ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), ImVec2(0, 0), ImVec2(1, 1), tint);
+		if (effectArea.GetWidth() == 0.0f)
+		{
+			effectArea.Min.x = imageArea.Min.x;
+			effectArea.Max.x = imageArea.Max.x;
+		}
+		if (effectArea.GetHeight() == 0.0f)
+		{
+			effectArea.Min.y = imageArea.Min.y;
+			effectArea.Max.y = imageArea.Max.y;
+		}
 
-		return pressed;
+		ImVec4 tint = tintNormal;
+
+		if (effectArea.Contains(ImGui::GetMousePos()))
+		{
+			tint = tintHovered;
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
+				tint = tintPressed;
+		}
+			
+
+		drawList->AddImage((void*)image->GetID(), imageArea.Min, imageArea.Max, ImVec2(0, 1), ImVec2(1, 0), ImGui::ColorConvertFloat4ToU32(tint));
 	}
 
 	//PROPERTIES
