@@ -17,7 +17,7 @@ namespace PaperED
 		ContentBrowserItem(ItemType type, AssetHandle handle, std::string name, Ref<Texture> icon);
 		virtual ~ContentBrowserItem() = default;
 
-		void Render();
+		void Render() const;
 
 		ItemType GetItemType() const { return itemType; }
 		AssetHandle GetAssetHandle() const { return itemID; }
@@ -38,9 +38,9 @@ namespace PaperED
 		std::filesystem::path path;
 
 		Shr<DirectoryInfo> parent;
-		std::vector<Shr<DirectoryInfo>> subdirs;
+		std::unordered_map<AssetHandle, Shr<DirectoryInfo>> subdirs;
 
-		std::vector<Asset> assets;
+		std::vector<AssetHandle> assets;
 	};
 
 	class ContentBrowserDir : public ContentBrowserItem
@@ -123,15 +123,25 @@ namespace PaperED
 
 		void OnProjectChanged(const Ref<Project>& project) override;
 
+
 	private:
 		int BeginTable();
 		void EndTable();
 
 		AssetHandle ProcessDir(const std::filesystem::path& path, const Shr<DirectoryInfo>& parent);
 
-		const Ref<Project>& project;
+		void ChangeDir(const Shr<DirectoryInfo>& directoryInfo);
+
+		Ref<Project> project;
+
+		std::unordered_map<AssetHandle, Shr<DirectoryInfo>> directories;
 
 		ContentBrowserItemList currentItemList;
+
+		Shr<DirectoryInfo> baseDirInfo;
+		Shr<DirectoryInfo> currentDirInfo;
+		Shr<DirectoryInfo> nextDirInfo;
+		Shr<DirectoryInfo> prevDirInfo;
 	};
 }
 

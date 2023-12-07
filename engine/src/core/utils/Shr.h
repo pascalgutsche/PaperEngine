@@ -13,18 +13,18 @@ namespace Paper
 
 		uint32_t GetShrCount() const { return shrCount.load(); }
 
-		void IncCount()
+		void IncCount() const
 		{
 			++shrCount;
 		}
 
-		void DecCount()
+		void DecCount() const
 		{
 			--shrCount;
 		}
 
 	private:
-		std::atomic<uint32_t> shrCount;
+		mutable std::atomic<uint32_t> shrCount;
 	};
 
 	template <typename T>
@@ -90,6 +90,45 @@ namespace Paper
 			return instance;
 		}
 
+		Shr& operator=(std::nullptr_t)
+		{
+			DecShr();
+			instance = nullptr;
+			return *this;
+		}
+
+		Shr& operator=(const Shr<T>& other)
+		{
+			if (this == &other)
+				return *this;
+
+			other.IncShr();
+			DecShr();
+
+			instance = other.instance;
+			return *this;
+		}
+
+		template<typename T2>
+		Shr& operator=(const Shr<T2>& other)
+		{
+			other.IncShr();
+			DecShr();
+
+			instance = other.instance;
+			return *this;
+		}
+
+		template<typename T2>
+		Shr& operator=(Shr<T2>&& other)
+		{
+			DecShr();
+
+			instance = other.instance;
+			other.instance = nullptr;
+			return *this;
+		}
+
 		operator bool() { return instance != nullptr; }
 		operator bool() const { return instance != nullptr; }
 
@@ -108,13 +147,13 @@ namespace Paper
 
 	private:
 
-		void IncShr()
+		void IncShr() const
 		{
 			if (instance)
 				instance->IncCount();
 		}
 
-		void DecShr()
+		void DecShr() const
 		{
 			if (instance)
 			{
@@ -123,8 +162,9 @@ namespace Paper
 					delete instance;
 			}
 		}
-
-		T* instance;
+		template<class T2>
+		friend class Shr;
+		T* instance = nullptr;
 	};
 
 }

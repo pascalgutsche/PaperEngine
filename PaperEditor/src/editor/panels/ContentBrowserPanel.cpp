@@ -1,7 +1,5 @@
 ﻿#include "Editor.h"
 #include "ContentBrowserPanel.h"
-#include "ContentBrowserPanel.h"
-#include "ContentBrowserPanel.h"
 
 #include "project/Project.h"
 #include "renderer/Font.h"
@@ -12,6 +10,8 @@
 
 namespace PaperED
 {
+	constexpr int panelWidth = 128;
+	
 	// ===========================================
 	//	ContentBrowserItem
 	// ===========================================
@@ -21,7 +21,7 @@ namespace PaperED
 	{
 	}
 
-	void ContentBrowserItem::Render()
+	void ContentBrowserItem::Render() const
 	{
 		const float thumbnailSize = 128.0f;
 
@@ -137,9 +137,9 @@ namespace PaperED
 
 		int columnCount = BeginTable();
 
-		for (int i = 0; i < 20; i++)
+		for (const auto item : currentItemList)
 		{
-			
+			item->Render();
 
 			if (ImGui::TableGetColumnIndex() >= columnCount)
 			{
@@ -158,7 +158,11 @@ namespace PaperED
 	void ContentBrowserPanel::OnProjectChanged(const Ref<Project>& project)
 	{
 		this->project = project;
-		ProcessDir(project->GetProjectPath(), nullptr);
+		AssetHandle baseDirHandle = ProcessDir(project->GetAssetPath(), nullptr);
+		baseDirInfo = directories[baseDirHandle];
+		
+		ChangeDir(baseDirInfo);
+
 	}
 
 	int ContentBrowserPanel::BeginTable()
@@ -168,8 +172,8 @@ namespace PaperED
 			columnCount = 1;
 		ImGui::Text(std::to_string(columnCount).c_str());
 		ImGui::BeginTable("##contentbrowser", columnCount, 0, ImVec2(columnCount * panelWidth + 2, 0));
-		ImGui::TableNextColumn();
 		ImGui::TableNextRow();
+		ImGui::TableNextColumn();
 
 		return columnCount;
 	}
@@ -185,14 +189,54 @@ namespace PaperED
 		Shr<DirectoryInfo> dirInfo = Shr<DirectoryInfo>::Create();
 		dirInfo->handle = AssetHandle();
 		dirInfo->parent = parent;
-
-		if ()
-
+		
+		if (path == project->GetAssetPath())
+		{
+			dirInfo->path = "";
+		}
+		else
+		{
+			dirInfo->path = std::filesystem::relative(path, project->GetAssetPath());
+		}
+		
 		for (std::filesystem::directory_entry entry : std::filesystem::directory_iterator(path))
 		{
-			
+			if (entry.is_directory())
+			{
+				AssetHandle subDirHandle = ProcessDir(entry.path(), dirInfo);
+				dirInfo->subdirs[subDirHandle] = directories[subDirHandle];
+				continue;
+			}
+		
+			const AssetMetadata& metadata = Project::GetEditorAssetManager()->GetMetadata(entry.path());
+		
+			dirInfo->assets.push_back(metadata.handle);
 		}
+		
+		directories[dirInfo->handle] = dirInfo;
+		
+		return dirInfo->handle;
+	}
 
-		return AssetHandle();
+	void ContentBrowserPanel::ChangeDir(const Shr<DirectoryInfo>& directoryInfo)
+	{
+		if (!directoryInfo)
+			return;
+		
+		currentItemList.Clear();
+		
+		for (const auto [handle, subDirInfos] : directoryInfo->subdirs)
+		{
+			currentItemList.items.push_back(Shr<ContentBrowserDir>::Create(subDirInfos));
+		}
+		
+		for (AssetHandle handle : directoryInfo->assets)
+		{
+			AssetMetadata metadata = Project::GetEditorAssetManager()->GetMetadata(handle);
+		
+			currentItemList.items.push_back(Shr<ContentBrowserAsset>::Create(metadata, DataPool::GetTexture("file_icon.png")));
+		}
+		
+		currentDirInfo = directoryInfo;
 	}
 }

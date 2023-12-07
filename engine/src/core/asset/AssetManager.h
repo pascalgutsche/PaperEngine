@@ -6,7 +6,7 @@
 
 namespace Paper
 {
-	class AssetManager
+	class AssetManager : public ShrCounted
 	{
 	public:
 		AssetManager() = default;
@@ -14,9 +14,8 @@ namespace Paper
 
 		virtual AssetType GetAssetType(AssetHandle handle) = 0;
 		virtual const AssetMetadata& GetMetadata(AssetHandle handle) = 0;
+		virtual const AssetMetadata& GetMetadata(const std::filesystem::path& path) = 0;
 		virtual Ref<Asset> GetAsset(AssetHandle handle) = 0;
-
-
 
 	};
 }

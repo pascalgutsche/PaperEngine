@@ -13,7 +13,10 @@ namespace Paper
 		~EditorAssetManager() override = default;
 
 		AssetType GetAssetType(AssetHandle handle) override;
-		Ref<Asset> GetAsset(AssetHandle) override;
+		Ref<Asset> GetAsset(AssetHandle handle) override;
+
+		const AssetMetadata& GetMetadata(AssetHandle handle) override;
+		const AssetMetadata& GetMetadata(const std::filesystem::path& path) override;
 
 		AssetHandle AddAsset(const std::filesystem::path& path);
 		bool RemoveAsset(const std::filesystem::path& path);
