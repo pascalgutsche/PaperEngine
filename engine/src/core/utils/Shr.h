@@ -12,16 +12,18 @@ namespace Paper
 		virtual ~ShrCounted() = default;
 
 		uint32_t GetShrCount() const { return shrCount.load(); }
-	private:
+
 		void IncCount()
 		{
 			++shrCount;
-		};
+		}
+
 		void DecCount()
 		{
 			--shrCount;
-		};
+		}
 
+	private:
 		std::atomic<uint32_t> shrCount;
 	};
 
