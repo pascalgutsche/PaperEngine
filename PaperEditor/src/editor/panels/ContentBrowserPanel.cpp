@@ -161,6 +161,8 @@ namespace PaperED
 					ChangeDir(item.As<ContentBrowserDir>()->GetDirInfo());
 					break;
 				}
+
+
 			}
 
 			if (ImGui::TableGetColumnIndex() >= columnCount)
