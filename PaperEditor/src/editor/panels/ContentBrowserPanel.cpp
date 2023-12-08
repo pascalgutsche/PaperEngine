@@ -10,7 +10,7 @@
 
 namespace PaperED
 {
-	constexpr int panelWidth = 128;
+	constexpr int panelWidth = 128 + (2 * 5); //padding left-right 5px
 	
 	// ===========================================
 	//	ContentBrowserItem
@@ -21,8 +21,10 @@ namespace PaperED
 	{
 	}
 
-	void ContentBrowserItem::Render() const
+	CBActionResult ContentBrowserItem::Render() const
 	{
+		CBActionResult result;
+
 		const float thumbnailSize = 128.0f;
 
 		const float textLineHeight = ImGui::GetTextLineHeightWithSpacing();
@@ -62,6 +64,15 @@ namespace PaperED
 			ImVec4(0.8f, 0.8f, 0.8f, 1.0f),
 			ImVec4(1.0f, 0.8f, 0.8f, 1.0f), ImRect(topLeft, bottomRight));
 
+		if (ImGui::IsItemHovered())
+		{
+			result.Set(ActionResult::Hovered, true);
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+				result.Set(ActionResult::Activated, true);
+			else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				result.Set(ActionResult::Selected, true);
+		}
+
 		//draw infobox
 		ImVec2 screen = ImGui::GetCursorScreenPos();
 		//LOG_DEBUG("InfoTopLeft: {}, {}; Cursor: {} {}", infoTopLeft.x, infoTopLeft.y, cursor.x, cursor.y);
@@ -90,6 +101,8 @@ namespace PaperED
 		*/
 
 		ImGui::EndGroup();
+
+		return result;
 	}
 
 	// ===========================================
@@ -137,9 +150,18 @@ namespace PaperED
 
 		int columnCount = BeginTable();
 
-		for (const auto item : currentItemList)
+		for (const auto& item : currentItemList)
 		{
-			item->Render();
+			CBActionResult result = item->Render();
+
+			if (result.IsSet(ActionResult::Activated))
+			{
+				if (item->GetItemType() == ContentBrowserItem::ItemType::Directory)
+				{
+					ChangeDir(item.As<ContentBrowserDir>()->GetDirInfo());
+					break;
+				}
+			}
 
 			if (ImGui::TableGetColumnIndex() >= columnCount)
 			{
@@ -171,7 +193,7 @@ namespace PaperED
 		if (columnCount < 1)
 			columnCount = 1;
 		ImGui::Text(std::to_string(columnCount).c_str());
-		ImGui::BeginTable("##contentbrowser", columnCount, 0, ImVec2(columnCount * panelWidth + 2, 0));
+		ImGui::BeginTable("##contentbrowser", columnCount, 0, ImVec2(columnCount * panelWidth, 0));
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
 
@@ -209,8 +231,13 @@ namespace PaperED
 			}
 		
 			const AssetMetadata& metadata = Project::GetEditorAssetManager()->GetMetadata(entry.path());
-		
-			dirInfo->assets.push_back(metadata.handle);
+			if (!metadata.IsValid())
+			{
+				AssetHandle handle = Project::GetEditorAssetManager()->AddAsset(entry.path());
+				dirInfo->assets.push_back(handle);
+			}
+			else
+				dirInfo->assets.push_back(metadata.handle);
 		}
 		
 		directories[dirInfo->handle] = dirInfo;

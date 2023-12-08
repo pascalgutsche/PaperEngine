@@ -4,6 +4,31 @@
 
 namespace PaperED
 {
+	enum class ActionResult
+	{
+		None		= 0,
+		Activated	= BIT(0),
+		Selected	= BIT(1),
+		Hovered		= BIT(2),
+	};
+
+	struct CBActionResult
+	{
+		uint32_t flags = (uint32_t)ActionResult::None;
+
+		void Set(ActionResult flag, bool value)
+		{
+			if (value)
+				flags |= (uint32_t)flag;
+			else
+				flags &= ~(uint32_t)flag;
+		}
+
+		bool IsSet(ActionResult flag) const
+		{
+			return flags & (uint32_t)flag;
+		}
+	};
 
 	class ContentBrowserItem : public ShrCounted
 	{
@@ -17,7 +42,7 @@ namespace PaperED
 		ContentBrowserItem(ItemType type, AssetHandle handle, std::string name, Ref<Texture> icon);
 		virtual ~ContentBrowserItem() = default;
 
-		void Render() const;
+		CBActionResult Render() const;
 
 		ItemType GetItemType() const { return itemType; }
 		AssetHandle GetAssetHandle() const { return itemID; }
@@ -48,6 +73,8 @@ namespace PaperED
 	public:
 		ContentBrowserDir(const Shr<DirectoryInfo>& dirInfo);
 		~ContentBrowserDir() override = default;
+
+		const Shr<DirectoryInfo>& GetDirInfo() const { return dirInfo; }
 
 	private:
 		Shr<DirectoryInfo> dirInfo;

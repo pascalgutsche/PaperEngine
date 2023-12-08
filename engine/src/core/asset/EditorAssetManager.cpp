@@ -3,6 +3,7 @@
 #include "EditorAssetManager.h"
 
 #include "project/Project.h"
+#include "utils/FileSystem.h"
 
 namespace Paper
 {
@@ -55,11 +56,45 @@ namespace Paper
 
 	AssetHandle EditorAssetManager::AddAsset(const std::filesystem::path& path)
 	{
-		return AssetHandle();
+		const AssetMetadata& metadata = GetMetadata(path);
+		if (metadata.IsValid())
+			return metadata.handle;
+
+		if (FileSystem::Exists(path))
+		{
+			AssetType type = GetAssetTypeFromExtension(path.extension().string());
+			if (type == AssetType::None)
+				return 0;
+			AssetMetadata newMetadata;
+			newMetadata.filePath = path;
+			newMetadata.handle = AssetHandle();
+			newMetadata.type = type;
+
+			assetRegistry[newMetadata.handle] = newMetadata;
+			return newMetadata.handle;
+		}
+		return 0;
 	}
 
 	bool EditorAssetManager::RemoveAsset(const std::filesystem::path& path)
 	{
+		for (const auto [assetHandle, assetMetadata] : assetRegistry)
+		{
+			if (assetMetadata.filePath == path)
+			{
+				assetRegistry.erase(assetHandle);
+				return true;
+			}
+		}
 		return false;
+	}
+
+	bool EditorAssetManager::RemoveAsset(AssetHandle handle)
+	{
+		if (!assetRegistry.contains(handle))
+			return false;
+
+		assetRegistry.erase(handle);
+		return true;
 	}
 }

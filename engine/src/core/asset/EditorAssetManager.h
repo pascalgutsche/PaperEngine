@@ -20,6 +20,7 @@ namespace Paper
 
 		AssetHandle AddAsset(const std::filesystem::path& path);
 		bool RemoveAsset(const std::filesystem::path& path);
+		bool RemoveAsset(AssetHandle handle);
 
 	private:
 		std::unordered_map<AssetHandle, AssetMetadata> assetRegistry;
