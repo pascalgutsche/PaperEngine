@@ -152,6 +152,8 @@ namespace PaperED
 
 
 	private:
+		void RenderHeader();
+
 		int BeginTable();
 		void EndTable();
 

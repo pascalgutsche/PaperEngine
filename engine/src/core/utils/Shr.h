@@ -138,6 +138,16 @@ namespace Paper
 		T& operator*() { return *instance; }
 		const T& operator*() const { return *instance; }
 
+		bool operator==(const Shr<T>& other) const
+		{
+			return instance == other.instance;
+		}
+
+		bool operator!=(const Shr<T>& other) const
+		{
+			return !(*this == other);
+		}
+
 
 		template <typename... TArgs>
 		static Shr<T> Create(TArgs&&... args)

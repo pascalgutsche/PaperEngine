@@ -148,6 +148,9 @@ namespace PaperED
 			return;
 		}
 
+		//Header
+		RenderHeader();
+
 		int columnCount = BeginTable();
 
 		for (const auto& item : currentItemList)
@@ -187,6 +190,65 @@ namespace PaperED
 		
 		ChangeDir(baseDirInfo);
 
+	}
+
+	void ContentBrowserPanel::RenderHeader()
+	{
+		float height = 26;
+		auto contenBrowserButton = [height](const char* labelId, const Ref<Texture>& icon)
+		{
+			const float iconSize = std::min(24.0f, height);
+			const bool clicked = UI::ImageButton(icon, ImVec2(iconSize, iconSize));
+
+			return clicked;
+		};
+
+		if (contenBrowserButton("##back", DataPool::GetTexture("resources/editor/contentbrowser/back.png", true)))
+		{
+			
+		};
+
+		ImGui::SameLine();
+
+		if (contenBrowserButton("##prev", DataPool::GetTexture("resources/editor/contentbrowser/forward.png", true)))
+		{
+
+		};
+
+		std::vector<Shr<DirectoryInfo>> pathDirInfo;
+
+		Shr<DirectoryInfo> temp = currentDirInfo;
+		while (temp && temp->parent != nullptr)
+		{
+			pathDirInfo.push_back(temp);
+			temp = temp->parent;
+		}
+
+		std::reverse(pathDirInfo.begin(), pathDirInfo.end());
+
+		std::string assetDirName = project->GetConfig().assetPath.string();
+		ImVec2 textSize = ImGui::CalcTextSize(assetDirName.c_str());
+
+		ImGui::SameLine();
+		if (ImGui::Selectable(assetDirName.c_str(), false, 0, textSize))
+		{
+			ChangeDir(baseDirInfo);
+		}
+
+		for (auto& dir : pathDirInfo)
+		{
+			ImGui::SameLine();
+			ImGui::Text("/");
+			ImGui::SameLine();
+
+			std::string folderName = dir->path.filename().string();
+			ImVec2 textSize = ImGui::CalcTextSize(folderName.c_str());
+
+			if (ImGui::Selectable(folderName.c_str(), false, 0, textSize))
+			{
+				ChangeDir(dir);
+			}
+		}
 	}
 
 	int ContentBrowserPanel::BeginTable()
