@@ -49,6 +49,8 @@ namespace PaperED
 		const std::string& GetName() { return itemName; }
 		const Ref<Texture>& GetIcon() { return itemIcon; }
 
+		bool operator<(const ContentBrowserItem& other) const;
+
 	protected:
 		ItemType itemType;
 		AssetHandle itemID;
@@ -73,7 +75,7 @@ namespace PaperED
 	public:
 		ContentBrowserDir(const Shr<DirectoryInfo>& dirInfo);
 		~ContentBrowserDir() override = default;
-
+		
 		const Shr<DirectoryInfo>& GetDirInfo() const { return dirInfo; }
 
 	private:
@@ -93,6 +95,14 @@ namespace PaperED
 
 	struct ContentBrowserItemList
 	{
+		struct less_than_key
+		{
+			inline bool operator() (const Shr<ContentBrowserItem>& item1, const Shr<ContentBrowserItem>& item2) const
+			{
+				return *item1 < *item2;
+			}
+		};
+
 		const static size_t InvalidItem = std::numeric_limits<size_t>::max();
 
 		std::vector<Shr<ContentBrowserItem>> items;
@@ -151,6 +161,9 @@ namespace PaperED
 		void OnProjectChanged(const Ref<Project>& project) override;
 
 
+		Shr<DirectoryInfo> GetDirInfo(AssetHandle handle);
+		Shr<DirectoryInfo> GetDirInfo(const std::filesystem::path& path);
+
 	private:
 		void RenderHeader();
 
@@ -159,9 +172,19 @@ namespace PaperED
 
 		AssetHandle ProcessDir(const std::filesystem::path& path, const Shr<DirectoryInfo>& parent);
 
+		void SetDir(const Shr<DirectoryInfo>& directoryInfo);
+
 		void ChangeDir(const Shr<DirectoryInfo>& directoryInfo);
 
+		void BackDir();
+		void ForwardDir();
+
+		void Refresh();
+		void RefreshHistory(std::vector<Shr<DirectoryInfo>>& stack);
+
 		Ref<Project> project;
+
+		std::string searchbuffer = "";
 
 		std::unordered_map<AssetHandle, Shr<DirectoryInfo>> directories;
 
@@ -169,8 +192,8 @@ namespace PaperED
 
 		Shr<DirectoryInfo> baseDirInfo;
 		Shr<DirectoryInfo> currentDirInfo;
-		Shr<DirectoryInfo> nextDirInfo;
-		Shr<DirectoryInfo> prevDirInfo;
+		std::vector<Shr<DirectoryInfo>> nextDirInfoStack;
+		std::vector<Shr<DirectoryInfo>> prevDirInfoStack;
 	};
 }
 

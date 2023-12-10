@@ -148,7 +148,6 @@ namespace Paper
 			return !(*this == other);
 		}
 
-
 		template <typename... TArgs>
 		static Shr<T> Create(TArgs&&... args)
 		{

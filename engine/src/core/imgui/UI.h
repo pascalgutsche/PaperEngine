@@ -47,6 +47,13 @@ namespace Paper::UI
 		return modified;
 	}
 
+	inline void Image(const Ref<Texture>& texture, ImVec2 size = ImVec2(0, 0))
+	{
+		CORE_ASSERT(texture, "");
+		ImGui::Image((void*)texture->GetID(), size, { 0, 1 }, { 1, 0 });
+		UI::DrawItemActivityOutline();
+	}
+
 	inline bool CheckBox(const std::string& name, bool& val)
 	{
 		const bool modified = ImGui::Checkbox(name.c_str(), &val);
@@ -97,7 +104,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool StringControl(std::string name, std::string& val, ControlSettings<std::string> settings)
+	inline bool StringControl(std::string name, std::string& val, ControlSettings<std::string> settings = ControlSettings<std::string>())
 	{
 		const bool modified = ImGui::InputText(name.c_str(), &val, settings.flags);
 		UI::DrawItemActivityOutline();

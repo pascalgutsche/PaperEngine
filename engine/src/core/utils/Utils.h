@@ -43,5 +43,12 @@ namespace Paper {
             return string;
         }
 
+        template <typename T>
+        auto TopAndPop(T& stack) {
+            auto v = std::move(stack.back());
+            stack.erase(stack.end() - 1);
+            return v;
+        }
+
 	}
 }

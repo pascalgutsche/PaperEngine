@@ -19,6 +19,7 @@ namespace PaperED
 	ContentBrowserItem::ContentBrowserItem(ItemType type, AssetHandle handle, std::string name, Ref<Texture> icon)
 		: itemType(type), itemID(handle), itemName(name), itemIcon(icon)
 	{
+		
 	}
 
 	CBActionResult ContentBrowserItem::Render() const
@@ -105,6 +106,37 @@ namespace PaperED
 		return result;
 	}
 
+	bool ContentBrowserItem::operator<(const ContentBrowserItem& other) const
+	{
+		std::string thisName = itemName;
+		std::string otherName = other.itemName;
+
+		ASSERT(itemName.size(), "");
+		ASSERT(other.itemName.size(), "");
+		LOG_DEBUG("sorting");
+		int index = 0;
+		while ((thisName[index] == otherName[index]))
+		{
+			index++;
+
+			if (index < thisName.size())
+			{
+				LOG_DEBUG("sorting1");
+				return true;
+			}
+			if (index < otherName.size())
+			{
+				LOG_DEBUG("sorting2");
+				return false;
+			}
+		}
+		//if (index < )
+
+		LOG_DEBUG("sorting3");
+
+		return false;
+	}
+
 	// ===========================================
 	//	ContentBrowserDir
 	// ===========================================
@@ -139,6 +171,8 @@ namespace PaperED
 	ContentBrowserPanel::ContentBrowserPanel()
 	{
 	}
+
+	//Render shit
 
 	void ContentBrowserPanel::OnImGuiRender(bool& isOpen)
 	{
@@ -180,43 +214,79 @@ namespace PaperED
 		EndTable();
 
 		ImGui::End();
+
+#if 0
+		ImGui::Begin("dirStack");
+
+		std::stack tempPrevStack(prevDirInfoStack);
+		std::stack tempNextStack(nextDirInfoStack);
+
+		ImGui::BeginTable("##stack_table", 2, ImGuiTableFlags_Borders);
+		ImGui::TableNextRow();
+		ImGui::TableNextColumn();
+
+		while (tempPrevStack.size() > 0)
+		{
+			std::string dir = tempPrevStack.top()->path.filename().string();
+			if (dir.empty())
+				dir = "assets";
+			ImGui::Text(dir.c_str());
+			tempPrevStack.pop();
+		}
+
+		ImGui::TableNextColumn();
+
+		while (tempNextStack.size() > 0)
+		{
+			std::string dir = tempNextStack.top()->path.filename().string();
+			if (dir.empty())
+				dir = "assets";
+			ImGui::Text(dir.c_str());
+			tempNextStack.pop();
+		}
+
+		ImGui::EndTable();
+
+		ImGui::End();
+#endif
 	}
 
-	void ContentBrowserPanel::OnProjectChanged(const Ref<Project>& project)
-	{
-		this->project = project;
-		AssetHandle baseDirHandle = ProcessDir(project->GetAssetPath(), nullptr);
-		baseDirInfo = directories[baseDirHandle];
-		
-		ChangeDir(baseDirInfo);
-
-	}
+	
 
 	void ContentBrowserPanel::RenderHeader()
 	{
 		float height = 26;
-		auto contenBrowserButton = [height](const char* labelId, const Ref<Texture>& icon)
+		auto contenBrowserButton = [](const char* labelId, const Ref<Texture>& icon, float iconSize, bool disabled = false)
 		{
-			const float iconSize = std::min(24.0f, height);
+			ImGui::BeginDisabled(disabled);
 			const bool clicked = UI::ImageButton(icon, ImVec2(iconSize, iconSize));
-
+			ImGui::EndDisabled();
 			return clicked;
 		};
 
-		if (contenBrowserButton("##back", DataPool::GetTexture("resources/editor/contentbrowser/back.png", true)))
+		const float iconSize = std::min(24.0f, height);
+
+		if (contenBrowserButton("##back", DataPool::GetTexture("resources/editor/contentbrowser/back.png", true), iconSize, prevDirInfoStack.empty()))
 		{
-			
+			BackDir();
 		};
 
 		ImGui::SameLine();
 
-		if (contenBrowserButton("##prev", DataPool::GetTexture("resources/editor/contentbrowser/forward.png", true)))
+		if (contenBrowserButton("##prev", DataPool::GetTexture("resources/editor/contentbrowser/forward.png", true), iconSize, nextDirInfoStack.empty()))
 		{
-
+			ForwardDir();
 		};
 
-		std::vector<Shr<DirectoryInfo>> pathDirInfo;
+		ImGui::SameLine();
 
+		if (contenBrowserButton("##parent", DataPool::GetTexture("resources/editor/contentbrowser/up.png", true), iconSize, !currentDirInfo->parent))
+		{
+			ChangeDir(currentDirInfo->parent);
+		};
+
+		//path display
+		std::vector<Shr<DirectoryInfo>> pathDirInfo;
 		Shr<DirectoryInfo> temp = currentDirInfo;
 		while (temp && temp->parent != nullptr)
 		{
@@ -249,25 +319,59 @@ namespace PaperED
 				ChangeDir(dir);
 			}
 		}
+
+		//search
+		const float searchIconWidth = iconSize;
+		const float searchWidgetWidth = 250.0f;
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x - searchWidgetWidth - 2.0f - searchIconWidth - 5.0f - iconSize);
+		ImGui::Image((void*)DataPool::GetTexture("resources/editor/contentbrowser/search.png", true)->GetID(), ImVec2(searchIconWidth, searchIconWidth), ImVec2(0, 1), ImVec2(1, 0));
+
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x - searchWidgetWidth - iconSize - 5.0f); // 5.0f = padding
+		ImGui::SetNextItemWidth(searchWidgetWidth);
+		UI::StringControl("##search", searchbuffer);
+
+		//refresh
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x - iconSize);
+
+		if (contenBrowserButton("##reload", DataPool::GetTexture("resources/editor/contentbrowser/reload.png", true), iconSize))
+		{
+			Refresh();
+		};
+
+
 	}
 
-	int ContentBrowserPanel::BeginTable()
+	//utilities overrides
+
+	void ContentBrowserPanel::OnProjectChanged(const Ref<Project>& project)
 	{
-		int columnCount = ImGui::GetContentRegionAvail().x / panelWidth;
-		if (columnCount < 1)
-			columnCount = 1;
-		ImGui::Text(std::to_string(columnCount).c_str());
-		ImGui::BeginTable("##contentbrowser", columnCount, 0, ImVec2(columnCount * panelWidth, 0));
-		ImGui::TableNextRow();
-		ImGui::TableNextColumn();
+		this->project = project;
+		directories.clear();
+		AssetHandle baseDirHandle = ProcessDir(project->GetAssetPath(), nullptr);
+		baseDirInfo = directories[baseDirHandle];
 
-		return columnCount;
+		SetDir(baseDirInfo);
+
 	}
 
-	void ContentBrowserPanel::EndTable()
+	Shr<DirectoryInfo> ContentBrowserPanel::GetDirInfo(AssetHandle handle)
 	{
-		ImGui::EndTable();
+		if (!directories.contains(handle))
+			return nullptr;
+		return directories[handle];
 	}
+
+	Shr<DirectoryInfo> ContentBrowserPanel::GetDirInfo(const std::filesystem::path& path)
+	{
+		for (Shr<DirectoryInfo> dir : directories | std::views::values)
+		{
+			if (dir->path == path)
+				return dir;
+		}
+		return nullptr;
+	}
+
+	//Directory shit
 
 	AssetHandle ContentBrowserPanel::ProcessDir(const std::filesystem::path& path, const Shr<DirectoryInfo>& parent)
 	{
@@ -309,7 +413,7 @@ namespace PaperED
 		return dirInfo->handle;
 	}
 
-	void ContentBrowserPanel::ChangeDir(const Shr<DirectoryInfo>& directoryInfo)
+	void ContentBrowserPanel::SetDir(const Shr<DirectoryInfo>& directoryInfo)
 	{
 		if (!directoryInfo)
 			return;
@@ -328,6 +432,99 @@ namespace PaperED
 			currentItemList.items.push_back(Shr<ContentBrowserAsset>::Create(metadata, DataPool::GetTexture("file_icon.png")));
 		}
 		
+		//std::sort(currentItemList.begin(), currentItemList.end(), ContentBrowserItemList::less_than_key());
+
+		
+
 		currentDirInfo = directoryInfo;
 	}
+
+	void ContentBrowserPanel::ChangeDir(const Shr<DirectoryInfo>& directoryInfo)
+	{
+		prevDirInfoStack.push_back(currentDirInfo);
+		SetDir(directoryInfo);
+	}
+
+	void ContentBrowserPanel::BackDir()
+	{
+		if (prevDirInfoStack.empty())
+			return;
+		if (nextDirInfoStack.empty() || currentDirInfo != nextDirInfoStack.back())
+			nextDirInfoStack.push_back(currentDirInfo);
+		SetDir(Utils::TopAndPop(prevDirInfoStack));
+	}
+
+	void ContentBrowserPanel::ForwardDir()
+	{
+		if (nextDirInfoStack.empty())
+			return;
+		if (prevDirInfoStack.empty() || currentDirInfo != prevDirInfoStack.back())
+			prevDirInfoStack.push_back(currentDirInfo);
+		SetDir(Utils::TopAndPop(nextDirInfoStack));
+	}
+
+	void ContentBrowserPanel::Refresh()
+	{
+		currentItemList.Clear();
+		directories.clear();
+
+		Shr<DirectoryInfo> tempCurrentDir = currentDirInfo;
+		AssetHandle newBaseDirHandle = ProcessDir(Project::GetAssetPath(), nullptr);
+		baseDirInfo = directories[newBaseDirHandle];
+
+		//if directory was removed choose the next parent that exists -> until baseDir
+		currentDirInfo = nullptr;
+		while (currentDirInfo == nullptr)
+		{
+			currentDirInfo = GetDirInfo(tempCurrentDir->path);
+			tempCurrentDir = tempCurrentDir->parent;
+			if (!tempCurrentDir)
+				break;
+		}
+		if (!currentDirInfo)
+			currentDirInfo = baseDirInfo;
+
+		//refresh history
+		RefreshHistory(prevDirInfoStack);
+		RefreshHistory(nextDirInfoStack);
+
+		SetDir(currentDirInfo);
+	}
+
+	void ContentBrowserPanel::RefreshHistory(std::vector<Shr<DirectoryInfo>>& stack)
+	{
+		for (int i = 0; i < stack.size(); i++)
+		{
+			Shr<DirectoryInfo> newDirInfo = GetDirInfo(stack[i]->path);
+			if (!newDirInfo)
+			{
+				stack.erase(stack.begin() + i);
+				i--;
+				continue;
+			}
+			stack[i] = newDirInfo;
+		}
+	}
+
+
+	//Table shit
+
+	int ContentBrowserPanel::BeginTable()
+	{
+		int columnCount = ImGui::GetContentRegionAvail().x / panelWidth;
+		if (columnCount < 1)
+			columnCount = 1;
+		//ImGui::Text(std::to_string(columnCount).c_str());
+		ImGui::BeginTable("##contentbrowser", columnCount, 0, ImVec2(columnCount * panelWidth, 0));
+		ImGui::TableNextRow();
+		ImGui::TableNextColumn();
+
+		return columnCount;
+	}
+
+	void ContentBrowserPanel::EndTable()
+	{
+		ImGui::EndTable();
+	}
+	
 }
