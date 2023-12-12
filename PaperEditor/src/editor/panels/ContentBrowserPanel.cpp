@@ -328,7 +328,10 @@ namespace PaperED
 
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x - searchWidgetWidth - iconSize - 5.0f); // 5.0f = padding
 		ImGui::SetNextItemWidth(searchWidgetWidth);
-		UI::StringControl("##search", searchbuffer);
+		if (UI::StringControl("##search", searchbuffer))
+		{
+			SetDir(currentDirInfo);
+		};
 
 		//refresh
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x - iconSize);
@@ -431,8 +434,33 @@ namespace PaperED
 		
 			currentItemList.items.push_back(Shr<ContentBrowserAsset>::Create(metadata, DataPool::GetTexture("file_icon.png")));
 		}
-		
-		//std::sort(currentItemList.begin(), currentItemList.end(), ContentBrowserItemList::less_than_key());
+
+		if (!searchbuffer.empty())
+		{
+			std::vector<AssetHandle> handlesToRemove;
+			for (size_t i = 0; i < currentItemList.items.size(); i++)
+			{
+				std::string name = Utils::ToLower(currentItemList.items[i]->GetName());
+				size_t index = name.find(Utils::ToLower(searchbuffer));
+				LOG_DEBUG("{}: {}", currentItemList.items[i]->GetName(), index);
+				if (index == std::string::npos)
+				{
+					handlesToRemove.push_back(currentItemList[i]->GetAssetHandle());
+				}
+			}
+			for (AssetHandle handle : handlesToRemove)
+			{
+				currentItemList.Erase(handle);
+			}
+			LOG_DEBUG("");
+		}
+
+		std::sort(currentItemList.begin(), currentItemList.end(), [](const Shr<ContentBrowserItem>& item1, const Shr<ContentBrowserItem>& item2)
+		{
+			if (item1->GetItemType() != item2->GetItemType())
+				return item1->GetItemType() == ContentBrowserItem::ItemType::Directory;
+			return (strcmp(item1->GetName().c_str(), item2->GetName().c_str()) < 0);
+		});
 
 		
 

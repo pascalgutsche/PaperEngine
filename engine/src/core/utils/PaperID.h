@@ -30,12 +30,12 @@ namespace Paper
 			return ss.str();
 		}
 
-		bool operator==(const PaperID& other)
+		bool operator==(const PaperID& other) const
 		{
-			return uuid = other.uuid;
+			return uuid == other.uuid;
 		}
 
-		bool operator!=(const PaperID& other)
+		bool operator!=(const PaperID& other) const
 		{
 			return !(*this == other);
 		}

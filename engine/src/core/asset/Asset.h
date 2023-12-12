@@ -22,7 +22,7 @@ namespace Paper
 
 		std::filesystem::path filePath;
 
-		bool IsValid() const { return handle != 0; }
+		bool IsValid() const { return handle != AssetHandle(0); }
 	};
 
 	class Asset

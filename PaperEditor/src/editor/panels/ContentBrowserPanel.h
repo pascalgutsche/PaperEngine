@@ -46,8 +46,8 @@ namespace PaperED
 
 		ItemType GetItemType() const { return itemType; }
 		AssetHandle GetAssetHandle() const { return itemID; }
-		const std::string& GetName() { return itemName; }
-		const Ref<Texture>& GetIcon() { return itemIcon; }
+		const std::string& GetName() const { return itemName; }
+		const Ref<Texture>& GetIcon() const { return itemIcon; }
 
 		bool operator<(const ContentBrowserItem& other) const;
 
@@ -142,7 +142,7 @@ namespace PaperED
 			if (items.empty())
 				return InvalidItem;
 
-			for (int i = 0; i < items.size(); i++)
+			for (size_t i = 0; i < items.size(); i++)
 			{
 				if (items[i]->GetAssetHandle() == handle)
 					return i;
