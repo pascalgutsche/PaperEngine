@@ -27,6 +27,7 @@ namespace Colors
         constexpr auto niceBlue = IM_COL32(83, 232, 254, 255);
         constexpr auto compliment = IM_COL32(78, 151, 166, 255);
         constexpr auto background = IM_COL32(36, 36, 36, 255);
+        constexpr auto backgroundLight = IM_COL32(56, 56, 56, 255);
         constexpr auto backgroundDark = IM_COL32(26, 26, 26, 255);
         constexpr auto titlebar = IM_COL32(21, 21, 21, 255);
         constexpr auto propertyField = IM_COL32(15, 15, 15, 255);

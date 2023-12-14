@@ -12,7 +12,7 @@
 
 #include <ImGuizmo/ImGuizmo.h>
 
-
+#include "ImGuiFont.h"
 
 
 namespace Paper {
@@ -160,20 +160,63 @@ namespace Paper {
 		
 		/// 
 		//ImGui::StyleColorsClassic();
-		
 
-		//fonts
-		ImFontAtlas* fontAtlas = io.Fonts;
-		ImFontConfig fontConfig = ImFontConfig();
-
-		//set default range (uft-8)
-		fontConfig.GlyphRanges = fontAtlas->GetGlyphRangesDefault();
-
-		fontAtlas->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 22, &fontConfig);
-
-		//any new fonts were added to the font pool
-		fontConfig.MergeMode = true;
-
+		{
+			FontConfig config;
+			config.fontName = "Bold";
+			config.filePath = "resources/fonts/Roboto/Roboto-Bold.ttf";
+			config.fontSize = 18.0f;
+			ImGuiFont::Add(config);
+		}
+		{
+			FontConfig config;
+			config.fontName = "Large";
+			config.filePath = "resources/fonts/Roboto/Roboto-Regular.ttf";
+			config.fontSize = 24.0f;
+			ImGuiFont::Add(config);
+		}
+		{
+			FontConfig config;
+			config.fontName = "Default";
+			config.filePath = "resources/fonts/Roboto/Roboto-SemiMedium.ttf";
+			config.fontSize = 20.0f;
+			ImGuiFont::Add(config, true);
+		}
+		{
+			FontConfig config;
+			config.fontName = "Medium";
+			config.filePath = "resources/fonts/Roboto/Roboto-SemiMedium.ttf";
+			config.fontSize = 18.0f;
+			ImGuiFont::Add(config);
+		}
+		{
+			FontConfig config;
+			config.fontName = "Small";
+			config.filePath = "resources/fonts/Roboto/Roboto-SemiMedium.ttf";
+			config.fontSize = 16.0f;
+			ImGuiFont::Add(config);
+		}
+		{
+			FontConfig config;
+			config.fontName = "ExtraSmall";
+			config.filePath = "resources/fonts/Roboto/Roboto-SemiMedium.ttf";
+			config.fontSize = 12.0f;
+			ImGuiFont::Add(config);
+		}
+		{
+			FontConfig config;
+			config.fontName = "ExtraSmall2";
+			config.filePath = "resources/fonts/Roboto/Roboto-SemiMedium.ttf";
+			config.fontSize = 10.0f;
+			ImGuiFont::Add(config);
+		}
+		{
+			FontConfig config;
+			config.fontName = "BoldTitle";
+			config.filePath = "resources/fonts/Roboto/Roboto-Bold.ttf";
+			config.fontSize = 16.0f;
+			ImGuiFont::Add(config);
+		}
 
 		//init backend
 		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)Application::GetWindow()->GetNativeWindow(), true);

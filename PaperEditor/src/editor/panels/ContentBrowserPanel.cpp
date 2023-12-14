@@ -1,6 +1,7 @@
 ﻿#include "Editor.h"
 #include "ContentBrowserPanel.h"
 
+#include "imgui/ImGuiFont.h"
 #include "project/Project.h"
 #include "renderer/Font.h"
 
@@ -29,7 +30,7 @@ namespace PaperED
 		const float thumbnailSize = 128.0f;
 
 		const float textLineHeight = ImGui::GetTextLineHeightWithSpacing();
-		const float infoPanelHeight = textLineHeight * 1.8f;
+		const float infoPanelHeight = textLineHeight * 2.8f;
 
 		ImVec2 topLeft = ImGui::GetCursorScreenPos();
 		ImVec2 thumbnailBottomRight = { topLeft.x + thumbnailSize, topLeft.y + thumbnailSize };
@@ -55,7 +56,8 @@ namespace PaperED
 		if (itemType == ItemType::Asset)
 		{
 			drawShadow(topLeft, bottomRight, false);
-			drawList->AddRectFilled(topLeft, bottomRight, Colors::Theme::background, 6.0f, ImDrawFlags_RoundCornersAll);
+			drawList->AddRectFilled(topLeft, thumbnailBottomRight, Colors::Theme::background, 6.0f, ImDrawFlags_RoundCornersTop);
+			drawList->AddRectFilled(infoTopLeft, bottomRight, Colors::Theme::backgroundLight, 6.0f, ImDrawFlags_RoundCornersBottom);
 		}
 
 		//draw thumbnail
@@ -80,26 +82,53 @@ namespace PaperED
 
 		//ImGui::SetCursorPos(infoTopLeft);
 
-		UI::ShiftCursorY(-50);
+		UI::ShiftCursorY(-70);
 
 		float panelLength = bottomRight.x - topLeft.x;
 
-		float textLength = ImGui::CalcTextSize(itemName.c_str()).x;
+		float textLength = std::min(ImGui::CalcTextSize(itemName.c_str()).x, thumbnailSize - 4);
 
 		float textCoord = (panelLength / 2) - (textLength / 2);
 
+		std::string shortenedName = itemName;
+		if (itemName.size() > 24)
+		{
+			shortenedName = itemName.substr(0, 24) + " ...";
+		}
 
-		UI::ShiftCursorX(textCoord);
+		if (itemType == ItemType::Directory)
+			UI::ShiftCursorX(textCoord);
 
-		ImGui::Text(itemName.c_str());
+		UI::ShiftCursor(4.0f, 4.0f);
 
-		/* AssetText
-		std::string assetText = "SCENE";
-		ImVec2 assetTextLength = ImGui::CalcTextSize(assetText.c_str());
+		ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + (thumbnailSize - 4 * 3.0f));
 
-		ImGui::SetCursorScreenPos({ bottomRight.x - assetTextLength.x - 5, bottomRight.y - assetTextLength.y - 2 });
-		ImGui::Text(assetText.c_str());
-		*/
+		ImGui::Text(shortenedName.c_str());
+
+		ImGui::PopTextWrapPos();
+
+		
+		if (itemType == ItemType::Asset)
+		{
+			//ImGui::SetNextItemWidth(textLength);
+			
+
+			ImGuiFont::PushFont("Small");
+			const AssetMetadata& metadata = Project::GetEditorAssetManager()->GetMetadata(itemID);
+			if (metadata.IsValid())
+			{
+				std::string assetText = Utils::ConvertAssetTypeToString(metadata.type);
+
+				assetText = Utils::ToUpper(assetText);
+				ImVec2 assetTextLength = ImGui::CalcTextSize(assetText.c_str());
+
+				ImGui::SetCursorScreenPos({ bottomRight.x - assetTextLength.x - 5, bottomRight.y - assetTextLength.y - 2 });
+				ImGui::Text(assetText.c_str());
+			}
+			
+			ImGuiFont::PopFont();
+		}
+		//*/
 
 		ImGui::EndGroup();
 
@@ -159,7 +188,7 @@ namespace PaperED
 	ContentBrowserAsset::ContentBrowserAsset(AssetMetadata& metadata, Ref<Texture> icon)
 		: ContentBrowserItem(ItemType::Asset,
 			metadata.handle,
-			metadata.filePath.filename().string(),
+			metadata.filePath.filename().stem().string(),
 			icon)
 	{
 	}
