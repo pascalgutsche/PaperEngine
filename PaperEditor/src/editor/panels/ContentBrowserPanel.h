@@ -10,6 +10,12 @@ namespace PaperED
 		Activated	= BIT(0),
 		Selected	= BIT(1),
 		Hovered		= BIT(2),
+		Reload		= BIT(3),
+		Delete		= BIT(4),
+		Copy		= BIT(5),
+		Duplicate	= BIT(6),
+		ShowInExplorer	= BIT(7),
+		OpenExternally	= BIT(8),
 	};
 
 	struct CBActionResult
@@ -56,6 +62,11 @@ namespace PaperED
 		AssetHandle itemID;
 		std::string itemName;
 		Ref<Texture> itemIcon;
+
+	private:
+		void HandleItemActions(CBActionResult& result) const;
+		void RenderContextMenu(CBActionResult& result) const;
+		void RenderShadow(const ImVec2& topLeft, const ImVec2& bottomRight) const;
 	};
 
 	struct DirectoryInfo : public ShrCounted

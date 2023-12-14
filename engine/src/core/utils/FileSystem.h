@@ -17,6 +17,7 @@ namespace Paper
 		static bool Rename(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath);
 
 		static bool OpenExternal(const std::filesystem::path& filePath);
+		static bool ShowFileInExplorer(const std::filesystem::path& path);
 
 		static std::filesystem::path OpenFile(const std::initializer_list<FileSpecFilter>& filter = {}, const std::filesystem::path& defaultPath = "");
 		static std::filesystem::path OpenFolder(const std::filesystem::path& defaultPath = "");

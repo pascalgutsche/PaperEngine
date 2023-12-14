@@ -8,6 +8,7 @@
 #include "imgui/ImGuiLayer.h"
 #include "imgui/imgui_internal.h"
 #include "imgui/UI.h"
+#include "utils/FileSystem.h"
 
 namespace PaperED
 {
@@ -25,9 +26,11 @@ namespace PaperED
 
 	CBActionResult ContentBrowserItem::Render() const
 	{
+		ImGui::PushID(&itemID);
 		CBActionResult result;
 
 		const float thumbnailSize = 128.0f;
+		const float padding = 4.0f;
 
 		const float textLineHeight = ImGui::GetTextLineHeightWithSpacing();
 		const float infoPanelHeight = textLineHeight * 2.8f;
@@ -37,25 +40,14 @@ namespace PaperED
 		ImVec2 infoTopLeft = { topLeft.x, topLeft.y + thumbnailSize };
 		ImVec2 bottomRight = { topLeft.x + thumbnailSize, topLeft.y + thumbnailSize + infoPanelHeight};
 
-		ImVec2 cursor = ImGui::GetMousePos();
-
-		//LOG_DEBUG("TopLeft: {}, {}; BottomRight: {}, {}; Cursor: {} {}", topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, cursor.x, cursor.y);
-
-		auto drawShadow = [](const ImVec2& topLeft, const ImVec2& bottomRight, bool directory)
-		{
-			auto* drawList = ImGui::GetWindowDrawList();
-			const ImRect itemRect = UI::RectOffset(ImRect(topLeft, bottomRight), 1.0f, 1.0f);
-			drawList->AddRect(itemRect.Min, itemRect.Max, Colors::Theme::propertyField, 6.0f, directory ? 0 : ImDrawFlags_RoundCornersAll, 6.0f);
-		};
-
 		ImGui::BeginGroup();
-
 		
 		ImDrawList* drawList = ImGui::GetWindowDrawList();
-		//drawList->AddRectFilled(topLeft, bottomRight, Colors::Theme::backgroundDark);
+
+		// asset background
 		if (itemType == ItemType::Asset)
 		{
-			drawShadow(topLeft, bottomRight, false);
+			RenderShadow(topLeft, bottomRight);
 			drawList->AddRectFilled(topLeft, thumbnailBottomRight, Colors::Theme::background, 6.0f, ImDrawFlags_RoundCornersTop);
 			drawList->AddRectFilled(infoTopLeft, bottomRight, Colors::Theme::backgroundLight, 6.0f, ImDrawFlags_RoundCornersBottom);
 		}
@@ -67,28 +59,12 @@ namespace PaperED
 			ImVec4(0.8f, 0.8f, 0.8f, 1.0f),
 			ImVec4(1.0f, 0.8f, 0.8f, 1.0f), ImRect(topLeft, bottomRight));
 
-		if (ImGui::IsItemHovered())
-		{
-			result.Set(ActionResult::Hovered, true);
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-				result.Set(ActionResult::Activated, true);
-			else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				result.Set(ActionResult::Selected, true);
-		}
-
-		//draw infobox
-		ImVec2 screen = ImGui::GetCursorScreenPos();
-		//LOG_DEBUG("InfoTopLeft: {}, {}; Cursor: {} {}", infoTopLeft.x, infoTopLeft.y, cursor.x, cursor.y);
-
-		//ImGui::SetCursorPos(infoTopLeft);
 
 		UI::ShiftCursorY(-70);
 
-		float panelLength = bottomRight.x - topLeft.x;
-
-		float textLength = std::min(ImGui::CalcTextSize(itemName.c_str()).x, thumbnailSize - 4);
-
-		float textCoord = (panelLength / 2) - (textLength / 2);
+		float panelWidth = bottomRight.x - topLeft.x;
+		float textWidth = std::min(ImGui::CalcTextSize(itemName.c_str()).x, thumbnailSize - padding);
+		float textCoord = panelWidth / 2 - textWidth / 2;
 
 		std::string shortenedName = itemName;
 		if (itemName.size() > 24)
@@ -99,20 +75,15 @@ namespace PaperED
 		if (itemType == ItemType::Directory)
 			UI::ShiftCursorX(textCoord);
 
-		UI::ShiftCursor(4.0f, 4.0f);
+		UI::ShiftCursor(padding, padding);
 
 		ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + (thumbnailSize - 4 * 3.0f));
-
 		ImGui::Text(shortenedName.c_str());
-
 		ImGui::PopTextWrapPos();
 
 		
 		if (itemType == ItemType::Asset)
 		{
-			//ImGui::SetNextItemWidth(textLength);
-			
-
 			ImGuiFont::PushFont("Small");
 			const AssetMetadata& metadata = Project::GetEditorAssetManager()->GetMetadata(itemID);
 			if (metadata.IsValid())
@@ -128,9 +99,14 @@ namespace PaperED
 			
 			ImGuiFont::PopFont();
 		}
-		//*/
 
 		ImGui::EndGroup();
+
+		HandleItemActions(result);
+
+		RenderContextMenu(result);
+
+		ImGui::PopID();
 
 		return result;
 	}
@@ -164,6 +140,56 @@ namespace PaperED
 		LOG_DEBUG("sorting3");
 
 		return false;
+	}
+
+	void ContentBrowserItem::RenderShadow(const ImVec2& topLeft, const ImVec2& bottomRight) const
+	{
+		auto* drawList = ImGui::GetWindowDrawList();
+		const ImRect itemRect = UI::RectOffset(ImRect(topLeft, bottomRight), 1.0f, 1.0f);
+		drawList->AddRect(itemRect.Min, itemRect.Max, Colors::Theme::propertyField, 6.0f, ImDrawFlags_RoundCornersAll, 6.0f);
+	}
+
+	void ContentBrowserItem::HandleItemActions(CBActionResult& result) const
+	{
+		//actions
+		if (ImGui::IsItemHovered())
+		{
+			result.Set(ActionResult::Hovered, true);
+			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+				result.Set(ActionResult::Activated, true);
+			else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				result.Set(ActionResult::Selected, true);
+		}
+	}
+
+	void ContentBrowserItem::RenderContextMenu(CBActionResult& result) const
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4.0f, 4.0f));
+		if (ImGui::BeginPopupContextItem("CBItemContextMenu"))
+		{
+			if (ImGui::MenuItem("Reload"))
+				result.Set(ActionResult::Reload, true);
+
+			if (ImGui::MenuItem("Copy"))
+				result.Set(ActionResult::Copy, true);
+
+			if (ImGui::MenuItem("Duplicate"))
+				result.Set(ActionResult::Duplicate, true);
+
+			if (ImGui::MenuItem("Delete"))
+				result.Set(ActionResult::Delete, true);
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Show In Explorer"))
+				result.Set(ActionResult::ShowInExplorer, true);
+
+			if (ImGui::MenuItem("Open Externally"))
+				result.Set(ActionResult::OpenExternally, true);
+
+			ImGui::EndPopup();
+		}
+		ImGui::PopStyleVar();
 	}
 
 	// ===========================================
@@ -229,6 +255,14 @@ namespace PaperED
 				}
 
 
+			}
+
+			if (result.IsSet(ActionResult::ShowInExplorer))
+			{
+				if (item->GetItemType() == ContentBrowserItem::ItemType::Asset)
+					FileSystem::ShowFileInExplorer(Project::GetEditorAssetManager()->GetMetadata(item->GetAssetHandle()).filePath);
+				else
+					FileSystem::ShowFileInExplorer(Project::GetAssetPath() / currentDirInfo->path / item->GetName());
 			}
 
 			if (ImGui::TableGetColumnIndex() >= columnCount)

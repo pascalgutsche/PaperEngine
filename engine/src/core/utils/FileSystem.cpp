@@ -38,6 +38,18 @@ namespace Paper
 		return true;
 	}
 
+	bool FileSystem::ShowFileInExplorer(const std::filesystem::path& path)
+	{
+		auto absolutePath = std::filesystem::canonical(path);
+		if (!Exists(absolutePath))
+			return false;
+
+		std::string cmd = fmt::format("explorer.exe /select,\"{0}\"", absolutePath.string());
+
+		system(cmd.c_str());
+		return true;
+	}
+
 
 	std::filesystem::path FileSystem::OpenFile(const std::initializer_list<FileSpecFilter>& filter, const std::filesystem::path& defaultPath)
 	{
