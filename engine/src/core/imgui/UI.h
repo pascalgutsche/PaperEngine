@@ -32,6 +32,36 @@ namespace Paper::UI
 		return modified;
 	}
 
+	//BUTTONS
+
+	inline void ImageEffects(const Ref<Texture>& image, ImRect imageArea, ImVec4 tintNormal, ImVec4 tintHovered, ImVec4 tintPressed, ImRect effectArea = ImRect())
+	{
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+		if (effectArea.GetWidth() == 0.0f)
+		{
+			effectArea.Min.x = imageArea.Min.x;
+			effectArea.Max.x = imageArea.Max.x;
+		}
+		if (effectArea.GetHeight() == 0.0f)
+		{
+			effectArea.Min.y = imageArea.Min.y;
+			effectArea.Max.y = imageArea.Max.y;
+		}
+
+		ImVec4 tint = tintNormal;
+
+		if (effectArea.Contains(ImGui::GetMousePos()))
+		{
+			tint = tintHovered;
+			if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
+				tint = tintPressed;
+		}
+
+
+		drawList->AddImage((void*)image->GetID(), imageArea.Min, imageArea.Max, ImVec2(0, 1), ImVec2(1, 0), ImGui::ColorConvertFloat4ToU32(tint));
+	}
+
 	inline bool Button(const std::string& text, ImVec2 size = ImVec2(0, 0))
 	{
 		const bool modified = ImGui::Button(text.c_str(), size);
@@ -118,6 +148,86 @@ namespace Paper::UI
 		return modified;
 	}
 
+	inline bool SearchWidget(std::string& searchString, const char* hint = "Search...", bool* grabFocus = nullptr)
+	{
+		PushID();
+
+		ShiftCursorY(1.0f);
+
+		bool modified = false;
+		bool searching = false;
+
+		const float areaPosX = ImGui::GetCursorPosX();
+		const float framePaddingY = ImGui::GetStyle().FramePadding.y;
+
+		UI::ScopedStyle rounding(ImGuiStyleVar_FrameRounding, 3.0f);
+		UI::ScopedStyle padding(ImGuiStyleVar_FramePadding, ImVec2(28.0f, framePaddingY));
+
+		std::string searchBuffer = searchString;
+		if (ImGui::InputText(GenerateID(), &searchBuffer))
+		{
+			searchString = searchBuffer;
+			modified = true;
+		}
+		else if (ImGui::IsItemDeactivatedAfterEdit())
+		{
+			searchString = searchBuffer;
+			modified = true;
+		}
+
+		const float inputLength = ImGui::GetItemRectSize().x;
+
+		searching = !searchBuffer.empty();
+		
+
+		if (grabFocus && *grabFocus)
+		{
+			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)
+				&& !ImGui::IsAnyItemActive()
+				&& !ImGui::IsMouseClicked(0))
+			{
+				ImGui::SetKeyboardFocusHere(-1);
+			}
+
+			if (ImGui::IsItemFocused())
+				*grabFocus = false;
+		}
+
+		UI::DrawItemActivityOutline();
+		ImGui::SetItemAllowOverlap();
+
+		ImGui::SameLine(areaPosX + 5.0f);
+
+		//if (layoutSuspended)
+		//	ImGui::ResumeLayout();
+		//
+		//ImGui::BeginHorizontal(GenerateID(), ImGui::GetItemRectSize());
+		const ImVec2 iconSize(ImGui::GetTextLineHeight(), ImGui::GetTextLineHeight());
+
+		// Search icon
+		{
+			const float iconYOffset = framePaddingY + 1;// -3.0f;
+			UI::ShiftCursorY(iconYOffset);
+			ImGui::Image((void*)DataPool::GetTexture("resources/editor/contentbrowser/search.png", true)->GetID(), iconSize, ImVec2(0, 1), ImVec2(1, 0));
+			UI::ShiftCursorY(-iconYOffset);
+
+			// Hint
+			if (!searching)
+			{
+				UI::ShiftCursorY(-framePaddingY);
+				UI::ScopedColour text(ImGuiCol_Text, Colors::Theme::textDarker);
+				UI::ScopedStyle padding(ImGuiStyleVar_FramePadding, ImVec2(0.0f, framePaddingY));
+				ImGui::SameLine();
+				ImGui::TextUnformatted(hint);
+				UI::ShiftCursorY(-1.0f);
+			}
+		}
+
+		UI::ShiftCursorY(-1.0f);
+		UI::PopID();
+		return modified;
+	}
+
 	inline bool MultilineTextInput(std::string name, std::string& val, ImVec2 size, ImGuiInputTextFlags flags)
 	{
 		bool modified = ImGui::InputTextMultiline(name.c_str(), &val, size, flags);
@@ -139,35 +249,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	//BUTTONS
-
-	inline void ImageEffects(const Ref<Texture>& image, ImRect imageArea, ImVec4 tintNormal, ImVec4 tintHovered, ImVec4 tintPressed, ImRect effectArea = ImRect())
-	{
-		ImDrawList* drawList = ImGui::GetWindowDrawList();
-
-		if (effectArea.GetWidth() == 0.0f)
-		{
-			effectArea.Min.x = imageArea.Min.x;
-			effectArea.Max.x = imageArea.Max.x;
-		}
-		if (effectArea.GetHeight() == 0.0f)
-		{
-			effectArea.Min.y = imageArea.Min.y;
-			effectArea.Max.y = imageArea.Max.y;
-		}
-
-		ImVec4 tint = tintNormal;
-
-		if (effectArea.Contains(ImGui::GetMousePos()))
-		{
-			tint = tintHovered;
-			if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
-				tint = tintPressed;
-		}
-			
-
-		drawList->AddImage((void*)image->GetID(), imageArea.Min, imageArea.Max, ImVec2(0, 1), ImVec2(1, 0), ImGui::ColorConvertFloat4ToU32(tint));
-	}
+	
 
 	//PROPERTIES
 

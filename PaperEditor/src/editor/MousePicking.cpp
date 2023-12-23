@@ -41,24 +41,47 @@ void PaperLayer::MousePicking()
 
 	///TODO: MOVE SOMWHERE ELSE
 
+	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT))
+	{
+		if (Input::IsKeyDown(Key::LEFT_CONTROL) && hovered_entity)
+		{
+			if (SelectionManager::IsSelected(SelectionManagerType::ViewPort, hovered_entity.GetPaperID()))
+				SelectionManager::Deselect(SelectionManagerType::ViewPort, hovered_entity.GetPaperID());
+			else
+				SelectionManager::Select(SelectionManagerType::ViewPort, hovered_entity.GetPaperID());
+		}
+		else if (hovered_entity)
+		{
+			SelectionManager::DeselectAll(SelectionManagerType::ViewPort);
+			SelectionManager::Select(SelectionManagerType::ViewPort, hovered_entity.GetPaperID());
+		}
+
+		if (!ImGuizmo::IsUsing() && !hovered_entity)
+		{
+			SelectionManager::DeselectAll(SelectionManagerType::ViewPort);
+		}
+	}
+
+	/*
 	static Entity pressedEntity;
 
 	if (Input::IsMouseButtonPressed(MouseButton::BUTTON_LEFT))
 	{
 		pressedEntity = hovered_entity;
 	}
-
-	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && hovered_entity == SelectionManager::GetSelection().ToEntity() && pressedEntity == hovered_entity && !drag_entity && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
+																																		//TODO: refine later					
+	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && SelectionManager::IsSelected(hovered_entity.GetPaperID()) && pressedEntity == hovered_entity && !drag_entity && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
 	{
-		SelectionManager::Deselect();
+		SelectionManager::DeselectAll(SelectionManagerType::ViewPort);
 	}
 	else if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT) && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && pressedEntity == hovered_entity && !drag_entity)
 	{
-		SelectionManager::Select(hovered_entity.GetPaperID());
+		SelectionManager::Select(SelectionManagerType::ViewPort, hovered_entity.GetPaperID());
 	}
 
 	if (Input::IsMouseButtonReleased(MouseButton::BUTTON_LEFT))
 	{
 		pressedEntity = Entity();
 	}
+	*/
 }

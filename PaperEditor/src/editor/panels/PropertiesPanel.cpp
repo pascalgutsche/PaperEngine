@@ -111,7 +111,7 @@ namespace PaperED
 	template<typename ComponentType>
 	void DrawComponentToAddPopup(const std::string& name, AddedComponentCallbackFn<ComponentType> on_added_component = nullptr)
 	{
-		Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+		Entity selectedEntity = SelectionManager::GetSelections(SelectionManagerType::ViewPort)[0].ToEntity();
 		if (selectedEntity.HasComponent<ComponentType>()) return;
 
 		if (ImGui::Selectable(name.c_str(), false))
@@ -130,7 +130,7 @@ namespace PaperED
 	template<typename ComponentType>
 	bool DrawRemoveButton(bool treeOpen)
 	{
-		Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+		Entity selectedEntity = SelectionManager::GetSelections(SelectionManagerType::ViewPort)[0].ToEntity();
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50);
 		{
 			UI::ScopedStyle padding(ImGuiStyleVar_ItemInnerSpacing, ImVec2(2.0f, 2.0f));
@@ -147,7 +147,7 @@ namespace PaperED
 	template<typename ComponentType>
 	void DrawComponent(const std::string& name, bool canRemove, DrawComponentFn<ComponentType> draw_components_fn)
 	{
-		Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+		Entity selectedEntity = SelectionManager::GetSelections(SelectionManagerType::ViewPort)[0].ToEntity();
 		if (!selectedEntity.HasComponent<ComponentType>()) return;
 
 		bool tree_open = UI::BeginImageTreeNode(name.c_str());
@@ -189,16 +189,17 @@ namespace PaperED
 	 */
 	void PropertiesPanel::OnImGuiRender(bool& isOpen)
 	{
-		Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
 
 		UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 
 		ImGui::Begin("Properties", &isOpen);
-		if (!selectedEntity)
+		if (!SelectionManager::HasSelection(SelectionManagerType::ViewPort))
 		{
 			ImGui::End();
 			return;
 		}
+		Entity selectedEntity = SelectionManager::GetSelections(SelectionManagerType::ViewPort)[0].ToEntity();
+
 		ImGui::Text("Name:");
 		ImGui::SameLine();
 		std::string name = selectedEntity.GetName();

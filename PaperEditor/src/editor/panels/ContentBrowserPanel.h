@@ -11,7 +11,7 @@ namespace PaperED
 		Selected	= BIT(1),
 		Hovered		= BIT(2),
 		Reload		= BIT(3),
-		Delete		= BIT(4),
+		ShowDeletePopup	= BIT(4),
 		Copy		= BIT(5),
 		Duplicate	= BIT(6),
 		ShowInExplorer	= BIT(7),
@@ -148,6 +148,23 @@ namespace PaperED
 			return items.erase(items.begin() + index) != items.end();
 		}
 
+		size_t FindFirstIndex(std::vector<AssetHandle> handles)
+		{
+			if (items.empty() || handles.empty())
+				return InvalidItem;
+
+			size_t currentFirstIndex = FindIndex(handles.front());
+
+			for (AssetHandle handle : handles)
+			{
+				const size_t index = FindIndex(handle);
+				if (index < currentFirstIndex)
+					currentFirstIndex = index;
+			}
+
+			return currentFirstIndex;
+		}
+
 		size_t FindIndex(AssetHandle handle)
 		{
 			if (items.empty())
@@ -192,6 +209,8 @@ namespace PaperED
 
 		void Refresh();
 		void RefreshHistory(std::vector<Shr<DirectoryInfo>>& stack);
+
+		bool deleteDialog = false;
 
 		Ref<Project> project;
 

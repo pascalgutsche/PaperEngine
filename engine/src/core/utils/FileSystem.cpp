@@ -26,6 +26,14 @@ namespace Paper
 		return true;
 	}
 
+	bool FileSystem::Delete(const std::filesystem::path& filePath)
+	{
+		if (!Exists(filePath))
+			return false;
+
+		return std::filesystem::remove(filePath);
+	}
+
 	bool FileSystem::OpenExternal(const std::filesystem::path& filePath)
 	{
 		if (!Exists(filePath))

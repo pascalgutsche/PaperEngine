@@ -23,8 +23,8 @@ namespace Colors
     namespace Theme
     {
         constexpr auto accent = IM_COL32(236, 158, 36, 255);
-        constexpr auto highlight = IM_COL32(39, 185, 242, 255);
-        constexpr auto niceBlue = IM_COL32(83, 232, 254, 255);
+        constexpr auto highlight = IM_COL32(255, 0, 0, 255);
+    	constexpr auto niceBlue = IM_COL32(83, 232, 254, 255);
         constexpr auto compliment = IM_COL32(78, 151, 166, 255);
         constexpr auto background = IM_COL32(36, 36, 36, 255);
         constexpr auto backgroundLight = IM_COL32(56, 56, 56, 255);
@@ -44,6 +44,7 @@ namespace Colors
         constexpr auto invalidPrefab = IM_COL32(222, 43, 43, 255);
         constexpr auto missingMesh = IM_COL32(230, 102, 76, 255);
         constexpr auto meshNotSet = IM_COL32(250, 101, 23, 255);
+        constexpr auto selectedAsset = IM_COL32(200, 200, 200, 100);
 
         //Buttons
         constexpr auto button = IM_COL32(56, 56, 56, 200);

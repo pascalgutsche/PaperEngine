@@ -30,8 +30,8 @@ void ApplicationPanel::OnImGuiRender(bool& isOpen)
 	//ImGui::Text("Hovered Entity: %s", entity_name1.c_str());
 
 	std::string entity_name2 = "None";
-	if (SelectionManager::HasSelection())
-		entity_name2 = Scene::GetActive()->GetEntity(SelectionManager::GetSelection()).GetName();
+	if (SelectionManager::HasSelection(SelectionManagerType::ViewPort))
+		entity_name2 = SelectionManager::GetSelections(SelectionManagerType::ViewPort)[0].ToEntity().GetName();
 	ImGui::Text("Active Entity: %s", entity_name2.c_str());
 	std::stringstream stream;
 	if (ImGui::TreeNode("Time"))

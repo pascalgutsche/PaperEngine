@@ -15,6 +15,7 @@ namespace Paper
 		static bool Exists(const std::filesystem::path& filePath);
 		static bool Move(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath);
 		static bool Rename(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath);
+		static bool Delete(const std::filesystem::path& filePath);
 
 		static bool OpenExternal(const std::filesystem::path& filePath);
 		static bool ShowFileInExplorer(const std::filesystem::path& path);

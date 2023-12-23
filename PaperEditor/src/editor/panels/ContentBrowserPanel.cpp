@@ -1,6 +1,7 @@
 ﻿#include "Editor.h"
 #include "ContentBrowserPanel.h"
 
+#include "editor/SelectionManager.h"
 #include "imgui/ImGuiFont.h"
 #include "project/Project.h"
 #include "renderer/Font.h"
@@ -52,9 +53,16 @@ namespace PaperED
 			drawList->AddRectFilled(infoTopLeft, bottomRight, Colors::Theme::backgroundLight, 6.0f, ImDrawFlags_RoundCornersBottom);
 		}
 
+		if (SelectionManager::IsSelected(SelectionManagerType::ContentBrowser, itemID))
+		{
+			if (itemType == ItemType::Directory)
+				drawList->AddRectFilled(topLeft, bottomRight, Colors::Theme::background, 6.0f, ImDrawFlags_RoundCornersTop);
+			drawList->AddRectFilled(topLeft, bottomRight, Colors::Theme::selectedAsset, 6.0f, ImDrawFlags_RoundCornersAll);
+		}
+
 		//draw thumbnail
 		ImVec2 size = { bottomRight.x - topLeft.x, bottomRight.y - topLeft.y };
-		bool pressed = ImGui::InvisibleButton("lol", size);
+		ImGui::InvisibleButton("lol", size);
 		UI::ImageEffects(itemIcon, ImRect(topLeft, thumbnailBottomRight), ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
 			ImVec4(0.8f, 0.8f, 0.8f, 1.0f),
 			ImVec4(1.0f, 0.8f, 0.8f, 1.0f), ImRect(topLeft, bottomRight));
@@ -157,7 +165,7 @@ namespace PaperED
 			result.Set(ActionResult::Hovered, true);
 			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 				result.Set(ActionResult::Activated, true);
-			else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+			else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
 				result.Set(ActionResult::Selected, true);
 		}
 	}
@@ -177,7 +185,7 @@ namespace PaperED
 				result.Set(ActionResult::Duplicate, true);
 
 			if (ImGui::MenuItem("Delete"))
-				result.Set(ActionResult::Delete, true);
+				result.Set(ActionResult::ShowDeletePopup, true);
 
 			ImGui::Separator();
 
@@ -240,6 +248,7 @@ namespace PaperED
 		//Header
 		RenderHeader();
 
+		ImGui::BeginChild("scrolling", ImVec2(), false, ImGuiWindowFlags_NoBackground);
 		int columnCount = BeginTable();
 
 		for (const auto& item : currentItemList)
@@ -253,8 +262,41 @@ namespace PaperED
 					ChangeDir(item.As<ContentBrowserDir>()->GetDirInfo());
 					break;
 				}
+			}
 
-
+			if (result.IsSet(ActionResult::Selected))
+			{
+				if (Input::IsKeyDown(Key::LEFT_SHIFT))
+				{
+					size_t firstIndex = currentItemList.FindFirstIndex(SelectionManager::GetSelections(SelectionManagerType::ContentBrowser));
+					size_t lastIndex = currentItemList.FindIndex(item->GetAssetHandle());
+					if (firstIndex == ContentBrowserItemList::InvalidItem)
+						firstIndex = lastIndex;
+					if (lastIndex < firstIndex)
+					{
+						size_t tempIndex = firstIndex;
+						firstIndex = lastIndex;
+						lastIndex = tempIndex;
+					}
+						
+					SelectionManager::DeselectAll(SelectionManagerType::ContentBrowser);
+					for (size_t index = firstIndex; index <= lastIndex; index++)
+					{
+						SelectionManager::Select(SelectionManagerType::ContentBrowser, currentItemList[index]->GetAssetHandle());
+					}
+				}
+				else if (Input::IsKeyDown(Key::LEFT_CONTROL))
+				{
+					if (SelectionManager::IsSelected(SelectionManagerType::ContentBrowser, item->GetAssetHandle()))
+						SelectionManager::Deselect(SelectionManagerType::ContentBrowser, item->GetAssetHandle());
+					else
+						SelectionManager::Select(SelectionManagerType::ContentBrowser, item->GetAssetHandle());
+				}
+				else
+				{
+					SelectionManager::DeselectAll(SelectionManagerType::ContentBrowser);
+					SelectionManager::Select(SelectionManagerType::ContentBrowser, item->GetAssetHandle());
+				}
 			}
 
 			if (result.IsSet(ActionResult::ShowInExplorer))
@@ -264,6 +306,13 @@ namespace PaperED
 				else
 					FileSystem::ShowFileInExplorer(Project::GetAssetPath() / currentDirInfo->path / item->GetName());
 			}
+
+			if (result.IsSet(ActionResult::ShowDeletePopup))
+			{
+				deleteDialog = true;
+			}
+
+			
 
 			if (ImGui::TableGetColumnIndex() >= columnCount)
 			{
@@ -275,6 +324,29 @@ namespace PaperED
 		}
 
 		EndTable();
+
+		ImGui::EndChild();
+
+		if (deleteDialog)
+		{
+			deleteDialog = false;
+			ImGui::OpenPopup("DeleteDialog");
+		}
+
+		if (ImGui::BeginPopupModal("DeleteDialog"))
+		{
+			ImGui::Text("Are you sure you want to delete the selected item(s)?");
+
+			if (ImGui::Button("Yes"))
+			{
+				
+			}
+
+			if (ImGui::Button("No"))
+				ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
+		}
 
 		ImGui::End();
 
@@ -318,6 +390,7 @@ namespace PaperED
 
 	void ContentBrowserPanel::RenderHeader()
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, ImGui::GetStyle().FramePadding.y));
 		float height = 26;
 		auto contenBrowserButton = [](const char* labelId, const Ref<Texture>& icon, float iconSize, bool disabled = false)
 		{
@@ -384,27 +457,27 @@ namespace PaperED
 		}
 
 		//search
-		const float searchIconWidth = iconSize;
+		//const float searchIconWidth = iconSize;
 		const float searchWidgetWidth = 250.0f;
-		ImGui::SameLine(ImGui::GetContentRegionAvail().x - searchWidgetWidth - 2.0f - searchIconWidth - 5.0f - iconSize);
-		ImGui::Image((void*)DataPool::GetTexture("resources/editor/contentbrowser/search.png", true)->GetID(), ImVec2(searchIconWidth, searchIconWidth), ImVec2(0, 1), ImVec2(1, 0));
+		//ImGui::SameLine(ImGui::GetContentRegionAvail().x - searchWidgetWidth - 2.0f - searchIconWidth - 5.0f - iconSize);
+		//ImGui::Image((void*)DataPool::GetTexture("resources/editor/contentbrowser/search.png", true)->GetID(), ImVec2(searchIconWidth, searchIconWidth), ImVec2(0, 1), ImVec2(1, 0));
 
-		ImGui::SameLine(ImGui::GetContentRegionAvail().x - searchWidgetWidth - iconSize - 5.0f); // 5.0f = padding
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x - searchWidgetWidth - iconSize - 20 - 5.0f); // 5.0f = padding
 		ImGui::SetNextItemWidth(searchWidgetWidth);
-		if (UI::StringControl("##search", searchbuffer))
+		if (UI::SearchWidget(searchbuffer))
 		{
 			SetDir(currentDirInfo);
-		};
+		}
 
 		//refresh
-		ImGui::SameLine(ImGui::GetContentRegionAvail().x - iconSize);
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x - iconSize - 20);
 
 		if (contenBrowserButton("##reload", DataPool::GetTexture("resources/editor/contentbrowser/reload.png", true), iconSize))
 		{
 			Refresh();
-		};
+		}
 
-
+		ImGui::PopStyleVar();
 	}
 
 	//utilities overrides

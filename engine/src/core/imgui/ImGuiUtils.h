@@ -4,7 +4,7 @@
 
 #include <ImGui/imgui_internal.h>
 
-#include "Color.h"
+#include "ImGuiLayer.h"
 
 #define CONST_UI_ID ("##" + CutStringAfterLastSlash(__FILE__ + std::to_string(__LINE__))).c_str()
 
@@ -89,7 +89,7 @@ namespace Paper::UI
 	}
 
 	// ITEM
-	inline void DrawItemActivityOutline(OutlineFlags flags = OutlineFlags_All, ImColor colourHighlight = Colors::highlighed, float rounding = GImGui->Style.FrameRounding)
+	inline void DrawItemActivityOutline(OutlineFlags flags = OutlineFlags_All, ImColor colourHighlight = Colors::Theme::highlight, float rounding = GImGui->Style.FrameRounding)
 	{
 		if (!ImGui::IsItemActivated() && false) 
 			return;

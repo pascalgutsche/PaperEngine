@@ -5,7 +5,7 @@
 
 namespace PaperED
 {
-	void Entities(Ref<Scene>& activeScene, Entity& active_entity)
+	void Entities(Ref<Scene>& activeScene)
 	{
 		if (ImGui::TreeNode("Entities"))
 		{
@@ -14,7 +14,7 @@ namespace PaperED
 				Entity entity(entt, activeScene.get());
 				ImGui::PushID(entity.GetPaperID().toString().c_str());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
-					active_entity = entity;
+					SelectionManager::Select(SelectionManagerType::ViewPort, entity.GetPaperID());
 				}
 				ImGui::PopID();
 			}
@@ -23,7 +23,7 @@ namespace PaperED
 		}
 	}
 
-	void TwoDObjects(Ref<Scene>& activeScene, Entity& active_entity)
+	void TwoDObjects(Ref<Scene>& activeScene)
 	{
 		if (ImGui::TreeNode("2D-Object"))
 		{
@@ -34,7 +34,7 @@ namespace PaperED
 					Entity entity(entt, activeScene.get());
 					ImGui::PushID(entity.GetPaperID().toString().c_str());
 					if (ImGui::Selectable(entity.GetName().c_str())) {
-						active_entity = entity;
+						SelectionManager::Select(SelectionManagerType::ViewPort, entity.GetPaperID());
 					}
 					ImGui::PopID();
 				}
@@ -48,7 +48,7 @@ namespace PaperED
 					Entity entity(entt, activeScene.get());
 					ImGui::PushID(entity.GetPaperID().toString().c_str());
 					if (ImGui::Selectable(entity.GetName().c_str())) {
-						active_entity = entity;
+						SelectionManager::Select(SelectionManagerType::ViewPort, entity.GetPaperID());
 					}
 					ImGui::PopID();
 				}
@@ -62,7 +62,7 @@ namespace PaperED
 					Entity entity(entt, activeScene.get());
 					ImGui::PushID(entity.GetPaperID().toString().c_str());
 					if (ImGui::Selectable(entity.GetName().c_str())) {
-						active_entity = entity;
+						SelectionManager::Select(SelectionManagerType::ViewPort, entity.GetPaperID());
 					}
 					ImGui::PopID();
 				}
@@ -73,7 +73,7 @@ namespace PaperED
 		}
 	}
 
-	void Cameras(Ref<Scene>& activeScene, Entity& active_entity)
+	void Cameras(Ref<Scene>& activeScene)
 	{
 		if (ImGui::TreeNode("Cameras"))
 		{
@@ -82,7 +82,7 @@ namespace PaperED
 				Entity entity(entt, activeScene.get());
 				ImGui::PushID(entity.GetPaperID().toString().c_str());
 				if (ImGui::Selectable(entity.GetName().c_str())) {
-					active_entity = entity;
+					SelectionManager::Select(SelectionManagerType::ViewPort, entity.GetPaperID());
 				}
 				ImGui::PopID();
 			}
@@ -94,7 +94,6 @@ namespace PaperED
 	void OutlinerPanel::OnImGuiRender(bool& isOpen)
 	{
 		Ref<Scene> activeScene = Scene::GetActive();
-		Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
 	
 		UI::ScopedStyle min_width(ImGuiStyleVar_WindowMinSize, ImVec2(400.0f, 0.0f));
 	
@@ -102,13 +101,10 @@ namespace PaperED
 	
 		if (activeScene)
 		{
-			Entities(activeScene, selectedEntity);
-			TwoDObjects(activeScene, selectedEntity);
-			Cameras(activeScene, selectedEntity);
+			Entities(activeScene);
+			TwoDObjects(activeScene);
+			Cameras(activeScene);
 		}
-
-		if (selectedEntity != SelectionManager::GetSelection().ToEntity())
-			SelectionManager::Select(selectedEntity.GetPaperID());
 
 		ImGui::End();
 		

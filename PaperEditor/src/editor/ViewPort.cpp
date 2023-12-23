@@ -59,7 +59,6 @@ static void CameraMovement(const Ref<EditorCamera>& camera)
 void ViewPort::Panel(PaperLayer* peLayer)
 {
 	const Ref<Scene> activeScene = Scene::GetActive();
-	Entity selectedEntity = SelectionManager::GetSelection().ToEntity();
 
 	if (activeScene && viewport_size.x > 0.0f && viewport_size.y > 0.0f)
 		activeScene->OnViewportResize(viewport_size.x, viewport_size.y);
@@ -94,9 +93,10 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		case SceneState::Edit:
 			activeScene->OnEditorUpdate(camera);
 			Renderer2D::BeginRender(camera);
-			if (selectedEntity)
+			for (PaperID id : SelectionManager::GetSelections(SelectionManagerType::ViewPort))
 			{
-				Renderer2D::DrawLineRect(selectedEntity.GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), (uint32_t)selectedEntity);
+				if (id.ToEntity())
+				Renderer2D::DrawLineRect(id.ToEntity().GetComponent<TransformComponent>().GetTransform(), glm::vec4(1, 0.459, 0.004, 1.0), (uint32_t)id.ToEntity());
 			}
 			Renderer2D::EndRender();
 			break;
@@ -186,7 +186,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 	
 
 	// Gizmos
-	if (selectedEntity && peLayer->sceneState == SceneState::Edit) //  && peLayer->GetGuizmoType() != -1   
+	if (SelectionManager::HasSelection(SelectionManagerType::ViewPort) && peLayer->sceneState == SceneState::Edit) //  && peLayer->GetGuizmoType() != -1   
 	{
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist(ImGui::GetCurrentWindow()->DrawList);
@@ -198,7 +198,7 @@ void ViewPort::Panel(PaperLayer* peLayer)
 		glm::mat4 cameraView = camera->GetViewMatrix();
 
 		// Entity transform
-		auto& tc = selectedEntity.GetComponent<TransformComponent>();
+		auto& tc = SelectionManager::GetSelections(SelectionManagerType::ViewPort)[0].ToEntity().GetComponent<TransformComponent>();
 		glm::mat4 transform = tc.GetTransform();
 
 		// Snapping

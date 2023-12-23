@@ -196,18 +196,18 @@ void PaperLayer::OnEvent(Event& event)
 				{
 					if (e.IsModPressed(Mod::CONTROL))
 					{
-						Entity duplicatedEntity = Scene::GetActive()->DuplicateEntity(SelectionManager::GetSelection().ToEntity());
-						SelectionManager::Select(duplicatedEntity.GetPaperID());
+						Entity duplicatedEntity = Scene::GetActive()->DuplicateEntity(SelectionManager::GetSelections(SelectionManagerType::ViewPort)[0].ToEntity());
+						SelectionManager::Select(SelectionManagerType::ViewPort, duplicatedEntity.GetPaperID());
 					}
 					break;
 				}
 				case Key::DELETEKEY:
 				{
-					if (SelectionManager::HasSelection())
+					if (SelectionManager::HasSelection(SelectionManagerType::ViewPort))
 					{
-						Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelection());
+						Entity selectedEntity = Scene::GetActive()->GetEntity(SelectionManager::GetSelections(SelectionManagerType::ViewPort)[0]);
+						SelectionManager::Deselect(SelectionManagerType::ViewPort, selectedEntity.GetPaperID());
 						Scene::GetActive()->DestroyEntity(selectedEntity);
-						SelectionManager::Deselect();
 					}
 					break;
 				}
@@ -445,7 +445,7 @@ void PaperLayer::CloseScene()
 {
 	if (!editorScene) return;
 
-	SelectionManager::Deselect();
+	SelectionManager::DeselectAll(SelectionManagerType::ViewPort);
 
 	OnSceneStop();
 
