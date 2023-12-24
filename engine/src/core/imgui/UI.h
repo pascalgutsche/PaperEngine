@@ -7,6 +7,7 @@
 
 namespace Paper::UI
 {
+
 	inline float GetAvailableContentSpace()
 	{
 		return ImGui::GetContentRegionAvail().x - 10;
@@ -770,14 +771,29 @@ namespace Paper::UI
 
 	inline bool DragDropTarget(Ref<Texture>& texture)
 	{
-		if (const ImGuiPayload* payload = DragDropTargetInternal("TEXTURE"))
+		bool isRightDelivery = false;
+		if (ImGui::BeginDragDropTarget())
 		{
-			const wchar_t* path = (const wchar_t*)payload->Data;
-			std::string file = std::filesystem::path(path).string();
+			const ImGuiPayload* payloadPreview = ImGui::AcceptDragDropPayload("asset_payload", ImGuiDragDropFlags_AcceptPeekOnly);
+			if (payloadPreview->DataSize / sizeof(PaperID) == 1)
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("asset_payload"))
+				{
 
-			texture = DataPool::GetAssetTexture(file, true);
-			return true;
+				}
+			}
+			
+
+			ImGui::EndDragDropTarget();
 		}
+		//if (const ImGuiPayload* payload = DragDropTargetInternal("TEXTURE"))
+		//{
+		//	const wchar_t* path = (const wchar_t*)payload->Data;
+		//	std::string file = std::filesystem::path(path).string();
+		//
+		//	texture = DataPool::GetAssetTexture(file, true);
+		//	return true;
+		//}
 		return false;
 	}
 

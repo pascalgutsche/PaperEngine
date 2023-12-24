@@ -18,7 +18,7 @@ namespace PaperED
 
 		static size_t GetSelectionCount(SelectionManagerType type);
 
-		static std::vector<PaperID> GetSelections(SelectionManagerType type);
+		static std::vector<PaperID>& GetSelections(SelectionManagerType type);
 
 		static bool HasSelection();
 		static bool HasSelection(SelectionManagerType type);

@@ -2,6 +2,7 @@
 #include "EditorPanel.h"
 #include "asset/Asset.h"
 
+
 namespace PaperED
 {
 	enum class ActionResult
@@ -36,6 +37,11 @@ namespace PaperED
 		}
 	};
 
+	enum ImDrawFlags_
+	{
+		ImDrawFlags_NoSelection = BIT(9)
+	};
+
 	class ContentBrowserItem : public ShrCounted
 	{
 	public:
@@ -57,13 +63,22 @@ namespace PaperED
 
 		bool operator<(const ContentBrowserItem& other) const;
 
+		void DrawBig() const;
+		void DrawSmall() const;
+
 	protected:
 		ItemType itemType;
 		AssetHandle itemID;
 		std::string itemName;
 		Ref<Texture> itemIcon;
 
+		virtual void HandleDragDropSource() const {}
+		virtual void HandleDragDropTarget() const {}
+
 	private:
+		void DrawThumbnail(const ImRect& rect, const ImRect& effectArea, ImDrawFlags drawFlags = ImDrawFlags_RoundCornersAll) const;
+		void DrawInfoBox(const ImRect& rect, ImDrawFlags drawFlags = ImDrawFlags_RoundCornersAll) const;
+
 		void HandleItemActions(CBActionResult& result) const;
 		void RenderContextMenu(CBActionResult& result) const;
 		void RenderShadow(const ImVec2& topLeft, const ImVec2& bottomRight) const;
@@ -100,6 +115,11 @@ namespace PaperED
 		~ContentBrowserAsset() = default;
 
 		const AssetMetadata& GetAssetMetadata() const { return metadata; }
+
+	protected:
+
+		void HandleDragDropSource() const override;
+
 	private:
 		AssetMetadata metadata;
 	};
@@ -188,9 +208,12 @@ namespace PaperED
 
 		void OnProjectChanged(const Ref<Project>& project) override;
 
+		ContentBrowserItemList& GetCurrentItemList() { return currentItemList; }
 
 		Shr<DirectoryInfo> GetDirInfo(AssetHandle handle);
 		Shr<DirectoryInfo> GetDirInfo(const std::filesystem::path& path);
+
+		static ContentBrowserPanel& Get() { return *instance; }
 
 	private:
 		void RenderHeader();
@@ -224,6 +247,8 @@ namespace PaperED
 		Shr<DirectoryInfo> currentDirInfo;
 		std::vector<Shr<DirectoryInfo>> nextDirInfoStack;
 		std::vector<Shr<DirectoryInfo>> prevDirInfoStack;
+
+		static ContentBrowserPanel* instance;
 	};
 }
 

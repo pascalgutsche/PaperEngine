@@ -43,7 +43,7 @@ namespace PaperED
 		return vec.size();
 	}
 
-	std::vector<PaperID> SelectionManager::GetSelections(SelectionManagerType type)
+	std::vector<PaperID>& SelectionManager::GetSelections(SelectionManagerType type)
 	{
 		return selectionMap[type];
 	}

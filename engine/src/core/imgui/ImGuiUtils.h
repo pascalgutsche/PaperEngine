@@ -137,6 +137,21 @@ namespace Paper::UI
 		ImGui::SetCursorPos(ImVec2(cursor.x + x, cursor.y + y));
 	}
 
+	inline void SetCursorX(float posX)
+	{
+		ImGui::SetCursorPosX(posX);
+	}
+
+	inline void SetCursorY(float posY)
+	{
+		ImGui::SetCursorPosY(posY);
+	}
+
+	inline void SetCursor(ImVec2 pos)
+	{
+		ImGui::SetCursorPos(pos);
+	}
+
 	// STRUCT
 
 	struct ScopedStyle

@@ -56,7 +56,7 @@ namespace Paper
 			initialized = true;
 		}
 
-		//glfwWindowHint(GLFW_TITLEBAR, false);
+		//glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, true);
 
 
 		glfwWindow = glfwCreateWindow(window_props.width, window_props.height, window_props.title.c_str(), nullptr, nullptr);
