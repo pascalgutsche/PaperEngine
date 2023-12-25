@@ -208,14 +208,45 @@ namespace PaperED
 
 	void ContentBrowserItem::HandleItemActions(CBActionResult& result) const
 	{
+		
 		//actions
 		if (ImGui::IsItemHovered())
 		{
 			result.Set(ActionResult::Hovered, true);
 			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
 				result.Set(ActionResult::Activated, true);
-			else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-				result.Set(ActionResult::Selected, true);
+			}
+			else
+			{
+				bool isSelected = SelectionManager::IsSelected(SelectionManagerType::ContentBrowser, itemID);
+
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && !(isDragging && isSelected))
+				{
+					if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && isSelected)
+						result.Set(ActionResult::Deselected, true);
+
+					bool justSelected = false;
+					if (!isSelected)
+					{
+						result.Set(ActionResult::Selected, true);
+						justSelected = true;
+					}
+
+					if (!ImGui::IsKeyDown(ImGuiKey_LeftShift) && !ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
+					{
+						if (isSelected)
+							result.Set(ActionResult::Selected, true); // for when you only click a selected everything deselects exept the one you clicked
+						result.Set(ActionResult::DeselectAll, true);
+					}
+
+					if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
+						result.Set(ActionResult::SelectToHere, true);
+				}
+			}
+
+			
+
 		}
 	}
 
@@ -278,16 +309,14 @@ namespace PaperED
 
 	void ContentBrowserAsset::HandleDragDropSource() const
 	{
-		if (!SelectionManager::IsSelected(SelectionManagerType::ContentBrowser, itemID)) return;
 		ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-		//ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 
 		auto& selectionStack = SelectionManager::GetSelections(SelectionManagerType::ContentBrowser);
 
 		ContentBrowserItemList& currentList = ContentBrowserPanel::Get().GetCurrentItemList();
 
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		if ((isDragging = ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)))
 		{
 			for (AssetHandle handle : selectionStack)
 			{
@@ -341,47 +370,39 @@ namespace PaperED
 		{
 			CBActionResult result = item->Render();
 
+			if (result.IsSet(ActionResult::DeselectAll))
+				SelectionManager::DeselectAll(SelectionManagerType::ContentBrowser);
+
+			if (result.IsSet(ActionResult::Deselected))
+				SelectionManager::Deselect(SelectionManagerType::ContentBrowser, item->GetAssetHandle());
+
+			if (result.IsSet(ActionResult::Selected))
+				SelectionManager::Select(SelectionManagerType::ContentBrowser, item->GetAssetHandle());
+
+			if (result.IsSet(ActionResult::SelectToHere) && SelectionManager::GetSelectionCount(SelectionManagerType::ContentBrowser) >= 2)
+			{
+				AssetHandle firstHandle = SelectionManager::GetSelections(SelectionManagerType::ContentBrowser)[0];
+				SelectionManager::DeselectAll(SelectionManagerType::ContentBrowser);
+				SelectionManager::Select(SelectionManagerType::ContentBrowser, firstHandle);
+
+				size_t firstIndex = currentItemList.FindIndex(firstHandle);
+				size_t selectedIndex = currentItemList.FindIndex(item->GetAssetHandle());
+
+				size_t smallIndex = firstIndex < selectedIndex ? firstIndex : selectedIndex;
+				size_t bigIndex = firstIndex >= selectedIndex ? firstIndex : selectedIndex;
+
+				for (; smallIndex <= bigIndex; smallIndex++)
+				{
+					SelectionManager::Select(SelectionManagerType::ContentBrowser, currentItemList[smallIndex]->GetAssetHandle());
+				}
+			}
+
 			if (result.IsSet(ActionResult::Activated))
 			{
 				if (item->GetItemType() == ContentBrowserItem::ItemType::Directory)
 				{
 					ChangeDir(item.As<ContentBrowserDir>()->GetDirInfo());
 					break;
-				}
-			}
-
-			if (result.IsSet(ActionResult::Selected))
-			{
-				if (Input::IsKeyDown(Key::LEFT_SHIFT))
-				{
-					size_t firstIndex = currentItemList.FindFirstIndex(SelectionManager::GetSelections(SelectionManagerType::ContentBrowser));
-					size_t lastIndex = currentItemList.FindIndex(item->GetAssetHandle());
-					if (firstIndex == ContentBrowserItemList::InvalidItem)
-						firstIndex = lastIndex;
-					if (lastIndex < firstIndex)
-					{
-						size_t tempIndex = firstIndex;
-						firstIndex = lastIndex;
-						lastIndex = tempIndex;
-					}
-						
-					SelectionManager::DeselectAll(SelectionManagerType::ContentBrowser);
-					for (size_t index = firstIndex; index <= lastIndex; index++)
-					{
-						SelectionManager::Select(SelectionManagerType::ContentBrowser, currentItemList[index]->GetAssetHandle());
-					}
-				}
-				else if (Input::IsKeyDown(Key::LEFT_CONTROL))
-				{
-					if (SelectionManager::IsSelected(SelectionManagerType::ContentBrowser, item->GetAssetHandle()))
-						SelectionManager::Deselect(SelectionManagerType::ContentBrowser, item->GetAssetHandle());
-					else
-						SelectionManager::Select(SelectionManagerType::ContentBrowser, item->GetAssetHandle());
-				}
-				else
-				{
-					SelectionManager::DeselectAll(SelectionManagerType::ContentBrowser);
-					SelectionManager::Select(SelectionManagerType::ContentBrowser, item->GetAssetHandle());
 				}
 			}
 
@@ -467,6 +488,18 @@ namespace PaperED
 		}
 
 		ImGui::EndTable();
+
+		ImGui::End();
+#endif
+#if 0
+		ImGui::Begin("selectionStack");
+
+		for (AssetHandle handle : SelectionManager::GetSelections(SelectionManagerType::ContentBrowser))
+		{
+			size_t index = currentItemList.FindIndex(handle);
+			if (index != ContentBrowserItemList::InvalidItem)
+				ImGui::Text(currentItemList[index]->GetName().c_str());
+		}
 
 		ImGui::End();
 #endif

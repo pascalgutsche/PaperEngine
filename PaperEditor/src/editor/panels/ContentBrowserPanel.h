@@ -10,6 +10,9 @@ namespace PaperED
 		None		= 0,
 		Activated	= BIT(0),
 		Selected	= BIT(1),
+		Deselected	= BIT(9),
+		DeselectAll = BIT(10),
+		SelectToHere= BIT(11),
 		Hovered		= BIT(2),
 		Reload		= BIT(3),
 		ShowDeletePopup	= BIT(4),
@@ -74,6 +77,8 @@ namespace PaperED
 
 		virtual void HandleDragDropSource() const {}
 		virtual void HandleDragDropTarget() const {}
+
+		mutable bool isDragging = false;
 
 	private:
 		void DrawThumbnail(const ImRect& rect, const ImRect& effectArea, ImDrawFlags drawFlags = ImDrawFlags_RoundCornersAll) const;

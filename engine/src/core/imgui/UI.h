@@ -738,7 +738,12 @@ namespace Paper::UI
 			modified = UI::ImageButton(texture, size);
 		}
 		else
-			modified = UI::Button("null");
+		{
+			if (textureHandle)
+				modified = UI::Button(textureHandle.toString());
+			else
+				modified = UI::Button("null");
+		}
 
 		UI::EndPropertyElementInternal();
 
