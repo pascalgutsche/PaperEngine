@@ -3,4 +3,4 @@ ProjectConfig:
   Path: Sandbunker
   AssetPath: assets
   ScriptBinaryPath: assets/scripts/bin
-  StartScene: assets/scenes/WTBird.pscene
+  StartScene: assets/scenes/newtest.pscene

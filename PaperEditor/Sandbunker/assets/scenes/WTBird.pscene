@@ -17,7 +17,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -37,7 +37,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -57,7 +57,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -77,7 +77,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -97,7 +97,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -117,7 +117,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -137,7 +137,7 @@ Scene:
           Rotation: [0, 0, 1.62081397]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -157,7 +157,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TextureHandle: 0 #assets\textures\WTBird\skyline.png
           TilingFactor: 1
           TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
           Geometry: Rectangle
@@ -177,7 +177,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TextureHandle: 0 #assets\textures\WTBird\skyline.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -237,7 +237,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TextureHandle: 0 #assets\textures\WTBird\skyline.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -257,7 +257,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TextureHandle: 0 #assets\textures\WTBird\skyline.png
           TilingFactor: 1
           TexCoords: [1, 0, 0, 0, 0, 1, 1, 1]
           Geometry: Rectangle
@@ -277,7 +277,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TextureHandle: 0 #assets\textures\WTBird\skyline.png
           TilingFactor: 1
           TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
           Geometry: Rectangle
@@ -297,7 +297,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TextureHandle: 0 #assets\textures\WTBird\skyline.png
           TilingFactor: 1
           TexCoords: [1, 1, 0, 1, 0, 0, 1, 0]
           Geometry: Rectangle
@@ -317,7 +317,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TextureHandle: 0 #assets\textures\WTBird\skyline.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -337,7 +337,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\skyline.png
+          TextureHandle: 0 #assets\textures\WTBird\skyline.png
           TilingFactor: 1
           TexCoords: [0, 1, 1, 1, 1, 0, 0, 0]
           Geometry: Rectangle
@@ -357,7 +357,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\aircraft.png
+          TextureHandle: 0 #assets\textures\WTBird\aircraft.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -389,7 +389,7 @@ Scene:
           Rotation: [0, 0, -174.829666]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -409,7 +409,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -429,7 +429,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -449,7 +449,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -469,7 +469,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -489,7 +489,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -509,7 +509,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -529,7 +529,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -549,7 +549,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -569,7 +569,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -589,7 +589,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -609,7 +609,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -629,7 +629,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -649,7 +649,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -669,7 +669,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -689,7 +689,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -709,7 +709,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -729,7 +729,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -749,7 +749,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -769,7 +769,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -789,7 +789,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -809,7 +809,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -829,7 +829,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -849,7 +849,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -869,7 +869,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -889,7 +889,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -909,7 +909,7 @@ Scene:
           Rotation: [0, 0, 175.425003]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle
@@ -929,7 +929,7 @@ Scene:
           Rotation: [0, 0, -0.438907713]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TexturePath: assets\textures\WTBird\tower.png
+          TextureHandle: 0 #assets\textures\WTBird\tower.png
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle

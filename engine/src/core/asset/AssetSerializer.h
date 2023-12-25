@@ -9,19 +9,29 @@ namespace Paper
 	public:
 		virtual ~AssetSerializer() = default;
 
-		virtual void Serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) = 0;
+		virtual void Serialize(const AssetMetadata& metadata, const Shr<Asset>& asset) = 0;
 
-		virtual bool Deserialize(const AssetMetadata& metadata, Ref<Asset>& asset) = 0;
+		virtual bool Deserialize(const AssetMetadata& metadata, Shr<Asset>& asset) = 0;
 	};
 
 	class SceneAssetSerializer : public AssetSerializer
 	{
 	public:
-		~SceneAssetSerializer() override;
+		~SceneAssetSerializer() override = default;
 
-		void Serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) override;
-		bool Deserialize(const AssetMetadata& metadata, Ref<Asset>& asset) override;
+		void Serialize(const AssetMetadata& metadata, const Shr<Asset>& asset) override;
+		bool Deserialize(const AssetMetadata& metadata, Shr<Asset>& asset) override;
 	};
+
+	class TextureSerializer : public AssetSerializer
+	{
+	public:
+		~TextureSerializer() override = default;
+
+		void Serialize(const AssetMetadata& metadata, const Shr<Asset>& asset) override;
+		bool Deserialize(const AssetMetadata& metadata, Shr<Asset>& asset) override;
+	};
+	
 }
 
 

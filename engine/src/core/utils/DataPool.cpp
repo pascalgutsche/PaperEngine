@@ -34,55 +34,55 @@ namespace Paper {
         return shader;
     }
 
-    Ref<Texture> DataPool::GetAssetTexture(std::string textureName, bool wholePath) {
-        // set default path
-        std::filesystem::path texturePath;
-        if (wholePath)
-            texturePath = Project::GetProjectPath() / (Project::GetRelativePathFromProject(textureName));
-        else
-            texturePath = Project::GetAssetTexturesPath() / (Project::GetRelativePathFromProject(textureName));
+    //Shr<Texture> DataPool::GetAssetTexture(std::string textureName, bool wholePath) {
+    //    // set default path
+    //    std::filesystem::path texturePath;
+    //    if (wholePath)
+    //        texturePath = Project::GetProjectPath() / (Project::GetRelativePathFromProject(textureName));
+    //    else
+    //        texturePath = Project::GetAssetTexturesPath() / (Project::GetRelativePathFromProject(textureName));
+    //
+    //    std::string texture_id = "assettexture_" + textureName;
+    //
+    //    Map::iterator it = dataPool.find(texture_id);
+    //
+    //    std::shared_ptr<Texture> texture;
+    //
+    //    if (it == dataPool.end())
+    //    {
+    //        texture = Texture::CreateTexture(texturePath, textureName);
+    //        dataPool.emplace(texture_id, texture);
+    //    }
+    //    else
+    //    {
+    //        texture = std::static_pointer_cast<Texture>(it->second);
+    //    }
+    //
+    //    return texture;
+    //}
 
-        std::string texture_id = "assettexture_" + textureName;
-
-        Map::iterator it = dataPool.find(texture_id);
-
-        std::shared_ptr<Texture> texture;
-
-        if (it == dataPool.end())
-        {
-            texture = Texture::CreateTexture(texturePath, textureName);
-            dataPool.emplace(texture_id, texture);
-        }
-        else
-        {
-            texture = std::static_pointer_cast<Texture>(it->second);
-        }
-
-        return texture;
-    }
-
-    Ref<Texture> DataPool::GetTexture(std::string textureName, bool wholePath) {
-        // set default path
-        const std::filesystem::path path = wholePath ? textureName : "resources/textures/" + textureName;
-
-        std::string texture_id = "recourcetexture_" + textureName;
-
-        Map::iterator it = dataPool.find(texture_id);
-
-        std::shared_ptr<Texture> texture;
-
-        if (it == dataPool.end())
-        {
-            texture = Texture::CreateTexture(path, textureName);
-            dataPool.emplace(texture_id, texture);
-        }
-        else
-        {
-            texture = std::static_pointer_cast<Texture>(it->second);
-        }
-
-        return texture;
-    }
+    //Shr<Texture> DataPool::GetTexture(std::string textureName, bool wholePath) {
+    //    // set default path
+    //    const std::filesystem::path path = wholePath ? textureName : "resources/textures/" + textureName;
+    //
+    //    std::string texture_id = "recourcetexture_" + textureName;
+    //
+    //    Map::iterator it = dataPool.find(texture_id);
+    //
+    //    Shr<Texture> texture;
+    //
+    //    if (it == dataPool.end())
+    //    {
+    //        texture = Texture::CreateTexture(TextureSpecification(), path);
+    //        dataPool.emplace(texture_id, texture);
+    //    }
+    //    else
+    //    {
+    //        texture = std::static_pointer_cast<Texture>(it->second);
+    //    }
+    //
+    //    return texture;
+    //}
 
     Ref<Font> DataPool::GetDefaultFont()
 	{

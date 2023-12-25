@@ -1,8 +1,9 @@
 #pragma once
 #include "Engine.h"
 
-#include "asset/EditorAssetManager.h"
+#include "asset/manager/EditorAssetManager.h"
 #include "scene/SceneSerializer.h"
+#include "utils/FileSystem.h"
 
 namespace Paper
 {
@@ -30,6 +31,7 @@ namespace Paper
 		static void SetActive(const Ref<Project>& project);
 		static Ref<Project> GetActive();
 
+		static inline Shr<AssetManagerBase> GetAssetManagerBase() { return assetManager.As<AssetManagerBase>(); }
 		static inline Shr<EditorAssetManager> GetEditorAssetManager() { return assetManager.As<EditorAssetManager>(); }
 
 		static std::string GetProjectName()
@@ -98,7 +100,7 @@ namespace Paper
 
 		static inline Ref<Project> activeProject = nullptr;
 
-		static inline Shr<AssetManager> assetManager;
+		static inline Shr<AssetManagerBase> assetManager;
 
 		friend class ProjectSerializer;
 	};

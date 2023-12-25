@@ -36,7 +36,7 @@ namespace Paper {
         EdgeVertex* cubeVertexBufferBase = nullptr;
         EdgeVertex* cubeVertexBufferPtr = nullptr;
 
-        std::array<Ref<Texture>, MAX_TEXTURE_SLOTS> cubeTextureSlots;
+        std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> cubeTextureSlots;
         uint32_t cubeTextureSlotIndex = 0;
 
         std::array<glm::vec3, 24> cubePositionData;

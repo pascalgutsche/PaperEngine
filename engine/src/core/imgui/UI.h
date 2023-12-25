@@ -1,5 +1,7 @@
 ﻿#pragma once
+#include "EditorResources.h"
 #include "Engine.h"
+#include "asset/manager/AssetManager.h"
 #include "imgui/ImGuiLayer.h"
 #include "imgui/ImGuiUtils.h"
 #include "renderer/Font.h"
@@ -35,7 +37,7 @@ namespace Paper::UI
 
 	//BUTTONS
 
-	inline void ImageEffects(const Ref<Texture>& image, ImRect imageArea, ImVec4 tintNormal, ImVec4 tintHovered, ImVec4 tintPressed, ImRect effectArea = ImRect())
+	inline void ImageEffects(const Shr<Texture>& image, ImRect imageArea, ImVec4 tintNormal, ImVec4 tintHovered, ImVec4 tintPressed, ImRect effectArea = ImRect())
 	{
 		ImDrawList* drawList = ImGui::GetWindowDrawList();
 
@@ -70,7 +72,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool ImageButton(const Ref<Texture>& texture, ImVec2 size = ImVec2(0, 0))
+	inline bool ImageButton(const Shr<Texture>& texture, ImVec2 size = ImVec2(0, 0))
 	{
 		CORE_ASSERT(texture, "");
 		const bool modified = ImGui::ImageButton((void*)texture->GetID(), size, {0, 1}, {1, 0});
@@ -78,7 +80,7 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline void Image(const Ref<Texture>& texture, ImVec2 size = ImVec2(0, 0))
+	inline void Image(const Shr<Texture>& texture, ImVec2 size = ImVec2(0, 0))
 	{
 		CORE_ASSERT(texture, "");
 		ImGui::Image((void*)texture->GetID(), size, { 0, 1 }, { 1, 0 });
@@ -209,7 +211,7 @@ namespace Paper::UI
 		{
 			const float iconYOffset = framePaddingY + 1;// -3.0f;
 			UI::ShiftCursorY(iconYOffset);
-			ImGui::Image((void*)DataPool::GetTexture("resources/editor/contentbrowser/search.png", true)->GetID(), iconSize, ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Image((void*)EditorResources::SearchIcon->GetID(), iconSize, ImVec2(0, 1), ImVec2(1, 0));
 			UI::ShiftCursorY(-iconYOffset);
 
 			// Hint
@@ -286,9 +288,9 @@ namespace Paper::UI
 		return ImGui::TreeNodeEx(label.c_str(), flags);
 	}
 
-	inline bool BeginImageTreeNode(std::string label, Ref<Texture> image = nullptr, ImVec2 size = { 0.0f, 0.0f }, bool defaultOpen = true)
+	inline bool BeginImageTreeNode(std::string label, Shr<Texture> image = nullptr, ImVec2 size = { 0.0f, 0.0f }, bool defaultOpen = true)
 	{
-		Ref<Texture> gearTexture = DataPool::GetTexture("resources/editor/icons/gear.png", true);
+		Shr<Texture> gearTexture = EditorResources::GearIcon;
 
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap;
 		if (defaultOpen)
@@ -695,12 +697,13 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyTexture(const std::string& label, Ref<Texture>& texture, ImVec2 size)
+	inline bool PropertyTexture(const std::string& label, const AssetHandle& textureHandle, ImVec2 size)
 	{
 		UI::BeginPropertyElementInternal(label);
 
 		bool modified = false;
 
+		Shr<Texture> texture = AssetManager::GetAsset<Texture>(textureHandle);
 		if (texture)
 			modified = UI::ImageButton(texture, size);
 		else
@@ -711,28 +714,31 @@ namespace Paper::UI
 		return modified;
 	}
 
-	inline bool PropertyTexture(const std::string& label, Ref<Texture>& texture, float maxHeight)
+	inline bool PropertyTexture(const std::string& label, const AssetHandle& textureHandle, float maxHeight)
 	{
 		UI::BeginPropertyElementInternal(label);
 
 		bool modified = false;
 
-		ImVec2 size;
-
-		size.x = GetAvailableContentSpace();
-		size.y = GetAvailableContentSpace() / texture->GetRatio();
-		if (size.y > maxHeight)
-		{
-			size.y = maxHeight;
-			size.x = size.y * texture->GetRatio();
-		}
-
-		
-
+		Shr<Texture> texture = AssetManager::GetAsset<Texture>(textureHandle);
 		if (texture)
+		{
+			const TextureSpecification& spec = texture->GetSpecification();
+
+			ImVec2 size;
+
+			size.x = GetAvailableContentSpace();
+			size.y = GetAvailableContentSpace() / spec.GetRatio();
+			if (size.y > maxHeight)
+			{
+				size.y = maxHeight;
+				size.x = size.y * spec.GetRatio();
+			}
+
 			modified = UI::ImageButton(texture, size);
+		}
 		else
-			modified = UI::Button("null", size);
+			modified = UI::Button("null");
 
 		UI::EndPropertyElementInternal();
 
@@ -769,7 +775,21 @@ namespace Paper::UI
 		return payload;
 	}
 
-	inline bool DragDropTarget(Ref<Texture>& texture)
+	inline std::vector<AssetHandle> DragDropTargetAssetPrev()
+	{
+		std::vector<AssetHandle> assetHandles;
+		const ImGuiPayload* payloadPreview = ImGui::AcceptDragDropPayload("asset_payload", ImGuiDragDropFlags_AcceptPeekOnly);
+		const size_t handleCount = payloadPreview->DataSize / sizeof(AssetHandle);
+		const AssetHandle* handlePayload = (AssetHandle*)payloadPreview->Data;
+		for (size_t i = 0; i < handleCount; i++)
+		{
+			assetHandles.push_back(handlePayload[i]);
+		}
+
+		return assetHandles;
+	}
+
+	inline bool DragDropTarget(Shr<Texture>& texture)
 	{
 		bool isRightDelivery = false;
 		if (ImGui::BeginDragDropTarget())
@@ -810,13 +830,22 @@ namespace Paper::UI
 		return false;
 	}
 
-	inline bool DragDropTarget(PaperID& paperID)
+	inline bool DragDropTarget(PaperID& paperID, AssetType type)
 	{
-		if (const ImGuiPayload* payload = DragDropTargetInternal("ENTITY"))
+		if (ImGui::BeginDragDropTarget())
 		{
-			paperID = *(uint64_t*)payload->Data;
-			return true;
+			const auto assetHandles = DragDropTargetAssetPrev();
+
+			if (assetHandles.size() == 1 && AssetManager::GetAssetType(assetHandles[0]) == type)
+			{
+				if (ImGui::AcceptDragDropPayload("asset_payload"))
+					paperID = assetHandles[0];
+			}
+
+
+			ImGui::EndDragDropTarget();
 		}
+
 		return false;
 	}
 

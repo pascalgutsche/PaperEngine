@@ -33,27 +33,61 @@ namespace Paper
 		CORE_ASSERT("", false);
 		return 0;
 	}
-	OpenGLTexture::OpenGLTexture(std::filesystem::path filePath, std::string name)
+	OpenGLTexture::OpenGLTexture(TextureSpecification specification, std::filesystem::path filePath)
+		: specification(specification), filePath(filePath)
 	{
-		this->filePath = filePath;
-		this->name = name;
+		glGenTextures(1, &texID);
+		// use texture (everything that is called from now will be set to the current texture)
+		glBindTexture(GL_TEXTURE_2D, texID);
+		// set texture parameters
 
-		if (!Init(this->filePath))
+		// repeat image in both directions (activate the repeating of the texture)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		// pixelate the texture when made bigger
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		// pixelate the texture when made smaller
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+		// load texture and save formats to the variables (4 == RGBA format)
+		int channels = 0;
+		textureData = LoadDataToBuffer(filePath, specification.width, specification.height, channels);
+
+		if (!textureData)
 		{
-			glDeleteTextures(1, &texID);
-			Init("resources/textures/error_texture_256x256.png");
+			textureData = LoadDataToBuffer("resources/textures/error_texture_256x256.png", specification.width, specification.height, channels);
+			LOG_CORE_ERROR("Could not load image '" + filePath.string() + "'");
 		}
+
+		if (channels == 3) {
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, specification.width, specification.height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData.data);
+			specification.format = ImageFormat::RGB8;
+		}
+		else if (channels == 4) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, specification.width, specification.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData.data);
+			specification.format = ImageFormat::RGBA8;
+		}
+		else {
+			LOG_CORE_ERROR("Unknown number of channel '" + std::to_string(channels) + "' by texture '" + filePath.string() + "'");
+		}
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		internalFormat = ImageFormatToGLInternalFormat(specification.format);
+		dataFormat = ImageFormatToGLDataFormat(specification.format);
 	}
 
 	OpenGLTexture::OpenGLTexture(TextureSpecification specification)
-		: specification(specification), width(specification.Width), height(specification.Height)
+		: specification(specification)
 	{
 
-		internalFormat = ImageFormatToGLInternalFormat(specification.Format);
-		dataFormat = ImageFormatToGLDataFormat(specification.Format);
+		internalFormat = ImageFormatToGLInternalFormat(specification.format);
+		dataFormat = ImageFormatToGLDataFormat(specification.format);
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &texID);
-		glTextureStorage2D(texID, 1, internalFormat, width, height);
+		glTextureStorage2D(texID, 1, internalFormat, specification.width, specification.height);
 
 		glTextureParameteri(texID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTextureParameteri(texID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -65,8 +99,8 @@ namespace Paper
 	void OpenGLTexture::SetData(void* data, uint32_t size)
 	{
 		uint32_t bpp = dataFormat == GL_RGBA ? 4 : 3;
-		CORE_ASSERT(size == width * height * bpp, "Data must be entire texture!");
-		glTextureSubImage2D(texID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
+		CORE_ASSERT(size == specification.width * specification.height * bpp, "Data must be entire texture!");
+		glTextureSubImage2D(texID, 0, 0, 0, specification.width, specification.height, dataFormat, GL_UNSIGNED_BYTE, data);
 	}
 
 	OpenGLTexture::~OpenGLTexture()
@@ -85,88 +119,22 @@ namespace Paper
 		LOG_CORE_WARN("You should not go over 31 texture slots, as the OpenGL specification does not allow more");
 	}
 
-	bool OpenGLTexture::IsLoaded()
-	{
-		return false;
-	}
-
 	void OpenGLTexture::Unbind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	uint32_t OpenGLTexture::GetID() const
+	Buffer OpenGLTexture::LoadDataToBuffer(const std::filesystem::path& filePath, int& outWidth, int& outHeight,
+		int& outChannels)
 	{
-		return this->texID;
-	}
-
-	int OpenGLTexture::GetWidth()
-	{
-		return this->width;
-	}
-
-	int OpenGLTexture::GetHeight()
-	{
-		return this->height;
-	}
-
-	bool OpenGLTexture::operator==(const Texture& other) const
-	{
-		return texID == other.GetID();
-	}
-
-	std::filesystem::path OpenGLTexture::GetFilePath()
-	{
-		return this->filePath;
-	}
-
-	std::string OpenGLTexture::GetName()
-	{
-		return this->name;
-	}
-
-	bool OpenGLTexture::Init(std::filesystem::path path)
-	{
-		glGenTextures(1, &texID);
-		// use texture (everything that is called from now will be set to the current texture)
-		glBindTexture(GL_TEXTURE_2D, texID);
-		// set texture parameters
-
-		// repeat image in both directions (activate the repeating of the texture)
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		// pixelate the texture when made bigger
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		// pixelate the texture when made smaller
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		Buffer buffer;
 
 		stbi_set_flip_vertically_on_load(true);
-		// load texture and save formats to the variables (4 == RGBA format)
-		localBuffer = stbi_load(path.string().c_str(), &width, &height, &channels, 0);
+		buffer.data = stbi_load(filePath.string().c_str(), &outWidth, &outHeight, &outChannels, 0);
+		buffer.size = outWidth * outHeight * outChannels;
 
-		// free memory if path is invalid
-		if (localBuffer)
-		{
-			if (channels == 3) {
-				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, localBuffer);
-			}
-			else if (channels == 4) {
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer);
-			}
-			else {
-				LOG_CORE_ERROR("Unknown number of channel '" + std::to_string(channels) + "' by texture '" + path.string() + "'");
-				return false;
-			}
-			glGenerateMipmap(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
-		else {
-			LOG_CORE_ERROR("Could not load image '" + path.string() + "'");
-			return false;
-		}
-
-		stbi_image_free(localBuffer);
-		return true;
+		if (!buffer)
+			return {};
+		return buffer;
 	}
 }

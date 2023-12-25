@@ -14,6 +14,7 @@
 
 #include <glm/gtx/string_cast.hpp>
 
+#include "asset/manager/AssetManager.h"
 #include "box2d/b2_body.h"
 
 namespace Paper
@@ -79,14 +80,14 @@ namespace Paper
         std::string filePath_std(filePath_c);
         mono_free(filePath_c);
 
-        Ref<Texture> texture = DataPool::GetAssetTexture(filePath_std, true);
+        Shr<Texture> texture = DataPool::GetAssetTexture(filePath_std, true);
         TextureData localData;
         if (texture)
         {
             localData.filepath = mono_string_new(mono_domain_get(), texture->GetFilePath().string().c_str());
             localData.ID = texture->GetID();
-            localData.width = texture->GetWidth();
-            localData.height = texture->GetHeight();
+            localData.width = texture->GetSpecification().width;
+            localData.height = texture->GetSpecification().height;
         }
         else
         {
@@ -385,12 +386,14 @@ namespace Paper
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityID).GetComponent<SpriteComponent>();
     	TextureData data;
-        if (sc.texture)
+        Shr<Texture> texture = AssetManager::GetAsset<Texture>(sc.textureHandle);
+
+        if (texture)
         {
-            data.filepath = MONO_STRING(sc.texture->GetFilePath().string().c_str());
-            data.ID = sc.texture->GetID();
-            data.width = sc.texture->GetWidth();
-            data.height = sc.texture->GetHeight();
+            data.filepath = MONO_STRING(texture->GetFilePath().string().c_str());
+            data.ID = texture->GetID();
+            data.width = texture->GetSpecification().width;
+            data.height = texture->GetSpecification().height;
         }
         else
         {
@@ -406,21 +409,21 @@ namespace Paper
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityID).GetComponent<SpriteComponent>();
-        sc.texture = DataPool::GetAssetTexture(ScriptUtils::MonoStringToStdString(inTextureFilePath), true);
+        //sc.texture = DataPool::GetAssetTexture(ScriptUtils::MonoStringToStdString(inTextureFilePath), true);
     }
 
     static float SpriteComponent_GetTilingFactor(PaperID entityID)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityID).GetComponent<SpriteComponent>();
-        return sc.tiling_factor;
+        return sc.tilingFactor;
     }
 
     static void SpriteComponent_SetTilingFactor(PaperID entityID, float tilingFactor)
     {
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityID).GetComponent<SpriteComponent>();
-        sc.tiling_factor = tilingFactor;
+        sc.tilingFactor = tilingFactor;
     }
 
     static void SpriteComponent_GetUV0(PaperID entityID, glm::vec2* outUV0)
@@ -428,7 +431,7 @@ namespace Paper
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityID).GetComponent<SpriteComponent>();
 
-        *outUV0 = sc.tex_coords[0];
+        *outUV0 = sc.texCoords[0];
     }
 
     static void SpriteComponent_SetUV0(PaperID entityID, glm::vec2* inUV0)
@@ -436,9 +439,9 @@ namespace Paper
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityID).GetComponent<SpriteComponent>();
 
-        sc.tex_coords[0] = *inUV0;
-        sc.tex_coords[1].y = (*inUV0).y;
-        sc.tex_coords[3].x = (*inUV0).x;
+        sc.texCoords[0] = *inUV0;
+        sc.texCoords[1].y = (*inUV0).y;
+        sc.texCoords[3].x = (*inUV0).x;
     }
 
     static void SpriteComponent_GetUV1(PaperID entityID, glm::vec2* outUV1)
@@ -446,7 +449,7 @@ namespace Paper
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityID).GetComponent<SpriteComponent>();
 
-        *outUV1 = sc.tex_coords[2];
+        *outUV1 = sc.texCoords[2];
     }
 
     static void SpriteComponent_SetUV1(PaperID entityID, glm::vec2* inUV1)
@@ -454,9 +457,9 @@ namespace Paper
         Scene* scene = ScriptEngine::GetSceneContext();
         auto& sc = scene->GetEntity(entityID).GetComponent<SpriteComponent>();
 
-        sc.tex_coords[1].x = (*inUV1).x;
-        sc.tex_coords[2] = *inUV1;
-        sc.tex_coords[3].y = (*inUV1).y;
+        sc.texCoords[1].x = (*inUV1).x;
+        sc.texCoords[2] = *inUV1;
+        sc.texCoords[3].y = (*inUV1).y;
     }
 
     static int SpriteComponent_GetGeometry(PaperID entityID)

@@ -114,7 +114,7 @@ namespace YAML
 
 		static bool decode(const Node& node, Paper::PaperID& rhs)
 		{
-			rhs.Set(node[0].as<std::string>());
+			rhs.Set(node.as<std::string>());
 			return true;
 		}
 	};
@@ -202,7 +202,7 @@ namespace Paper
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& out, const PaperID& uuid)
 	{
-		return out << YAML::BeginSeq << uuid.toString() << YAML::EndSeq;
+		return out << uuid.toString();
 	}
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& out, const std::filesystem::path& path)

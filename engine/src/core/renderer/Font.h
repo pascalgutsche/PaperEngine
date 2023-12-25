@@ -18,7 +18,7 @@ namespace Paper
 		~Font();
 
 		MSDFData* GetMSDFData() const { return data; };
-		Ref<Texture> GetAtlasTexture() const { return atlasTexture; };
+		Shr<Texture> GetAtlasTexture() const { return atlasTexture; };
 
 		std::string GetFilePath() const { return fontPath.string(); }
 		std::string GetFontName() const { return fontPath.filename().string(); }
@@ -28,7 +28,7 @@ namespace Paper
 	private:
 		MSDFData* data;
 		std::filesystem::path fontPath;
-		Ref<Texture> atlasTexture;
+		Shr<Texture> atlasTexture;
 
 		//see ctr
 		bool isDefault;

@@ -11,6 +11,7 @@
 
 #include "Components.h"
 #include "imgui.h"
+#include "asset/manager/AssetManager.h"
 #include "box2d/b2_body.h"
 #include "box2d/b2_circle_shape.h"
 #include "box2d/b2_fixture.h"
@@ -317,15 +318,16 @@ namespace Paper {
 		{
 			auto view = registry.view<TransformComponent, SpriteComponent>();
 			for (auto [entity, transform, sprite] : view.each()) {
+				const Shr<Texture> texture = AssetManager::GetAsset<Texture>(sprite.textureHandle);
 				if (sprite.geometry == Geometry::CIRCLE)
 				{
 					CircleRenderData data;
 					data.transform = transform.GetTransform();
 					data.color = sprite.color;
-					data.texture = sprite.texture;
-					data.tilingFactor = sprite.tiling_factor;
-					data.texCoords = sprite.tex_coords;
-					data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
+					data.texture = texture;
+					data.tilingFactor = sprite.tilingFactor;
+					data.texCoords = sprite.texCoords;
+					data.coreIDToAlphaPixels = sprite.registerAlphaPixelsToEvent;
 					data.enity_id = (entity_id)entity;
 
 					data.thickness = sprite.thickness;
@@ -338,10 +340,10 @@ namespace Paper {
 					EdgeRenderData data;
 					data.transform = transform.GetTransform();
 					data.color = sprite.color;
-					data.texture = sprite.texture;
-					data.tilingFactor = sprite.tiling_factor;
-					data.texCoords = sprite.tex_coords;
-					data.coreIDToAlphaPixels = sprite.register_alpha_pixels_to_event;
+					data.texture = texture;
+					data.tilingFactor = sprite.tilingFactor;
+					data.texCoords = sprite.texCoords;
+					data.coreIDToAlphaPixels = sprite.registerAlphaPixelsToEvent;
 					data.enity_id = (entity_id)entity;
 
 					if (sprite.geometry == Geometry::RECTANGLE)
@@ -391,7 +393,7 @@ namespace Paper {
 			for (auto [entity, transform, line] : view.each())
 			{
 				EdgeRenderData data;
-				data.texture = DataPool::GetTexture("resources/editor/world/camera_symbol.png", true);
+				//TODO: data.texture = DataPool::GetTexture("resources/editor/world/camera_symbol.png", true);
 				data.color = glm::vec4(1.0f);
 				data.transform = transform.GetTransform() * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.0f, -90.0f, 0.0f))));
 				data.enity_id = (entity_id)entity;

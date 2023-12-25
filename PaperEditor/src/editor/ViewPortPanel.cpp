@@ -7,6 +7,7 @@ constexpr bool dynamicCameraCount = true;
 
 void PaperLayer::CameraMode()
 {
+	/*
 	static bool active = true, previous_active = true;
 	if (active != previous_active)
 	{
@@ -93,6 +94,7 @@ void PaperLayer::CameraMode()
 		ImGui::PopStyleColor(3);
 		ImGui::EndCombo();
 	}
+	*/
 }
 
 void PaperLayer::DockCameraPanel(CameraModes mode, ImGuiID main_id, const ImVec2& dockspace_size)

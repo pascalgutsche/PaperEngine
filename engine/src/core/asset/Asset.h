@@ -22,10 +22,14 @@ namespace Paper
 
 		std::filesystem::path filePath;
 
+		bool isDataLoaded = false;
+
+		bool errorWhileImporting = false;
+
 		bool IsValid() const { return handle != AssetHandle(0); }
 	};
 
-	class Asset
+	class Asset : public ShrCounted
 	{
 	public:
 		AssetHandle handle;

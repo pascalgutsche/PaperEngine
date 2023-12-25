@@ -246,7 +246,7 @@ void UIDebuggerPanel::OnImGuiRender(bool& isOpen)
 
 	ImGui::Begin("UI Debugger", &isOpen);
 
-	if (UI::BeginImageTreeNode("lol", DataPool::GetTexture("resources/editor/icons/gear.png", true), {14, 14}))
+	if (UI::BeginImageTreeNode("lol", EditorResources::GearIcon, {14, 14}))
 	{
 		UI::BeginPropertyGrid();
 

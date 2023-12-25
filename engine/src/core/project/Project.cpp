@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include "Project.h"
 
-#include "asset/EditorAssetManager.h"
+#include "asset/manager/EditorAssetManager.h"
 
 namespace Paper
 {

@@ -311,26 +311,26 @@ namespace PaperED
 					UI::Property("Fade", sc.fade, 0.005f, {0.001f, 0.0f, FLT_MAX, "%.3f"});
 				}
 
-				UI::Property("RegisterAlphaPixels", sc.register_alpha_pixels_to_event);
+				UI::Property("RegisterAlphaPixels", sc.registerAlphaPixelsToEvent);
 
 
-				UI::PropertyTexture("Texture", sc.texture, 100);
-				UI::DragDropTarget(sc.texture);
+				UI::PropertyTexture("Texture", sc.textureHandle, 100);
+				UI::DragDropTarget(sc.textureHandle, AssetType::Texture);
 
-				UI::Property("Tiling Factor", sc.tiling_factor, 1.0f, { .speed = 0.1f, .format = "%.1f" });
+				UI::Property("Tiling Factor", sc.tilingFactor, 1.0f, { .speed = 0.1f, .format = "%.1f" });
 
-				glm::vec2 uv0 = sc.tex_coords[0];
-				glm::vec2 uv1 = sc.tex_coords[2];
+				glm::vec2 uv0 = sc.texCoords[0];
+				glm::vec2 uv1 = sc.texCoords[2];
 
 				UI::Property("UV0", uv0, { 0, 0 }, { glm::vec2(0.01f), glm::vec2(0), glm::vec2(1.0f), "%.2f"});
 				UI::Property("UV1", uv1, { 1.0f, 1.0f }, { glm::vec2(0.01f), glm::vec2(0), glm::vec2(1.0f), "%.2f"});
 
-				if (uv0 != sc.tex_coords[0] || uv1 != sc.tex_coords[2])
+				if (uv0 != sc.texCoords[0] || uv1 != sc.texCoords[2])
 				{
-					sc.tex_coords[0] = uv0;
-					sc.tex_coords[1] = { uv1.x, uv0.y };
-					sc.tex_coords[2] = uv1;
-					sc.tex_coords[3] = { uv0.x, uv1.y };
+					sc.texCoords[0] = uv0;
+					sc.texCoords[1] = { uv1.x, uv0.y };
+					sc.texCoords[2] = uv1;
+					sc.texCoords[3] = { uv0.x, uv1.y };
 				}
 
 				UI::PropertyColor("Color", sc.color);

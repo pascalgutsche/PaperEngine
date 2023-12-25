@@ -109,13 +109,13 @@ namespace Paper {
 		TextVertex* textVertexBufferBase = nullptr;
 		TextVertex* textVertexBufferPtr = nullptr;
 
-		std::array<Ref<Texture>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
+		std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> rectangleTextureSlots;
 		uint32_t rectangleTextureSlotIndex = 0;
 
-		std::array<Ref<Texture>, MAX_TEXTURE_SLOTS> triangleTextureSlots;
+		std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> triangleTextureSlots;
 		uint32_t triangleTextureSlotIndex = 0;
 
-		std::array<Ref<Texture>, MAX_TEXTURE_SLOTS> circleTextureSlots;
+		std::array<Shr<Texture>, MAX_TEXTURE_SLOTS> circleTextureSlots;
 		uint32_t circleTextureSlotIndex = 0;
 
 		float lineWidth = 1.0f;
@@ -123,7 +123,7 @@ namespace Paper {
 		glm::vec4 rectangleVertexData[4];
 		glm::vec4 triangleVertexData[3];
 
-		Ref<Texture> fontAtlasTexture;
+		Shr<Texture> fontAtlasTexture;
 	};
 
 	static RenderData2D data;
@@ -726,7 +726,7 @@ namespace Paper {
 
 		const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
 		const auto& metrics = fontGeometry.getMetrics();
-		Ref<Texture> fontAtlas = font->GetAtlasTexture();
+		Shr<Texture> fontAtlas = font->GetAtlasTexture();
 
 		data.fontAtlasTexture = fontAtlas;
 
@@ -772,8 +772,10 @@ namespace Paper {
 			quadMin += glm::vec2(x, y);
 			quadMax += glm::vec2(x, y);
 
-			float texelWidth = 1.0f / fontAtlas->GetWidth();
-			float texelHeight = 1.0f / fontAtlas->GetHeight();
+			const TextureSpecification& atlasSpec = fontAtlas->GetSpecification();
+
+			float texelWidth = 1.0f / atlasSpec.width;
+			float texelHeight = 1.0f / atlasSpec.height;
 			texCoordMin *= glm::vec2(texelWidth, texelHeight);
 			texCoordMax *= glm::vec2(texelWidth, texelHeight);
 

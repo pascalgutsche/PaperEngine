@@ -1,6 +1,7 @@
 ﻿#include "Editor.h"
 #include "ContentBrowserPanel.h"
 
+#include "imgui/EditorResources.h"
 #include "editor/SelectionManager.h"
 #include "imgui/ImGuiFont.h"
 #include "project/Project.h"
@@ -21,7 +22,7 @@ namespace PaperED
 	//	ContentBrowserItem
 	// ===========================================
 
-	ContentBrowserItem::ContentBrowserItem(ItemType type, AssetHandle handle, std::string name, Ref<Texture> icon)
+	ContentBrowserItem::ContentBrowserItem(ItemType type, AssetHandle handle, std::string name, Shr<Texture> icon)
 		: itemType(type), itemID(handle), itemName(name), itemIcon(icon)
 	{
 		
@@ -253,10 +254,10 @@ namespace PaperED
 	// ===========================================
 
 	ContentBrowserDir::ContentBrowserDir(const Shr<DirectoryInfo>& dirInfo)
-		: ContentBrowserItem(ItemType::Directory, 
-			dirInfo->handle, 
-			dirInfo->path.filename().string(), 
-			DataPool::GetTexture("folder_icon2.png")
+		: ContentBrowserItem(ItemType::Directory,
+			dirInfo->handle,
+			dirInfo->path.filename().string(),
+			EditorResources::FolderIcon
 		),
 		dirInfo(dirInfo)
 	{
@@ -267,7 +268,7 @@ namespace PaperED
 	//	ContentBrowserAsset
 	// ===========================================
 
-	ContentBrowserAsset::ContentBrowserAsset(AssetMetadata& metadata, Ref<Texture> icon)
+	ContentBrowserAsset::ContentBrowserAsset(AssetMetadata& metadata, Shr<Texture> icon)
 		: ContentBrowserItem(ItemType::Asset,
 			metadata.handle,
 			metadata.filePath.filename().stem().string(),
@@ -477,7 +478,7 @@ namespace PaperED
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, ImGui::GetStyle().FramePadding.y));
 		float height = 26;
-		auto contenBrowserButton = [](const char* labelId, const Ref<Texture>& icon, float iconSize, bool disabled = false)
+		auto contenBrowserButton = [](const char* labelId, const Shr<Texture>& icon, float iconSize, bool disabled = false)
 		{
 			ImGui::BeginDisabled(disabled);
 			const bool clicked = UI::ImageButton(icon, ImVec2(iconSize, iconSize));
@@ -487,21 +488,21 @@ namespace PaperED
 
 		const float iconSize = std::min(24.0f, height);
 
-		if (contenBrowserButton("##back", DataPool::GetTexture("resources/editor/contentbrowser/back.png", true), iconSize, prevDirInfoStack.empty()))
+		if (contenBrowserButton("##back", EditorResources::LeftArrowIcon, iconSize, prevDirInfoStack.empty()))
 		{
 			BackDir();
 		};
 
 		ImGui::SameLine();
 
-		if (contenBrowserButton("##prev", DataPool::GetTexture("resources/editor/contentbrowser/forward.png", true), iconSize, nextDirInfoStack.empty()))
+		if (contenBrowserButton("##prev", EditorResources::RightArrowIcon, iconSize, nextDirInfoStack.empty()))
 		{
 			ForwardDir();
 		};
 
 		ImGui::SameLine();
 
-		if (contenBrowserButton("##parent", DataPool::GetTexture("resources/editor/contentbrowser/up.png", true), iconSize, !currentDirInfo->parent))
+		if (contenBrowserButton("##parent", EditorResources::UpArrowÎcon, iconSize, !currentDirInfo->parent))
 		{
 			ChangeDir(currentDirInfo->parent);
 		};
@@ -557,7 +558,7 @@ namespace PaperED
 		//refresh
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x - iconSize - 20);
 
-		if (contenBrowserButton("##reload", DataPool::GetTexture("resources/editor/contentbrowser/reload.png", true), iconSize))
+		if (contenBrowserButton("##reload", EditorResources::ReloadIcon, iconSize))
 		{
 			Refresh();
 		}
@@ -653,7 +654,7 @@ namespace PaperED
 		{
 			AssetMetadata metadata = Project::GetEditorAssetManager()->GetMetadata(handle);
 		
-			currentItemList.items.push_back(Shr<ContentBrowserAsset>::Create(metadata, DataPool::GetTexture("file_icon.png")));
+			currentItemList.items.push_back(Shr<ContentBrowserAsset>::Create(metadata, EditorResources::FileIcon));
 		}
 
 		if (!searchbuffer.empty())

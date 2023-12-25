@@ -1,19 +1,21 @@
 ﻿#pragma once
 #include "Engine.h"
 
-#include "AssetManager.h"
+#include "asset/manager/AssetManagerBase.h"
 
 namespace Paper
 {
-	class EditorAssetManager : public AssetManager
+	class EditorAssetManager : public AssetManagerBase
 	{
 	public:
 		EditorAssetManager();
 
 		~EditorAssetManager() override = default;
 
+		bool IsAssetHandleValid(AssetHandle handle) override;
+
 		AssetType GetAssetType(AssetHandle handle) override;
-		Ref<Asset> GetAsset(AssetHandle handle) override;
+		Shr<Asset> GetAsset(AssetHandle handle) override;
 
 		const AssetMetadata& GetMetadata(AssetHandle handle) override;
 		const AssetMetadata& GetMetadata(const std::filesystem::path& path) override;
@@ -23,7 +25,11 @@ namespace Paper
 		bool RemoveAsset(AssetHandle handle);
 
 	private:
+		static AssetMetadata invalidMetadata;
+
+		AssetMetadata& GetMutableMetadata(AssetHandle handle);
+
 		std::unordered_map<AssetHandle, AssetMetadata> assetRegistry;
-		std::unordered_map<AssetHandle, Ref<Asset>> assetsLoaded;
+		std::unordered_map<AssetHandle, Shr<Asset>> assetsLoaded;
 	};
 }

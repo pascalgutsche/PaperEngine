@@ -17,7 +17,7 @@ namespace Paper {
         glm::mat4 transform = glm::mat4(1.0f);
         glm::vec4 color = DEFAULT_COLOR;
 
-        Ref<Texture> texture = nullptr;
+        Shr<Texture> texture = nullptr;
         std::array<glm::vec2, 4> texCoords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
         float tilingFactor = 1.0f;
 
@@ -34,7 +34,7 @@ namespace Paper {
         float thickness = 1.0f;
         float fade = 0.005f;
 
-        Ref<Texture> texture = nullptr;
+        Shr<Texture> texture = nullptr;
         std::array<glm::vec2, 4> texCoords = { { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } } };
         float tilingFactor = 1.0f;
 

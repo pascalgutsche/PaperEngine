@@ -90,6 +90,12 @@ namespace Paper
 			return instance;
 		}
 
+		void Reset(T* instance = nullptr)
+		{
+			DecShr();
+			this->instance = instance;
+		}
+
 		Shr& operator=(std::nullptr_t)
 		{
 			DecShr();

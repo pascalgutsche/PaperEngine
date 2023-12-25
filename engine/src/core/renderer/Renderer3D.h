@@ -15,7 +15,7 @@ namespace Paper {
         glm::vec4 color = DEFAULT_COLOR;
         int isLightSource = false;
 
-        Ref<Texture> texture = nullptr;
+        Shr<Texture> texture = nullptr;
         glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
         float tilingFactor = 1.0f;
 

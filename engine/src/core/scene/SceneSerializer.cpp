@@ -154,6 +154,11 @@ namespace Paper
 
 	Ref<Scene> SceneSerializer::Deserialize(const std::filesystem::path& filePath)
 	{
+		if (!FileSystem::Exists(filePath))
+		{
+			LOG_CORE_ERROR("Could not find scene: '{}'", filePath.string());
+			return nullptr;
+		}
 		Ref<Scene> scene = MakeShr<Scene>();
 
 		YAML::Node data;

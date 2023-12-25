@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine.h"
 #include "utility.h"
+#include "renderer/Texture.h"
 
 namespace Paper {
 
@@ -18,8 +19,8 @@ namespace Paper {
         // get current shader with the specific string (name)
         static Ref<Shader> GetShader(std::string shaderName);
         // search for a texture with the specific string (name)
-        static Ref<Texture> GetAssetTexture(std::string textureName, bool wholePath = false);
-        static Ref<Texture> GetTexture(std::string textureName, bool wholePath = false);
+        static Shr<Texture> GetAssetTexture(std::string textureName, bool wholePath = false) { return nullptr; };
+        static Shr<Texture> GetTexture(std::string textureName, bool wholePath = false) { return nullptr; };
 
         static Ref<Font> GetDefaultFont();
         static Ref<Font> GetFont(std::string fontName, bool wholePath = false, bool isDefault = false);

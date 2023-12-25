@@ -51,7 +51,7 @@ namespace PaperED
 			Asset
 		};
 
-		ContentBrowserItem(ItemType type, AssetHandle handle, std::string name, Ref<Texture> icon);
+		ContentBrowserItem(ItemType type, AssetHandle handle, std::string name, Shr<Texture> icon);
 		virtual ~ContentBrowserItem() = default;
 
 		CBActionResult Render() const;
@@ -59,7 +59,7 @@ namespace PaperED
 		ItemType GetItemType() const { return itemType; }
 		AssetHandle GetAssetHandle() const { return itemID; }
 		const std::string& GetName() const { return itemName; }
-		const Ref<Texture>& GetIcon() const { return itemIcon; }
+		const Shr<Texture>& GetIcon() const { return itemIcon; }
 
 		bool operator<(const ContentBrowserItem& other) const;
 
@@ -70,7 +70,7 @@ namespace PaperED
 		ItemType itemType;
 		AssetHandle itemID;
 		std::string itemName;
-		Ref<Texture> itemIcon;
+		Shr<Texture> itemIcon;
 
 		virtual void HandleDragDropSource() const {}
 		virtual void HandleDragDropTarget() const {}
@@ -111,7 +111,7 @@ namespace PaperED
 	class ContentBrowserAsset : public ContentBrowserItem
 	{
 	public:
-		ContentBrowserAsset(AssetMetadata& metadata, Ref<Texture> icon);
+		ContentBrowserAsset(AssetMetadata& metadata, Shr<Texture> icon);
 		~ContentBrowserAsset() = default;
 
 		const AssetMetadata& GetAssetMetadata() const { return metadata; }

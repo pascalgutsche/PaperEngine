@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine.h"
 #include "utility.h"
+#include "generic/Buffer.h"
 
 #include "renderer/Texture.h"
 
@@ -11,7 +12,7 @@ namespace Paper
 	class OpenGLTexture : public Texture
 	{
 	public:
-		OpenGLTexture(std::filesystem::path filePath, std::string name);
+		OpenGLTexture(TextureSpecification specification, std::filesystem::path filePath);
 		OpenGLTexture(TextureSpecification specification);
 		~OpenGLTexture() override;
 
@@ -20,17 +21,13 @@ namespace Paper
 
 		void SetData(void* data, uint32_t size) override;
 
-		bool IsLoaded() override;
+		bool IsLoaded() override { return textureData; }
 
-		uint32_t GetID() const override;
-		int GetWidth() override;
-		int GetHeight() override;
+		uint32_t GetID() const override { return texID; }
+		const std::filesystem::path& GetFilePath() const override { return filePath; }
+		const TextureSpecification& GetSpecification() const override { return specification; }
 
-		bool operator==(const Texture& other) const override;
-
-		std::filesystem::path GetFilePath() override;
-		std::string GetName() override;
-
+		bool operator==(const Texture& other) const override { return texID == other.GetID(); }
 	private:
 		TextureSpecification specification;
 
@@ -38,16 +35,11 @@ namespace Paper
 		GLenum dataFormat;
 
 		std::filesystem::path filePath;
-		std::string name;
 
-		unsigned char* localBuffer;
+		Buffer textureData;
 
-		int width;
-		int height;
-		int channels;
+		uint32_t texID = 0;
 
-		uint32_t texID;
-
-		bool Init(std::filesystem::path path);
+		static Buffer LoadDataToBuffer(const std::filesystem::path& filePath, int& outWidth, int& outHeight, int& outChannels);
 	};
 }

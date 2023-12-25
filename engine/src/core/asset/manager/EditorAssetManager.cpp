@@ -2,15 +2,24 @@
 
 #include "EditorAssetManager.h"
 
+#include "asset/AssetImporter.h"
 #include "project/Project.h"
 #include "utils/FileSystem.h"
 
 namespace Paper
 {
+	AssetMetadata EditorAssetManager::invalidMetadata;
+
 	EditorAssetManager::EditorAssetManager()
 		:assetRegistry(), assetsLoaded()
 	{
+		AssetImporter::Init();
+	}
 
+	bool EditorAssetManager::IsAssetHandleValid(AssetHandle handle)
+	{
+		const auto metadata = GetMetadata(handle);
+		return metadata.IsValid();
 	}
 
 	AssetType EditorAssetManager::GetAssetType(AssetHandle handle)
@@ -22,15 +31,30 @@ namespace Paper
 		return metadata.type;
 	}
 
-	Ref<Asset> EditorAssetManager::GetAsset(AssetHandle handle)
+	Shr<Asset> EditorAssetManager::GetAsset(AssetHandle handle)
 	{
-		const auto metadata = GetMetadata(handle);
+		auto& metadata = GetMutableMetadata(handle);
 		if (!metadata.IsValid())
 			return nullptr;
 
-		//TODO: LOAD ASSETS
-		// ...
-		return nullptr;
+		if (metadata.errorWhileImporting) // already tried importing and failed
+			return nullptr;
+
+		Shr<Asset> asset = nullptr;
+		if (!metadata.isDataLoaded)
+		{
+			metadata.isDataLoaded = AssetImporter::TryLoadData(metadata, asset);
+			if (!metadata.isDataLoaded)
+			{
+				metadata.errorWhileImporting = true;
+				return nullptr;
+			}
+
+			assetsLoaded[handle] = asset;
+		}
+		else
+			asset = assetsLoaded[handle];
+		return asset;
 	}
 
 	const AssetMetadata& EditorAssetManager::GetMetadata(AssetHandle handle)
@@ -39,6 +63,14 @@ namespace Paper
 			return assetRegistry[handle];
 
 		return AssetMetadata();
+	}
+
+	AssetMetadata& EditorAssetManager::GetMutableMetadata(AssetHandle handle)
+	{
+		if (assetRegistry.contains(handle))
+			return assetRegistry[handle];
+
+		return invalidMetadata;
 	}
 
 	const AssetMetadata& EditorAssetManager::GetMetadata(const std::filesystem::path& path)

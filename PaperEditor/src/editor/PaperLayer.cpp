@@ -19,6 +19,7 @@
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
+#include "imgui/EditorResources.h"
 #include "imgui_internal.h"
 #include "panels/ScenePanel.h"
 #include "panels/SettingsPanel.h"
@@ -43,6 +44,8 @@ PaperLayer::~PaperLayer()
 
 void PaperLayer::OnAttach()
 {
+	EditorResources::Init();
+
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.WindowMenuButtonPosition = ImGuiDir_None;
 
@@ -74,6 +77,7 @@ void PaperLayer::OnAttach()
 
 void PaperLayer::OnDetach()
 {
+	EditorResources::Shutdown();
 }
 
 void PaperLayer::Update(const float dt)
@@ -649,7 +653,7 @@ void HoverImageButton(const std::string& text)
 	}
 }
 
-bool ToolTipButton(const Ref<Texture>& tex, float size, std::string tooltip = std::string())
+bool ToolTipButton(const Shr<Texture>& tex, float size, std::string tooltip = std::string())
 {
 	bool state = ImGui::ImageButton((void*)tex->GetID(), ImVec2(size, size), ImVec2{ 0, 1 }, ImVec2{ 1, 0 }, 0);
 	std::string texName = tooltip.empty() ? tex->GetFilePath().stem().string() : tooltip;
@@ -666,11 +670,11 @@ void PaperLayer::UI_Toolbar()
 	if (first)
 		DockManager::DockPanel(name, DockLoc::Top);
 
-	Ref<Texture> playButton = DataPool::GetTexture("resources/editor/viewport/Play.png", true);
-	Ref<Texture> simulateButton = DataPool::GetTexture("resources/editor/viewport/Simulate.png", true);
-	Ref<Texture> pauseButton = DataPool::GetTexture("resources/editor/viewport/Pause.png", true);
-	Ref<Texture> stopButton = DataPool::GetTexture("resources/editor/viewport/Stop.png", true);
-	Ref<Texture> stepButton = DataPool::GetTexture("resources/editor/viewport/Step.png", true);
+	//Ref<Texture> playButton = DataPool::GetTexture("resources/editor/viewport/Play.png", true);
+	//Ref<Texture> simulateButton = DataPool::GetTexture("resources/editor/viewport/Simulate.png", true);
+	//Ref<Texture> pauseButton = DataPool::GetTexture("resources/editor/viewport/Pause.png", true);
+	//Ref<Texture> stopButton = DataPool::GetTexture("resources/editor/viewport/Stop.png", true);
+	//Ref<Texture> stepButton = DataPool::GetTexture("resources/editor/viewport/Step.png", true);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
@@ -695,13 +699,13 @@ void PaperLayer::UI_Toolbar()
 		{
 			if (activeScene->IsPaused())
 			{
-				if (ToolTipButton(playButton, size, "Resume"))
+				if (ToolTipButton(EditorResources::PlayIcon, size, "Resume"))
 					activeScene->SetPaused(false);
 			}
 			else
 			{
 
-				if (ToolTipButton(pauseButton, size))
+				if (ToolTipButton(EditorResources::PauseIcon, size))
 					activeScene->SetPaused(true);
 			}
 		}
@@ -713,13 +717,13 @@ void PaperLayer::UI_Toolbar()
 
 			if (sceneState == SceneState::Edit)
 			{
-				if (ToolTipButton(playButton, size))
+				if (ToolTipButton(EditorResources::PlayIcon, size))
 					OnScenePlay();
 			}
 			else
 			{
 
-				if (ToolTipButton(stopButton, size))
+				if (ToolTipButton(EditorResources::StopIcon, size))
 					OnSceneStop();
 			}
 		}
@@ -731,12 +735,12 @@ void PaperLayer::UI_Toolbar()
 
 			if (sceneState == SceneState::Edit)
 			{
-				if (ToolTipButton(simulateButton, size))
+				if (ToolTipButton(EditorResources::SimulateIcon, size))
 					OnSceneSimulate();
 			}
 			else
 			{
-				if (ToolTipButton(stopButton, size))
+				if (ToolTipButton(EditorResources::StopIcon, size))
 					OnSceneStop();
 			}
 		}
@@ -745,7 +749,7 @@ void PaperLayer::UI_Toolbar()
 		{
 			ImGui::SameLine();
 
-			if (ToolTipButton(stepButton, size))
+			if (ToolTipButton(EditorResources::StepIcon, size))
 				activeScene->StepFrames();
 		}
 	}
@@ -755,9 +759,9 @@ void PaperLayer::UI_Toolbar()
 
 		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5) - (((size * 2) + (ImGui::GetStyle().ItemSpacing.x * 2)) * 0.5));
 
-		ToolTipButton(playButton, size);
+		ToolTipButton(EditorResources::PlayIcon, size);
 		ImGui::SameLine();
-		ToolTipButton(simulateButton, size);
+		ToolTipButton(EditorResources::SimulateIcon, size);
 
 		ImGui::EndDisabled();
 	}

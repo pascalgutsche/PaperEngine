@@ -1,0 +1,24 @@
+Scene:
+  PaperID: 05c4ebad2773de26
+  Name: Bunker
+  Path: assets\scenes\newtest.pscene
+  Entities:
+    - Components:
+        DataComponent:
+          PaperID: 84e509be6775647f
+          Name: Sprite
+          Tags:
+            []
+        TransformComponent:
+          Position: [0, 0, 26]
+          Scale: [1, 1, 1]
+          Rotation: [0, 0, 0]
+        SpriteComponent:
+          Color: [1, 1, 1, 1]
+          TextureHandle: 0000000000000000
+          TilingFactor: 1
+          TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
+          Geometry: Rectangle
+          RegisterAlphaPixels: false
+          Thickness: 1
+          Fade: 0.00499999989
