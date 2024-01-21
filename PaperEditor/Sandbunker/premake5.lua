@@ -46,8 +46,8 @@ project "Sandbunker"
 	dotnetframework "4.7.2"
 
 	targetname "Sandbunker"
-	targetdir ("%{prj.location}/assets/scripts/bin")
-	objdir ("%{prj.location}/assets/scripts/int")
+	targetdir ("%{prj.location}/script_bins/bin")
+	objdir ("%{prj.location}/script_bins/int")
 
 	files  {
 		"assets/**.cs", 

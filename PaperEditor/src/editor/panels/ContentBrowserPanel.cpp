@@ -594,6 +594,7 @@ namespace PaperED
 		if (contenBrowserButton("##reload", EditorResources::ReloadIcon, iconSize))
 		{
 			Refresh();
+			Project::GetEditorAssetManager()->ReloadAssets();
 		}
 
 		ImGui::PopStyleVar();
@@ -660,7 +661,8 @@ namespace PaperED
 			if (!metadata.IsValid())
 			{
 				AssetHandle handle = Project::GetEditorAssetManager()->AddAsset(entry.path());
-				dirInfo->assets.push_back(handle);
+				if (handle)
+					dirInfo->assets.push_back(handle);
 			}
 			else
 				dirInfo->assets.push_back(metadata.handle);

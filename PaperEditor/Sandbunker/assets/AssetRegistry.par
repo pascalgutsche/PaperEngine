@@ -1,0 +1,73 @@
+AssetRegistry:
+  - AssetHandle: 0603c92623cd8beb
+    FilePath: Sandbunker\assets\scripts\Source\Example.cs
+    Type: Script
+  - AssetHandle: 1d3e57f1f4107d65
+    FilePath: Sandbunker\assets\textures\WTBird\aircraft.png
+    Type: Texture
+  - AssetHandle: 2212d5710581c26f
+    FilePath: Sandbunker\assets\scripts\Source\Camera.cs
+    Type: Script
+  - AssetHandle: 375c61a4d9bd0304
+    FilePath: Sandbunker\assets\textures\antimarx.png
+    Type: Texture
+  - AssetHandle: 39f04d27c0189801
+    FilePath: Sandbunker\assets\scenes\bouncer.pscene
+    Type: Scene
+  - AssetHandle: 443daebaa7695286
+    FilePath: Sandbunker\assets\scenes\test.pscene
+    Type: Scene
+  - AssetHandle: 5134a41d42b38158
+    FilePath: Sandbunker\assets\scenes\bunker.pscene
+    Type: Scene
+  - AssetHandle: 527f0752c863b855
+    FilePath: Sandbunker\assets\textures\max.jpg
+    Type: Texture
+  - AssetHandle: 70d1232b75c5e4bb
+    FilePath: Sandbunker\assets\textures\james_webb.png
+    Type: Texture
+  - AssetHandle: 8d0549c2ca1db3b3
+    FilePath: Sandbunker\assets\scenes\newtest.pscene
+    Type: Scene
+  - AssetHandle: 8ded9b30d0564f0b
+    FilePath: Sandbunker\assets\textures\server-icon.png
+    Type: Texture
+  - AssetHandle: 8e7bafbc5385e721
+    FilePath: Sandbunker\assets\textures\MicrosoftTeams-image.png
+    Type: Texture
+  - AssetHandle: 8f1f9c9cbc34b7ad
+    FilePath: Sandbunker\assets\textures\WTBird\tower.png
+    Type: Texture
+  - AssetHandle: 91e40ef602a8530f
+    FilePath: Sandbunker\assets\textures\WTBird\skyline.png
+    Type: Texture
+  - AssetHandle: 93093d96c346d2bc
+    FilePath: Sandbunker\assets\scenes\Bouncer1.pscene
+    Type: Scene
+  - AssetHandle: af6a4198e08a9685
+    FilePath: Sandbunker\assets\textures\putain.jpg
+    Type: Texture
+  - AssetHandle: bd536494ee069113
+    FilePath: Sandbunker\assets\textures\wallpaper.jpg
+    Type: Texture
+  - AssetHandle: d49d088f4541ce97
+    FilePath: Sandbunker\assets\scripts\Source\Max.cs
+    Type: Script
+  - AssetHandle: d748d9dc388b38f7
+    FilePath: Sandbunker\assets\textures\Honecker-2113738823.jpg
+    Type: Texture
+  - AssetHandle: e55fa4df8ebd313d
+    FilePath: Sandbunker\assets\scripts\Source\WTBird\WTController.cs
+    Type: Script
+  - AssetHandle: e7de784a95fd0e6b
+    FilePath: Sandbunker\assets\textures\placeholder_texture_256x256.png
+    Type: Texture
+  - AssetHandle: f64097be5100e418
+    FilePath: Sandbunker\assets\scenes\honecker.pscene
+    Type: Scene
+  - AssetHandle: f81d40472c6f6b8e
+    FilePath: Sandbunker\assets\scripts\Source\Player.cs
+    Type: Script
+  - AssetHandle: fca258d6cd5fdebd
+    FilePath: Sandbunker\assets\scenes\WTBird.pscene
+    Type: Scene

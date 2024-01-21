@@ -24,7 +24,16 @@ namespace Paper
 		bool RemoveAsset(const std::filesystem::path& path);
 		bool RemoveAsset(AssetHandle handle);
 
+		void ReloadAssets();
+
+		void UnloadAllAssets();
+
 	private:
+		bool SerializeRegistry();
+		bool DeserializeRegistry();
+
+		void SearchForAssets(const std::filesystem::path& path);
+
 		static AssetMetadata invalidMetadata;
 
 		AssetMetadata& GetMutableMetadata(AssetHandle handle);

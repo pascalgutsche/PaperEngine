@@ -2,5 +2,6 @@ ProjectConfig:
   Name: Sandbunker
   Path: Sandbunker
   AssetPath: assets
-  ScriptBinaryPath: assets/scripts/bin
+  AssetRegistryFile: AssetRegistry.par
+  ScriptBinaryPath: assets_bins/bin
   StartScene: assets/scenes/newtest.pscene

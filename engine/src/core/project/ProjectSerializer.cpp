@@ -17,6 +17,7 @@ namespace Paper
 		out << YAML::Key << "Name" << YAML::Value << config.projectName;
 		out << YAML::Key << "Path" << YAML::Value << config.projectPath.string();
 		out << YAML::Key << "AssetPath" << YAML::Value << config.assetPath.string();
+		out << YAML::Key << "AssetRegistryFile" << YAML::Value << config.assetRegistryFile.string();
 		out << YAML::Key << "ScriptBinaryPath" << YAML::Value << config.scriptBinaryPath.string();
 		out << YAML::Key << "StartScene" << YAML::Value << config.startScene.string();
 
@@ -53,6 +54,7 @@ namespace Paper
 			config.projectName = configNode["Name"].as<std::string>();
 			config.projectPath = configNode["Path"].as<std::string>();
 			config.assetPath = configNode["AssetPath"].as<std::string>();
+			config.assetRegistryFile = configNode["AssetRegistryFile"].as<std::string>();
 			config.scriptBinaryPath = configNode["ScriptBinaryPath"].as<std::string>();
 
 			if (configNode["StartScene"])

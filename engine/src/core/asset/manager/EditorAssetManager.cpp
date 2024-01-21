@@ -6,6 +6,8 @@
 #include "project/Project.h"
 #include "utils/FileSystem.h"
 
+#include "serializer/YAMLSerializer.h"
+
 namespace Paper
 {
 	AssetMetadata EditorAssetManager::invalidMetadata;
@@ -14,6 +16,9 @@ namespace Paper
 		:assetRegistry(), assetsLoaded()
 	{
 		AssetImporter::Init();
+
+		DeserializeRegistry();
+		ReloadAssets();
 	}
 
 	bool EditorAssetManager::IsAssetHandleValid(AssetHandle handle)
@@ -75,11 +80,9 @@ namespace Paper
 
 	const AssetMetadata& EditorAssetManager::GetMetadata(const std::filesystem::path& path)
 	{
-		std::filesystem::path relativePath = std::filesystem::relative(path.lexically_normal(), Project::GetAssetPath());
-
 		for (const auto metadata : assetRegistry | std::views::values)
 		{
-			if (metadata.filePath == relativePath)
+			if (metadata.filePath == path)
 				return metadata;
 		}
 
@@ -128,5 +131,125 @@ namespace Paper
 
 		assetRegistry.erase(handle);
 		return true;
+	}
+
+	void EditorAssetManager::ReloadAssets()
+	{
+		SearchForAssets(Project::GetAssetPath());
+		UnloadAllAssets();
+		SerializeRegistry();
+	}
+
+	void EditorAssetManager::UnloadAllAssets()
+	{
+		for (auto& [handle, metadata] : assetRegistry)
+		{
+			metadata.isDataLoaded = false;
+			metadata.errorWhileImporting = false;
+		}
+		assetsLoaded.clear();
+	}
+
+	bool EditorAssetManager::SerializeRegistry()
+	{
+		std::filesystem::path registryPath = Project::GetAssetRegistryFilePath();
+
+		std::map<const AssetHandle, AssetMetadata> tmpRegistry;
+
+		for (auto [handle, metadata] : assetRegistry)
+		{
+			tmpRegistry[handle] = AssetMetadata(metadata);
+		}
+
+		LOG_TRACE("Serializing AssetRegistry to '{}' with {} entries!", registryPath, tmpRegistry.size());
+
+		YAML::Emitter out;
+		out << YAML::BeginMap;
+		out << YAML::Key << "AssetRegistry" << YAML::BeginSeq;
+
+
+		for (const auto& [handle, metadata] : tmpRegistry)
+		{
+			out << YAML::BeginMap;
+			out << YAML::Key << "AssetHandle" << YAML::Value << handle;
+			out << YAML::Key << "FilePath" << YAML::Value << metadata.filePath;
+			out << YAML::Key << "Type" << YAML::Value << Utils::ConvertAssetTypeToString(metadata.type);
+			out << YAML::EndMap;
+		}
+
+
+		out << YAML::EndSeq;
+		out << YAML::EndMap;
+
+		std::ofstream fout(registryPath.string());
+		fout << out.c_str();
+		fout.close();
+
+		return true;
+	}
+
+	bool EditorAssetManager::DeserializeRegistry()
+	{
+		std::filesystem::path registryPath = Project::GetAssetRegistryFilePath();
+		if (!FileSystem::Exists(registryPath))
+		{
+			LOG_CORE_ERROR("Could not find asset registry: '{}'", registryPath.string());
+			CORE_ASSERT(false, "")
+			return false;
+		}
+
+		LOG_TRACE("Loading AssetRegistry from '{}'", registryPath);
+
+		YAML::Node data;
+		try
+		{
+			data = YAML::LoadFile(registryPath.string());
+		}
+		catch (YAML::Exception e)
+		{
+			LOG_CORE_ERROR("Failed to asset registry file '{0}'\n\t{1}", registryPath, e.what());
+			CORE_ASSERT(false, "")
+			return false;
+		}
+
+		try
+		{
+			auto registry = data["AssetRegistry"];
+			for (auto entry : registry)
+			{
+				std::string filePath = entry["FilePath"].as<std::string>();
+
+				AssetMetadata metadata;
+				metadata.handle = entry["AssetHandle"].as<AssetHandle>();
+				metadata.filePath = filePath;
+				metadata.type = Utils::ConvertStringToAssetType(entry["Type"].as<std::string>());
+
+				if (!metadata.IsValid())
+					continue;
+
+				assetRegistry[metadata.handle] = metadata;
+			}
+			LOG_TRACE("Loaded {} from AssetRegistry", assetRegistry.size());
+		}
+		catch (YAML::Exception& ex)
+		{
+			LOG_CORE_CRITICAL(ex.msg);
+			CORE_ASSERT(false, "")
+			return false;
+		}
+
+
+		return true;
+	}
+
+	void EditorAssetManager::SearchForAssets(const std::filesystem::path& path)
+	{
+		for (auto entry : std::filesystem::recursive_directory_iterator(path))
+		{
+			if (entry.is_regular_file())
+			{
+				AddAsset(entry.path());
+			}
+		}
 	}
 }

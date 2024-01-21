@@ -893,7 +893,8 @@ void PaperLayer::UI_MenuBar()
 				FileSystem::OpenExternal(Project::GetProjectPath() / std::filesystem::path(Project::GetProjectName() + ".sln"));
 			}
 
-			ImGui::Separator();
+			if (!panelManager.GetPanels(PanelOpenSetting::Edit).empty())
+				ImGui::Separator();
 
 			for (PanelData& panelData : panelManager.GetPanels(PanelOpenSetting::Edit) | std::views::values)
 			{

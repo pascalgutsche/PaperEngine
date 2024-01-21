@@ -15,7 +15,7 @@ Scene:
           Rotation: [0, 0, 0]
         SpriteComponent:
           Color: [1, 1, 1, 1]
-          TextureHandle: 61926d83f612e11f
+          TextureHandle: d748d9dc388b38f7
           TilingFactor: 1
           TexCoords: [0, 0, 1, 0, 1, 1, 0, 1]
           Geometry: Rectangle

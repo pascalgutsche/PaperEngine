@@ -14,7 +14,8 @@ namespace Paper
 		std::string projectName = "New Project";
 		std::filesystem::path projectPath;
 		std::filesystem::path assetPath = "assets";
-		std::filesystem::path scriptBinaryPath = "assets/scripts/bin";
+		std::filesystem::path assetRegistryFile = "AssetRegistry.par";
+		std::filesystem::path scriptBinaryPath = "script_bins/bin";
 		std::filesystem::path startScene;
 	};
 
@@ -50,6 +51,12 @@ namespace Paper
 		{
 			CORE_ASSERT(activeProject, "");
 			return activeProject->GetConfig().projectPath / activeProject->GetConfig().assetPath;
+		}
+
+		static std::filesystem::path GetAssetRegistryFilePath()
+		{
+			CORE_ASSERT(activeProject, "");
+			return GetAssetPath() / activeProject->GetConfig().assetRegistryFile;
 		}
 
 		static std::filesystem::path GetAssetScenesPath()
