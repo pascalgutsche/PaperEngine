@@ -10,7 +10,7 @@ The Engine is inspired from TheCherno's [Hazel Engine](https://github.com/TheChe
 
 First to say, you don't need to install any dependencies because the necessary one are all statically linked.
 
-1. Clone the repo: `git clone https://github.com/TheTrialGamer/PaperEngine.git`
+1. Clone the repo: `git clone https://github.com/pascalgutsche/PaperEngine.git`
 
 2. Go into the setup folder and execute the `setup.bat`.
 
@@ -18,7 +18,7 @@ First to say, you don't need to install any dependencies because the necessary o
 
 4. Last but not least, you have to execute the `build.bat` in the root directory. This is generating your .sln file for you so you can open the project in Visual Studio or whatever other program supports .sln files.
 
-Now that you've successfully set up your project, take a look at the [Repository-Wiki](https://github.com/TheTrialGamer/PaperEngine/wiki "PaperEngine") (WIP as of 04.05.2023) which explains how to end up using the engine.
+Now that you've successfully set up your project, take a look at the [Repository-Wiki](https://github.com/pascalgutsche/PaperEngine/wiki "PaperEngine") (WIP as of 04.05.2023) which explains how to end up using the engine.
 
 ## End things up
 If you encounter any bugs or have ideas for features that haven't been implemented yet, please don't hesitate to open an issue or create a pull request. Your contributions are greatly appreciated, and we welcome your help in developing this engine further.
